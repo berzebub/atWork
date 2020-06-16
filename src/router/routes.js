@@ -25,6 +25,14 @@ const routes = [
       {
         path: "expressionInput",
         component: () => import("pages/expressionInput.vue")
+      },
+      {
+        path: "usermain",
+        component: () => import("pages/usermain.vue")
+      },
+      {
+        path: "useraddedit",
+        component: () => import("pages/useraddedit.vue")
       }
     ]
   },
