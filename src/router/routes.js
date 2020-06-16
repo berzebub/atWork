@@ -30,11 +30,13 @@ const routes = [
       },
       {
         path: "userMain",
-        component: () => import("pages/userMain.vue")
+        component: () => import("pages/userMain.vue"),
+        name: "userMain"
       },
       {
         path: "userAddEdit",
-        component: () => import("pages/userAddEdit.vue")
+        component: () => import("pages/userAddEdit.vue"),
+        name: "userAddEdit"
       }
     ]
   },
