@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div align="center">ผู้ใช้งาน</div>
+    <div align="center">ผู้ใช้งาน user</div>
     <div>
       <q-table :data="dataUser" :columns="columnsUser" row-key="name"></q-table>
     </div>

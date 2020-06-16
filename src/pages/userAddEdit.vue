@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div align="center">ผู้ใช้งาน</div>
+    <div align="center">ผู้ใช้งาน user</div>
     <div>
       <q-input outlined v-model="dataUser.name" label="ชื่อ"></q-input>
     </div>
