@@ -1,11 +1,15 @@
-const routes = [
-  {
+const routes = [{
     path: "/",
     component: () => import("layouts/MainLayout.vue"),
-    children: [
+    children: [{
+        path: "lessonMain",
+        component: () => import("pages/lessonMain.vue"),
+        name: "lessonMain"
+      },
       {
         path: "practiceList",
-        component: () => import("pages/practiceList.vue")
+        component: () => import("pages/practiceList.vue"),
+        name: "practiceList"
       },
       // -------------------multiple
       {
@@ -40,7 +44,10 @@ const routes = [
       }
     ]
   },
-  { path: "/", component: () => import("pages/login.vue") }
+  {
+    path: "/",
+    component: () => import("pages/login.vue")
+  }
 ];
 
 // Always leave this as last one
