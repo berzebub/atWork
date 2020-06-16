@@ -20,7 +20,7 @@
               style="color:white; font-size: 1.4em;"
             />
             <q-icon
-              @click="editDataExpression()"
+              @click="editDataExpression(item)"
               class="cursor-pointer q-pr-md"
               name="far fa-edit"
               style="color:white; font-size: 1.4em;"
@@ -91,7 +91,12 @@ export default {
           this.loadDataExpression();
         });
     },
-    editDataExpression() {}
+    editDataExpression(item) {
+      this.$router.push({
+        name: "expressionEdit",
+        params: item
+      });
+    }
   },
   mounted() {
     this.loadDataExpression();

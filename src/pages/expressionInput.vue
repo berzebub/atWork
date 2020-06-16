@@ -11,7 +11,7 @@
       </q-card-section>
     </q-card>
     <div class="row">
-      <div v-for="i in test" class="col-12 relative-position">
+      <div v-for="i in boxCount" class="col-12 relative-position">
         <q-card class="q-my-lg text-black">
           <q-card-section>
             <div class="q-pa-md" style="min-width:320px; width:100%">
@@ -24,19 +24,19 @@
         </q-card>
         <!-- บวก -->
         <div
-          v-if="i == test && i < 3 "
+          v-if="i == boxCount && i < 3 "
           class="absolute-right"
           :style=" i == 1 ? 'top:45%; right:-8%' : 'top:30%; right:-8%'"
         >
-          <q-btn @click="test++" round color="primary" icon="fas fa-plus" />
+          <q-btn @click="boxCount++" round color="primary" icon="fas fa-plus" />
         </div>
         <!-- ลบ -->
         <div
-          v-if="i > 1 && i == test"
+          v-if="i > 1 && i == boxCount"
           class="absolute-right"
           :style=" i == 3 ?'top:45%; right:-8%' : 'top:65%; right:-8%'"
         >
-          <q-btn @click="test--" round color="primary" icon="fas fa-minus" />
+          <q-btn @click="boxCount--" round color="primary" icon="fas fa-minus" />
         </div>
       </div>
     </div>
@@ -61,7 +61,7 @@ export default {
     return {
       unit: 1,
       jobId: "ant123",
-      test: 1,
+      boxCount: 1,
       sentence: [
         {
           sentenceEng: "",
@@ -83,6 +83,21 @@ export default {
     };
   },
   methods: {
+    editMode() {
+      this.unit = this.$route.params.unit;
+      this.jobId = this.$route.params.jobId;
+      let getSentence = this.$route.params.expression;
+      this.boxCount = this.$route.params.expression.length - 1;
+      let loop = 4 - this.$route.params.expression.length;
+      console.log();
+      for (let i = 0; i < loop; i++) {
+        getSentence.push({
+          sentenceEng: "",
+          sentenceTh: ""
+        });
+      }
+      this.sentence = getSentence;
+    },
     saveData() {
       let filterData = this.sentence.filter(
         x => x.sentenceEng != "" && x.sentenceTh != ""
@@ -114,7 +129,25 @@ export default {
             }
           ];
         });
+    },
+    editData() {
+      let filterData = this.sentence.filter(
+        x => x.sentenceEng != "" && x.sentenceTh != ""
+      );
+      db.collection("expression")
+        .doc(this.$route.params.id)
+        .update({
+          unit: this.unit,
+          jobId: this.jobId,
+          expression: filterData
+        })
+        .then(() => {
+          this.$router.push("expressionMain");
+        });
     }
+  },
+  mounted() {
+    if (this.$route.name == "expressionEdit") this.editMode();
   }
 };
 </script>
