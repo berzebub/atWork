@@ -33,7 +33,7 @@
     </q-drawer>
 
     <q-page-container>
-      <router-view style="width:1000px; margin:auto " />
+      <router-view class="q-pa-md" style="max-width:1000px;width:100%" />
     </q-page-container>
   </q-layout>
 </template>

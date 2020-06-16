@@ -7,6 +7,17 @@ const routes = [
         path: "practiceList",
         component: () => import("pages/practiceList.vue")
       },
+      // -------------------multiple
+      {
+        path: "multipleOutput",
+        component: () => import("pages/multipleOutput.vue"),
+        name: "multipleOutput"
+      },
+      {
+        path: "multipleInput",
+        component: () => import("pages/multipleInput.vue"),
+        name: "multipleInput"
+      },
       {
         path: "expressionMain",
         component: () => import("pages/expressionMain.vue")
