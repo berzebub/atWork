@@ -20,11 +20,13 @@ const routes = [
       },
       {
         path: "expressionMain",
-        component: () => import("pages/expressionMain.vue")
+        component: () => import("pages/expressionMain.vue"),
+        name: "expressionMain"
       },
       {
         path: "expressionInput",
-        component: () => import("pages/expressionInput.vue")
+        component: () => import("pages/expressionInput.vue"),
+        name: "expressionInput"
       },
       {
         path: "usermain",
