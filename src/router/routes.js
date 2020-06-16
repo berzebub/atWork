@@ -29,12 +29,12 @@ const routes = [
         name: "expressionInput"
       },
       {
-        path: "usermain",
-        component: () => import("pages/usermain.vue")
+        path: "userMain",
+        component: () => import("pages/userMain.vue")
       },
       {
-        path: "useraddedit",
-        component: () => import("pages/useraddedit.vue")
+        path: "userAddEdit",
+        component: () => import("pages/userAddEdit.vue")
       }
     ]
   },
