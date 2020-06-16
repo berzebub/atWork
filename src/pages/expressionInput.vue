@@ -3,26 +3,22 @@
     <q-card class="text-black q-mt-md">
       <q-card-section>
         <div class="q-pa-md" style="min-width:320px; width:100%">
-          <q-input outlined v-model="username" label="ประโยคภาษาอังกฤษ" />
+          <q-input outlined v-model="sentence[0].sentenceEng" label="ประโยคภาษาอังกฤษ" />
         </div>
         <div class="q-pa-md" style="min-width:320px; width:100%">
-          <q-input outlined v-model="password" label="ประโยคภาษาไทย" />
+          <q-input outlined v-model="sentence[0].sentenceTh" label="ประโยคภาษาไทย" />
         </div>
       </q-card-section>
-
-      <q-card-section class="q-pt-none">{{ lorem }}</q-card-section>
     </q-card>
     <q-card class="q-my-md text-black">
       <q-card-section>
         <div class="q-pa-md" style="min-width:320px; width:100%">
-          <q-input outlined v-model="username" label="ประโยคภาษาอังกฤษ" />
+          <q-input outlined v-model="sentence[1].sentenceEng" label="ประโยคภาษาอังกฤษ" />
         </div>
         <div class="q-pa-md" style="min-width:320px; width:100%">
-          <q-input outlined v-model="password" label="ประโยคภาษาไทย" />
+          <q-input outlined v-model="sentence[1].sentenceTh" label="ประโยคภาษาไทย" />
         </div>
       </q-card-section>
-
-      <q-card-section class="q-pt-none">{{ lorem }}</q-card-section>
     </q-card>
 
     <div class="q-ma-md">
@@ -44,12 +40,12 @@ export default {
     return {
       sentence: [
         {
-          engA: "",
-          thA: ""
+          sentenceEng: "",
+          sentenceTh: ""
         },
         {
-          engA: "",
-          thA: ""
+          sentenceEng: "",
+          sentenceTh: ""
         }
       ]
     };
