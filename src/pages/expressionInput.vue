@@ -1,55 +1,89 @@
 <template>
   <q-page align="center">
-    <q-card class="text-black q-mt-md">
-      <q-card-section>
-        <div class="q-pa-md" style="min-width:320px; width:100%">
-          <q-input outlined v-model="sentence[0].sentenceEng" label="ประโยคภาษาอังกฤษ" />
-        </div>
-        <div class="q-pa-md" style="min-width:320px; width:100%">
-          <q-input outlined v-model="sentence[0].sentenceTh" label="ประโยคภาษาไทย" />
-        </div>
-      </q-card-section>
-    </q-card>
     <div class="row">
-      <div v-for="i in boxCount" class="col-12 relative-position">
+      <div class="col-sm-11 col-xs-12 relative-position">
+        <div>
+          <div align="left">รหัสลำดับ</div>
+          <div>
+            <q-input outlined v-model="order" type="number" />
+          </div>
+        </div>
+        <q-card class="text-black q-mt-md">
+          <q-card-section>
+            <div class="q-pl-md" align="left">ประโยคภาษาอังกฤษ #1</div>
+            <div class="q-pa-md">
+              <q-input outlined v-model="sentence[0].sentenceEng" label="ประโยคภาษาอังกฤษ" />
+            </div>
+            <div class="q-pl-md" align="left">ประโยคภาษาไทย #1</div>
+            <div class="q-pa-md">
+              <q-input outlined v-model="sentence[0].sentenceTh" label="ประโยคภาษาไทย" />
+            </div>
+          </q-card-section>
+        </q-card>
+      </div>
+      <div class="col-sm-1 col-xs-12 self-center"></div>
+    </div>
+    <div class="row" v-for="i in boxCount">
+      <div class="col-sm-11 col-xs-12 relative-position">
         <q-card class="q-my-lg text-black">
           <q-card-section>
-            <div class="q-pa-md" style="min-width:320px; width:100%">
+            <div v-if="i == 1" class="q-pl-md" align="left">ประโยคภาษาอังกฤษ #2</div>
+            <div v-if="i == 2" class="q-pl-md" align="left">ประโยคภาษาอังกฤษ #3</div>
+            <div v-if="i == 3" class="q-pl-md" align="left">ประโยคภาษาอังกฤษ #4</div>
+            <div class="q-pa-md">
               <q-input outlined v-model="sentence[i].sentenceEng" label="ประโยคภาษาอังกฤษ" />
             </div>
-            <div class="q-pa-md" style="min-width:320px; width:100%">
+            <div v-if="i == 1" class="q-pl-md" align="left">ประโยคภาษาไทย #2</div>
+            <div v-if="i == 2" class="q-pl-md" align="left">ประโยคภาษาไทย #3</div>
+            <div v-if="i == 3" class="q-pl-md" align="left">ประโยคภาษาไทย #4</div>
+            <div class="q-pa-md">
               <q-input outlined v-model="sentence[i].sentenceTh" label="ประโยคภาษาไทย" />
             </div>
           </q-card-section>
         </q-card>
+      </div>
+      <div class="col-sm-1 col-xs-12 self-center" align="right">
         <!-- บวก -->
-        <div
-          v-if="i == boxCount && i < 3 "
-          class="absolute-right"
-          :style=" i == 1 ? 'top:45%; right:-8%' : 'top:30%; right:-8%'"
-        >
-          <q-btn @click="boxCount++" round color="primary" icon="fas fa-plus" />
-        </div>
-        <!-- ลบ -->
-        <div
-          v-if="i > 1 && i == boxCount"
-          class="absolute-right"
-          :style=" i == 3 ?'top:45%; right:-8%' : 'top:65%; right:-8%'"
-        >
-          <q-btn @click="boxCount--" round color="primary" icon="fas fa-minus" />
+        <div class>
+          <q-btn
+            class="q-my-md"
+            v-if="i == boxCount && i < 3 "
+            @click="boxCount++"
+            round
+            icon="fas fa-plus"
+          />
+          <q-btn
+            class="q-ml-md"
+            v-if="i > 1 && i == boxCount"
+            @click="boxCount--"
+            round
+            icon="fas fa-minus"
+          />
         </div>
       </div>
     </div>
-
-    <div class="q-ma-md">
-      <q-btn
-        @click="saveData()"
-        label="บันทึก"
-        class="q-ma-md"
-        style="width:120px"
-        outline
-        color="red"
-      />
+    <div class="row" style="width:360px; margin:auto">
+      <div class="q-ma-md col">
+        <q-btn
+          @click="saveData()"
+          label="ยกเลิก"
+          dense
+          style="width:150px"
+          outline
+          color="blue-grey-10"
+        />
+      </div>
+      <div class="q-ma-md col">
+        <q-btn
+          @click="saveData()"
+          label="บันทึก"
+          dense
+          style="width:150px"
+          outline
+          color="white"
+          class="bg-blue-grey-10"
+        />
+      </div>
     </div>
   </q-page>
 </template>
@@ -62,6 +96,7 @@ export default {
       unit: 1,
       jobId: "ant123",
       boxCount: 1,
+      order: "",
       sentence: [
         {
           sentenceEng: "",
