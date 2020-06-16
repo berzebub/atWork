@@ -1,9 +1,7 @@
-const routes = [
-  {
+const routes = [{
     path: "/",
     component: () => import("layouts/MainLayout.vue"),
-    children: [
-      {
+    children: [{
         path: "lessonMain",
         component: () => import("pages/lessonMain.vue"),
         name: "lessonMain"
@@ -41,12 +39,12 @@ const routes = [
       },
       {
         path: "userMain",
-        component: () => import("pages/userMain.vue"),
+        component: () => import("pages/userMains.vue"),
         name: "userMain"
       },
       {
         path: "userAddEdit",
-        component: () => import("pages/userAddEdit.vue"),
+        component: () => import("pages/userAddEdits.vue"),
         name: "userAddEdit"
       }
     ]
