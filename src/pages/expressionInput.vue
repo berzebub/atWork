@@ -1,119 +1,121 @@
 <template>
   <q-page align="center">
-    <div class="row">
-      <div class="col-sm-11 col-xs-12 relative-position">
-        <div class="q-my-md">
-          <b>พนักงานร้านอาหาร</b>
-        </div>
-        <!-- รหัสลำดับ -->
-        <div>
-          <div align="left">รหัสลำดับ</div>
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-11 col-xs-12 relative-position">
+          <div class="q-my-md">
+            <b>พนักงานร้านอาหาร</b>
+          </div>
+          <!-- รหัสลำดับ -->
           <div>
-            <q-input outlined v-model="order" type="number" />
+            <div align="left">รหัสลำดับ</div>
+            <div>
+              <q-input outlined v-model="order" type="number" />
+            </div>
           </div>
         </div>
-        <!-- <q-card class="text-black q-mt-md">
-          <q-card-section>
-            <div class="q-pl-md" align="left">ประโยคภาษาอังกฤษ #1</div>
-            <div class="q-pa-md">
-              <q-input outlined v-model="sentence[0].sentenceEng" label="ประโยคภาษาอังกฤษ" />
-            </div>
-            <div class="q-pl-md" align="left">ประโยคภาษาไทย #1</div>
-            <div class="q-pa-md">
-              <q-input outlined v-model="sentence[0].sentenceTh" label="ประโยคภาษาไทย" />
-            </div>
-          </q-card-section>
-        </q-card>-->
+        <div class="col-sm-1 col-xs-12 self-center"></div>
       </div>
-      <div class="col-sm-1 col-xs-12 self-center"></div>
-    </div>
-    <div class="row" v-for="i in boxCount+1" :key="i">
-      <div class="col-sm-11 col-xs-12 relative-position">
-        <q-card class="q-my-lg text-black">
-          <q-card-section class="bg-blue-grey-10 text-white">
-            <div align="left">ประโยคที่ #{{i}}</div>
-          </q-card-section>
-          <q-card-section>
-            <div align="left" class="row">
-              <q-radio class="col-6" v-model="speaker" val="customer" label="ลูกค้า" />
-              <q-radio class="col-6" v-model="speaker" val="employee" label="พนักงาน" />
-            </div>
-          </q-card-section>
-          <q-card-section>
-            <div class="q-pl-md" align="left">ประโยคภาษาอังกฤษ</div>
+      <div class="row" v-for="(i) in boxCount+1" :key="i">
+        <div class="col-sm-11 col-xs-12 relative-position">
+          <q-card class="q-my-lg text-black">
+            <q-card-section class="bg-blue-grey-10 text-white">
+              <div align="left" class="q-ml-sm">ประโยคที่ #{{i}}</div>
+            </q-card-section>
+            <!-- radio button -->
+            <q-card-section>
+              <div align="left" class="row">
+                <q-radio
+                  color="blue-grey-10"
+                  class="col-6"
+                  v-model="speaker"
+                  val="customer"
+                  label="ลูกค้า"
+                />
+                <q-radio
+                  color="blue-grey-10"
+                  class="col-6"
+                  v-model="speaker"
+                  val="employee"
+                  label="พนักงาน"
+                />
+              </div>
+            </q-card-section>
+            <q-card-section>
+              <div class="q-pl-md" align="left">ประโยคภาษาอังกฤษ</div>
 
-            <div class="q-pa-md">
-              <q-input outlined v-model="sentence[i-1].sentenceEng" />
-            </div>
-            <div class="q-pl-md" align="left">ประโยคภาษาไทย</div>
+              <div class="q-pa-md">
+                <q-input outlined v-model="sentence[i-1].sentenceEng" />
+              </div>
+              <div class="q-pl-md" align="left">ประโยคภาษาไทย</div>
 
-            <div class="q-pa-md">
-              <q-input outlined v-model="sentence[i-1].sentenceTh" />
-            </div>
-            <q-separator v-if=" i != 1"></q-separator>
-          </q-card-section>
-          <q-card-actions v-if="i != 1" align="right" class="q-px-lg">
+              <div class="q-pa-md">
+                <q-input outlined v-model="sentence[i-1].sentenceTh" />
+              </div>
+              <q-separator v-if=" i != 1"></q-separator>
+            </q-card-section>
+            <!-- ถังขยะ -->
+            <q-card-actions v-if="i != 1" align="right" class="q-px-lg">
+              <q-btn
+                @click="opendialogDeleteCard(i-1)"
+                flat
+                class="cursor-pointer"
+                icon="far fa-trash-alt"
+                style="color:blue-grey-10; font-size: 1em; position:relative; top:-10px"
+              />
+            </q-card-actions>
+          </q-card>
+        </div>
+        <div class="col-sm-1 col-xs-12 self-center" align="right">
+          <!-- บวก -->
+          <div class>
             <q-btn
-              @click="deleteCard(i-1)"
-              flat
-              class="cursor-pointer"
-              icon="far fa-trash-alt"
-              style="color:blue-grey-10; font-size: 1em; position:relative; top:-10px"
+              class="q-my-md"
+              v-if="i == boxCount+1 && i < 4 "
+              @click="boxCount++"
+              round
+              icon="fas fa-plus"
             />
-          </q-card-actions>
-        </q-card>
+          </div>
+        </div>
       </div>
-      <div class="col-sm-1 col-xs-12 self-center" align="right">
-        <!-- บวก -->
-        <div class>
+      <div class="row" style="width:360px; margin:auto">
+        <div class="q-ma-md col">
           <q-btn
-            class="q-my-md"
-            v-if="i == boxCount+1 && i < 4 "
-            @click="boxCount++"
-            round
-            icon="fas fa-plus"
+            to="/expressionMain"
+            label="ยกเลิก"
+            dense
+            style="width:150px"
+            outline
+            color="blue-grey-10"
+          />
+        </div>
+        <div class="q-ma-md col">
+          <q-btn
+            @click="saveData()"
+            label="บันทึก"
+            dense
+            style="width:150px"
+            outline
+            color="white"
+            class="bg-blue-grey-10"
           />
         </div>
       </div>
-    </div>
-    <div class="row" style="width:360px; margin:auto">
-      <div class="q-ma-md col">
-        <q-btn
-          to="/expressionMain"
-          label="ยกเลิก"
-          dense
-          style="width:150px"
-          outline
-          color="blue-grey-10"
-        />
-      </div>
-      <div class="q-ma-md col">
-        <q-btn
-          @click="saveData()"
-          label="บันทึก"
-          dense
-          style="width:150px"
-          outline
-          color="white"
-          class="bg-blue-grey-10"
-        />
-      </div>
-    </div>
-    <!-- dialog -->
-    <q-dialog v-model="dialogdeleteCard">
-      <q-card>
-        <q-card-section>
-          <div class="text-h6">ยืนยันการลบข้อมูล</div>
-        </q-card-section>
+      <!-- --------------------------------------dialog--------------------------------------- -->
+      <q-dialog v-model="dialogdeleteCard">
+        <q-card>
+          <q-card-section></q-card-section>
 
-        <q-card-section align="center" class="q-pt-none">คุณต้องการลบข้อมูลใช่หรือไม่</q-card-section>
+          <q-card-section align="center" class="q-pt-none">คุณต้องการลบ "ประโยคที่ #{{getIndex}}"</q-card-section>
 
-        <q-card-actions style="width:323px" align="center">
-          <q-btn class="q-mx-md" outline label="ยกเลิก" color="blue-grey-10" v-close-popup />
-          <q-btn label="ตกลง" color="blue-grey-10" v-close-popup />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
+          <q-card-actions style="width:323px" align="center">
+            <q-btn class="q-mx-md" outline label="ยกเลิก" color="blue-grey-10" v-close-popup />
+            <q-btn @click="confirmDeleteCard()" label="ตกลง" color="blue-grey-10" />
+          </q-card-actions>
+        </q-card>
+      </q-dialog>
+    </div>
   </q-page>
 </template>
 
@@ -122,8 +124,9 @@ import { db } from "../router";
 export default {
   data() {
     return {
-      dialogdeleteCard: true,
-      speaker: "line",
+      getIndex: "",
+      dialogdeleteCard: false,
+      speaker: "customer",
       unit: 1,
       jobId: "ant123",
       boxCount: 1,
@@ -218,19 +221,25 @@ export default {
           this.$router.push("expressionMain");
         });
     },
-    deleteCard(index) {
-      console.log(index);
+    opendialogDeleteCard(index) {
+      this.getIndex = index + 1;
       if (
         this.sentence[index].sentenceEng.length > 0 ||
         this.sentence[index].sentenceTh.length > 0
       ) {
-        console.log("ไม่สามารถลบข้อมูลได้");
+        this.dialogdeleteCard = true;
       } else {
-        this.sentence[index].sentenceEng = "";
-        this.sentence[index].sentenceTh = "";
-        this.boxCount--;
-        console.log("finish");
+        this.moveData(index);
       }
+    },
+    moveData() {
+      this.sentence.splice(this.getIndex - 1, 1);
+      this.sentence.push({ sentenceEng: "", sentenceTh: "" });
+      this.boxCount--;
+    },
+    confirmDeleteCard() {
+      this.dialogdeleteCard = false;
+      this.moveData();
     }
   },
   mounted() {
