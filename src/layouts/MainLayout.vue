@@ -2,91 +2,84 @@
   <q-layout view="lHh Lpr lFf">
     <q-header class="bg-blue-grey-10" elevated v-if="$route.name!='practiceList' ">
       <q-toolbar>
-        <q-toolbar-title>Quasar App</q-toolbar-title>
+        <q-toolbar-title class="q-pa-md">
+          <span class="text-h6">ระดับการเรียน</span>
+        </q-toolbar-title>
       </q-toolbar>
     </q-header>
 
     <q-drawer
       v-model="leftDrawerOpen"
       show-if-above
-      elevated
       content-class="bg-grey-1 bg-blue-grey-10 row "
       :width="100"
     >
-      <!-- <q-list class="text-center">
-        แบบฝึกหัด
-        <q-item clickable @click="toPracticeList()" class="brx">
-          <q-item-section avatar >
-            <q-icon name="book" />
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>แบบฝึกหัด</q-item-label>
-          </q-item-section>
-        </q-item>
-        ระดับการเรียน
-        <q-item clickable @click="toPracticeList()">
-          <q-item-section avatar>
-            <q-icon name="book" />
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>ระดับการเรียน</q-item-label>
-          </q-item-section>
-        </q-item>
-        สถานประกอบการ
-        <q-item clickable @click="toPracticeList()">
-          <q-item-section avatar>
-            <q-icon name="book" />
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>สถานประกอบการ</q-item-label>
-          </q-item-section>
-        </q-item>
-        จัดการผู้ใช้
-        <q-item clickable @click="toPracticeList()">
-          <q-item-section avatar>
-            <q-icon name="book" />
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>จัดการผู้ใช้</q-item-label>
-          </q-item-section>
-        </q-item>
-      </q-list>-->
       <div
         class="row text-body2 text-white self-start"
-        style="border-right: 1px solid #ffff"
+        style="border-right: 1px solid #000"
         align="center"
       >
-        <div class="full-width q-py-md" style="border-left: 7px solid #90A4AE">
+        <div
+          class="full-width q-py-md relative-position cursor-pointer"
+          :class="$route.name=='practiceList'?'active-line active-text':'no-active-line'"
+          v-ripple
+          @click="$router.push('/practiceList')"
+        >
           <div>
-            <q-icon name="book" size="25px" style="color:#90A4AE" />
+            <q-icon name="book" size="25px" />
           </div>
-          <div class="q-pt-sm" style="color:#90A4AE">แบบฝึกหัด</div>
+          <div class="q-pt-sm">แบบฝึกหัด</div>
         </div>
-        <div class="full-width q-py-md">
+        <div
+          class="full-width q-py-md relative-position cursor-pointer"
+          :class="$route.name=='lessonMain'?'active-line active-text':'no-active-line'"
+          v-ripple
+          @click="$router.push('/lessonMain')"
+        >
           <div>
             <q-icon name="fas fa-signal" size="25px" />
           </div>
           <div class="q-pt-sm">ระดับการเรียน</div>
         </div>
-        <div class="full-width q-py-md">
+        <div
+          class="full-width q-py-md relative-position cursor-pointer"
+          :class="$route.name=='businessMain'?'active-line active-text':'no-active-line'"
+          v-ripple
+          @click="$router.push('/businessMain')"
+        >
           <div>
             <q-icon name="fas fa-building" size="25px" />
           </div>
           <div class="q-pt-sm">กิจการ</div>
         </div>
-        <div class="full-width q-py-md">
+        <div
+          class="full-width q-py-md relative-position cursor-pointer"
+          :class="$route.name=='employeeMain'?'active-line active-text':'no-active-line'"
+          v-ripple
+          @click="$router.push('/employeeMain')"
+        >
           <div>
             <q-icon name="fas fa-user-tie" size="25px" />
           </div>
           <div class="q-pt-sm">พนักงาน</div>
         </div>
-        <div class="full-width q-py-md">
+        <div
+          class="full-width q-py-md relative-position cursor-pointer"
+          :class="$route.name=='userMain'?'active-line active-text':'no-active-line'"
+          v-ripple
+          @click="$router.push('/userMain')"
+        >
           <div>
             <q-icon name="fas fa-user-edit" size="25px" />
           </div>
           <div class="q-pt-sm">ผู้ดูแลระบบ</div>
         </div>
-        <div class="full-width q-py-md">
+        <div
+          class="full-width q-py-md relative-position cursor-pointer"
+          :class="$route.name=='userInfo'?'active-line active-text':'no-active-line'"
+          v-ripple
+          @click="$router.push('/userInfo')"
+        >
           <div>
             <q-icon name="fas fa-cog" size="25px" />
           </div>
@@ -121,3 +114,14 @@ export default {
   }
 };
 </script>
+<style lang="scss" scoped>
+.active-line {
+  border-left: 7px solid #90a4ae;
+}
+.active-text {
+  color: #90a4ae;
+}
+.no-active-line {
+  border-left: 7px solid #263238;
+}
+</style>

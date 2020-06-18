@@ -1,5 +1,4 @@
-const routes = [
-  {
+const routes = [{
     path: "/",
     component: () => import("pages/login.vue")
   },
@@ -11,42 +10,69 @@ const routes = [
     path: "/",
     component: () => import("layouts/MainLayout.vue"),
     children: [
-      {
-        path: "lessonMain",
-        component: () => import("pages/lessonMain.vue"),
-        name: "lessonMain"
-      },
+      // ------------------- practice list แบบฝึกหัด -------------------
       {
         path: "practiceList",
         component: () => import("pages/practiceList.vue"),
         name: "practiceList"
       },
-      // -------------------multiple
+      // ------------------- flashcard -------------------
       {
-        path: "multipleOutput",
-        component: () => import("pages/multipleOutput.vue"),
-        name: "multipleOutput"
+        path: "flashcardMain",
+        component: () => import("pages/flashcardMain.vue"),
+        name: "flashcardMain"
       },
+      // ------------------- multiple -------------------
       {
+        path: "multipleMain",
+        component: () => import("pages/multipleMain.vue"),
+        name: "multipleMain"
+      }, {
         path: "multipleInput",
         component: () => import("pages/multipleInput.vue"),
         name: "multipleInput"
       },
+      // ------------------- expression -------------------
       {
         path: "expressionMain",
         component: () => import("pages/expressionMain.vue"),
         name: "expressionMain"
-      },
-      {
+      }, {
         path: "expressionInput",
         component: () => import("pages/expressionInput.vue"),
         name: "expressionInput"
-      },
-      {
+      }, {
         path: "expressionEdit",
         component: () => import("pages/expressionInput.vue"),
         name: "expressionEdit"
       },
+      // ------------------- vdo -------------------
+      {
+        path: "vdoMain",
+        component: () => import("pages/vdoMain.vue"),
+        name: "vdoMain"
+      },
+      // ------------------- lessonMain ระดับการเรียน -------------------
+      {
+
+        path: "lessonMain",
+        component: () => import("pages/lessonMain.vue"),
+        name: "lessonMain"
+      },
+
+      // ------------------- business กิจการ -------------------
+      {
+        path: "businessMain",
+        component: () => import("pages/businessMain.vue"),
+        name: "businessMain"
+      },
+      // ------------------- employee พนักงาน -------------------
+      {
+        path: "employeeMain",
+        component: () => import("pages/employeeMain.vue"),
+        name: "employeeMain"
+      },
+      // ------------------- userMain ผู้ดูแลระบบ -------------------
       {
         path: "userMain",
         component: () => import("pages/userMain.vue"),
@@ -56,6 +82,12 @@ const routes = [
         path: "userAddEdit",
         component: () => import("pages/userAddEdit.vue"),
         name: "userAddEdit"
+      },
+      // ------------------- user info -------------------
+      {
+        path: "userInfo",
+        component: () => import("pages/userInfo.vue"),
+        name: "userInfo"
       }
     ]
   }

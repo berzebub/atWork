@@ -5,7 +5,7 @@
     <div class="q-pa-md bg-blue-grey-10 shadow-5" style="width: 360px">
       <span class="text-white text-h6">แบบฝึกหัด</span>
     </div>
-    <div class="q-pt-md shadow-3" style="width: 360px; height: calc(100vh - 64px)">
+    <div class="q-pt-md shadow-3 bg-white" style="width: 360px; height: calc(100vh - 64px)">
       <q-list class="rounded-borders">
         <q-expansion-item v-model="expanded" label="อาหาร">
           <q-card class="q-px-md q-pb-sm">
