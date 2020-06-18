@@ -5,54 +5,51 @@
     <div class="q-pt-md">
       <q-list class="rounded-borders">
         <q-expansion-item v-model="expanded" label="อาหาร">
-          <q-card>
-            <q-card-section>
-              <div class="row">
-                <div class="col">1. จองโต๊ะ</div>
-                <div class="col-1" align="right">
-                  <q-icon name="fas fa-sync-alt"></q-icon>
-                </div>
+          <q-card class="q-px-md q-pb-sm">
+            <div class="row q-pb-sm">
+              <div class="col">1. จองโต๊ะ</div>
+              <div class="col-1" align="right">
+                <q-icon name="fas fa-sync-alt"></q-icon>
               </div>
-              <div class="row">
-                <div class="col">2. สั่งอาหาร</div>
-                <div class="col-1" align="right">
-                  <q-icon name="fas fa-sync-alt"></q-icon>
-                </div>
+            </div>
+            <div class="row q-pb-sm">
+              <div class="col">2. สั่งอาหาร</div>
+              <div class="col-1" align="right">
+                <q-icon name="fas fa-sync-alt"></q-icon>
               </div>
-              <div class="row">
-                <div class="col">3. สั่งเครื่องดื่ม</div>
-                <div class="col-1" align="right">
-                  <q-icon name="fas fa-sync-alt"></q-icon>
-                </div>
+            </div>
+            <div class="row q-pb-sm">
+              <div class="col">3. สั่งเครื่องดื่ม</div>
+              <div class="col-1" align="right">
+                <q-icon name="fas fa-sync-alt"></q-icon>
               </div>
-            </q-card-section>
+            </div>
           </q-card>
         </q-expansion-item>
-
+        <q-separator />
         <q-expansion-item v-model="expanded" label="อาหาร">
-          <q-card>
-            <q-card-section>
-              <div class="row">
-                <div class="col">1. จองโต๊ะ</div>
-                <div class="col-1" align="right">
-                  <q-icon name="fas fa-sync-alt"></q-icon>
-                </div>
+          <q-card class="q-px-md q-pb-sm">
+            <div class="row q-pb-sm">
+              <div class="col">1. จองโต๊ะ</div>
+              <div class="col-1" align="right">
+                <q-icon name="fas fa-sync-alt"></q-icon>
               </div>
-              <div class="row">
-                <div class="col">2. สั่งอาหาร</div>
-                <div class="col-1" align="right">
-                  <q-icon name="fas fa-sync-alt"></q-icon>
-                </div>
+            </div>
+            <div class="row q-pb-sm">
+              <div class="col">2. สั่งอาหาร</div>
+              <div class="col-1" align="right">
+                <q-icon name="fas fa-sync-alt"></q-icon>
               </div>
-              <div class="row">
-                <div class="col">3. สั่งเครื่องดื่ม</div>
-                <div class="col-1" align="right">
-                  <q-icon name="fas fa-sync-alt"></q-icon>
-                </div>
+            </div>
+            <div class="row q-pb-sm">
+              <div class="col">3. สั่งเครื่องดื่ม</div>
+              <div class="col-1" align="right">
+                <q-icon name="fas fa-sync-alt"></q-icon>
               </div>
-            </q-card-section>
+            </div>
           </q-card>
         </q-expansion-item>
+        <q-separator />
       </q-list>
     </div>
   </q-page>
