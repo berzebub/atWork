@@ -49,7 +49,10 @@
     </q-drawer>
 
     <q-page-container>
-      <router-view class="q-pa-md" style="max-width:1000px;width:100%;margin:auto" />
+      <router-view
+        :class="$route.name=='practiceList' ?'':'q-pa-md' "
+        style="max-width:1000px;width:100%;margin:auto"
+      />
     </q-page-container>
   </q-layout>
 </template>

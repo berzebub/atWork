@@ -1,27 +1,73 @@
 <template>
-  <div>
-    practiceList
+  <q-page class="brx text-blue-grey-10">
+    <!-- practiceList -->
     <!-- show content -->
-    <div>
-      <div class="col-6-md col-12-sm">
-        <q-select outlined v-model="model" :options="options" />
-      </div>
-      <div class="col-6-md col-12-sm">
-        <q-select outlined v-model="model" :options="options" />
-      </div>
+    <div class="q-pt-md">
+      <q-list class="rounded-borders">
+        <q-expansion-item v-model="expanded" label="อาหาร">
+          <q-card>
+            <q-card-section>
+              <div class="row">
+                <div class="col">1. จองโต๊ะ</div>
+                <div class="col-1" align="right">
+                  <q-icon name="fas fa-sync-alt"></q-icon>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">2. สั่งอาหาร</div>
+                <div class="col-1" align="right">
+                  <q-icon name="fas fa-sync-alt"></q-icon>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">3. สั่งเครื่องดื่ม</div>
+                <div class="col-1" align="right">
+                  <q-icon name="fas fa-sync-alt"></q-icon>
+                </div>
+              </div>
+            </q-card-section>
+          </q-card>
+        </q-expansion-item>
+
+        <q-expansion-item v-model="expanded" label="อาหาร">
+          <q-card>
+            <q-card-section>
+              <div class="row">
+                <div class="col">1. จองโต๊ะ</div>
+                <div class="col-1" align="right">
+                  <q-icon name="fas fa-sync-alt"></q-icon>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">2. สั่งอาหาร</div>
+                <div class="col-1" align="right">
+                  <q-icon name="fas fa-sync-alt"></q-icon>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">3. สั่งเครื่องดื่ม</div>
+                <div class="col-1" align="right">
+                  <q-icon name="fas fa-sync-alt"></q-icon>
+                </div>
+              </div>
+            </q-card-section>
+          </q-card>
+        </q-expansion-item>
+      </q-list>
     </div>
-  </div>
+  </q-page>
 </template>
 
 <script>
+import { db } from "../router";
 export default {
   data() {
     return {
-      text: "",
-      model: 1,
-      options: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+      expanded: ""
     };
-  }
+  },
+  methods: {},
+  mounted() {}
 };
 </script>
 

@@ -1,12 +1,11 @@
 /* app global css */
 @font-face {
-  font-family: promptB;
-  src: url('../statics/fonts/Prompt-Bold.ttf');
-}
-
-@font-face {
   font-family: promptM;
   src: url('../statics/fonts/Prompt-Medium.ttf');
+}
+
+body {
+  font-family: promptM;
 }
 
 .brx {
