@@ -11,7 +11,7 @@
         style="width:100%"
       >
         <q-card-section class="bg-blue-grey-10 text-white">
-          <div>รหัสลำดับ 1000</div>
+          <div>{{item.order}}</div>
           <div class="row items-center absolute-right">
             <q-icon
               @click="openDialogDelte(item.id)"
@@ -73,7 +73,6 @@ export default {
           data.forEach(element => {
             temp.push({ ...element.data(), id: element.id });
           });
-          console.log(temp);
           this.showDataExpression = temp;
         });
     },

@@ -65,7 +65,7 @@
     <div class="row" style="width:360px; margin:auto">
       <div class="q-ma-md col">
         <q-btn
-          @click="saveData()"
+          to="/expressionMain"
           label="ยกเลิก"
           dense
           style="width:150px"
@@ -134,36 +134,42 @@ export default {
       this.sentence = getSentence;
     },
     saveData() {
-      let filterData = this.sentence.filter(
-        x => x.sentenceEng != "" && x.sentenceTh != ""
-      );
-      console.log(filterData);
-      db.collection("expression")
-        .add({
-          unit: this.unit,
-          jobId: this.jobId,
-          expression: filterData
-        })
-        .then(() => {
-          this.sentence = [
-            {
-              sentenceEng: "",
-              sentenceTh: ""
-            },
-            {
-              sentenceEng: "",
-              sentenceTh: ""
-            },
-            {
-              sentenceEng: "",
-              sentenceTh: ""
-            },
-            {
-              sentenceEng: "",
-              sentenceTh: ""
-            }
-          ];
-        });
+      if (this.$route.name == "expressionInput") {
+        let filterData = this.sentence.filter(
+          x => x.sentenceEng != "" && x.sentenceTh != ""
+        );
+        console.log(filterData);
+        db.collection("expression")
+          .add({
+            unit: this.unit,
+            jobId: this.jobId,
+            expression: filterData,
+            order: this.order
+          })
+          .then(() => {
+            this.sentence = [
+              {
+                sentenceEng: "",
+                sentenceTh: ""
+              },
+              {
+                sentenceEng: "",
+                sentenceTh: ""
+              },
+              {
+                sentenceEng: "",
+                sentenceTh: ""
+              },
+              {
+                sentenceEng: "",
+                sentenceTh: ""
+              }
+            ];
+            this.$router.push("/expressionMain");
+          });
+      } else {
+        this.editData();
+      }
     },
     editData() {
       let filterData = this.sentence.filter(
@@ -174,6 +180,7 @@ export default {
         .update({
           unit: this.unit,
           jobId: this.jobId,
+          order: this.order,
           expression: filterData
         })
         .then(() => {
