@@ -1,22 +1,25 @@
 /* app global css */
 @font-face {
   font-family: promptM;
-  src: url('../statics/fonts/Prompt-Medium.ttf');
+  src: url("../statics/fonts/Prompt-Medium.ttf");
 }
 
 body {
   font-family: promptM;
 }
-.container{
+.container {
   margin: auto;
   width: 100%;
   max-width: 700px;
 }
-.container-input{
+.container-input {
   margin: auto;
   width: 100%;
   max-width: 360px;
 }
 .brx {
   border: 1px solid red;
+}
+.br {
+  border-radius: 10px;
 }
