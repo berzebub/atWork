@@ -83,6 +83,7 @@ module.exports = function ( /* ctx */ ) {
       //            (not treeshaking Quasar; biggest bundle size; convenient)
       all: "auto",
 
+        "QIcon"
       components: ["QTable", "QTh", "QTr", "QTd", "QInput", 'QExpansionItem', 'QList'],
       directives: [],
 
