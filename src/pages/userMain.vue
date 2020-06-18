@@ -2,7 +2,7 @@
   <q-page>
     <div class="container">
       <div align="center">
-        <q-btn style="width:190px" color="blue-grey-10" label="เพิ่ม"></q-btn>
+        <q-btn style="width:190px" color="blue-grey-10" label="เพิ่ม" @click="addUser()"></q-btn>
       </div>
       <div>
         <q-card class="rounded-borders q-py-md q-mt-lg br">
@@ -143,7 +143,16 @@
 </template>
 
 <script>
-export default {};
+export default {
+  data() {
+    return {};
+  },
+  methods: {
+    addUser() {
+      this.$router.push("userAddEdit");
+    }
+  }
+};
 </script>
 
 <style lang="scss" scoped>

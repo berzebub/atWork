@@ -3,22 +3,38 @@
     <div class="container-input">
       <div>
         <div class="text-subtitle1">ชื่อ</div>
-        <q-input outlined dense v-model="dataUser.name"></q-input>
+        <q-input outlined dense v-model="dataUser.name" :rules="[val => !!val || 'กรุณาใส่ชื่อ']"></q-input>
       </div>
       <div class="q-pt-md">
         <div class="text-subtitle1">นามสกุล</div>
-        <q-input outlined dense v-model="dataUser.surname"></q-input>
+        <q-input
+          outlined
+          dense
+          v-model="dataUser.surname"
+          :rules="[val => !!val || 'กรุณาใส่นามสกุล']"
+        ></q-input>
       </div>
       <div class="q-pt-md">
         <div class="text-subtitle1">E-mail</div>
-        <q-input outlined dense v-model="dataUser.email"></q-input>
+        <q-input
+          outlined
+          dense
+          v-model="dataUser.email"
+          :rules="[val => !!val || 'รูปแบบ E-mail ไม่ถูกต้อง']"
+        ></q-input>
       </div>
 
       <div class="q-pt-md">
         <div class="text-subtitle1">รหัสผ่าน</div>
         <div class="text-subtitle2">ตัวอักษรหรือตัวเลขไม่ต่ำกว่า 4 ตัวอักษร</div>
 
-        <q-input v-model="dataUser.password" dense outlined :type="isPwd ? 'password' : 'text'">
+        <q-input
+          v-model="dataUser.password"
+          dense
+          outlined
+          :type="isPwd ? 'password' : 'text'"
+          :rules="[val => !!val || 'กรุณาใช้รหัสผ่านที่มีความยาวไม่ต่ำกว่า 4 ตัวอักษร']"
+        >
           <template v-slot:append>
             <q-icon
               :name="isPwd ? 'visibility_off' : 'visibility'"
@@ -46,7 +62,7 @@
       <!-- ปุ่ม -->
       <div class="row q-pt-md">
         <div class="col-6">
-          <q-btn dense style="width:150px" outline label="ยกเลิก"></q-btn>
+          <q-btn dense style="width:150px" outline label="ยกเลิก" @click="cencel()"></q-btn>
         </div>
         <div class="col-6" align="right">
           <q-btn dense color="blue-grey-10" style="width:150px" label="บันทึก"></q-btn>
@@ -90,6 +106,11 @@ export default {
       ],
       all: false
     };
+  },
+  methods: {
+    cencel() {
+      this.$router.push("userMain");
+    }
   }
 };
 </script>
