@@ -2,14 +2,17 @@
   <q-page>
     <div class="container" align="center">
       <!-- box เซิร์ฟเวอร์  -->
-      <div class="row boxServer">
-        <div class="col">
-          <q-radio color="blue-grey-10" v-model="server" val="draft" label="แบบร่าง" />
-        </div>
-        <div class="col">
-          <q-radio color="blue-grey-10" v-model="server" val="server" label="เซิร์ฟเวอร์" />
+      <div class="text-left">
+        <div class="row boxServer">
+          <div class="col">
+            <q-radio color="blue-grey-10" v-model="server" val="draft" label="แบบร่าง" />
+          </div>
+          <div class="col">
+            <q-radio color="blue-grey-10" v-model="server" val="server" label="เซิร์ฟเวอร์" />
+          </div>
         </div>
       </div>
+
       <div class="text-h6">
         <div class="q-pt-md">อาหารและเครื่องดื่ม</div>
         <div>1. จองโต๊ะ</div>
@@ -64,16 +67,30 @@
         <q-card style="max-width:600px;width:100%">
           <div class="text-h6 text-center q-pt-md q-pb-sm">แก้ไขคำสั่ง</div>
           <div class="q-px-md">
-            <div class="q-py-sm">
-              <q-input outlined v-model="instrunctionTh" label="คำสั่งภาษาไทย" />
+            <div class="q-py-xs">
+              <q-input
+                dense
+                :rules="[ val => !!val || 'กรุณาใส่รหัสลำดับ']"
+                ref="instrunctionTh"
+                outlined
+                v-model="instrunctionTh"
+                label="คำสั่งภาษาไทย"
+              />
             </div>
-            <div class="q-py-sm">
-              <q-input outlined v-model="instrunctionEng" label="คำสั่งภาษาอังกฤษ" />
+            <div class="q-py-xs">
+              <q-input
+                dense
+                :rules="[ val => !!val || 'กรุณาใส่รหัสลำดับ']"
+                ref="instrunctionEng"
+                outlined
+                v-model="instrunctionEng"
+                label="คำสั่งภาษาอังกฤษ"
+              />
             </div>
           </div>
           <div>
-            <div class="row reverse-wrap justify-center q-pb-sm q-px-md">
-              <div class="q-px-md q-py-sm">
+            <div class="row reverse-wrap justify-center q-px-md">
+              <div class="q-px-md q-pb-md">
                 <q-btn
                   v-close-popup
                   dense
@@ -84,7 +101,7 @@
                   label="ยกเลิก"
                 />
               </div>
-              <div class="q-px-md q-py-sm">
+              <div class="q-px-md q-pb-md">
                 <q-btn @click="addBtn()" dense style="width:150px" color="black" label="บันทึก" />
               </div>
             </div>
@@ -134,6 +151,15 @@ export default {
     editQuestion() {
       this.dialogQuestion = true;
     },
+    addBtn() {
+      this.$refs.instrunctionTh.validate();
+      this.$refs.instrunctionEng.validate();
+      if (
+        this.$refs.instrunctionTh.hasError ||
+        this.$refs.instrunctionEng.hasError
+      ) {
+      }
+    },
     deleteBtn() {},
     editBtn() {}
   }
@@ -149,6 +175,7 @@ export default {
   border-top-left-radius: 6px;
 }
 .boxServer {
+  max-width: 330px;
   border: 1px solid #263238;
 }
 </style>
