@@ -1,7 +1,13 @@
-const routes = [{
+const routes = [
+  {
+    path: "/",
+    component: () => import("pages/login.vue")
+  },
+  {
     path: "/",
     component: () => import("layouts/MainLayout.vue"),
-    children: [{
+    children: [
+      {
         path: "lessonMain",
         component: () => import("pages/lessonMain.vue"),
         name: "lessonMain"
@@ -48,10 +54,6 @@ const routes = [{
         name: "userAddEdit"
       }
     ]
-  },
-  {
-    path: "/",
-    component: () => import("pages/login.vue")
   }
 ];
 
