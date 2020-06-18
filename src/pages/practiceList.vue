@@ -1,8 +1,8 @@
 <template>
-  <q-page class="brx text-blue-grey-10">
+  <q-page class="text-blue-grey-10">
     <!-- practiceList -->
     <!-- show content -->
-    <div class="q-pt-md">
+    <div class="q-pt-md brx" style="width: 360px">
       <q-list class="rounded-borders">
         <q-expansion-item v-model="expanded" label="อาหาร">
           <q-card class="q-px-md q-pb-sm">

@@ -6,19 +6,24 @@
       </q-toolbar>
     </q-header>
 
-    <q-drawer v-model="leftDrawerOpen" show-if-above bordered content-class="bg-grey-1">
-      <q-list>
-        <q-item-label header class="text-grey-8">Essential Links</q-item-label>
-        <!-- แบบฝึกหัด -->
-        <q-item clickable @click="toPracticeList()">
-          <q-item-section avatar>
+    <q-drawer
+      v-model="leftDrawerOpen"
+      show-if-above
+      bordered
+      content-class="bg-grey-1  "
+      :width="100"
+    >
+      <!-- <q-list class="text-center">
+        แบบฝึกหัด
+        <q-item clickable @click="toPracticeList()" class="brx">
+          <q-item-section avatar >
             <q-icon name="book" />
           </q-item-section>
           <q-item-section>
             <q-item-label>แบบฝึกหัด</q-item-label>
           </q-item-section>
         </q-item>
-        <!-- ระดับการเรียน -->
+        ระดับการเรียน
         <q-item clickable @click="toPracticeList()">
           <q-item-section avatar>
             <q-icon name="book" />
@@ -27,7 +32,7 @@
             <q-item-label>ระดับการเรียน</q-item-label>
           </q-item-section>
         </q-item>
-        <!-- สถานประกอบการ -->
+        สถานประกอบการ
         <q-item clickable @click="toPracticeList()">
           <q-item-section avatar>
             <q-icon name="book" />
@@ -36,7 +41,7 @@
             <q-item-label>สถานประกอบการ</q-item-label>
           </q-item-section>
         </q-item>
-        <!-- จัดการผู้ใช้ -->
+        จัดการผู้ใช้
         <q-item clickable @click="toPracticeList()">
           <q-item-section avatar>
             <q-icon name="book" />
@@ -45,7 +50,45 @@
             <q-item-label>จัดการผู้ใช้</q-item-label>
           </q-item-section>
         </q-item>
-      </q-list>
+      </q-list>-->
+      <div class="row brx text-body2" align="center">
+        <div class="brx full-width q-py-md">
+          <div>
+            <q-icon name="book" size="25px" />
+          </div>
+          <div>แบบฝึกหัด</div>
+        </div>
+        <div class="brx full-width q-py-md">
+          <div>
+            <q-icon name="book" size="25px" />
+          </div>
+          <div>ระดับการเรียน</div>
+        </div>
+        <div class="brx full-width q-py-md">
+          <div>
+            <q-icon name="book" size="25px" />
+          </div>
+          <div>กิจการ</div>
+        </div>
+        <div class="brx full-width q-py-md">
+          <div>
+            <q-icon name="book" size="25px" />
+          </div>
+          <div>พนักงาน</div>
+        </div>
+        <div class="brx full-width q-py-md">
+          <div>
+            <q-icon name="book" size="25px" />
+          </div>
+          <div>ผู้ดูแลระบบ</div>
+        </div>
+        <div class="brx full-width q-py-md">
+          <div>
+            <q-icon name="book" size="25px" />
+          </div>
+          <div>โปรไฟล์</div>
+        </div>
+      </div>
     </q-drawer>
 
     <q-page-container>
