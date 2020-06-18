@@ -1,24 +1,24 @@
 <template>
-  <div>
-    <div>
+  <q-page>
+    <div class="container-input">
       <div>
-        <div class="text-h6">ชื่อ</div>
-        <q-input outlined v-model="dataUser.name"></q-input>
+        <div class="text-subtitle1">ชื่อ</div>
+        <q-input outlined dense v-model="dataUser.name"></q-input>
       </div>
       <div class="q-pt-md">
-        <div class="text-h6">นามสกุล</div>
-        <q-input outlined v-model="dataUser.surname"></q-input>
+        <div class="text-subtitle1">นามสกุล</div>
+        <q-input outlined dense v-model="dataUser.surname"></q-input>
       </div>
       <div class="q-pt-md">
-        <div class="text-h6">E-mail</div>
-        <q-input outlined v-model="dataUser.email"></q-input>
+        <div class="text-subtitle1">E-mail</div>
+        <q-input outlined dense v-model="dataUser.email"></q-input>
       </div>
 
       <div class="q-pt-md">
-        <div class="text-h6">รหัสผ่าน</div>
-        <div class="text-subtitle1">ตัวอักษรหรือตัวเลขไม่ต่ำกว่า 4 ตัวอักษร</div>
+        <div class="text-subtitle1">รหัสผ่าน</div>
+        <div class="text-subtitle2">ตัวอักษรหรือตัวเลขไม่ต่ำกว่า 4 ตัวอักษร</div>
 
-        <q-input v-model="dataUser.password" outlined :type="isPwd ? 'password' : 'text'">
+        <q-input v-model="dataUser.password" dense outlined :type="isPwd ? 'password' : 'text'">
           <template v-slot:append>
             <q-icon
               :name="isPwd ? 'visibility_off' : 'visibility'"
@@ -28,45 +28,45 @@
           </template>
         </q-input>
       </div>
-      <div class="row q-py-md">
-        <div class="col-6">
-          <q-radio
-            style="margin:-10px"
-            color="blue-grey-10"
-            v-model="userOptions"
-            val="admin"
-            label="ผู้ดูแลระบบ"
-          />
-        </div>
-        <div class="col-6">
-          <q-radio
-            style="margin:-10px"
-            color="blue-grey-10"
-            v-model="userOptions"
-            val="user"
-            label="ผู้ใช้งาน"
-          />
+      <!-- checkbox -->
+      <div class="row q-pt-md">
+        <div class="text-subtitle1 row items-center">สิทธิ์การใช้การ</div>
+        <div class="text-subtitle1">
+          <q-checkbox v-model="all" label="ทั้งหมด" />
         </div>
       </div>
+      <div class="text-subtitle1">
+        <q-option-group
+          :options="userOptions"
+          label="Notifications"
+          type="checkbox"
+          v-model="userGroup"
+        />
+      </div>
+      <!-- ปุ่ม -->
       <div class="row q-pt-md">
         <div class="col-6">
-          <q-btn style="width:150px" outline label="ยกเลิก"></q-btn>
+          <q-btn dense style="width:150px" outline label="ยกเลิก"></q-btn>
         </div>
-        <div class="col-6">
-          <q-btn unelevated color="blue-grey-10" style="width:150px" label="บันทึก"></q-btn>
+        <div class="col-6" align="right">
+          <q-btn dense color="blue-grey-10" style="width:150px" label="บันทึก"></q-btn>
         </div>
       </div>
     </div>
     <!-- dialog บันทึกสำเร็จ -->
     <q-dialog v-model="saveData">
-      <div class="bg-white q-py-lg" style="width:320px" align="center">
+      <div
+        class="bg-white row justify-center items-center"
+        style="width:320px;height:200px"
+        align="center"
+      >
         <div>
           <q-icon name="far fa-check-circle" class="text-secondary" size="40px" />
+          <div class="text-subtitle1 q-pt-md">บันทึกข้อมูลเรียบร้อยแล้ว</div>
         </div>
-        <div class="text-subtitle1 q-py-md">บันทึกข้อมูลเรียบร้อยแล้ว</div>
       </div>
     </q-dialog>
-  </div>
+  </q-page>
 </template>
 
 <script>
@@ -75,9 +75,20 @@ export default {
     return {
       dataUser: { name: "", surname: "", email: "" },
 
-      userOptions: "admin",
       isPwd: true,
-      saveData: true
+      saveData: false,
+      userGroup: [],
+      userOptions: [
+        {
+          label: "แบบฝึกหัด",
+          value: "practice"
+        },
+        { label: "ระดับการเรียน", value: "level" },
+        { label: "สถานประกอบการ", value: "organization" },
+        { label: "พนักงาน", value: "personel" },
+        { label: "ผู้ดูแลระบบ", value: "admin" }
+      ],
+      all: false
     };
   }
 };
