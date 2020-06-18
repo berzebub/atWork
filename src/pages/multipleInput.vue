@@ -1,6 +1,6 @@
 <template>
   <q-page>
-    <div>
+    <div class="container">
       <div class="text-center text-h6 q-pb-sm">Multiple Choice | U7</div>
       <div class="q-pt-sm">
         <span>รหัสลำดับ</span>
@@ -180,9 +180,11 @@
         </div>
       </div>
       <div align="center">
-        <div class="row wrap" style="max-width:340px;width:100%">
-          <div class="col text-left">
+        <div class="row reverse-wrap justify-center" style="max-width:340px;width:100%">
+          <div class="col-6 q-py-sm text-left">
             <q-btn
+              to="/multipleOutput"
+              v-close-popup
               dense
               style="width:150px"
               color="white"
@@ -191,7 +193,7 @@
               label="ยกเลิก"
             />
           </div>
-          <div class="col text-right">
+          <div class="col-6 q-py-sm text-right">
             <q-btn @click="addBtn()" dense style="width:150px" color="black" label="บันทึก" />
           </div>
         </div>

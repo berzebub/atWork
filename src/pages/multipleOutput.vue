@@ -45,7 +45,7 @@
       <!-- โชว์ DATA -->
       <div v-for="item in data" :key="item.id" class="box text-left q-my-md">
         <div class="boxQuestion bg-blue-grey-10 text-white q-py-xs q-px-md row justify-between">
-          <div class="col row items-center">รหัสลำดับ 1000</div>
+          <div class="col row items-center">รหัสลำดับ {{item.orderid}}</div>
           <div class="q-px-xs">
             <q-btn @click="deleteBtn()" size="sm" round icon="far fa-trash-alt" />
           </div>
@@ -108,6 +108,39 @@
           </div>
         </q-card>
       </q-dialog>
+      <!-- delete -->
+      <q-dialog v-model="deleteDialog" persistent>
+        <q-card style="max-width:600px;width:100%">
+          <div class="text-h6 text-center q-pt-md q-pb-sm">
+            <div>ต้องการลบข้อมูล</div>
+            <div>“รหัสลำดับ {{}}” หรือไม่</div>
+          </div>
+          <div>
+            <div class="row reverse-wrap justify-center q-px-md">
+              <div class="q-px-md q-pb-md">
+                <q-btn
+                  v-close-popup
+                  dense
+                  style="width:150px"
+                  color="white"
+                  outline
+                  text-color="black"
+                  label="ยกเลิก"
+                />
+              </div>
+              <div class="q-px-md q-pb-md">
+                <q-btn
+                  @click="deleteData()"
+                  dense
+                  style="width:150px"
+                  color="black"
+                  label="บันทึก"
+                />
+              </div>
+            </div>
+          </div>
+        </q-card>
+      </q-dialog>
     </div>
   </q-page>
 </template>
@@ -120,8 +153,10 @@ export default {
       instrunctionEng: "",
       server: "draft",
       dialogQuestion: false,
+      deleteDialog: false,
       data: [
         {
+          orderid: "1000",
           question:
             "When Tom was young, he ______ hide in the apple tree when his uncle came.",
           choice1: "would",
@@ -132,6 +167,7 @@ export default {
             "ความหมายคือ มักจะหรือเคย ต้องใช้รูปกริยา = would + V1 (ไม่มี used to ให้เลือก) => would hide (ก็จะซ่อน)"
         },
         {
+          orderid: "2000",
           question:
             "When Tom was young, he ______ hide in the apple tree when his uncle came.",
           choice1: "would",
@@ -160,7 +196,10 @@ export default {
       ) {
       }
     },
-    deleteBtn() {},
+    deleteBtn() {
+      this.deleteDialog = true;
+    },
+    deleteData() {},
     editBtn() {}
   }
 };
