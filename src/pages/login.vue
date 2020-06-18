@@ -34,24 +34,63 @@
         style="width:190px"
       />
     </div>
+    <!-- -----------------------------------------dialog--------------------------------------- -->
+    <q-dialog v-model="dialogWrongPassword">
+      <q-card style="width:323px; height:200px">
+        <q-card-section align="center">
+          <div class="q-mt-md">
+            <q-icon color="red" size="lg" name="far fa-times-circle" />
+          </div>
+        </q-card-section>
+
+        <q-card-section align="center" class="q-pt-none">E-mail หรือ รหัสผ่านผิดพลาด</q-card-section>
+
+        <q-card-actions align="center">
+          <q-btn
+            @click="confirmWrongEmail()"
+            style="width:190px"
+            label="ตกลง"
+            color="blue-grey-10"
+          />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 
 <script>
+import { auth } from "../router";
 export default {
   data() {
     return {
+      email: "",
       password: "",
       isPwd: true,
-      email: ""
+      dialogWrongPassword: false
     };
   },
   methods: {
     login() {
-      this.$router.push("/practiceList");
+      // if (this.email == 0 || this.password == 0) {
+      //   this.dialogWrongPassword = true;
+      // } else {
+      //
+      // }
+      auth
+        .signInWithEmailAndPassword(this.email, this.password)
+        .then(user => {
+          console.log(user);
+          this.$router.push("/practiceList");
+        })
+        .catch(error => {
+          console.log(error);
+        });
     },
     forgetPassword() {
-      this.$router.push("");
+      this.$router.push("/forgetPassword");
+    },
+    confirmWrongEmail() {
+      this.dialogWrongPassword = false;
     }
   }
 };

@@ -55,7 +55,7 @@
 </template>
 
 <script>
-import { db } from "../router";
+import { db, auth } from "../router";
 export default {
   data() {
     return {
@@ -99,10 +99,12 @@ export default {
   },
   mounted() {
     this.loadDataExpression();
+
+    // var user = auth.currentUser;
+    // console.log(user.email);
   }
 };
 </script>
 
 <style lang="scss" scoped>
 </style>
-acasc

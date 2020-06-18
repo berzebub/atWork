@@ -4,7 +4,7 @@ const routes = [
     component: () => import("pages/login.vue")
   },
   {
-    path: "forgetPassword",
+    path: "/forgetPassword",
     component: () => import("pages/forgetPassword.vue")
   },
   {
