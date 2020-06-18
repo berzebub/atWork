@@ -11,7 +11,7 @@
             type="number"
             v-model.number="orderId"
             dense
-            :rules="[ val => !!val || 'กรุณากรอกรหัสลำดับ']"
+            :rules="[ val => !!val || 'กรุณาใส่รหัสลำดับ']"
           />
         </div>
       </div>
@@ -30,25 +30,36 @@
         </div>
       </div>
       <div class="row q-py-sm" style="width:360px">
-        <div class="col-6">
+        <div class="col-4">
           <q-radio
-            style="margin:-10px"
+            style="margin: -10px;"
             color="blue-grey-10"
             v-model="activeType"
-            val="sound"
-            label="เสียง"
+            val="messenger"
+            label="ข้อความ"
           />
         </div>
-        <div class="col-6">
+
+        <div class="col-4">
           <q-radio
             style="margin: -10px;"
             color="blue-grey-10"
             v-model="activeType"
             val="image"
-            label="รูปภาพ"
+            label="มีรูปภาพ"
+          />
+        </div>
+        <div class="col-4">
+          <q-radio
+            style="margin:-10px"
+            color="blue-grey-10"
+            v-model="activeType"
+            val="sound"
+            label="มีเสียง"
           />
         </div>
       </div>
+
       <div class="q-py-sm">
         <span>รูปภาพตัวเลือก</span>
         <div class="row q-py-sm" style="width:360px">
@@ -57,7 +68,7 @@
               style="margin: -10px;"
               v-model="isAnswerSound"
               val="teal"
-              label="แบบเสียง"
+              label="แบบมีเสียง"
               color="black"
             />
           </div>
@@ -118,7 +129,7 @@
       <div class="q-py-sm">
         <span>ตัวเลือกที่ถูกต้อง</span>
         <div class="row q-py-sm">
-          <div class="col-xs-6 col-md-3 q-py-sm">
+          <div class="col-xs-6 col-md-3 col-sm-3 q-py-sm">
             <q-radio
               style="margin:-10px"
               color="blue-grey-10"
@@ -127,7 +138,7 @@
               label="1"
             />
           </div>
-          <div class="col-xs-6 col-md-3 q-py-sm">
+          <div class="col-xs-6 col-md-3 col-sm-3 q-py-sm">
             <q-radio
               style="margin:-10px"
               color="blue-grey-10"
@@ -136,7 +147,7 @@
               label="2"
             />
           </div>
-          <div class="col-xs-6 col-md-3 q-py-md">
+          <div class="col-xs-6 col-md-3 col-sm-3 q-py-md">
             <q-radio
               style="margin:-10px"
               color="blue-grey-10"
@@ -145,7 +156,7 @@
               label="3"
             />
           </div>
-          <div class="col-xs-6 col-md-3 q-py-md">
+          <div class="col-xs-6 col-md-3 col-sm-3 q-py-md">
             <q-radio
               style="margin:-10px"
               color="blue-grey-10 "
@@ -156,12 +167,33 @@
           </div>
         </div>
       </div>
-      <div class="row justify-center">
-        <div class="q-px-md">
-          <q-btn dense style="width:150px" color="white" outline text-color="black" label="ยกเลิก" />
+      <div class="q-pb-lg">
+        <span>คำอธิบาย *ต้องใช้ตัวหนาสำหรับตัวเลือกที่ถูกต้อง</span>
+        <div>
+          <q-editor
+            :toolbar="[
+        ['bold', 'italic', 'underline'],
+        ]"
+            v-model="explain"
+            min-height="5rem"
+          />
         </div>
-        <div class="q-px-md">
-          <q-btn @click="addBtn()" dense style="width:150px" color="black" label="บันทึก" />
+      </div>
+      <div align="center">
+        <div class="row wrap" style="max-width:340px;width:100%">
+          <div class="col text-left">
+            <q-btn
+              dense
+              style="width:150px"
+              color="white"
+              outline
+              text-color="black"
+              label="ยกเลิก"
+            />
+          </div>
+          <div class="col text-right">
+            <q-btn @click="addBtn()" dense style="width:150px" color="black" label="บันทึก" />
+          </div>
         </div>
       </div>
     </div>
@@ -174,7 +206,8 @@ export default {
     return {
       orderId: "",
       question: "",
-      activeType: "sound",
+      explain: "",
+      activeType: "messenger",
       correctAnswer: 1,
       isAnswerSound: false,
       choices: ["", "", "", ""],
