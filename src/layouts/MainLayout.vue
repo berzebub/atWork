@@ -96,11 +96,10 @@
       <div class="self-end"></div>
     </q-drawer>
 
-    <q-page-container>
+    <q-page-container class="bg-grey-1">
       <router-view
         :class="$route.name=='practiceList' ?'':'q-pa-md' "
         :style="$route.name=='practiceList' ?'':'max-width:1000px;width:100%;margin:auto' "
-        class="bg-grey-1"
       />
     </q-page-container>
   </q-layout>
