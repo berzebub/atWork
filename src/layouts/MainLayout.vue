@@ -54,9 +54,9 @@
         </div>
         <div
           class="full-width q-py-md relative-position cursor-pointer"
-          :class="$route.name=='employeeMain'?'active-line active-text':'no-active-line'"
+          :class="$route.name=='accountMain'?'active-line active-text':'no-active-line'"
           v-ripple
-          @click="$router.push('/employeeMain')"
+          @click="$router.push('/accountMain')"
         >
           <div>
             <q-icon name="fas fa-user-tie" size="25px" />

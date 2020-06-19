@@ -9,7 +9,7 @@
       <q-list class="rounded-borders">
         <q-expansion-item v-model="expanded" label="อาหาร">
           <q-card class="q-px-md q-pb-sm">
-            <div class="row q-pb-sm">
+            <div class="row q-pb-sm relative-position cursor-pointer" v-ripple>
               <div class="col">1. จองโต๊ะ</div>
               <div class="col-1" align="right">
                 <q-icon name="fas fa-sync-alt"></q-icon>
