@@ -64,7 +64,7 @@
           <div class="q-pt-sm">พนักงาน</div>
         </div>
         <div
-          class="full-width q-py-md relative-position cursor-pointer"
+          class="full-width q-py-md relative-position curso-r-pointer"
           :class="$route.name=='userMain'?'active-line active-text':'no-active-line'"
           v-ripple
           @click="$router.push('/userMain')"

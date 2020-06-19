@@ -66,11 +66,11 @@ const routes = [{
         component: () => import("pages/businessMain.vue"),
         name: "businessMain"
       },
-      // ------------------- employee พนักงาน -------------------
+      // ------------------- account พนักงาน -------------------
       {
-        path: "employeeMain",
-        component: () => import("pages/employeeMain.vue"),
-        name: "employeeMain"
+        path: "accountMain",
+        component: () => import("pages/accountMain.vue"),
+        name: "accountMain"
       },
       // ------------------- userMain ผู้ดูแลระบบ -------------------
       {
