@@ -20,6 +20,9 @@ body {
 .brx {
   border: 1px solid red;
 }
+.brg {
+  border: 1px solid #263238;
+}
 .br {
   border-radius: 10px;
 }

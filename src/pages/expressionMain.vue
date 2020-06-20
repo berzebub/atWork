@@ -1,8 +1,37 @@
 <template>
   <q-page>
     <div>
+      <div class="row justify-between">
+        <!-- กล่อง radio -->
+        <div class="brg row" style="width:330px">
+          <q-radio
+            class="q-ml-md col-6"
+            color="blue-grey-10"
+            v-model="expressionType"
+            val="darf"
+            label="แบบร่าง"
+          />
+          <q-radio color="blue-grey-10" v-model="expressionType" val="server" label="เซิร์ฟเวอร์" />
+        </div>
+        <!-- ปุ่มพิมพ์ -->
+        <div class="mobile-hide">
+          <q-btn round color="blue-grey-10" icon="fas fa-print" />
+        </div>
+      </div>
+      <!-- หัวข้อ -->
+      <div class="q-ma-lg text-h6" align="center">
+        <div>พนักงานร้านอาหาร</div>
+        <div>1. รับออเดอร์</div>
+      </div>
+      <!-- ปุ่มเพิ่ม -->
       <div align="center">
-        <q-btn style="width:190px" to="/expressionInput" outline icon="fas fa-plus"></q-btn>
+        <q-btn
+          style="width:190px"
+          class="bg-blue-grey-10"
+          to="/expressionInput"
+          color="white"
+          label="เพิ่ม"
+        ></q-btn>
       </div>
       <q-card
         v-for="(item, index) in showDataExpression"
@@ -14,17 +43,17 @@
           <div>{{item.order}}</div>
           <div class="row items-center absolute-right">
             <q-icon
-              @click="openDialogDelte(item.id)"
+              @click="openMenu(index)"
               class="cursor-pointer q-pr-md"
-              name="far fa-trash-alt"
+              name="fas fa-ellipsis-v"
               style="color:white; font-size: 1.4em;"
             />
-            <q-icon
-              @click="editDataExpression(item)"
-              class="cursor-pointer q-pr-md"
-              name="far fa-edit"
-              style="color:white; font-size: 1.4em;"
-            />
+            <q-menu>
+              <q-list style="min-width: 120px">
+                <div @click="editDataExpression(item)" class="q-ma-md cursor-pointer">แก้ไขข้อมูล</div>
+                <div @click="openDialogDelete(item.id)" class="q-ma-md cursor-pointer">ลบ</div>
+              </q-list>
+            </q-menu>
           </div>
         </q-card-section>
         <q-card-section v-for="(item2, index2) in item.expression" class="no-padding">
@@ -59,6 +88,7 @@ import { db, auth } from "../router";
 export default {
   data() {
     return {
+      expressionType: "darf",
       dialogDelete: false,
       getId: "",
       showDataExpression: ""
@@ -76,7 +106,8 @@ export default {
           this.showDataExpression = temp;
         });
     },
-    openDialogDelte(id) {
+
+    openDialogDelete(id) {
       this.dialogDelete = true;
       this.getId = id;
     },

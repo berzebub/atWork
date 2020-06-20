@@ -3,12 +3,25 @@
     <div class="container">
       <div class="row">
         <div class="col-sm-11 col-xs-12 relative-position">
-          <div class="q-my-md">
-            <b>พนักงานร้านอาหาร</b>
+          <!-- หัวข้อ -->
+          <div class="q-ma-lg text-h6" align="center">
+            <div>พนักงานร้านอาหาร</div>
+            <div>1. รับออเดอร์</div>
+          </div>
+          <!-- ปุ่มเพิ่ม -->
+          <div align="center">
+            <q-btn
+              @click="boxCount++"
+              v-if="boxCount+2 && boxCount < 3 "
+              style="width:190px"
+              class="bg-blue-grey-10"
+              to="/expressionInput"
+              color="white"
+            >เพิ่มประโยคที่ {{boxCount+2}}</q-btn>
           </div>
           <!-- รหัสลำดับ -->
           <div>
-            <div align="left">รหัสลำดับ</div>
+            <div class="text-h6" align="left">รหัสลำดับ</div>
             <div>
               <q-input outlined v-model="order" type="number" />
             </div>
@@ -19,9 +32,22 @@
       <div class="row" v-for="(i) in boxCount+1" :key="i">
         <div class="col-sm-11 col-xs-12 relative-position">
           <q-card class="q-my-lg text-black">
-            <q-card-section class="bg-blue-grey-10 text-white">
-              <div align="left" class="q-ml-sm">ประโยคที่ #{{i}}</div>
+            <q-card-section class="row items-center justify-between bg-blue-grey-10 text-white">
+              <div align="left" class="q-ml-sm text-h6">ประโยคที่ {{i}}</div>
+              <!-- ถังขยะ -->
+              <div>
+                <q-btn
+                  v-if="i != 1"
+                  align="right"
+                  @click="opendialogDeleteCard(i-1)"
+                  flat
+                  class="cursor-pointer"
+                  icon="far fa-trash-alt"
+                  style="color:blue-grey-10; font-size: 1em;"
+                />
+              </div>
             </q-card-section>
+
             <!-- radio button -->
             <q-card-section>
               <div align="left" class="row">
@@ -52,34 +78,13 @@
               <div class="q-pa-md">
                 <q-input outlined v-model="sentence[i-1].sentenceTh" />
               </div>
-              <q-separator v-if=" i != 1"></q-separator>
             </q-card-section>
-            <!-- ถังขยะ -->
-            <q-card-actions v-if="i != 1" align="right" class="q-px-lg">
-              <q-btn
-                @click="opendialogDeleteCard(i-1)"
-                flat
-                class="cursor-pointer"
-                icon="far fa-trash-alt"
-                style="color:blue-grey-10; font-size: 1em; position:relative; top:-10px"
-              />
-            </q-card-actions>
           </q-card>
         </div>
-        <div class="col-sm-1 col-xs-12 self-center" align="right">
-          <!-- บวก -->
-          <div class>
-            <q-btn
-              class="q-my-md"
-              v-if="i == boxCount+1 && i < 4 "
-              @click="boxCount++"
-              round
-              icon="fas fa-plus"
-            />
-          </div>
-        </div>
+        <div class="col-sm-1 col-xs-12 self-center" align="right"></div>
       </div>
       <div class="row" style="width:360px; margin:auto">
+        <!-- ยกเลิก -->
         <div class="q-ma-md col">
           <q-btn
             to="/expressionMain"
@@ -90,6 +95,7 @@
             color="blue-grey-10"
           />
         </div>
+        <!-- บันทึกข้อมูล -->
         <div class="q-ma-md col">
           <q-btn
             @click="saveData()"
@@ -103,6 +109,7 @@
         </div>
       </div>
       <!-- --------------------------------------dialog--------------------------------------- -->
+      <!-- ยืนยันการลบ -->
       <q-dialog v-model="dialogdeleteCard">
         <q-card>
           <q-card-section></q-card-section>
@@ -115,6 +122,18 @@
           </q-card-actions>
         </q-card>
       </q-dialog>
+      <!-- เพิ่มข้อมูลสำเร็จ -->
+      <!-- correct Email -->
+      <q-dialog v-model="successData">
+        <q-card style="width:323px; height:200px">
+          <q-card-section class="absolute-center" align="center">
+            <div>
+              <q-icon color="secondary" size="lg" name="far fa-check-circle" />
+            </div>
+            <div class="q-mt-lg">บันทึกข้อมูลเรียบร้อย</div>
+          </q-card-section>
+        </q-card>
+      </q-dialog>
     </div>
   </q-page>
 </template>
@@ -124,6 +143,7 @@ import { db } from "../router";
 export default {
   data() {
     return {
+      successData: false,
       getIndex: "",
       dialogdeleteCard: false,
       speaker: "customer",
@@ -199,6 +219,7 @@ export default {
                 sentenceTh: ""
               }
             ];
+            this.successData = true;
             this.$router.push("/expressionMain");
           });
       } else {
