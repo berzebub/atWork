@@ -22,10 +22,13 @@
           <!-- รหัสลำดับ -->
           <div>
             <div class="text-h6" align="left">รหัสลำดับ</div>
-            <div>
-              <q-input outlined v-model="order" type="number" />
-            </div>
           </div>
+          <q-input
+            outlined
+            type="number"
+            v-model="order"
+            :rules="[ val => val && val.length > 0 || 'กรุณาใส่รหัสลำดับ']"
+          />
         </div>
         <div class="col-sm-1 col-xs-12 self-center"></div>
       </div>
@@ -47,21 +50,20 @@
                 />
               </div>
             </q-card-section>
-
             <!-- radio button -->
             <q-card-section>
               <div align="left" class="row">
                 <q-radio
                   color="blue-grey-10"
                   class="col-6"
-                  v-model="speaker"
+                  v-model="sentence[i-1].speaker"
                   val="customer"
                   label="ลูกค้า"
                 />
                 <q-radio
                   color="blue-grey-10"
                   class="col-6"
-                  v-model="speaker"
+                  v-model="sentence[i-1].speaker"
                   val="employee"
                   label="พนักงาน"
                 />
@@ -69,19 +71,24 @@
             </q-card-section>
             <q-card-section>
               <div class="q-pl-md" align="left">ประโยคภาษาอังกฤษ</div>
-
               <div class="q-pa-md">
-                <q-input outlined v-model="sentence[i-1].sentenceEng" />
+                <q-input
+                  outlined
+                  v-model="sentence[i-1].sentenceEng"
+                  :rules="[ val => val && val.length > 0 || 'กรุณาใส่ประโยคภาษาอังกฤษ']"
+                />
               </div>
               <div class="q-pl-md" align="left">ประโยคภาษาไทย</div>
-
               <div class="q-pa-md">
-                <q-input outlined v-model="sentence[i-1].sentenceTh" />
+                <q-input
+                  outlined
+                  v-model="sentence[i-1].sentenceTh"
+                  :rules="[ val => val && val.length > 0 || 'กรุณาใส่ประโยคภาษาไทย']"
+                />
               </div>
             </q-card-section>
           </q-card>
         </div>
-        <div class="col-sm-1 col-xs-12 self-center" align="right"></div>
       </div>
       <div class="row" style="width:360px; margin:auto">
         <!-- ยกเลิก -->
@@ -110,21 +117,29 @@
       </div>
       <!-- --------------------------------------dialog--------------------------------------- -->
       <!-- ยืนยันการลบ -->
-      <q-dialog v-model="dialogdeleteCard">
-        <q-card>
+      <q-dialog v-model="dialogdeleteCard" persistent>
+        <q-card style="min-width: 350px; height:170px">
           <q-card-section></q-card-section>
 
-          <q-card-section align="center" class="q-pt-none">คุณต้องการลบ "ประโยคที่ #{{getIndex}}"</q-card-section>
+          <q-card-section
+            align="center"
+            class="q-pt-md text-h6"
+          >คุณต้องการลบ "ประโยคที่ {{getIndex}}"</q-card-section>
 
-          <q-card-actions style="width:323px" align="center">
-            <q-btn class="q-mx-md" outline label="ยกเลิก" color="blue-grey-10" v-close-popup />
-            <q-btn @click="confirmDeleteCard()" label="ตกลง" color="blue-grey-10" />
+          <q-card-actions align="center">
+            <q-btn style="width:120px" outline label="ยกเลิก" color="blue-grey-10" v-close-popup />
+            <q-btn
+              @click="confirmDeleteCard()"
+              style="width:120px"
+              label="ตกลง"
+              color="blue-grey-10"
+            />
           </q-card-actions>
         </q-card>
       </q-dialog>
       <!-- เพิ่มข้อมูลสำเร็จ -->
       <q-dialog v-model="successData">
-        <q-card style="width:323px; height:200px">
+        <q-card style="min-width: 350px; height:170px">
           <q-card-section class="absolute-center" align="center">
             <div>
               <q-icon color="secondary" size="lg" name="far fa-check-circle" />
@@ -145,7 +160,6 @@ export default {
       successData: false,
       getIndex: "",
       dialogdeleteCard: false,
-      speaker: "customer",
       unit: 1,
       jobId: "ant123",
       boxCount: 1,
@@ -153,35 +167,40 @@ export default {
       sentence: [
         {
           sentenceEng: "",
-          sentenceTh: ""
+          sentenceTh: "",
+          speaker: "customer"
         },
         {
           sentenceEng: "",
-          sentenceTh: ""
+          sentenceTh: "",
+          speaker: "customer"
         },
         {
           sentenceEng: "",
-          sentenceTh: ""
+          sentenceTh: "",
+          speaker: "customer"
         },
         {
           sentenceEng: "",
-          sentenceTh: ""
+          sentenceTh: "",
+          speaker: "customer"
         }
       ]
     };
   },
   methods: {
     editMode() {
+      this.order = this.$route.params.order;
       this.unit = this.$route.params.unit;
       this.jobId = this.$route.params.jobId;
       let getSentence = this.$route.params.expression;
       this.boxCount = this.$route.params.expression.length - 1;
       let loop = 4 - this.$route.params.expression.length;
-      console.log();
       for (let i = 0; i < loop; i++) {
         getSentence.push({
           sentenceEng: "",
-          sentenceTh: ""
+          sentenceTh: "",
+          speaker: ""
         });
       }
       this.sentence = getSentence;
@@ -191,7 +210,6 @@ export default {
         let filterData = this.sentence.filter(
           x => x.sentenceEng != "" && x.sentenceTh != ""
         );
-        console.log(filterData);
         db.collection("expression")
           .add({
             unit: this.unit,
@@ -203,28 +221,36 @@ export default {
             this.sentence = [
               {
                 sentenceEng: "",
-                sentenceTh: ""
+                sentenceTh: "",
+                speaker: "customer"
               },
               {
                 sentenceEng: "",
-                sentenceTh: ""
+                sentenceTh: "",
+                speaker: "customer"
               },
               {
                 sentenceEng: "",
-                sentenceTh: ""
+                sentenceTh: "",
+                speaker: "customer"
               },
               {
                 sentenceEng: "",
-                sentenceTh: ""
+                sentenceTh: "",
+                speaker: "customer"
               }
             ];
             this.successData = true;
+            setTimeout(() => {
+              this.successData = false;
+              this.$router.push("/expressionMain");
+            }, 700);
           });
-        this.$router.push("/expressionMain");
       } else {
         this.editData();
       }
     },
+
     editData() {
       let filterData = this.sentence.filter(
         x => x.sentenceEng != "" && x.sentenceTh != ""
