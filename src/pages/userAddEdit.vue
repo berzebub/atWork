@@ -2,25 +2,25 @@
   <q-page>
     <div class="container-input">
       <div>
-        <div class="text-subtitle1">ชื่อ</div>
-        <q-input outlined dense v-model="dataUser.name" :rules="[val => !!val || 'กรุณาใส่ชื่อ']"></q-input>
-      </div>
-      <div class="q-pt-md">
-        <div class="text-subtitle1">นามสกุล</div>
+        <div class="text-subtitle1">ชื่อ นามสกุล</div>
         <q-input
+          ref="name"
           outlined
           dense
-          v-model="dataUser.surname"
-          :rules="[val => !!val || 'กรุณาใส่นามสกุล']"
+          v-model="dataUser.name"
+          :rules="[val => !!val || 'กรุณาใส่ชื่อ นามสกุล']"
         ></q-input>
       </div>
+
       <div class="q-pt-md">
         <div class="text-subtitle1">E-mail</div>
         <q-input
+          type="email"
+          ref="email"
           outlined
           dense
           v-model="dataUser.email"
-          :rules="[val => !!val || 'รูปแบบ E-mail ไม่ถูกต้อง']"
+          :rules="[val => !!val  || 'กรุณาใส่ E-mail',isValidEmail]"
         ></q-input>
       </div>
 
@@ -29,11 +29,12 @@
         <div class="text-subtitle2">ตัวอักษรหรือตัวเลขไม่ต่ำกว่า 4 ตัวอักษร</div>
 
         <q-input
+          ref="password"
           v-model="dataUser.password"
           dense
           outlined
           :type="isPwd ? 'password' : 'text'"
-          :rules="[val => !!val || 'กรุณาใช้รหัสผ่านที่มีความยาวไม่ต่ำกว่า 4 ตัวอักษร']"
+          :rules="[val => val.length>=4 || 'กรุณาใช้รหัสผ่านที่มีความยาวไม่ต่ำกว่า 4 ตัวอักษร']"
         >
           <template v-slot:append>
             <q-icon
@@ -48,15 +49,16 @@
       <div class="row q-pt-md">
         <div class="text-subtitle1 row items-center">สิทธิ์การใช้การ</div>
         <div class="text-subtitle1">
-          <q-checkbox v-model="all" label="ทั้งหมด" />
+          <q-checkbox @input="checkboxAll()" v-model="all" label="ทั้งหมด" />
         </div>
       </div>
       <div class="text-subtitle1">
         <q-option-group
+          @input="checkbox()"
           :options="userOptions"
           label="Notifications"
           type="checkbox"
-          v-model="userGroup"
+          v-model="dataUser.userGroup"
         />
       </div>
       <!-- ปุ่ม -->
@@ -65,12 +67,12 @@
           <q-btn dense style="width:150px" outline label="ยกเลิก" @click="cencel()"></q-btn>
         </div>
         <div class="col-6" align="right">
-          <q-btn dense color="blue-grey-10" style="width:150px" label="บันทึก"></q-btn>
+          <q-btn dense color="blue-grey-10" style="width:150px" label="บันทึก" @click="saveData()"></q-btn>
         </div>
       </div>
     </div>
     <!-- dialog บันทึกสำเร็จ -->
-    <q-dialog v-model="saveData">
+    <q-dialog v-model="saveDataDialog">
       <div
         class="bg-white row justify-center items-center"
         style="width:320px;height:200px"
@@ -86,21 +88,22 @@
 </template>
 
 <script>
+import { db } from "../router";
 export default {
   data() {
     return {
-      dataUser: { name: "", surname: "", email: "" },
+      dataUser: { name: "", email: "", password: "", userGroup: [] },
 
       isPwd: true,
-      saveData: false,
-      userGroup: [],
+      saveDataDialog: false,
+
       userOptions: [
         {
           label: "แบบฝึกหัด",
           value: "practice"
         },
         { label: "ระดับการเรียน", value: "level" },
-        { label: "สถานประกอบการ", value: "organization" },
+        { label: "กิจการ", value: "organization" },
         { label: "พนักงาน", value: "personel" },
         { label: "ผู้ดูแลระบบ", value: "admin" }
       ],
@@ -110,8 +113,67 @@ export default {
   methods: {
     cencel() {
       this.$router.push("userMain");
+    },
+    saveData() {
+      // check validate
+      this.$refs.name.validate();
+      this.$refs.email.validate();
+      this.$refs.password.validate();
+
+      if (
+        this.$refs.name.hasError ||
+        this.$refs.email.hasError ||
+        this.$refs.password.hasError
+      ) {
+        console.log("ยังไม่กรอกข้อมูล");
+        return;
+      }
+      // check checkbox
+      console.log(123);
+      if (this.dataUser.userGroup == "") {
+        console.log("ไม่ได้เลือกเช็คบ็อค");
+        return;
+      }
+      // บันทึกข้อมูล
+      else {
+        db.collection("userAdmin")
+          .add({
+            name_surname: this.dataUser.name,
+            email: this.dataUser.email,
+            password: this.dataUser.password,
+            user_group: this.dataUser.userGroup
+          })
+          .then(() => {
+            this.saveDataDialog = true;
+            // this.$router.push("userMain");
+
+            console.log("saved");
+          });
+      }
+    },
+    isValidEmail(val) {
+      const emailPattern = /^(?=[a-zA-Z0-9@._%+-]{6,254}$)[a-zA-Z0-9._%+-]{1,64}@(?:[a-zA-Z0-9-]{1,63}\.){1,8}[a-zA-Z]{2,63}$/;
+      return emailPattern.test(val) || "รูปแบบ E-mail ไม่ถูกต้อง";
+    },
+    checkboxAll() {
+      if (this.all) {
+        let test = this.userOptions.map(x => {
+          return x.value;
+        });
+        this.dataUser.userGroup = test;
+      } else {
+        this.dataUser.userGroup = [];
+      }
+    },
+    checkbox() {
+      if (this.dataUser.userGroup.length == this.userOptions.length) {
+        this.all = true;
+      } else {
+        this.all = false;
+      }
     }
-  }
+  },
+  mounted() {}
 };
 </script>
 
