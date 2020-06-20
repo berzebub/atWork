@@ -43,7 +43,6 @@
           <div>{{item.order}}</div>
           <div class="row items-center absolute-right">
             <q-icon
-              @click="openMenu(index)"
               class="cursor-pointer q-pr-md"
               name="fas fa-ellipsis-v"
               style="color:white; font-size: 1.4em;"

@@ -219,8 +219,8 @@ export default {
               }
             ];
             this.successData = true;
-            // this.$router.push("/expressionMain");
           });
+        this.$router.push("/expressionMain");
       } else {
         this.editData();
       }
