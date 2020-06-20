@@ -123,7 +123,6 @@
         </q-card>
       </q-dialog>
       <!-- เพิ่มข้อมูลสำเร็จ -->
-      <!-- correct Email -->
       <q-dialog v-model="successData">
         <q-card style="width:323px; height:200px">
           <q-card-section class="absolute-center" align="center">
@@ -220,7 +219,7 @@ export default {
               }
             ];
             this.successData = true;
-            this.$router.push("/expressionMain");
+            // this.$router.push("/expressionMain");
           });
       } else {
         this.editData();
