@@ -7,9 +7,9 @@
     </div>
     <div class="q-pt-md shadow-3 bg-white" style="width: 360px; height: calc(100vh - 64px)">
       <q-list class="rounded-borders">
-        <q-expansion-item v-model="expanded" label="อาหาร">
+        <q-expansion-item label="อาหารและเครื่องดื่ม">
           <q-card class="q-px-md q-pb-sm">
-            <div class="row q-pb-sm relative-position cursor-pointer" v-ripple>
+            <div class="row q-pb-sm relative-position cursor-pointer" v-ripple to="/practiceMain">
               <div class="col">1. จองโต๊ะ</div>
               <div class="col-1" align="right">
                 <q-icon name="fas fa-sync-alt"></q-icon>
@@ -30,7 +30,7 @@
           </q-card>
         </q-expansion-item>
         <q-separator />
-        <q-expansion-item v-model="expanded" label="อาหาร">
+        <q-expansion-item label="พนักงานต้อนรับ">
           <q-card class="q-px-md q-pb-sm">
             <div class="row q-pb-sm">
               <div class="col">1. จองโต๊ะ</div>
@@ -62,9 +62,7 @@
 import { db } from "../router";
 export default {
   data() {
-    return {
-      expanded: ""
-    };
+    return {};
   },
   methods: {},
   mounted() {}

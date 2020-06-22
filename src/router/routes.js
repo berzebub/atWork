@@ -1,5 +1,4 @@
-const routes = [
-  {
+const routes = [{
     path: "/",
     component: () => import("pages/login.vue")
   },
@@ -23,6 +22,11 @@ const routes = [
         path: "practiceList",
         component: () => import("pages/practiceList.vue"),
         name: "practiceList"
+      },
+      {
+        path: "practiceMain",
+        component: () => import("pages/practiceMain.vue"),
+        name: "practiceMain"
       },
       // ------------------- flashcard -------------------
       {
