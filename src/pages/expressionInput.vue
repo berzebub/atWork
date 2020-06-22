@@ -24,13 +24,13 @@
             <div class="text-h6" align="left">รหัสลำดับ</div>
           </div>
           <q-input
+            ref="order"
+            :rules="[ val => val]"
             outlined
             type="number"
-            v-model="order"
-            :rules="[ val => val && val.length > 0 || 'กรุณาใส่รหัสลำดับ']"
+            v-model.number="order"
           />
         </div>
-        <div class="col-sm-1 col-xs-12 self-center"></div>
       </div>
       <div class="row" v-for="(i) in boxCount+1" :key="i">
         <div class="col-sm-11 col-xs-12 relative-position">
@@ -73,17 +73,19 @@
               <div class="q-pl-md" align="left">ประโยคภาษาอังกฤษ</div>
               <div class="q-pa-md">
                 <q-input
+                  :ref="'sentenceEng'+i"
+                  :error="sentence[i-1].errorEng"
                   outlined
                   v-model="sentence[i-1].sentenceEng"
-                  :rules="[ val => val && val.length > 0 || 'กรุณาใส่ประโยคภาษาอังกฤษ']"
                 />
               </div>
               <div class="q-pl-md" align="left">ประโยคภาษาไทย</div>
               <div class="q-pa-md">
                 <q-input
+                  :error="sentence[i-1].errorTh"
+                  :ref="'sentenceTh'+i"
                   outlined
                   v-model="sentence[i-1].sentenceTh"
-                  :rules="[ val => val && val.length > 0 || 'กรุณาใส่ประโยคภาษาไทย']"
                 />
               </div>
             </q-card-section>
@@ -157,41 +159,54 @@ import { db } from "../router";
 export default {
   data() {
     return {
+      practiceId: "",
+      levelId: "",
       successData: false,
       getIndex: "",
       dialogdeleteCard: false,
-      unit: 1,
+      unitId: "",
       jobId: "ant123",
       boxCount: 1,
       order: "",
+      errorSentenceEng1: false,
       sentence: [
         {
           sentenceEng: "",
           sentenceTh: "",
-          speaker: "customer"
+          speaker: "customer",
+          errorEng: false,
+          errorTh: false
         },
         {
           sentenceEng: "",
           sentenceTh: "",
-          speaker: "customer"
+          speaker: "customer",
+          errorEng: false,
+          errorTh: false
         },
         {
           sentenceEng: "",
           sentenceTh: "",
-          speaker: "customer"
+          speaker: "customer",
+          errorEng: false,
+          errorTh: false
         },
         {
           sentenceEng: "",
           sentenceTh: "",
-          speaker: "customer"
+          speaker: "customer",
+          errorEng: false,
+          errorTh: false
         }
       ]
     };
   },
   methods: {
     editMode() {
+      this.levelId = this.$route.params.levelId;
+      this.practiceId = this.$route.params.practiceId;
       this.order = this.$route.params.order;
-      this.unit = this.$route.params.unit;
+      this.unitId = this.$route.params.unit;
       this.jobId = this.$route.params.jobId;
       let getSentence = this.$route.params.expression;
       this.boxCount = this.$route.params.expression.length - 1;
@@ -206,13 +221,51 @@ export default {
       this.sentence = getSentence;
     },
     saveData() {
+      for (let i = 0; i < this.boxCount + 1; i++) {
+        this.sentence[i].errorEng = false;
+        this.sentence[i].errorTh = false;
+      }
+      for (let i = 0; i < this.boxCount + 1; i++) {
+        if (!this.sentence[i].sentenceEng.length) {
+          this.sentence[i].errorEng = true;
+        }
+        if (!this.sentence[i].sentenceTh.length) {
+          this.sentence[i].errorTh = true;
+        }
+      }
+      let filter = this.sentence.filter(
+        x => x.errorEng == true || x.errorTh == true
+      );
+      if (filter.length > 0) {
+        this.$q.notify({
+          message: "กรุณาตรวจสอบข้อมูลให้ถูกต้อง",
+          color: "red",
+          position: "top"
+        });
+        return;
+      }
+      this.$refs.order.validate();
+      if (this.$refs.order.hasError) {
+        this.$q.notify({
+          message: "กรุณาตรวจสอบข้อมูลให้ถูกต้อง",
+          color: "red",
+          position: "top"
+        });
+        return;
+      }
       if (this.$route.name == "expressionInput") {
         let filterData = this.sentence.filter(
           x => x.sentenceEng != "" && x.sentenceTh != ""
         );
-        db.collection("expression")
+        filterData.forEach(element => {
+          delete element.errorEng;
+          delete element.errorTh;
+        });
+        db.collection("expression_draft")
           .add({
-            unit: this.unit,
+            unitId: this.unitId,
+            levelId: this.levelId,
+            practiceId: this.practiceId,
             jobId: this.jobId,
             expression: filterData,
             order: this.order

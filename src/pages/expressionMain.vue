@@ -5,17 +5,24 @@
         <!-- กล่อง radio -->
         <div class="brg row" style="width:330px">
           <q-radio
+            @input="loadDataExpression('draft')"
             class="q-ml-md col-6"
             color="blue-grey-10"
             v-model="expressionType"
-            val="darf"
+            val="draft"
             label="แบบร่าง"
           />
-          <q-radio color="blue-grey-10" v-model="expressionType" val="server" label="เซิร์ฟเวอร์" />
+          <q-radio
+            @input="loadDataExpression('server')"
+            color="blue-grey-10"
+            v-model="expressionType"
+            val="server"
+            label="เซิร์ฟเวอร์"
+          />
         </div>
         <!-- ปุ่มพิมพ์ -->
         <div class="mobile-hide">
-          <q-btn round color="blue-grey-10" icon="fas fa-print" />
+          <q-btn v-if="expressionType == 'draft'" round color="blue-grey-10" icon="fas fa-print" />
         </div>
       </div>
       <!-- หัวข้อ -->
@@ -24,9 +31,11 @@
         <div>1. รับออเดอร์</div>
       </div>
       <!-- ปุ่มเพิ่ม -->
-      <div align="center">
+      <div v-if="expressionType == 'server'" class style="height:36px"></div>
+      <div class align="center">
         <q-btn
-          style="width:190px"
+          v-if="expressionType == 'draft'"
+          style="width:190px; height:36px"
           class="bg-blue-grey-10"
           to="/expressionInput"
           color="white"
@@ -35,7 +44,8 @@
       </div>
       <!-- การ์ดข้อความ -->
       <q-card
-        v-for="(item, index) in showDataExpression"
+        v-for="(item, index) in  showDataExpression"
+        v-show="item.collection == expressionType"
         :key="index"
         class="q-mt-md"
         style="width:100%"
@@ -44,6 +54,7 @@
           <div class="text-h6">รหัสลำดับ {{item.order}}</div>
           <div class="row items-center absolute-right">
             <q-icon
+              v-if="expressionType == 'draft'"
               class="cursor-pointer q-pr-md"
               name="fas fa-ellipsis-v"
               style="color:white; font-size: 1.4em;"
@@ -97,7 +108,7 @@ import { db, auth } from "../router";
 export default {
   data() {
     return {
-      expressionType: "darf",
+      expressionType: "draft",
       dialogDelete: false,
       getId: "",
       getOrder: "",
@@ -106,17 +117,54 @@ export default {
   },
   methods: {
     loadDataExpression() {
-      db.collection("expression")
+      // let collection;
+      // if (mode == "server") {
+      //   collection = db.collection("expression_server");
+      // } else {
+      //   collection = db.collection("expression_draft");
+      // }
+      // collection.get().then(data => {
+      //   let temp = [];
+      //   data.forEach(element => {
+      //     temp.push({ ...element.data(), id: element.id });
+      //   });
+      //   temp.sort((a, b) => {
+      //     return a.order - b.order;
+      //   });
+      //   this.showDataExpressionDraft = temp;
+      // });
+      let temp = [];
+      db.collection("expression_draft")
+        .where("levelId", "==", "a")
+        .where("unitId", "==", "a")
         .get()
-        .then(data => {
-          let temp = [];
-          data.forEach(element => {
-            temp.push({ ...element.data(), id: element.id });
+        .then(dataDraft => {
+          dataDraft.forEach(element => {
+            temp.push({ ...element.data(), collection: "draft" });
           });
-          this.showDataExpression = temp;
+          db.collection("expression_server")
+            .get()
+            .then(dataServer => {
+              dataServer.forEach(element => {
+                temp.push({ ...element.data(), collection: "server" });
+              });
+              this.showDataExpression = temp;
+            });
         });
     },
-
+    coppy() {
+      db.collection("expression_draft")
+        .where("levelId", "==", "a")
+        .where("unitId", "==", "a")
+        .get()
+        .then(data => {
+          data.forEach(element => {
+            db.collection("expression_server")
+              .doc(element.id)
+              .set(element.data());
+          });
+        });
+    },
     openDialogDelete(id, order) {
       this.dialogDelete = true;
       this.getId = id;
@@ -141,6 +189,7 @@ export default {
   },
   mounted() {
     this.loadDataExpression();
+    // this.coppy();
 
     // var user = auth.currentUser;
     // console.log(user.email);
