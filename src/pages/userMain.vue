@@ -149,7 +149,7 @@ export default {
   },
   methods: {
     addUser() {
-      this.$router.push("userAddEdit");
+      this.$router.push("userAdd");
     }
   }
 };

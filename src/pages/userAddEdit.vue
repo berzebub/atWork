@@ -20,7 +20,7 @@
           outlined
           dense
           v-model="dataUser.email"
-          :rules="[val => !!val  || 'กรุณาใส่ E-mail',isValidEmail]"
+          :rules="[val => !!val  || 'กรุณาใส่ E-mail',isCheckEmail,isValidEmail]"
         ></q-input>
       </div>
 
@@ -114,6 +114,7 @@ export default {
     cencel() {
       this.$router.push("userMain");
     },
+
     saveData() {
       // check validate
       this.$refs.name.validate();
@@ -135,25 +136,34 @@ export default {
         return;
       }
       // บันทึกข้อมูล
-      else {
-        db.collection("userAdmin")
-          .add({
-            name_surname: this.dataUser.name,
-            email: this.dataUser.email,
-            password: this.dataUser.password,
-            user_group: this.dataUser.userGroup
-          })
-          .then(() => {
-            this.saveDataDialog = true;
-            // this.$router.push("userMain");
 
-            console.log("saved");
-          });
-      }
+      db.collection("userAdmin")
+        .add({
+          name_surname: this.dataUser.name,
+          email: this.dataUser.email,
+          password: this.dataUser.password,
+          user_group: this.dataUser.userGroup
+        })
+        .then(() => {
+          this.saveDataDialog = true;
+          setTimeout(() => {
+            this.$router.push("userMain");
+          }, 1000);
+
+          console.log("saved");
+        });
     },
     isValidEmail(val) {
       const emailPattern = /^(?=[a-zA-Z0-9@._%+-]{6,254}$)[a-zA-Z0-9._%+-]{1,64}@(?:[a-zA-Z0-9-]{1,63}\.){1,8}[a-zA-Z]{2,63}$/;
       return emailPattern.test(val) || "รูปแบบ E-mail ไม่ถูกต้อง";
+    },
+    async isCheckEmail(val) {
+      let doc = await db
+        .collection("userAdmin")
+        .where("email", "==", val)
+        .get();
+
+      return !doc.size || "E-mail นี้มีผู้ใช้งานแล้ว";
     },
     checkboxAll() {
       if (this.all) {
