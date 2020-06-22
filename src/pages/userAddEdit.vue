@@ -3,24 +3,20 @@
     <div class="container-input">
       <div>
         <div class="text-subtitle1">ชื่อ นามสกุล</div>
-        <q-input
-          ref="name"
-          outlined
-          dense
-          v-model="dataUser.name"
-          :rules="[val => !!val || 'กรุณาใส่ชื่อ นามสกุล']"
-        ></q-input>
+        <q-input ref="name" outlined dense v-model="dataUser.name" :rules="[val => !!val ]"></q-input>
       </div>
 
       <div class="q-pt-md">
-        <div class="text-subtitle1">E-mail</div>
+        <div class="text-subtitle1">อีเมล</div>
         <q-input
+          :readonly="$route.name=='userEdit'"
           type="email"
           ref="email"
           outlined
           dense
           v-model="dataUser.email"
-          :rules="[val => !!val  || 'กรุณาใส่ E-mail',isCheckEmail,isValidEmail]"
+          :rules="[val => !!val 
+          ,isCheckEmail,isValidEmail]"
         ></q-input>
       </div>
 
@@ -34,7 +30,7 @@
           dense
           outlined
           :type="isPwd ? 'password' : 'text'"
-          :rules="[val => val.length>=4 || 'กรุณาใช้รหัสผ่านที่มีความยาวไม่ต่ำกว่า 4 ตัวอักษร']"
+          :rules="[val => val.length>=4 ]"
         >
           <template v-slot:append>
             <q-icon
@@ -130,40 +126,40 @@ export default {
         return;
       }
       // check checkbox
-      console.log(123);
+
       if (this.dataUser.userGroup == "") {
         console.log("ไม่ได้เลือกเช็คบ็อค");
         return;
       }
       // บันทึกข้อมูล
+      if (this.$route.name == "userAdd") {
+        db.collection("userAdmin")
+          .add(this.dataUser)
+          .then(() => {
+            this.saveDataDialog = true;
+            setTimeout(() => {
+              this.$router.push("userMain");
+            }, 1000);
 
-      db.collection("userAdmin")
-        .add({
-          name_surname: this.dataUser.name,
-          email: this.dataUser.email,
-          password: this.dataUser.password,
-          user_group: this.dataUser.userGroup
-        })
-        .then(() => {
-          this.saveDataDialog = true;
-          setTimeout(() => {
-            this.$router.push("userMain");
-          }, 1000);
-
-          console.log("saved");
-        });
+            console.log("saved");
+          });
+      } else {
+        this.editMode();
+      }
     },
     isValidEmail(val) {
       const emailPattern = /^(?=[a-zA-Z0-9@._%+-]{6,254}$)[a-zA-Z0-9._%+-]{1,64}@(?:[a-zA-Z0-9-]{1,63}\.){1,8}[a-zA-Z]{2,63}$/;
       return emailPattern.test(val) || "รูปแบบ E-mail ไม่ถูกต้อง";
     },
     async isCheckEmail(val) {
-      let doc = await db
-        .collection("userAdmin")
-        .where("email", "==", val)
-        .get();
-
-      return !doc.size || "E-mail นี้มีผู้ใช้งานแล้ว";
+      if (this.$route.name != "userEdit") {
+        let doc = await db
+          .collection("userAdmin")
+          .where("email", "==", val)
+          .get();
+        console.log("123");
+        return !doc.size || "E-mail นี้มีผู้ใช้งานแล้ว";
+      }
     },
     checkboxAll() {
       if (this.all) {
@@ -181,9 +177,40 @@ export default {
       } else {
         this.all = false;
       }
+    },
+    loadDataEdit() {
+      if (this.$route.params.name == undefined) {
+        this.$router.push("userMain");
+      } else {
+        this.dataUser.name = this.$route.params.name;
+        this.dataUser.email = this.$route.params.email;
+        this.dataUser.password = this.$route.params.password;
+        this.dataUser.userGroup = this.$route.params.userGroup;
+        if (this.dataUser.userGroup.length == 5) {
+          this.all = true;
+        } else {
+          this.all = false;
+        }
+      }
+    },
+    editMode() {
+      db.collection("userAdmin")
+        .doc(this.$route.params.id)
+        .update(this.dataUser)
+        .then(() => {
+          this.saveDataDialog = true;
+          setTimeout(() => {
+            this.$router.push("userMain");
+          }, 1000);
+        });
     }
   },
-  mounted() {}
+  mounted() {
+    if (this.$route.name == "userEdit") {
+      this.loadDataEdit();
+    } else {
+    }
+  }
 };
 </script>
 
