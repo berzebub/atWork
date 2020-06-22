@@ -10,7 +10,7 @@
             outlined
             ref="orderid"
             type="number"
-            v-model.number="orderid"
+            v-model.number="data.orderid"
             dense
             :rules="[ val => !!val || 'กรุณาใส่รหัสลำดับ']"
           />
@@ -27,7 +27,7 @@
             :toolbar="[
           ['bold', 'italic', 'underline'],
           ]"
-            v-model="question"
+            v-model="data.question"
             min-height="5rem"
           />
         </div>
@@ -35,7 +35,7 @@
       <div class="row">
         <div class="q-py-md col-md-6 col-sm-6 col-xs-12">
           <div>อัปโหลดรูปภาพ</div>
-          <q-file bg-color="white" class="q-pa-sm" outlined v-model="uploadImg">
+          <q-file bg-color="white" class="q-pa-sm" outlined v-model="data.uploadImg">
             <template v-slot:append>
               <q-btn
                 v-if="!uploadImg"
@@ -60,7 +60,7 @@
         </div>
         <div class="q-py-md col-md-6 col-sm-6 col-xs-12">
           <div>อัปโหลดเสียง</div>
-          <q-file bg-color="white" class="q-pa-sm" outlined v-model="uploadSound">
+          <q-file bg-color="white" class="q-pa-sm" outlined v-model="data.uploadSound">
             <template v-slot:append>
               <q-btn
                 v-if="!uploadSound"
@@ -118,7 +118,7 @@
         ['bold', 'italic', 'underline'],
         ['upload', 'save']
       ]"
-              v-model="choice[0]"
+              v-model="data.choice[0]"
               min-height="5rem"
             />
             <q-file bg-color="white" square outlined v-model="model" label="ยังไม่ใส่ไฟล์เสียง" />
@@ -144,7 +144,7 @@
         ['bold', 'italic', 'underline'],
         ['upload', 'save']
       ]"
-              v-model="choice[1]"
+              v-model="data.choice[1]"
               min-height="5rem"
             />
           </div>
@@ -168,7 +168,7 @@
         ['bold', 'italic', 'underline'],
         ['upload', 'save']
       ]"
-              v-model="choice[2]"
+              v-model="data.choice[2]"
               min-height="5rem"
             />
           </div>
@@ -192,7 +192,7 @@
         ['bold', 'italic', 'underline'],
         ['upload', 'save']
       ]"
-              v-model="choice[3]"
+              v-model="data.choice[3]"
               min-height="5rem"
             />
           </div>
@@ -210,7 +210,7 @@
               :toolbar="[
           ['bold', 'italic', 'underline'],
           ]"
-              v-model="choice[0]"
+              v-model="data.choice[0]"
               min-height="5rem"
             />
           </div>
@@ -226,7 +226,7 @@
               :toolbar="[
         ['bold', 'italic', 'underline'],
         ]"
-              v-model="choice[1]"
+              v-model="data.choice[1]"
               min-height="5rem"
             />
           </div>
@@ -240,7 +240,7 @@
               :toolbar="[
         ['bold', 'italic', 'underline'],
         ]"
-              v-model="choice[2]"
+              v-model="data.choice[2]"
               min-height="5rem"
             />
           </div>
@@ -254,7 +254,7 @@
               :toolbar="[
         ['bold', 'italic', 'underline'],
         ]"
-              v-model="choice[3]"
+              v-model="data.choice[3]"
               min-height="5rem"
             />
           </div>
@@ -267,7 +267,7 @@
             <q-radio
               style="margin:-10px"
               color="blue-grey-10"
-              v-model.number="correctAnswer"
+              v-model.number="data.correctAnswer"
               :val="1"
               label="1"
             />
@@ -276,7 +276,7 @@
             <q-radio
               style="margin:-10px"
               color="blue-grey-10"
-              v-model.number="correctAnswer"
+              v-model.number="data.correctAnswer"
               :val="2"
               label="2"
             />
@@ -285,7 +285,7 @@
             <q-radio
               style="margin:-10px"
               color="blue-grey-10"
-              v-model.number="correctAnswer"
+              v-model.number="data.correctAnswer"
               :val="3"
               label="3"
             />
@@ -294,7 +294,7 @@
             <q-radio
               style="margin:-10px"
               color="blue-grey-10 "
-              v-model.number="correctAnswer"
+              v-model.number="data.correctAnswer"
               :val="4"
               label="4"
             />
@@ -310,7 +310,7 @@
             :toolbar="[
         ['bold', 'italic', 'underline'],
         ]"
-            v-model="meaning"
+            v-model="data.meaning"
             min-height="5rem"
           />
         </div>
@@ -352,14 +352,16 @@ export default {
       file: null,
       uploadImg: null,
       uploadSound: null,
-      orderid: "",
-      question: "",
-      meaning: "",
+      data: {
+        key: "",
+        orderid: "",
+        question: "",
+        meaning: "",
+        choice: ["", "", "", ""],
+        correctAnswer: 1
+      },
       activeType: "messenger",
-      correctAnswer: 1,
       isAnswerSound: false,
-      choice: ["", "", "", ""],
-
       //   เช็คช่องคำถามข้อมูล & ตัวเลือก
       isQuestion: true,
       isChoice1: true,
@@ -367,54 +369,63 @@ export default {
     };
   },
   methods: {
+    loadDataEdit() {
+      db.collection("multiple_draft")
+        .doc(this.$route.params.key)
+        .get()
+        .then(doc => {
+          this.data = doc.data();
+          console.log(this.data);
+          // doc.forEach(element => {
+          //   this.data.push(element.data());
+          // });
+        });
+    },
+
     saveBtn() {
-      let hasChoice = this.choice.filter(x => x != "");
+      let hasChoice = this.data.choice.filter(x => x != "");
       this.$refs.orderid.validate();
       if (this.$refs.orderid.hasError) {
       }
-      if (this.question == "") {
+      if (this.data.question == "") {
         this.isQuestion = false;
       }
       if (hasChoice.length < 2) {
-        let index = this.choice.findIndex(x => x == "");
+        let index = this.data.choice.findIndex(x => x == "");
         if (index == 0) {
           this.isChoice1 = false;
         } else if (index == 1) {
           this.isChoice2 = false;
         }
       }
-      let data = {
-        orderid: this.orderid,
-        question: this.question,
-        correctAnswer: this.correctAnswer,
-        choice: this.choice,
-        meaning: this.meaning
-      };
-      db.collection("multiple_draft").add(data);
-      console.log(data);
+      if (this.$route.name == "multipleInputAdd") {
+        console.log(this.data);
+        db.collection("multiple_draft").add(this.data);
+      } else {
+      }
 
       // this.isChoice1 = true;
       // this.isChoice2 = true;
-      console.log("awd");
+
       //   //   this.choice.map(x => x == "");
 
       //   console.log(this.choice.findIndex(x => x == ""));
     },
     checkEditor(type) {
       if (type == "question") {
-        if (this.question.length) {
+        if (this.data.question.length) {
           this.isQuestion = true;
         } else {
           this.isQuestion = false;
         }
       } else if (type == "choice1") {
-        if (this.choice[0].length) {
+        if (this.data.choice[0].length) {
           this.isChoice1 = true;
         } else {
-          this.isChoice1 = false;
+          this.data.isChoice1 = false;
         }
       } else if (type == "choice2") {
-        if (this.choice[1].length) {
+        if (this.data.choice[1].length) {
           this.isChoice2 = true;
         } else {
           this.isChoice2 = false;
@@ -425,7 +436,12 @@ export default {
       console.log("5555");
     }
   },
-  mounted() {}
+  mounted() {
+    if (this.$route.name == "multipleInputEdit") {
+      this.loadDataEdit();
+    } else {
+    }
+  }
 };
 </script>
 <style  scoped>

@@ -66,10 +66,15 @@
         <div class="boxQuestion bg-blue-grey-10 text-white q-py-xs q-px-md row justify-between">
           <div class="col row items-center">รหัสลำดับ {{item.orderid}}</div>
           <div class="q-px-xs">
-            <q-btn @click="deleteData(item.orderid)" size="sm" round icon="far fa-trash-alt" />
+            <q-btn
+              @click="deleteData(item.key, item.orderid)"
+              size="sm"
+              round
+              icon="far fa-trash-alt"
+            />
           </div>
           <div>
-            <q-btn @click="editData()" size="sm" round icon="far fa-edit" />
+            <q-btn @click="editData(item.key)" size="sm" round icon="far fa-edit" />
           </div>
         </div>
         <div class="q-pa-md">
@@ -77,25 +82,25 @@
         </div>
         <div class="q-px-md">
           <div>
-            <span :class="{'bg-secondary answer ' : item.correctAnswer == 0}" v-if="item.choice[0]">
+            <span :class="{'bg-secondary answer ' : item.correctAnswer == 1}" v-if="item.choice[0]">
               1)
               <span v-html=" item.choice[0]"></span>
             </span>
           </div>
           <div>
-            <span :class="{'bg-secondary answer' : item.correctAnswer == 1}" v-if="item.choice[1]">
+            <span :class="{'bg-secondary answer' : item.correctAnswer == 2}" v-if="item.choice[1]">
               2)
               <span v-html=" item.choice[1]"></span>
             </span>
           </div>
           <div>
-            <span :class="{'bg-secondary answer' : item.correctAnswer == 2}" v-if="item.choice[2]">
+            <span :class="{'bg-secondary answer' : item.correctAnswer == 3}" v-if="item.choice[2]">
               3)
               <span v-html=" item.choice[2]"></span>
             </span>
           </div>
           <div>
-            <span :class="{'bg-secondary answer' : item.correctAnswer == 3}" v-if="item.choice[3]">
+            <span :class="{'bg-secondary answer' : item.correctAnswer == 4}" v-if="item.choice[3]">
               4)
               <span v-html=" item.choice[3]"></span>
             </span>
@@ -210,7 +215,8 @@ export default {
       finishDialog: false,
       text: "",
       data: [],
-      dataDraft: []
+      dataDraft: [],
+      deleteKey: ""
     };
   },
   methods: {
@@ -219,7 +225,15 @@ export default {
         .get()
         .then(doc => {
           doc.forEach(element => {
-            this.dataDraft.push(element.data());
+            let dataKey = {
+              key: element.data().key
+            };
+            let final = {
+              ...dataKey,
+              ...element.data()
+            };
+            console.log(final);
+            this.dataDraft.push(final);
           });
           this.dataDraft.sort((a, b) => {
             return a.orderid - b.orderid;
@@ -240,7 +254,7 @@ export default {
       }
     },
     addQuestion() {
-      this.$router.push("/multipleInput");
+      this.$router.push("/multipleInputAdd");
     },
     editQuestion() {
       this.questionDialog = true;
@@ -264,16 +278,23 @@ export default {
       this.finishDialog = true;
     },
     deleteBtn() {
-      this.text = "ลบข้อมูลเรียบร้อย";
-      this.deleteDialog = false;
-      this.finishDialog = true;
+      db.collection("multiple_draft")
+        .doc(this.deleteKey)
+        .delete()
+        .then(() => {
+          this.loadDraft();
+          this.text = "ลบข้อมูลเรียบร้อย";
+          this.deleteDialog = false;
+          this.finishDialog = true;
+        });
     },
-    deleteData(key) {
+    deleteData(key, id) {
       this.deleteDialog = true;
-      this.orderId = key;
+      this.orderId = id;
+      this.deleteKey = key;
     },
-    editData() {
-      this.$router.push("/multipleInput");
+    editData(key) {
+      this.$router.push(this.$router.push("/multipleInputEdit" + "/" + key));
     }
   },
   mounted() {

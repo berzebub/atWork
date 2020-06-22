@@ -35,9 +35,14 @@ const routes = [{
       component: () => import("pages/multipleMain.vue"),
       name: "multipleMain"
     }, {
-      path: "multipleInput",
+      path: "multipleInputAdd",
       component: () => import("pages/multipleInput.vue"),
-      name: "multipleInput"
+      name: "multipleInputAdd"
+    },
+    {
+      path: "multipleInputEdit/:key",
+      component: () => import("pages/multipleInput.vue"),
+      name: "multipleInputEdit"
     },
     // ------------------- expression -------------------
     {
