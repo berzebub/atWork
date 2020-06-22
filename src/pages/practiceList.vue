@@ -2,71 +2,92 @@
   <q-page class="text-blue-grey-10">
     <!-- practiceList -->
     <!-- show content -->
-    <div class="q-pa-md bg-blue-grey-10 shadow-5" style="width: 360px">
-      <span class="text-white text-h6">แบบฝึกหัด</span>
-    </div>
-    <div class="q-pt-md shadow-3 bg-white" style="width: 360px; height: calc(100vh - 64px)">
-      <q-list class="rounded-borders">
-        <q-expansion-item label="อาหารและเครื่องดื่ม">
-          <q-card class="q-px-md q-pb-sm">
-            <div class="row q-pb-sm relative-position cursor-pointer" v-ripple @click="goto()">
-              <div class="col">1. จองโต๊ะ</div>
-              <div class="col-1" align="right">
-                <q-icon name="fas fa-sync-alt"></q-icon>
-              </div>
-            </div>
-            <div class="row q-pb-sm relative-position cursor-pointer" v-ripple>
-              <div class="col">2. สั่งอาหาร</div>
-              <div class="col-1" align="right">
-                <q-icon name="fas fa-sync-alt"></q-icon>
-              </div>
-            </div>
-            <div class="row q-pb-sm relative-position cursor-pointer" v-ripple>
-              <div class="col">3. สั่งเครื่องดื่ม</div>
-              <div class="col-1" align="right">
-                <q-icon name="fas fa-sync-alt"></q-icon>
-              </div>
-            </div>
-          </q-card>
-        </q-expansion-item>
-        <q-separator />
-        <q-expansion-item label="พนักงานต้อนรับ">
-          <q-card class="q-px-md q-pb-sm">
-            <div class="row q-pb-sm">
-              <div class="col">1. จองโต๊ะ</div>
-              <div class="col-1" align="right">
-                <q-icon name="fas fa-sync-alt"></q-icon>
-              </div>
-            </div>
-            <div class="row q-pb-sm">
-              <div class="col">2. สั่งอาหาร</div>
-              <div class="col-1" align="right">
-                <q-icon name="fas fa-sync-alt"></q-icon>
-              </div>
-            </div>
-            <div class="row q-pb-sm">
-              <div class="col">3. สั่งเครื่องดื่ม</div>
-              <div class="col-1" align="right">
-                <q-icon name="fas fa-sync-alt"></q-icon>
-              </div>
-            </div>
-          </q-card>
-        </q-expansion-item>
-        <q-separator />
-      </q-list>
+    <div class="row">
+      <div
+        class
+        :class="$q.platform.is.desktop?'col-3':'col-12'"
+        :style="$q.platform.is.desktop? 'width: 360px;': 'width: 100%'"
+      >
+        <div class="q-pa-md bg-blue-grey-10 shadow-5">
+          <span class="text-white text-h6">แบบฝึกหัด</span>
+        </div>
+        <div class="q-pt-md shadow-3 bg-white" style=" height: calc(100vh - 64px)">
+          <q-list class="rounded-borders">
+            <q-expansion-item label="อาหารและเครื่องดื่ม">
+              <q-card class="q-px-md q-pb-sm">
+                <div class="row q-pb-sm relative-position cursor-pointer" v-ripple @click="goto()">
+                  <div class="col">1. จองโต๊ะ</div>
+                  <div class="col-1" align="right">
+                    <q-icon name="fas fa-sync-alt"></q-icon>
+                  </div>
+                </div>
+                <div class="row q-pb-sm relative-position cursor-pointer" v-ripple>
+                  <div class="col">2. สั่งอาหาร</div>
+                  <div class="col-1" align="right">
+                    <q-icon name="fas fa-sync-alt"></q-icon>
+                  </div>
+                </div>
+                <div class="row q-pb-sm relative-position cursor-pointer" v-ripple>
+                  <div class="col">3. สั่งเครื่องดื่ม</div>
+                  <div class="col-1" align="right">
+                    <q-icon name="fas fa-sync-alt"></q-icon>
+                  </div>
+                </div>
+              </q-card>
+            </q-expansion-item>
+            <q-separator />
+            <q-expansion-item label="พนักงานต้อนรับ">
+              <q-card class="q-px-md q-pb-sm">
+                <div class="row q-pb-sm">
+                  <div class="col">1. จองโต๊ะ</div>
+                  <div class="col-1" align="right">
+                    <q-icon name="fas fa-sync-alt"></q-icon>
+                  </div>
+                </div>
+                <div class="row q-pb-sm">
+                  <div class="col">2. สั่งอาหาร</div>
+                  <div class="col-1" align="right">
+                    <q-icon name="fas fa-sync-alt"></q-icon>
+                  </div>
+                </div>
+                <div class="row q-pb-sm">
+                  <div class="col">3. สั่งเครื่องดื่ม</div>
+                  <div class="col-1" align="right">
+                    <q-icon name="fas fa-sync-alt"></q-icon>
+                  </div>
+                </div>
+              </q-card>
+            </q-expansion-item>
+            <q-separator />
+          </q-list>
+        </div>
+      </div>
+      <div class="col q-pa-md">
+        <practice-main v-if="isShowPracticeMain"></practice-main>
+      </div>
     </div>
   </q-page>
 </template>
 
 <script>
 import { db } from "../router";
+import practiceMain from "../components/practiceMain.vue";
 export default {
+  components: {
+    practiceMain
+  },
   data() {
-    return {};
+    return {
+      isShowPracticeMain: false
+    };
   },
   methods: {
     goto() {
-      this.$router.push("/practiceMain");
+      if (this.$q.platform.is.desktop) {
+        this.isShowPracticeMain = true;
+      } else {
+        this.$router.push("/practiceMain"); //ต้องใส่ key เพื่อไปยัง L/U นั้น
+      }
     }
   },
   mounted() {}

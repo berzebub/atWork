@@ -27,13 +27,13 @@
     </q-header>
 
     <q-drawer
-      v-model="leftDrawerOpen"
+      :breakpoint="800"
       show-if-above
-      content-class="bg-grey-1 bg-blue-grey-10 row "
+      content-class="desktop-only bg-grey-1 bg-blue-grey-10 row "
       :width="100"
     >
       <div
-        class="row text-body2 text-white self-start"
+        class="row text-body2 text-blue-grey-4 self-start"
         style="border-right: 1px solid #000"
         align="center"
       >
@@ -121,9 +121,7 @@ export default {
   name: "MainLayout",
 
   data() {
-    return {
-      leftDrawerOpen: false
-    };
+    return {};
   },
   methods: {
     toPracticeList() {
@@ -134,10 +132,10 @@ export default {
 </script>
 <style lang="scss" scoped>
 .active-line {
-  border-left: 7px solid #90a4ae;
+  border-left: 7px solid #fff;
 }
 .active-text {
-  color: #90a4ae;
+  color: #fff;
 }
 .no-active-line {
   border-left: 7px solid #263238;

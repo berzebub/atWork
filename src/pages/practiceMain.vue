@@ -1,12 +1,16 @@
 <template>
   <q-page class="text-blue-grey-10">
-    <span>Practice Main</span>
+    <practice-main></practice-main>
   </q-page>
 </template>
 
 <script>
 import { db } from "../router";
+import practiceMain from "../components/practiceMain.vue";
 export default {
+  components: {
+    practiceMain
+  },
   data() {
     return {};
   },
