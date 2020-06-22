@@ -10,7 +10,7 @@
       <!-- ปุ่มเพิ่มแบบฝึกหัด -->
       <div class="q-pa-md">
         <q-btn
-          @click="addQuestion()"
+          @click="addPractice()"
           style="width:190px"
           dense
           color="blue-grey-10"
@@ -22,7 +22,21 @@
         <div class="bg-blue-grey-10 text-white q-pa-sm row" align="left">
           <div class="col">รหัสลำดับ 1000</div>
           <div class="col-1" align="right">
-            <q-icon name="fas fa-ellipsis-v"></q-icon>
+            <!-- ปุ่ม สามจุด -->
+            <div class="col-1" align="right">
+              <q-btn round size="sm" color="blue-grey-10" icon="fas fa-ellipsis-v">
+                <q-menu auto-close>
+                  <q-list style="min-width: 100px">
+                    <q-item clickable>
+                      <q-item-section>แก้ไขข้อมูล</q-item-section>
+                    </q-item>
+                    <q-item clickable>
+                      <q-item-section>ลบข้อมูล</q-item-section>
+                    </q-item>
+                  </q-list>
+                </q-menu>
+              </q-btn>
+            </div>
           </div>
         </div>
         <div class="row q-py-sm">
@@ -41,8 +55,20 @@
       <div style="border: 1px solid #263238; border-radius: 5px">
         <div class="bg-blue-grey-10 text-white q-pa-sm row" align="left">
           <div class="col">รหัสลำดับ 2000</div>
+          <!-- ปุ่ม สามจุด -->
           <div class="col-1" align="right">
-            <q-icon name="fas fa-ellipsis-v"></q-icon>
+            <q-btn round size="sm" color="blue-grey-10" icon="fas fa-ellipsis-v">
+              <q-menu auto-close>
+                <q-list style="min-width: 100px">
+                  <q-item clickable @click="editPractice()">
+                    <q-item-section>แก้ไขข้อมูล</q-item-section>
+                  </q-item>
+                  <q-item clickable>
+                    <q-item-section>ลบข้อมูล</q-item-section>
+                  </q-item>
+                </q-list>
+              </q-menu>
+            </q-btn>
           </div>
         </div>
         <div class="row q-py-sm">
@@ -103,7 +129,7 @@
             outline
             style="color: blue-grey-10;"
             label="ยกเลิก"
-            @click="cancelQuestion()"
+            @click="cancelPractice()"
           ></q-btn>
         </div>
         <div class="col q-px-sm">
@@ -126,10 +152,15 @@ export default {
     };
   },
   methods: {
-    addQuestion() {
+    addPractice() {
+      // เพิ่มแบบฝึกหัด
       this.isShowPractice = false;
     },
-    cancelQuestion() {
+    editPractice() {
+      // แก้ไขแบบฝึกหัด แก้ได้เฉพาะรหัสลำดับ
+      this.isShowPractice = false;
+    },
+    cancelPractice() {
       this.isShowPractice = true;
     }
   },

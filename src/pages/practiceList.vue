@@ -8,8 +8,13 @@
         :class="$q.platform.is.desktop?'col-3':'col-12'"
         :style="$q.platform.is.desktop? 'width: 360px;': 'width: 100%'"
       >
-        <div class="q-pa-md bg-blue-grey-10 shadow-5">
-          <span class="text-white text-h6">แบบฝึกหัด</span>
+        <div class="q-pa-md bg-blue-grey-10 shadow-5 row">
+          <div class="col-1 text-white" align="left">
+            <q-icon name="fas fa-arrow-left"></q-icon>
+          </div>
+          <div class="col">
+            <span class="text-white text-h6">แบบฝึกหัด</span>
+          </div>
         </div>
         <div class="q-pt-md shadow-3 bg-white" style=" height: calc(100vh - 64px)">
           <q-list class="rounded-borders">
