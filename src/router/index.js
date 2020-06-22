@@ -28,6 +28,44 @@ firebase.initializeApp(firebaseConfig);
 
 export const db = firebase.firestore();
 export const auth = firebase.auth();
+Vue.mixin({
+  data() {
+    return {};
+  },
+  methods: {
+    // ฟังชั่น ซิงโครไนค์
+    sync(practiceId) {
+      db.collection("practice_draft")
+        .where("practiceId", "==", practiceId)
+        .get()
+        .then(doc => {
+          doc.forEach(element => {
+            if (element.data().status == "notSync") {
+              let data = element.data();
+              delete data.status;
+              db.collection("practice_server")
+                .doc(element.id)
+                .set(data)
+                .then(() => {
+                  db.collection("practice_draft")
+                    .doc(element.id)
+                    .update({ status: "updated" });
+                });
+            } else if (element.data().status == "waitForDelete") {
+              db.collection("practice_server")
+                .doc(element.id)
+                .delete()
+                .then(() => {
+                  db.collection("practice_draft")
+                    .doc(element.id)
+                    .delete();
+                });
+            }
+          });
+        });
+    }
+  }
+});
 export default function(/* { store, ssrContext } */) {
   const Router = new VueRouter({
     scrollBehavior: () => ({ x: 0, y: 0 }),

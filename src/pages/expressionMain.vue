@@ -25,6 +25,7 @@
       </div>
       <!-- ปุ่มเพิ่ม -->
       <div v-if="expressionType == 'server'" class style="height:36px"></div>
+      <q-btn @click="sync('a')">sync</q-btn>
       <div class align="center">
         <q-btn
           v-if="expressionType == 'draft'"
@@ -161,7 +162,7 @@ export default {
       //   this.showDataExpressionDraft = temp;
       // });
 
-      db.collection("expression_draft")
+      db.collection("practice_draft")
         .where("levelId", "==", this.levelId)
         .where("unitId", "==", this.unitId)
         .onSnapshot(dataDraft => {
@@ -173,7 +174,7 @@ export default {
               id: element.id
             });
           });
-          db.collection("expression_server")
+          db.collection("practice_server")
             .get()
             .then(dataServer => {
               dataServer.forEach(element => {
@@ -191,13 +192,13 @@ export default {
         });
     },
     coppy() {
-      db.collection("expression_draft")
+      db.collection("practice_draft")
         .where("levelId", "==", "a")
         .where("unitId", "==", "a")
         .get()
         .then(data => {
           data.forEach(element => {
-            db.collection("expression_server")
+            db.collection("practice_server")
               .doc(element.id)
               .set(element.data());
           });
@@ -215,7 +216,7 @@ export default {
       this.getOrder = order;
     },
     cancelDeleteExpression() {
-      db.collection("expression_draft")
+      db.collection("practice_draft")
         .doc(this.getId)
         .update({ status: "notSync" })
         .then(() => {
@@ -224,7 +225,7 @@ export default {
         });
     },
     deleteDataExpression() {
-      db.collection("expression_draft")
+      db.collection("practice_draft")
         .doc(this.getId)
         .update({ status: "waitForDelete" })
         .then(() => {

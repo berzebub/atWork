@@ -262,7 +262,7 @@ export default {
           delete element.errorEng;
           delete element.errorTh;
         });
-        db.collection("expression_draft")
+        db.collection("practice_draft")
           .add({
             unitId: this.unitId,
             levelId: this.levelId,
@@ -311,7 +311,7 @@ export default {
       let filterData = this.sentence.filter(
         x => x.sentenceEng != "" && x.sentenceTh != ""
       );
-      db.collection("expression")
+      db.collection("practice_draft")
         .doc(this.$route.params.id)
         .update({
           levelId: this.levelId,
