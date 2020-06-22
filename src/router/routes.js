@@ -53,17 +53,17 @@ const routes = [
       },
       // ------------------- expression -------------------
       {
-        path: "expressionMain",
+        path: "expressionMain/:levelId/:unitId",
         component: () => import("pages/expressionMain.vue"),
         name: "expressionMain"
       },
       {
-        path: "expressionInput",
+        path: "expressionInput/:levelId/:unitId",
         component: () => import("pages/expressionInput.vue"),
         name: "expressionInput"
       },
       {
-        path: "expressionEdit",
+        path: "expressionEdit/:levelId/:unitId",
         component: () => import("pages/expressionInput.vue"),
         name: "expressionEdit"
       },

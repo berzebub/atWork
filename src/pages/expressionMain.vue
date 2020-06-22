@@ -5,20 +5,13 @@
         <!-- กล่อง radio -->
         <div class="brg row" style="width:330px">
           <q-radio
-            @input="loadDataExpression('draft')"
             class="q-ml-md col-6"
             color="blue-grey-10"
             v-model="expressionType"
             val="draft"
             label="แบบร่าง"
           />
-          <q-radio
-            @input="loadDataExpression('server')"
-            color="blue-grey-10"
-            v-model="expressionType"
-            val="server"
-            label="เซิร์ฟเวอร์"
-          />
+          <q-radio color="blue-grey-10" v-model="expressionType" val="server" label="เซิร์ฟเวอร์" />
         </div>
         <!-- ปุ่มพิมพ์ -->
         <div class="mobile-hide">
@@ -37,7 +30,7 @@
           v-if="expressionType == 'draft'"
           style="width:190px; height:36px"
           class="bg-blue-grey-10"
-          to="/expressionInput"
+          :to="'/expressionInput/'+ levelId+'/'+unitId"
           color="white"
           label="เพิ่ม"
         ></q-btn>
@@ -50,7 +43,10 @@
         class="q-mt-md"
         style="width:100%"
       >
-        <q-card-section class="bg-blue-grey-10 text-white">
+        <q-card-section
+          class="text-white"
+          :class="item.status == 'waitForDelete' ? 'bg-red': 'bg-blue-grey-10'"
+        >
           <div class="text-h6">รหัสลำดับ {{item.order}}</div>
           <div class="row items-center absolute-right">
             <q-icon
@@ -63,7 +59,16 @@
             <q-menu>
               <q-list style="min-width: 120px">
                 <div @click="editDataExpression(item)" class="q-ma-md cursor-pointer">แก้ไขข้อมูล</div>
-                <div @click="openDialogDelete(item.id,item.order)" class="q-ma-md cursor-pointer">ลบ</div>
+                <div
+                  v-if="item.status != 'waitForDelete'"
+                  @click="openDialogDelete(item.id,item.order)"
+                  class="q-ma-md cursor-pointer"
+                >ลบ</div>
+                <div
+                  v-if="item.status == 'waitForDelete'"
+                  @click="openDialogCancelDelete(item.id,item.order)"
+                  class="q-ma-md cursor-pointer text-red"
+                >ยกเลิกการลบ</div>
               </q-list>
             </q-menu>
           </div>
@@ -100,6 +105,24 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+
+    <q-dialog v-model="dialogCancelDelete" persistent>
+      <q-card style="min-width: 350px; height:170px">
+        <q-card-section>
+          <div class="q-mt-lg text-h6">ต้องการลบ "รหัสลำดับ {{getOrder}}" หรือไม่</div>
+        </q-card-section>
+
+        <q-card-actions align="center">
+          <q-btn style="width:120px" outline color="blue-grey-10" label="ยกเลิก" v-close-popup />
+          <q-btn
+            @click="cancelDeleteExpression()"
+            color="blue-grey-10"
+            style="width:120px"
+            label="ยืนยัน"
+          />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 
@@ -110,9 +133,13 @@ export default {
     return {
       expressionType: "draft",
       dialogDelete: false,
+      dialogCancelDelete: false,
       getId: "",
       getOrder: "",
-      showDataExpression: ""
+      showDataExpression: "",
+      levelId: this.$route.params.levelId,
+      unitId: this.$route.params.unitId,
+      isSnap: ""
     };
   },
   methods: {
@@ -133,12 +160,12 @@ export default {
       //   });
       //   this.showDataExpressionDraft = temp;
       // });
-      let temp = [];
+
       db.collection("expression_draft")
-        .where("levelId", "==", "a")
-        .where("unitId", "==", "a")
-        .get()
-        .then(dataDraft => {
+        .where("levelId", "==", this.levelId)
+        .where("unitId", "==", this.unitId)
+        .onSnapshot(dataDraft => {
+          let temp = [];
           dataDraft.forEach(element => {
             temp.push({
               ...element.data(),
@@ -182,6 +209,20 @@ export default {
       this.getId = id;
       this.getOrder = order;
     },
+    openDialogCancelDelete(id, order) {
+      this.dialogCancelDelete = true;
+      this.getId = id;
+      this.getOrder = order;
+    },
+    cancelDeleteExpression() {
+      db.collection("expression_draft")
+        .doc(this.getId)
+        .update({ status: "notSync" })
+        .then(() => {
+          this.getId = "";
+          this.dialogCancelDelete = false;
+        });
+    },
     deleteDataExpression() {
       db.collection("expression_draft")
         .doc(this.getId)
@@ -189,19 +230,18 @@ export default {
         .then(() => {
           this.getId = "";
           this.dialogDelete = false;
-          this.loadDataExpression();
         });
     },
     editDataExpression(item) {
       this.$router.push({
         name: "expressionEdit",
-        params: item
+        params: { ...item, levelId: this.levelId, unitId: this.unitId }
       });
     }
   },
   mounted() {
     this.loadDataExpression();
-    this.coppy();
+    // this.coppy();
 
     // var user = auth.currentUser;
     // console.log(user.email);

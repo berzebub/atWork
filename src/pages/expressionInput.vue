@@ -96,7 +96,7 @@
         <!-- ยกเลิก -->
         <div class="q-ma-md col">
           <q-btn
-            to="/expressionMain"
+            :to="'/expressionMain/'+ levelId+'/'+unitId"
             label="ยกเลิก"
             dense
             style="width:150px"
@@ -160,12 +160,11 @@ export default {
   data() {
     return {
       practiceId: "",
-      levelId: "",
+      levelId: this.$route.params.levelId,
       successData: false,
       getIndex: "",
       dialogdeleteCard: false,
-      unitId: "",
-      jobId: "ant123",
+      unitId: this.$route.params.unitId,
       boxCount: 1,
       order: "",
       errorSentenceEng1: false,
@@ -203,11 +202,13 @@ export default {
   },
   methods: {
     editMode() {
+      if (this.$route.params.levelId == undefined) {
+        this.$router.push("/expressionMain");
+      }
       this.levelId = this.$route.params.levelId;
       this.practiceId = this.$route.params.practiceId;
       this.order = this.$route.params.order;
-      this.unitId = this.$route.params.unit;
-      this.jobId = this.$route.params.jobId;
+      this.unitId = this.$route.params.unitId;
       let getSentence = this.$route.params.expression;
       this.boxCount = this.$route.params.expression.length - 1;
       let loop = 4 - this.$route.params.expression.length;
@@ -266,7 +267,6 @@ export default {
             unitId: this.unitId,
             levelId: this.levelId,
             practiceId: this.practiceId,
-            jobId: this.jobId,
             expression: filterData,
             order: this.order,
             status: "notSync"
@@ -297,7 +297,9 @@ export default {
             this.successData = true;
             setTimeout(() => {
               this.successData = false;
-              this.$router.push("/expressionMain");
+              this.$router.push(
+                "/expressionMain/" + this.levelId + "/" + this.unitId
+              );
             }, 700);
           });
       } else {
@@ -312,8 +314,8 @@ export default {
       db.collection("expression")
         .doc(this.$route.params.id)
         .update({
-          unit: this.unit,
-          jobId: this.jobId,
+          levelId: this.levelId,
+          unitId: this.unitId,
           order: this.order,
           status: "notSync",
           expression: filterData
