@@ -7,22 +7,32 @@
 body {
   font-family: promptM;
 }
+
 .container {
   margin: auto;
   width: 100%;
   max-width: 700px;
 }
+
 .container-input {
   margin: auto;
   width: 100%;
   max-width: 360px;
 }
+
 .brx {
   border: 1px solid red;
 }
+
 .brg {
   border: 1px solid #263238;
 }
+
 .br {
   border-radius: 10px;
+}
+
+.boxbtn {
+  width: 150px;
+  height: 33px;
 }
