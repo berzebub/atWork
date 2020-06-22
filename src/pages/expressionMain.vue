@@ -140,13 +140,24 @@ export default {
         .get()
         .then(dataDraft => {
           dataDraft.forEach(element => {
-            temp.push({ ...element.data(), collection: "draft" });
+            temp.push({
+              ...element.data(),
+              collection: "draft",
+              id: element.id
+            });
           });
           db.collection("expression_server")
             .get()
             .then(dataServer => {
               dataServer.forEach(element => {
-                temp.push({ ...element.data(), collection: "server" });
+                temp.push({
+                  ...element.data(),
+                  collection: "server",
+                  id: element.id
+                });
+              });
+              temp.sort((a, b) => {
+                return a.order - b.order;
               });
               this.showDataExpression = temp;
             });
@@ -166,14 +177,15 @@ export default {
         });
     },
     openDialogDelete(id, order) {
+      console.log(id, order);
       this.dialogDelete = true;
       this.getId = id;
       this.getOrder = order;
     },
     deleteDataExpression() {
-      db.collection("expression")
+      db.collection("expression_draft")
         .doc(this.getId)
-        .delete()
+        .update({ status: "waitForDelete" })
         .then(() => {
           this.getId = "";
           this.dialogDelete = false;
@@ -189,7 +201,7 @@ export default {
   },
   mounted() {
     this.loadDataExpression();
-    // this.coppy();
+    this.coppy();
 
     // var user = auth.currentUser;
     // console.log(user.email);

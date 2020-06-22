@@ -268,7 +268,8 @@ export default {
             practiceId: this.practiceId,
             jobId: this.jobId,
             expression: filterData,
-            order: this.order
+            order: this.order,
+            status: "notSync"
           })
           .then(() => {
             this.sentence = [
@@ -314,6 +315,7 @@ export default {
           unit: this.unit,
           jobId: this.jobId,
           order: this.order,
+          status: "notSync",
           expression: filterData
         })
         .then(() => {
