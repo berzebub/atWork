@@ -2,8 +2,26 @@
   <q-layout view="lHh Lpr lFf">
     <q-header class="bg-blue-grey-10" elevated v-if="$route.name!='practiceList' ">
       <q-toolbar>
-        <q-toolbar-title class="q-pa-md">
+        <q-toolbar-title class="q-pa-md" v-if="$route.name=='lessonMain' ">
           <span class="text-h6">ระดับการเรียน</span>
+        </q-toolbar-title>
+        <q-toolbar-title
+          class="q-pa-md"
+          v-if="$route.name=='practiceList' || $route.name=='practiceMain' "
+        >
+          <span class="text-h6">แบบฝึกหัด</span>
+        </q-toolbar-title>
+        <q-toolbar-title class="q-pa-md" v-if="$route.name=='flashcardMain' ">
+          <span class="text-h6">การ์ดคำศัพท์</span>
+        </q-toolbar-title>
+        <q-toolbar-title class="q-pa-md" v-if="$route.name=='multipleMain' ">
+          <span class="text-h6">เลือกคำตอบ</span>
+        </q-toolbar-title>
+        <q-toolbar-title class="q-pa-md" v-if="$route.name=='expressionMain' ">
+          <span class="text-h6">ประโยคสนทนา</span>
+        </q-toolbar-title>
+        <q-toolbar-title class="q-pa-md" v-if="$route.name=='vdoMain' ">
+          <span class="text-h6">บทสนทนา</span>
         </q-toolbar-title>
       </q-toolbar>
     </q-header>

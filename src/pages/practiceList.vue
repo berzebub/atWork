@@ -9,19 +9,19 @@
       <q-list class="rounded-borders">
         <q-expansion-item label="อาหารและเครื่องดื่ม">
           <q-card class="q-px-md q-pb-sm">
-            <div class="row q-pb-sm relative-position cursor-pointer" v-ripple to="/practiceMain">
+            <div class="row q-pb-sm relative-position cursor-pointer" v-ripple @click="goto()">
               <div class="col">1. จองโต๊ะ</div>
               <div class="col-1" align="right">
                 <q-icon name="fas fa-sync-alt"></q-icon>
               </div>
             </div>
-            <div class="row q-pb-sm">
+            <div class="row q-pb-sm relative-position cursor-pointer" v-ripple>
               <div class="col">2. สั่งอาหาร</div>
               <div class="col-1" align="right">
                 <q-icon name="fas fa-sync-alt"></q-icon>
               </div>
             </div>
-            <div class="row q-pb-sm">
+            <div class="row q-pb-sm relative-position cursor-pointer" v-ripple>
               <div class="col">3. สั่งเครื่องดื่ม</div>
               <div class="col-1" align="right">
                 <q-icon name="fas fa-sync-alt"></q-icon>
@@ -64,7 +64,11 @@ export default {
   data() {
     return {};
   },
-  methods: {},
+  methods: {
+    goto() {
+      this.$router.push("/practiceMain");
+    }
+  },
   mounted() {}
 };
 </script>
