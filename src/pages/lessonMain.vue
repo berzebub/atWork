@@ -1,21 +1,10 @@
 <template>
   <div>
-    Lesson Main
     <!-- หน้าแสดงข้อมูล -->
     <div>
-      <div>
-        <q-btn round color="primary" icon="fas fa-plus" />
+      <div class="q-pa-md" align="center">
+        <q-btn @click="addPractice()" style="width:190px" dense color="blue-grey-10" label="เพิ่ม" />
       </div>
-    </div>
-
-    <!-- เพิ่ม Lesson -->
-    <div class="q-pt-md">
-      <span>ชื่อบทเรียน</span>
-      <q-input outlined v-model="text" />
-    </div>
-    <div class="q-pt-md">
-      <span>ชื่อบทเรียน</span>
-      <q-select outlined v-model="model" :options="options" />
     </div>
   </div>
 </template>
