@@ -15,10 +15,10 @@
           >
             <div class="row q-px-md">
               <div class="col-11">
-                <div>{{ item2.name}}</div>
-                <div>{{item2.email }}</div>
+                <div class="text-subtitle1">{{ item2.name}}</div>
+                <div class="text-subtitle2 text-blue-grey-7">{{item2.email }}</div>
                 <span v-for="(item3,index) in item2.userGroup " :key="item3">
-                  <q-badge :label="item3" color="blue-grey-10" outline class="q-mr-sm q-mt-sm"></q-badge>
+                  <q-badge :label="item3" color="blue-grey-7" outline class="q-mr-sm q-mt-sm"></q-badge>
                 </span>
               </div>
               <div class="col" align="right">
@@ -29,7 +29,7 @@
                         <q-item-section @click="editBtn(item2)">แก้ไขข้อมูล</q-item-section>
                       </q-item>
                       <q-item clickable v-close-popup>
-                        <q-item-section @click="deleteBtn(item2.id)">ลบ</q-item-section>
+                        <q-item-section @click="deleteBtn(item2)">ลบ</q-item-section>
                       </q-item>
                     </q-list>
                   </q-menu>
@@ -40,52 +40,54 @@
               v-if="index != dataUser.filter(x => x.name[0] == item).length - 1"
               class="q-my-md"
             />
-            <!-- dialog ต้องการลบข้อมูล -->
-            <q-dialog v-model="deleteDataDialog">
-              <div
-                class="bg-white row justify-center items-center"
-                style="width:320px;height:152px"
-                align="center"
-              >
-                <div>
-                  <div class="text-subtitle1 q-pb-md">คุณต้องการลบ "{{item2.name}}" หรือไม่</div>
-                  <div class="row q-pt-md">
-                    <div class="col-6 q-pr-sm">
-                      <q-btn dense style="width:120px" outline label="ยกเลิก" @click="cencel()"></q-btn>
-                    </div>
-                    <div class="col-6 q-pl-sm" align="right">
-                      <q-btn
-                        dense
-                        color="blue-grey-10"
-                        style="width:120px"
-                        label="ยืนยัน"
-                        @click="saveData()"
-                      ></q-btn>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </q-dialog>
           </q-card-section>
         </q-card>
       </div>
+      <!-- dialog ต้องการลบข้อมูล -->
+      <q-dialog v-model="deleteDataDialog">
+        <div
+          class="bg-white row justify-center items-center"
+          style="width:320px;height:152px"
+          align="center"
+        >
+          <div>
+            <div class="text-subtitle1 q-pb-md">คุณต้องการลบ "{{nameDialog}}" หรือไม่</div>
+            <div class="row q-pt-md">
+              <div class="col-6 q-pr-sm">
+                <q-btn dense style="width:120px" outline label="ยกเลิก" @click="cencel()"></q-btn>
+              </div>
+              <div class="col-6 q-pl-sm" align="right">
+                <q-btn
+                  dense
+                  color="blue-grey-10"
+                  style="width:120px"
+                  label="ยืนยัน"
+                  @click="confirm()"
+                ></q-btn>
+              </div>
+            </div>
+          </div>
+        </div>
+      </q-dialog>
     </div>
   </q-page>
 </template>
 
 <script>
-import { db } from "../router";
+import { db, axios } from "../router";
 export default {
   data() {
     return {
+      deleteKey: "",
       dataUser: [],
       nameArr: "",
-      deleteDataDialog: false
+      deleteDataDialog: false,
+      nameDialog: ""
     };
   },
   methods: {
     loadDataUser() {
-      db.collection("userAdmin")
+      db.collection("user_admin")
         .get()
         .then(doc => {
           let nameArr = [];
@@ -118,21 +120,25 @@ export default {
       this.$router.push("userAdd");
     },
     editBtn(data) {
-      console.log(data);
       this.$router.push({ name: "userEdit", params: data });
     },
     deleteBtn(id) {
+      console.log(id.name);
+      this.deleteKey = id.id;
+      this.nameDialog = id.name;
       this.deleteDataDialog = true;
     },
     cencel() {
       this.deleteDataDialog = false;
     },
     confirm() {
-      db.collection("userAdmin")
-        .doc()
+      db.collection("user_admin")
+        .doc(this.deleteKey)
         .delete()
         .then(() => {
-          console.log("123");
+          this.deleteDataDialog = false;
+          this.dataUser = [];
+          this.loadDataUser();
         });
     }
   },

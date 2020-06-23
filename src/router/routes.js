@@ -35,6 +35,11 @@ const routes = [
         component: () => import("pages/flashcardMain.vue"),
         name: "flashcardMain"
       },
+      {
+        path: "flashcardInput",
+        component: () => import("pages/flashcardInput.vue"),
+        name: "flashcardInput"
+      },
       // ------------------- multiple -------------------
       {
         path: "multipleMain",

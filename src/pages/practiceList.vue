@@ -8,31 +8,43 @@
         :class="$q.platform.is.desktop?'col-3':'col-12'"
         :style="$q.platform.is.desktop? 'width: 360px;': 'width: 100%'"
       >
-        <div class="q-pa-md bg-blue-grey-10 shadow-5 row">
-          <div class="col-1 text-white" align="left">
-            <q-icon name="fas fa-arrow-left"></q-icon>
-          </div>
-          <div class="col">
+        <div class="q-pa-md bg-blue-grey-10 shadow-5">
+          <div>
             <span class="text-white text-h6">แบบฝึกหัด</span>
           </div>
         </div>
-        <div class="q-pt-md shadow-3 bg-white" style=" height: calc(100vh - 64px)">
+        <div class="shadow-3 bg-white" style=" height: calc(100vh - 64px)">
           <q-list class="rounded-borders">
             <q-expansion-item label="อาหารและเครื่องดื่ม">
-              <q-card class="q-px-md q-pb-sm">
-                <div class="row q-pb-sm relative-position cursor-pointer" v-ripple @click="goto()">
+              <q-card>
+                <div
+                  class="row q-px-md q-py-sm relative-position cursor-pointer"
+                  :class="activeKey==1?'bg-blue-grey-4':''"
+                  v-ripple
+                  @click="gotoEdit(1)"
+                >
                   <div class="col">1. จองโต๊ะ</div>
                   <div class="col-1" align="right">
                     <q-icon name="fas fa-sync-alt"></q-icon>
                   </div>
                 </div>
-                <div class="row q-pb-sm relative-position cursor-pointer" v-ripple>
+                <div
+                  class="row q-px-md q-py-sm relative-position cursor-pointer"
+                  :class="activeKey==2?'bg-blue-grey-4':''"
+                  v-ripple
+                  @click="gotoEdit(2)"
+                >
                   <div class="col">2. สั่งอาหาร</div>
                   <div class="col-1" align="right">
                     <q-icon name="fas fa-sync-alt"></q-icon>
                   </div>
                 </div>
-                <div class="row q-pb-sm relative-position cursor-pointer" v-ripple>
+                <div
+                  class="row q-px-md q-py-sm relative-position cursor-pointer"
+                  :class="activeKey==3?'bg-blue-grey-4 ':''"
+                  v-ripple
+                  @click="gotoEdit(3)"
+                >
                   <div class="col">3. สั่งเครื่องดื่ม</div>
                   <div class="col-1" align="right">
                     <q-icon name="fas fa-sync-alt"></q-icon>
@@ -42,20 +54,25 @@
             </q-expansion-item>
             <q-separator />
             <q-expansion-item label="พนักงานต้อนรับ">
-              <q-card class="q-px-md q-pb-sm">
-                <div class="row q-pb-sm">
+              <q-card>
+                <div
+                  class="row q-px-md q-py-sm relative-position cursor-pointer"
+                  :class="isActive?'bg-blue-grey-4':''"
+                  v-ripple
+                  @click="gotoEdit()"
+                >
                   <div class="col">1. จองโต๊ะ</div>
                   <div class="col-1" align="right">
                     <q-icon name="fas fa-sync-alt"></q-icon>
                   </div>
                 </div>
-                <div class="row q-pb-sm">
+                <div class="row q-px-md q-py-sm relative-position cursor-pointer" v-ripple>
                   <div class="col">2. สั่งอาหาร</div>
                   <div class="col-1" align="right">
                     <q-icon name="fas fa-sync-alt"></q-icon>
                   </div>
                 </div>
-                <div class="row q-pb-sm">
+                <div class="row q-px-md q-py-sm relative-position cursor-pointer" v-ripple>
                   <div class="col">3. สั่งเครื่องดื่ม</div>
                   <div class="col-1" align="right">
                     <q-icon name="fas fa-sync-alt"></q-icon>
@@ -83,15 +100,33 @@ export default {
   },
   data() {
     return {
-      isShowPracticeMain: false
+      isShowPracticeMain: false,
+      isActive: false,
+      activeKey: ""
     };
   },
   methods: {
-    goto() {
+    gotoEdit(key) {
+      this.activeKey = key;
+
       if (this.$q.platform.is.desktop) {
         this.isShowPracticeMain = true;
       } else {
         this.$router.push("/practiceMain"); //ต้องใส่ key เพื่อไปยัง L/U นั้น
+      }
+    },
+    gotoPractice(practiceType) {
+      if (practiceType == "flashcard") {
+        this.$router.push("/flashcard");
+      } else if (practiceType == "multipleChoies") {
+        this.$router.push("/multipleMain");
+      } else if (practiceType == "expression") {
+        this.$router.push("/expressionMain/a/a");
+      } else if (practiceType == "vdo") {
+        this.$router.push("/vdo");
+      } else {
+        // ไม่อยู่ type ไหนเลยให้แก้ มีแจ้งเตือน
+        this.$router.push("/practiceList");
       }
     }
   },

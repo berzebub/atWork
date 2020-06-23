@@ -9,7 +9,9 @@
           class="q-pa-md"
           v-if="$route.name=='practiceList' || $route.name=='practiceMain' "
         >
-          <span class="text-h6">แบบฝึกหัด</span>
+          <q-btn dense round flat size="12px" icon="fas fa-arrow-left" to="/practiceList"></q-btn>
+
+          <span class="text-h6 q-ml-sm">แบบฝึกหัด</span>
         </q-toolbar-title>
         <q-toolbar-title class="q-pa-md" v-if="$route.name=='flashcardMain' ">
           <span class="text-h6">การ์ดคำศัพท์</span>
@@ -26,6 +28,7 @@
       </q-toolbar>
     </q-header>
 
+    <!-- เมนูคอมพิวเตอร์ -->
     <q-drawer
       :breakpoint="800"
       show-if-above
@@ -57,9 +60,9 @@
           <div>
             <q-icon name="fas fa-signal" size="25px" />
           </div>
-          <div class="q-pt-sm">ระดับการเรียน</div>
+          <div class="q-pt-sm" style="font-size: 14px">ระดับการเรียน</div>
         </div>
-        <div
+        <!-- <div
           class="full-width q-py-md relative-position cursor-pointer"
           :class="$route.name=='businessMain'?'active-line active-text':'no-active-line'"
           v-ripple
@@ -69,7 +72,7 @@
             <q-icon name="fas fa-building" size="25px" />
           </div>
           <div class="q-pt-sm">กิจการ</div>
-        </div>
+        </div>-->
         <div
           class="full-width q-py-md relative-position cursor-pointer"
           :class="$route.name=='accountMain'?'active-line active-text':'no-active-line'"
@@ -106,6 +109,61 @@
       </div>
       <div class="self-end"></div>
     </q-drawer>
+    <!-- เมนูมือถือ -->
+    <q-footer elevated>
+      <div class="mobile-only row bg-blue-grey-10 text-blue-grey-4" align="center">
+        <div
+          class="col q-pa-xs q-pt-sm relative-position cursor-pointer"
+          :class="$route.name=='practiceMain' || $route.name=='practiceList'?'active-line-bottom active-text':'no-active-line-bottom'"
+          @click="$router.push('/practiceList')"
+          v-ripple
+        >
+          <q-icon name="book" size="25px" />
+          <br />
+          <span style="font-size:11px">แบบฝึกหัด</span>
+        </div>
+        <div
+          class="col q-pa-xs q-pt-sm relative-position cursor-pointer"
+          :class="$route.name=='lessonMain'?'active-line-bottom active-text':'no-active-line-bottom'"
+          @click="$router.push('/lessonMain')"
+          v-ripple
+        >
+          <q-icon name="fas fa-signal" size="25px" />
+          <br />
+          <span style="font-size:11px">ระดับการเรียน</span>
+        </div>
+        <div
+          class="col q-pa-xs q-pt-sm relative-position cursor-pointer"
+          :class="$route.name=='accountMain'?'active-line-bottom active-text':'no-active-line-bottom'"
+          @click="$router.push('/accountMain')"
+          v-ripple
+        >
+          <q-icon name="fas fa-user-tie" size="25px" />
+          <br />
+          <span style="font-size:11px">จัดธุรกิจ</span>
+        </div>
+        <div
+          class="col q-pa-xs q-pt-sm relative-position cursor-pointer"
+          :class="$route.name=='userMain'?'active-line-bottom active-text':'no-active-line-bottom'"
+          @click="$router.push('/userMain')"
+          v-ripple
+        >
+          <q-icon name="fas fa-user-edit" size="25px" />
+          <br />
+          <span style="font-size:11px">ผู้ดูแลระบบ</span>
+        </div>
+        <div
+          class="col q-pa-xs q-pt-sm relative-position cursor-pointer"
+          :class="$route.name=='userInfo'?'active-line-bottom active-text':'no-active-line-bottom'"
+          @click="$router.push('/userInfo')"
+          v-ripple
+        >
+          <q-icon name="fas fa-cog" size="25px" />
+          <br />
+          <span style="font-size:11px">โปรไฟล์</span>
+        </div>
+      </div>
+    </q-footer>
 
     <q-page-container class="bg-grey-1">
       <router-view
@@ -139,5 +197,11 @@ export default {
 }
 .no-active-line {
   border-left: 7px solid #263238;
+}
+.active-line-bottom {
+  border-bottom: 5px solid #fff;
+}
+.no-active-line-bottom {
+  border-bottom: 5px solid #263238;
 }
 </style>

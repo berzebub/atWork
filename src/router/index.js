@@ -30,6 +30,7 @@ export const db = firebase.firestore();
 const storage = firebase.storage();
 export const st = storage.ref();
 export const auth = firebase.auth();
+export const axios = require('axios').default
 Vue.mixin({
   data() {
     return {};
@@ -51,7 +52,9 @@ Vue.mixin({
                 .then(() => {
                   db.collection("practice_draft")
                     .doc(element.id)
-                    .update({ status: "updated" });
+                    .update({
+                      status: "updated"
+                    });
                 });
             } else if (element.data().status == "waitForDelete") {
               db.collection("practice_server")
@@ -68,9 +71,16 @@ Vue.mixin({
     }
   }
 });
+<<<<<<< HEAD
 export default function (/* { store, ssrContext } */) {
+=======
+export default function ( /* { store, ssrContext } */ ) {
+>>>>>>> master
   const Router = new VueRouter({
-    scrollBehavior: () => ({ x: 0, y: 0 }),
+    scrollBehavior: () => ({
+      x: 0,
+      y: 0
+    }),
     routes,
 
     // Leave these as they are and change in quasar.conf.js instead!

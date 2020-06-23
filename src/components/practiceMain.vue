@@ -20,17 +20,17 @@
       <!-- การ์ดแบบฝึกหัด -->
       <div class="q-mb-md rounded-border" style="border: 1px solid #263238; border-radius: 5px">
         <div class="bg-blue-grey-10 text-white q-pa-sm row" align="left">
-          <div class="col">รหัสลำดับ 1000</div>
+          <div class="col self-center">รหัสลำดับ 1000</div>
           <div class="col-1" align="right">
             <!-- ปุ่ม สามจุด -->
             <div class="col-1" align="right">
               <q-btn round size="sm" color="blue-grey-10" icon="fas fa-ellipsis-v">
-                <q-menu auto-close>
+                <q-menu auto-close :offset="[5, 10]" content-class="shadow-3">
                   <q-list style="min-width: 100px">
-                    <q-item clickable>
+                    <q-item clickable @click="editPractice()">
                       <q-item-section>แก้ไขข้อมูล</q-item-section>
                     </q-item>
-                    <q-item clickable>
+                    <q-item clickable @click="deletePractice()">
                       <q-item-section>ลบข้อมูล</q-item-section>
                     </q-item>
                   </q-list>
@@ -54,17 +54,17 @@
 
       <div style="border: 1px solid #263238; border-radius: 5px">
         <div class="bg-blue-grey-10 text-white q-pa-sm row" align="left">
-          <div class="col">รหัสลำดับ 2000</div>
+          <div class="col self-center">รหัสลำดับ 2000</div>
           <!-- ปุ่ม สามจุด -->
           <div class="col-1" align="right">
             <q-btn round size="sm" color="blue-grey-10" icon="fas fa-ellipsis-v">
-              <q-menu auto-close>
+              <q-menu :offset="[5, 10]" auto-close content-class="shadow-3">
                 <q-list style="min-width: 100px">
                   <q-item clickable @click="editPractice()">
-                    <q-item-section>แก้ไขข้อมูล</q-item-section>
+                    <q-item-section>แก้ไข</q-item-section>
                   </q-item>
-                  <q-item clickable>
-                    <q-item-section>ลบข้อมูล</q-item-section>
+                  <q-item clickable @click="deletePractice()">
+                    <q-item-section>ลบ</q-item-section>
                   </q-item>
                 </q-list>
               </q-menu>
@@ -85,6 +85,7 @@
         </div>
       </div>
     </div>
+
     <!-- หน้าเพิ่ม -->
     <div class="q-py-md" v-if="!isShowPractice">
       <div>รหัสลำดับ</div>
@@ -137,6 +138,32 @@
         </div>
       </div>
     </div>
+
+    <!-- dialog delete  -->
+    <q-dialog v-model="dialogDelete" persistent>
+      <q-card class="q-pa-md" style="width: 300px;" align="center">
+        <!-- <q-card-section>
+          <div class="text-h6">Small</div>
+        </q-card-section>-->
+
+        <div class="q-py-lg">ต้องการลบ " 1000-ชื่อแบบฝึกหัด " หรือไม่</div>
+
+        <div class="row">
+          <div class="col">
+            <q-btn
+              outline
+              style="width:120px; color: blue-grey-10;"
+              color
+              label="ยกเลิก"
+              v-close-popup
+            />
+          </div>
+          <div class="col">
+            <q-btn style="width:120px" color="blue-grey-10" label="ยืนยัน" v-close-popup />
+          </div>
+        </div>
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 
@@ -148,7 +175,8 @@ export default {
     return {
       isShowPractice: true,
       namePractice: "",
-      order: ""
+      order: "",
+      dialogDelete: false
     };
   },
   methods: {
@@ -162,6 +190,9 @@ export default {
     },
     cancelPractice() {
       this.isShowPractice = true;
+    },
+    deletePractice() {
+      this.dialogDelete = true;
     }
   },
   mounted() {}
