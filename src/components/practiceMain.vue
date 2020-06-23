@@ -90,12 +90,12 @@
     <div class="q-py-md" v-if="!isShowPractice">
       <div>รหัสลำดับ</div>
       <div>
-        <q-input outlined v-model="order"></q-input>
+        <q-input color="blue-grey-10" outlined v-model.number="data.order" type="number" />
       </div>
       <div class="q-pt-md">ชื่อแบบฝึกหัด</div>
       <div>
         <q-radio
-          v-model="namePractice"
+          v-model="data.practiceType"
           color="blue-grey-10"
           keep-color
           val="flashcard"
@@ -104,7 +104,7 @@
       </div>
       <div>
         <q-radio
-          v-model="namePractice"
+          v-model="data.practiceType"
           color="blue-grey-10"
           keep-color
           val="multipleChoice"
@@ -113,7 +113,7 @@
       </div>
       <div>
         <q-radio
-          v-model="namePractice"
+          v-model="data.practiceType"
           color="blue-grey-10"
           keep-color
           val="expression"
@@ -121,7 +121,13 @@
         ></q-radio>
       </div>
       <div>
-        <q-radio v-model="namePractice" color="blue-grey-10" keep-color val="vdo" label="บทสนทนา"></q-radio>
+        <q-radio
+          v-model="data.practiceType"
+          color="blue-grey-10"
+          keep-color
+          val="vdo"
+          label="บทสนทนา"
+        ></q-radio>
       </div>
       <div class="row q-pa-sm">
         <div class="col q-px-sm" align="right">
@@ -134,7 +140,7 @@
           ></q-btn>
         </div>
         <div class="col q-px-sm">
-          <q-btn class="boxbtn bg-blue-grey-10 text-white" label="บันทึก"></q-btn>
+          <q-btn class="boxbtn bg-blue-grey-10 text-white" label="บันทึก" @click="checkOrder()"></q-btn>
         </div>
       </div>
     </div>
@@ -174,9 +180,13 @@ export default {
   data() {
     return {
       isShowPractice: true,
-      namePractice: "",
-      order: "",
-      dialogDelete: false
+      dialogDelete: false,
+      data: {
+        order: "",
+        practiceType: "flashcard",
+        levelId: "",
+        unitId: ""
+      }
     };
   },
   methods: {
@@ -189,10 +199,36 @@ export default {
       this.isShowPractice = false;
     },
     cancelPractice() {
+      // ยกเลิกการแก้ไขแบบฝึกหัด
       this.isShowPractice = true;
     },
     deletePractice() {
       this.dialogDelete = true;
+      //  db.collection("practiceList")
+      //   .doc(this.deleteKey)
+      //   .delete()
+      //   .then(() => {
+      //     this.loadDataAll();
+      //     this.text = "ลบข้อมูลเรียบร้อย";
+      //     this.deleteDialog = false;
+      //     this.finishDialog = true;
+      //   });
+    },
+    saveBtn() {
+      console.log("บันทึก");
+      db.collection("practice_list")
+        .add(this.data)
+        .then(doc => {
+          console.log("เรียบร้อย");
+        });
+    },
+    checkOrder() {
+      this.data.order;
+      db.collection("practice_list")
+        .get()
+        .then(doc => {
+          console.log(doc.id);
+        });
     }
   },
   mounted() {}
