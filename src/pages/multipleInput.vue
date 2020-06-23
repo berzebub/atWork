@@ -353,11 +353,6 @@ export default {
       dataFile3: null,
       dataFile4: null,
       data: {
-        practiceId: "m",
-        levelId: "aa",
-        unitId: "cc",
-        status: "notSync",
-        key: "",
         order: "",
         question: "",
         description: "",
@@ -369,7 +364,7 @@ export default {
           { choice: "", soundUrl: "" }
         ],
         imageUrl: "",
-        soundUrl: "",
+        audioUrl: "",
         isAnswerSound: false
       },
       choices: ["", "", "", ""],
@@ -384,7 +379,7 @@ export default {
   },
   methods: {
     loadDataEdit() {
-      db.collection("practice_draft")
+      db.collection("multiple_draft")
         .doc(this.$route.params.key)
         .get()
         .then(doc => {
@@ -406,7 +401,6 @@ export default {
       }
       if (hasChoice.length < 2) {
         let index = this.choices.findIndex(x => x == "");
-        console.log(index);
         if (index == 0) {
           this.isChoice1 = false;
         } else if (index == 1) {
@@ -414,30 +408,70 @@ export default {
         }
         return;
       }
+      let change = [
+        { choice: this.choices[0] },
+        { choice: this.choices[1] },
+        { choice: this.choices[2] },
+        { choice: this.choices[3] }
+      ];
+      this.data.choices = change;
       if (this.$route.name == "multipleInputAdd") {
-        let change = [
-          { choice: this.choices[0] },
-          { choice: this.choices[1] },
-          { choice: this.choices[2] },
-          { choice: this.choices[3] }
-        ];
-        this.data.choices = change;
-        db.collection("practice_draft")
+        db.collection("multiple_draft")
           .add(this.data)
-          .then(doc => {
-            db.collection("practice_draft")
-              .doc(doc.id)
-              .update({ key: doc.id });
+          .then(async doc => {
             this.finishDialog = true;
             this.text = "บันทึกข้อมูลเรียบร้อย";
+            if (this.uploadImg) {
+              let getImage = await st
+                .child("/multiple/image/" + doc.id + ".jpg")
+                .put(this.uploadImg);
+
+              console.log(getImage);
+              console.log(getImage.ref);
+              let getUrl = await getImage.ref.getDownloadURL();
+              console.log(getUrl);
+              db.collection("multiple_draft")
+                .doc(doc.id)
+                .update({ imageUrl: "test" });
+            }
+            if (this.uploadSound) {
+              let getImage = st
+                .child("/multiple/audio/" + doc.id + ".mp3")
+                .put(this.uploadSound);
+            }
+            return;
             // this.$router.push("/multipleMain");
+            if (this.data.isAnswerSound == true) {
+              if (this.dataFile1) {
+                st.child("/multiple/audio/" + doc.id + ".mp3").put(
+                  this.uploadSound
+                );
+              }
+              if (this.dataFile2) {
+                st.child("/multiple/audio/" + doc.id + ".mp3").put(
+                  this.uploadSound
+                );
+              }
+              if (this.dataFile3) {
+                st.child("/multiple/audio/" + doc.id + ".mp3").put(
+                  this.uploadSound
+                );
+              }
+              if (this.dataFile4) {
+                st.child("/multiple/audio/" + doc.id + ".mp3").put(
+                  this.uploadSound
+                );
+              }
+            }
           });
       } else {
-        db.collection("practice_draft")
+        db.collection("multiple_draft")
           .doc(this.$route.params.key)
           .set(this.data)
           .then(doc => {
-            this.$router.push("/multipleMain");
+            this.finishDialog = true;
+            this.text = "บันทึกข้อมูลเรียบร้อย";
+            // this.$router.push("/multipleMain");
           });
       }
     },

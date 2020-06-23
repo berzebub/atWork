@@ -235,6 +235,7 @@ export default {
     loadDataAll() {
       this.dataDraft = [];
       db.collection("practice_draft")
+        .where("practiceId", "==", "m")
         .get()
         .then(doc => {
           doc.forEach(element => {
