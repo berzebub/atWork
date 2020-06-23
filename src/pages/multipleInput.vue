@@ -353,6 +353,10 @@ export default {
       dataFile3: null,
       dataFile4: null,
       data: {
+        practiceId: "m",
+        levelId: "aa",
+        unitId: "cc",
+        status: "notSync",
         key: "",
         order: "",
         question: "",
@@ -380,7 +384,7 @@ export default {
   },
   methods: {
     loadDataEdit() {
-      db.collection("multiple_draft")
+      db.collection("practice_draft")
         .doc(this.$route.params.key)
         .get()
         .then(doc => {
@@ -418,10 +422,10 @@ export default {
           { choice: this.choices[3] }
         ];
         this.data.choices = change;
-        db.collection("multiple_draft")
+        db.collection("practice_draft")
           .add(this.data)
           .then(doc => {
-            db.collection("multiple_draft")
+            db.collection("practice_draft")
               .doc(doc.id)
               .update({ key: doc.id });
             this.finishDialog = true;
@@ -429,7 +433,7 @@ export default {
             // this.$router.push("/multipleMain");
           });
       } else {
-        db.collection("multiple_draft")
+        db.collection("practice_draft")
           .doc(this.$route.params.key)
           .set(this.data)
           .then(doc => {

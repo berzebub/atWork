@@ -9,7 +9,7 @@
               <q-radio
                 color="blue-grey-10"
                 @input="loadDraft()"
-                v-model="server"
+                v-model="status"
                 val="draft"
                 label="แบบร่าง"
               />
@@ -18,7 +18,7 @@
               <q-radio
                 color="blue-grey-10"
                 @input="loadServer()"
-                v-model="server"
+                v-model="status"
                 val="server"
                 label="เซิร์ฟเวอร์"
               />
@@ -221,7 +221,7 @@ export default {
       orderId: "",
       instrunctionTh: "",
       instrunctionEng: "",
-      server: "draft",
+      status: "draft",
       questionDialog: false,
       deleteDialog: false,
       finishDialog: false,
@@ -234,12 +234,12 @@ export default {
   methods: {
     loadDataAll() {
       this.dataDraft = [];
-      db.collection("multiple_draft")
+      db.collection("practice_draft")
         .get()
         .then(doc => {
           doc.forEach(element => {
             let dataKey = {
-              key: element.data().key
+              key: element.id
             };
             let final = {
               ...dataKey,
@@ -286,7 +286,7 @@ export default {
       this.finishDialog = true;
     },
     deleteBtn() {
-      db.collection("multiple_draft")
+      db.collection("practice_draft")
         .doc(this.deleteKey)
         .delete()
         .then(() => {
