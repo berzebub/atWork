@@ -25,7 +25,6 @@
       </div>
       <!-- ปุ่มเพิ่ม -->
       <div v-if="expressionType == 'server'" class style="height:36px"></div>
-      <q-btn @click="sync('a')">sync</q-btn>
       <div class align="center">
         <q-btn
           v-if="expressionType == 'draft'"
@@ -37,6 +36,7 @@
         ></q-btn>
       </div>
       <!-- การ์ดข้อความ -->
+
       <q-card
         v-for="(item, index) in  showDataExpression"
         v-show="item.collection == expressionType"
@@ -44,32 +44,64 @@
         class="q-mt-md"
         style="width:100%"
       >
-        <q-card-section
-          class="text-white"
-          :class="item.status == 'waitForDelete' ? 'bg-red': 'bg-blue-grey-10'"
-        >
+        <div
+          v-if="item.status == 'waitForDelete'"
+          class="brx absolute-center fit row items-center justify-center"
+          style="background-color:black;opacity:0.6; z-index:1000"
+        ></div>
+        <!-- cancel-delete -->
+        <q-btn
+          v-if="item.status == 'waitForDelete'"
+          @click="cancelDeleteExpression(item.id,item.order)"
+          style="width:190px; z-index:2000"
+          class="absolute-center bg-blue-grey-10 text-white"
+        >ยกเลิกการลบ</q-btn>
+        <q-card-section class="text-white bg-blue-grey-10">
           <div class="text-h6">รหัสลำดับ {{item.order}}</div>
           <div class="row items-center absolute-right">
+            <!-- icon-delete -->
+            <q-icon
+              @click="openDialogDelete(item.id,item.order)"
+              v-if="expressionType == 'draft'"
+              class="cursor-pointer q-pr-lg desktop-only"
+              name="fas fa-trash-alt"
+              style="color:white; font-size: 1.4em;"
+            />
+            <!-- icon-edit -->
+            <q-icon
+              @click="editDataExpression(item)"
+              v-if="expressionType == 'draft'"
+              class="cursor-pointer q-pr-md desktop-only"
+              name="fas fa-edit"
+              style="color:white; font-size: 1.4em;"
+            />
+            <!-- icon-menu -->
             <q-icon
               v-if="expressionType == 'draft'"
-              class="cursor-pointer q-pr-md"
+              class="cursor-pointer q-pr-md mobile-only"
               name="fas fa-ellipsis-v"
               style="color:white; font-size: 1.4em;"
             />
             <!-- เมนูแก้ไข-ลบ -->
-            <q-menu>
+            <q-menu no-refocus>
               <q-list style="min-width: 120px">
-                <div @click="editDataExpression(item)" class="q-ma-md cursor-pointer">แก้ไขข้อมูล</div>
-                <div
+                <q-item
+                  clickable
+                  v-close-popup
+                  @click="editDataExpression(item)"
+                  class="cursor-pointer mobile-only"
+                >
+                  <q-item-section>แก้ไข</q-item-section>
+                </q-item>
+                <q-item
+                  clickable
+                  v-close-popup
                   v-if="item.status != 'waitForDelete'"
                   @click="openDialogDelete(item.id,item.order)"
-                  class="q-ma-md cursor-pointer"
-                >ลบ</div>
-                <div
-                  v-if="item.status == 'waitForDelete'"
-                  @click="openDialogCancelDelete(item.id,item.order)"
-                  class="q-ma-md cursor-pointer text-red"
-                >ยกเลิกการลบ</div>
+                  class="cursor-pointer mobile-only"
+                >
+                  <q-item-section>ลบ</q-item-section>
+                </q-item>
               </q-list>
             </q-menu>
           </div>
@@ -145,23 +177,6 @@ export default {
   },
   methods: {
     loadDataExpression() {
-      // let collection;
-      // if (mode == "server") {
-      //   collection = db.collection("expression_server");
-      // } else {
-      //   collection = db.collection("expression_draft");
-      // }
-      // collection.get().then(data => {
-      //   let temp = [];
-      //   data.forEach(element => {
-      //     temp.push({ ...element.data(), id: element.id });
-      //   });
-      //   temp.sort((a, b) => {
-      //     return a.order - b.order;
-      //   });
-      //   this.showDataExpressionDraft = temp;
-      // });
-
       db.collection("practice_draft")
         .where("levelId", "==", this.levelId)
         .where("unitId", "==", this.unitId)
@@ -191,33 +206,14 @@ export default {
             });
         });
     },
-    coppy() {
-      db.collection("practice_draft")
-        .where("levelId", "==", "a")
-        .where("unitId", "==", "a")
-        .get()
-        .then(data => {
-          data.forEach(element => {
-            db.collection("practice_server")
-              .doc(element.id)
-              .set(element.data());
-          });
-        });
-    },
     openDialogDelete(id, order) {
-      console.log(id, order);
       this.dialogDelete = true;
       this.getId = id;
       this.getOrder = order;
     },
-    openDialogCancelDelete(id, order) {
-      this.dialogCancelDelete = true;
-      this.getId = id;
-      this.getOrder = order;
-    },
-    cancelDeleteExpression() {
+    cancelDeleteExpression(id) {
       db.collection("practice_draft")
-        .doc(this.getId)
+        .doc(id)
         .update({ status: "notSync" })
         .then(() => {
           this.getId = "";
@@ -242,7 +238,6 @@ export default {
   },
   mounted() {
     this.loadDataExpression();
-    // this.coppy();
 
     // var user = auth.currentUser;
     // console.log(user.email);
