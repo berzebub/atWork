@@ -91,7 +91,7 @@
                   @click="editDataExpression(item)"
                   class="cursor-pointer mobile-only"
                 >
-                  <q-item-section>แก้ไขข้อมูล</q-item-section>
+                  <q-item-section>แก้ไข</q-item-section>
                 </q-item>
                 <q-item
                   clickable
