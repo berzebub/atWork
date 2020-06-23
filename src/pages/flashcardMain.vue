@@ -11,11 +11,21 @@
             val="draft"
             label="แบบร่าง"
           />
-          <q-radio color="blue-grey-10" v-model="expressionType" val="server" label="เซิร์ฟเวอร์" />
+          <q-radio
+            color="blue-grey-10"
+            v-model="expressionType"
+            val="server"
+            label="เซิร์ฟเวอร์"
+          />
         </div>
         <!-- ปุ่มพิมพ์ -->
         <div class="mobile-hide">
-          <q-btn v-if="expressionType == 'draft'" round color="blue-grey-10" icon="fas fa-print" />
+          <q-btn
+            v-if="expressionType == 'draft'"
+            round
+            color="blue-grey-10"
+            icon="fas fa-print"
+          />
         </div>
       </div>
       <!-- หัวข้อ -->
@@ -31,7 +41,7 @@
           v-if="expressionType == 'draft'"
           style="width:190px; height:36px"
           class="bg-blue-grey-10"
-          :to="'/expressionInput/'+ levelId+'/'+unitId"
+          :to="'/flashcardInput'"
           color="white"
           label="เพิ่มคำศัพท์ "
         ></q-btn>
@@ -39,7 +49,7 @@
       <!-- การ์ดข้อความ -->
 
       <q-card
-        v-for="(item, index) in  showDataExpression"
+        v-for="(item, index) in showDataExpression"
         v-show="item.collection == expressionType"
         :key="index"
         class="q-mt-md"
@@ -53,16 +63,17 @@
         <!-- cancel-delete -->
         <q-btn
           v-if="item.status == 'waitForDelete'"
-          @click="cancelDeleteExpression(item.id,item.order)"
+          @click="cancelDeleteExpression(item.id, item.order)"
           style="width:190px; z-index:2000"
           class="absolute-center bg-blue-grey-10 text-white"
-        >ยกเลิกการลบ</q-btn>
+          >ยกเลิกการลบ</q-btn
+        >
         <q-card-section class="text-white bg-blue-grey-10">
-          <div class="text-h6">รหัสลำดับ {{item.order}}</div>
+          <div class="text-h6">รหัสลำดับ {{ item.order }}</div>
           <div class="row items-center absolute-right">
             <!-- icon-delete -->
             <q-icon
-              @click="openDialogDelete(item.id,item.order)"
+              @click="openDialogDelete(item.id, item.order)"
               v-if="expressionType == 'draft'"
               class="cursor-pointer q-pr-lg desktop-only"
               name="fas fa-trash-alt"
@@ -98,7 +109,7 @@
                   clickable
                   v-close-popup
                   v-if="item.status != 'waitForDelete'"
-                  @click="openDialogDelete(item.id,item.order)"
+                  @click="openDialogDelete(item.id, item.order)"
                   class="cursor-pointer mobile-only"
                 >
                   <q-item-section>ลบ</q-item-section>
@@ -108,11 +119,28 @@
           </div>
         </q-card-section>
         <!-- ประโยคข้อความ -->
-        <q-card-section v-for="(item2, index2) in item.expression" class="no-padding">
-          <div v-if="item2.speaker == 'employee'" class="q-px-md q-pt-md q-pb-sm text-h6">พนักงาน:</div>
-          <div v-if="item2.speaker == 'customer'" class="q-px-md q-pt-md q-pb-sm text-h6">ลูกค้า:</div>
-          <div class="q-px-md q-p-md q-pb-sm text-h6">{{item2.sentenceEng}}</div>
-          <div class="q-px-md q-pb-md text-subtitle1">{{item2.sentenceTh}}</div>
+        <q-card-section
+          v-for="(item2, index2) in item.expression"
+          class="no-padding"
+        >
+          <div
+            v-if="item2.speaker == 'employee'"
+            class="q-px-md q-pt-md q-pb-sm text-h6"
+          >
+            พนักงาน:
+          </div>
+          <div
+            v-if="item2.speaker == 'customer'"
+            class="q-px-md q-pt-md q-pb-sm text-h6"
+          >
+            ลูกค้า:
+          </div>
+          <div class="q-px-md q-p-md q-pb-sm text-h6">
+            {{ item2.sentenceEng }}
+          </div>
+          <div class="q-px-md q-pb-md text-subtitle1">
+            {{ item2.sentenceTh }}
+          </div>
 
           <q-separator />
         </q-card-section>
@@ -125,11 +153,19 @@
     <q-dialog v-model="dialogDelete" persistent>
       <q-card style="min-width: 350px; height:170px">
         <q-card-section>
-          <div class="q-mt-lg text-h6">ต้องการลบ "รหัสลำดับ {{getOrder}}" หรือไม่</div>
+          <div class="q-mt-lg text-h6">
+            ต้องการลบ "รหัสลำดับ {{ getOrder }}" หรือไม่
+          </div>
         </q-card-section>
 
         <q-card-actions align="center">
-          <q-btn style="width:120px" outline color="blue-grey-10" label="ยกเลิก" v-close-popup />
+          <q-btn
+            style="width:120px"
+            outline
+            color="blue-grey-10"
+            label="ยกเลิก"
+            v-close-popup
+          />
           <q-btn
             @click="deleteDataExpression()"
             color="blue-grey-10"
@@ -143,11 +179,19 @@
     <q-dialog v-model="dialogCancelDelete" persistent>
       <q-card style="min-width: 350px; height:170px">
         <q-card-section>
-          <div class="q-mt-lg text-h6">ต้องการลบ "รหัสลำดับ {{getOrder}}" หรือไม่</div>
+          <div class="q-mt-lg text-h6">
+            ต้องการลบ "รหัสลำดับ {{ getOrder }}" หรือไม่
+          </div>
         </q-card-section>
 
         <q-card-actions align="center">
-          <q-btn style="width:120px" outline color="blue-grey-10" label="ยกเลิก" v-close-popup />
+          <q-btn
+            style="width:120px"
+            outline
+            color="blue-grey-10"
+            label="ยกเลิก"
+            v-close-popup
+          />
           <q-btn
             @click="cancelDeleteExpression()"
             color="blue-grey-10"
@@ -177,36 +221,36 @@ export default {
     };
   },
   methods: {
-    loadDataExpression() {
-      db.collection("practice_draft")
-        .where("levelId", "==", this.levelId)
-        .where("unitId", "==", this.unitId)
-        .onSnapshot(dataDraft => {
-          let temp = [];
-          dataDraft.forEach(element => {
-            temp.push({
-              ...element.data(),
-              collection: "draft",
-              id: element.id
-            });
-          });
-          db.collection("practice_server")
-            .get()
-            .then(dataServer => {
-              dataServer.forEach(element => {
-                temp.push({
-                  ...element.data(),
-                  collection: "server",
-                  id: element.id
-                });
-              });
-              temp.sort((a, b) => {
-                return a.order - b.order;
-              });
-              this.showDataExpression = temp;
-            });
-        });
-    },
+    // loadDataFlashcard() {
+    //   db.collection("practice_draft")
+    //     .where("levelId", "==", this.levelId)
+    //     .where("unitId", "==", this.unitId)
+    //     .onSnapshot(dataDraft => {
+    //       let temp = [];
+    //       dataDraft.forEach(element => {
+    //         temp.push({
+    //           ...element.data(),
+    //           collection: "draft",
+    //           id: element.id
+    //         });
+    //       });
+    //       db.collection("practice_server")
+    //         .get()
+    //         .then(dataServer => {
+    //           dataServer.forEach(element => {
+    //             temp.push({
+    //               ...element.data(),
+    //               collection: "server",
+    //               id: element.id
+    //             });
+    //           });
+    //           temp.sort((a, b) => {
+    //             return a.order - b.order;
+    //           });
+    //           this.showDataExpression = temp;
+    //         });
+    //     });
+    // },
     openDialogDelete(id, order) {
       this.dialogDelete = true;
       this.getId = id;
@@ -238,13 +282,11 @@ export default {
     }
   },
   mounted() {
-    this.loadDataExpression();
-
+    // this.loadDataFlashcard();
     // var user = auth.currentUser;
     // console.log(user.email);
   }
 };
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

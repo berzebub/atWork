@@ -27,6 +27,9 @@ body {
 .brg {
   border: 1px solid #263238;
 }
+.brg2 {
+  border: 1px solid #d4d4d4;
+}
 
 .br {
   border-radius: 10px;
