@@ -28,7 +28,7 @@ firebase.initializeApp(firebaseConfig);
 
 export const db = firebase.firestore();
 export const auth = firebase.auth();
-export const axios = require('axios'.default)
+export const axios = require('axios').default
 Vue.mixin({
   data() {
     return {};

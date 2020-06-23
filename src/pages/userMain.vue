@@ -74,7 +74,7 @@
 </template>
 
 <script>
-import { db } from "../router";
+import { db, axios } from "../router";
 export default {
   data() {
     return {
