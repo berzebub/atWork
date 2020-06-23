@@ -133,7 +133,7 @@ export default {
       }
       // บันทึกข้อมูล
       if (this.$route.name == "userAdd") {
-        db.collection("userAdmin")
+        db.collection("user_admin")
           .add(this.dataUser)
           .then(() => {
             this.saveDataDialog = true;
@@ -194,7 +194,7 @@ export default {
       }
     },
     editMode() {
-      db.collection("userAdmin")
+      db.collection("user_admin")
         .doc(this.$route.params.id)
         .update(this.dataUser)
         .then(() => {
