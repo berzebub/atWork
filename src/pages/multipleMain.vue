@@ -39,7 +39,7 @@
       <!-- box คำสั่ง -->
       <div class="box text-left q-my-md">
         <div class="bg-blue-grey-10 text-white q-py-sm q-px-md boxQuestion row justify-between">
-          <div class="row items-center">คำสั่ง</div>
+          <div class="row text-subtitle1 items-center">คำสั่ง</div>
           <div>
             <q-btn @click="editQuestion()" size="sm" round icon="far fa-edit" />
           </div>
@@ -62,12 +62,12 @@
         />
       </div>
       <!-- โชว์ DATA -->
-      <div v-for="item in data" :key="item.id" class="box text-left q-my-md">
+      <div v-for="(item,index) in data" :key="index" class="box text-left q-my-md">
         <div class="boxQuestion bg-blue-grey-10 text-white q-py-xs q-px-md row justify-between">
-          <div class="col row items-center">รหัสลำดับ {{item.orderid}}</div>
+          <div class="col row items-center">รหัสลำดับ {{item.order}}</div>
           <div class="q-px-xs">
             <q-btn
-              @click="deleteData(item.key, item.orderid)"
+              @click="deleteData(item.key, item.order)"
               size="sm"
               round
               icon="far fa-trash-alt"
@@ -82,32 +82,44 @@
         </div>
         <div class="q-px-md">
           <div>
-            <span :class="{'bg-secondary answer ' : item.correctAnswer == 1}" v-if="item.choice[0]">
+            <span
+              :class="{'bg-secondary answer ' : item.correctAnswer == 1}"
+              v-if="item.choices[0].choice"
+            >
               1)
-              <span v-html=" item.choice[0]"></span>
+              <span v-html="item.choices[0].choice"></span>
             </span>
           </div>
           <div>
-            <span :class="{'bg-secondary answer' : item.correctAnswer == 2}" v-if="item.choice[1]">
+            <span
+              :class="{'bg-secondary answer' : item.correctAnswer == 2}"
+              v-if="item.choices[1].choice"
+            >
               2)
-              <span v-html=" item.choice[1]"></span>
+              <span v-html=" item.choices[1].choice"></span>
             </span>
           </div>
           <div>
-            <span :class="{'bg-secondary answer' : item.correctAnswer == 3}" v-if="item.choice[2]">
+            <span
+              :class="{'bg-secondary answer' : item.correctAnswer == 3}"
+              v-if="item.choices[2].choice"
+            >
               3)
-              <span v-html=" item.choice[2]"></span>
+              <span v-html="item.choices[2].choice"></span>
             </span>
           </div>
           <div>
-            <span :class="{'bg-secondary answer' : item.correctAnswer == 4}" v-if="item.choice[3]">
+            <span
+              :class="{'bg-secondary answer' : item.correctAnswer == 4}"
+              v-if="item.choices[3].choice"
+            >
               4)
-              <span v-html=" item.choice[3]"></span>
+              <span v-html="item.choices[3].choice"></span>
             </span>
           </div>
         </div>
         <div class="q-pa-md">
-          <span v-html="item.meaning "></span>
+          <span v-html="item.description "></span>
         </div>
       </div>
       <!-- dialog แก่ไข คำสั่ง -->
@@ -221,6 +233,7 @@ export default {
   },
   methods: {
     loadDataAll() {
+      this.dataDraft = [];
       db.collection("multiple_draft")
         .get()
         .then(doc => {
@@ -232,26 +245,21 @@ export default {
               ...dataKey,
               ...element.data()
             };
-            console.log(final);
             this.dataDraft.push(final);
           });
           this.dataDraft.sort((a, b) => {
-            return a.orderid - b.orderid;
+            return a.order - b.order;
           });
         });
       this.loadDraft();
     },
     loadDraft() {
       this.data = [];
-      if (this.server == "draft") {
-        this.data = this.dataDraft;
-      }
+      this.data = this.dataDraft;
+      this.finishDialog = false;
     },
     loadServer() {
       this.data = [];
-      if (this.server == "server") {
-        console.log("server");
-      }
     },
     addQuestion() {
       this.$router.push("/multipleInputAdd");
@@ -282,7 +290,7 @@ export default {
         .doc(this.deleteKey)
         .delete()
         .then(() => {
-          this.loadDraft();
+          this.loadDataAll();
           this.text = "ลบข้อมูลเรียบร้อย";
           this.deleteDialog = false;
           this.finishDialog = true;
@@ -294,7 +302,7 @@ export default {
       this.deleteKey = key;
     },
     editData(key) {
-      this.$router.push(this.$router.push("/multipleInputEdit" + "/" + key));
+      this.$router.push("/multipleInputEdit" + "/" + key);
     }
   },
   mounted() {

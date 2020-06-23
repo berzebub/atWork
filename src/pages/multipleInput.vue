@@ -10,7 +10,7 @@
             outlined
             ref="orderid"
             type="number"
-            v-model.number="data.orderid"
+            v-model.number="data.order"
             dense
             :rules="[ val => !!val || 'กรุณาใส่รหัสลำดับ']"
           />
@@ -35,21 +35,21 @@
       <div class="row">
         <div class="q-py-md col-md-6 col-sm-6 col-xs-12">
           <div>อัปโหลดรูปภาพ</div>
-          <q-file bg-color="white" class="q-pa-sm" outlined v-model="data.uploadImg">
+          <q-file accept="image/*" bg-color="white" class="q-pa-sm" outlined v-model="uploadImg ">
             <template v-slot:append>
-              <q-btn
-                v-if="!uploadImg"
-                @click.stop="uploadImg = null"
+              <div
                 style="width:100px"
-                label="เลือกไฟล์"
-                color="blue-grey-10"
-              />
-              <q-btn
-                v-if="uploadImg"
+                class="text-subtitle1 rounded-borders text-center bg-blue-grey-10 text-white q-pa-xs cursor-pointer"
                 @click.stop="uploadImg = null"
-                color="blue-grey-10"
-                icon="far fa-trash-alt"
-              />
+                v-if="!uploadImg"
+              >เลือกไฟล์</div>
+              <div
+                class="cursor-pointer rounded-borders text-white bg-blue-grey-10"
+                v-if="uploadImg "
+                @click.stop="uploadImg  = null"
+              >
+                <span style class="far fa-trash-alt q-px-xs"></span>
+              </div>
             </template>
             <div
               style="width:1000px"
@@ -60,20 +60,21 @@
         </div>
         <div class="q-py-md col-md-6 col-sm-6 col-xs-12">
           <div>อัปโหลดเสียง</div>
-          <q-file bg-color="white" class="q-pa-sm" outlined v-model="data.uploadSound">
+          <q-file accept="audio/*" bg-color="white" class="q-pa-sm" outlined v-model="uploadSound">
             <template v-slot:append>
-              <q-btn
+              <div
+                style="width:100px;"
+                class="text-subtitle1 rounded-borders text-center bg-blue-grey-10 text-white q-pa-xs cursor-pointer"
+                @click.stop="uploadSound = null"
                 v-if="!uploadSound"
-                style="width:100px"
-                label="เลือกไฟล์"
-                color="blue-grey-10"
-              />
-              <q-btn
+              >เลือกไฟล์</div>
+              <div
+                class="cursor-pointer rounded-borders text-white bg-blue-grey-10"
                 v-if="uploadSound"
                 @click.stop="uploadSound = null"
-                color="blue-grey-10"
-                icon="far fa-trash-alt"
-              />
+              >
+                <span style class="far fa-trash-alt q-px-xs"></span>
+              </div>
             </template>
             <div
               style="width:1000px"
@@ -89,7 +90,7 @@
           <div class="col-6">
             <q-checkbox
               style="margin: -10px;"
-              v-model="isAnswerSound"
+              v-model="data.isAnswerSound"
               val="teal"
               label="แบบมีเสียง"
               color="blue-grey-10"
@@ -97,7 +98,7 @@
           </div>
         </div>
       </div>
-      <div v-if="isAnswerSound">
+      <div>
         <div class="q-py-sm">
           <span>ตัวเลือก #1</span>
           <div>
@@ -106,23 +107,34 @@
               outlined
               :content-class="!isChoice1? 'brx' : null "
               @input="checkEditor('choice1')"
-              :definitions="{
-          upload: {
-          tip: 'Upload to cloud',
-          icon: 'cloud_upload',
-          label: 'อัปโหลดเสียง',
-          handler: uploadIt
-        }
-      }"
-              :toolbar="[
-        ['bold', 'italic', 'underline'],
-        ['upload', 'save']
-      ]"
-              v-model="data.choice[0]"
+              :definitions="data.isAnswerSound ?  {
+               upload: {icon: 'cloud_upload',label: 'อัปโหลดเสียง',handler: uploadIt1   }} : null "
+              :toolbar="[['bold', 'italic', 'underline'],['upload', 'save']]"
+              v-model="choices[0]"
               min-height="5rem"
             />
-            <q-file bg-color="white" square outlined v-model="model" label="ยังไม่ใส่ไฟล์เสียง" />
+            <div v-if="data.isAnswerSound" class="q-pa-md box row">
+              <div class="col row justify-center self-center">
+                <span v-if="!dataFile1">ยังไม่ใส่ไฟล์เสียง</span>
+                <span v-if="dataFile1">{{dataFile1}}</span>
+              </div>
+              <span v-if="dataFile1">
+                <q-btn
+                  @click="dataFile1 = null"
+                  dense
+                  icon="far fa-trash-alt"
+                  color="blue-grey-10"
+                />
+              </span>
+            </div>
           </div>
+          <input
+            @change="fileSound1($event.target.files)"
+            type="file"
+            :id="'soundId1'"
+            accept="audio/*"
+            class="visually-hidden"
+          />
         </div>
         <div class="q-py-sm">
           <span>ตัวเลือก #2</span>
@@ -132,22 +144,34 @@
               outlined
               :content-class="!isChoice2? 'brx' : null "
               @input="checkEditor('choice2')"
-              :definitions="{
-          upload: {
-          tip: 'Upload to cloud',
-          icon: 'cloud_upload',
-          label: 'อัปโหลดเสียง',
-          handler: uploadIt
-        }
-      }"
-              :toolbar="[
-        ['bold', 'italic', 'underline'],
-        ['upload', 'save']
-      ]"
-              v-model="data.choice[1]"
+              :definitions="data.isAnswerSound ?  {
+               upload: {icon: 'cloud_upload',label: 'อัปโหลดเสียง',handler: uploadIt2   }} : null "
+              :toolbar="[['bold', 'italic', 'underline'],['upload', 'save']]"
+              v-model="choices[1]"
               min-height="5rem"
             />
+            <div v-if="data.isAnswerSound" class="q-pa-md box row">
+              <div class="col row justify-center self-center">
+                <span v-if="!dataFile2">ยังไม่ใส่ไฟล์เสียง</span>
+                <span v-if="dataFile2">{{dataFile2}}</span>
+              </div>
+              <span v-if="dataFile2">
+                <q-btn
+                  @click="dataFile2 = null"
+                  dense
+                  icon="far fa-trash-alt"
+                  color="blue-grey-10"
+                />
+              </span>
+            </div>
           </div>
+          <input
+            @change="fileSound2($event.target.files)"
+            type="file"
+            :id="'soundId2'"
+            accept="audio/*"
+            class="visually-hidden"
+          />
         </div>
         <div class="q-py-sm">
           <span>ตัวเลือก #3</span>
@@ -155,23 +179,34 @@
             <q-editor
               square
               outlined
-              @input="checkEditor('choice3')"
-              :definitions="{
-          upload: {
-          tip: 'Upload to cloud',
-          icon: 'cloud_upload',
-          label: 'อัปโหลดเสียง',
-          handler: uploadIt
-        }
-      }"
-              :toolbar="[
-        ['bold', 'italic', 'underline'],
-        ['upload', 'save']
-      ]"
-              v-model="data.choice[2]"
+              :definitions="data.isAnswerSound ?  {
+               upload: {icon: 'cloud_upload',label: 'อัปโหลดเสียง',handler: uploadIt3   }} : null "
+              :toolbar="[['bold', 'italic', 'underline'],['upload', 'save']]"
+              v-model="choices[2]"
               min-height="5rem"
             />
+            <div v-if="data.isAnswerSound" class="q-pa-md box row">
+              <div class="col row justify-center self-center">
+                <span v-if="!dataFile3">ยังไม่ใส่ไฟล์เสียง</span>
+                <span v-if="dataFile3">{{dataFile3}}</span>
+              </div>
+              <span v-if="dataFile3">
+                <q-btn
+                  @click="dataFile3 = null"
+                  dense
+                  icon="far fa-trash-alt"
+                  color="blue-grey-10"
+                />
+              </span>
+            </div>
           </div>
+          <input
+            @change="fileSound3($event.target.files)"
+            type="file"
+            :id="'soundId3'"
+            accept="audio/*"
+            class="visually-hidden"
+          />
         </div>
         <div class="q-py-sm">
           <span>ตัวเลือก #4</span>
@@ -179,85 +214,34 @@
             <q-editor
               square
               outlined
-              @input="checkEditor('choice4')"
-              :definitions="{
-          upload: {
-          tip: 'Upload to cloud',
-          icon: 'cloud_upload',
-          label: 'อัปโหลดเสียง',
-          handler: uploadIt
-        }
-      }"
-              :toolbar="[
-        ['bold', 'italic', 'underline'],
-        ['upload', 'save']
-      ]"
-              v-model="data.choice[3]"
+              :definitions="data.isAnswerSound ?  {
+               upload: {icon: 'cloud_upload',label: 'อัปโหลดเสียง',handler: uploadIt4   }} : null "
+              :toolbar="[['bold', 'italic', 'underline'],['upload', 'save']]"
+              v-model="choices[3]"
               min-height="5rem"
             />
+            <div v-if="data.isAnswerSound" class="q-pa-md box row">
+              <div class="col row justify-center self-center">
+                <span v-if="!dataFile4">ยังไม่ใส่ไฟล์เสียง</span>
+                <span v-if="dataFile4">{{dataFile4}}</span>
+              </div>
+              <span v-if="dataFile4">
+                <q-btn
+                  @click="dataFile4 = null"
+                  dense
+                  icon="far fa-trash-alt"
+                  color="blue-grey-10"
+                />
+              </span>
+            </div>
           </div>
-        </div>
-      </div>
-      <div v-if="!isAnswerSound">
-        <div class="q-py-sm">
-          <span>ตัวเลือก #1</span>
-          <div>
-            <q-editor
-              square
-              outlined
-              :content-class="!isChoice1? 'brx' : null "
-              @input="checkEditor('choice1')"
-              :toolbar="[
-          ['bold', 'italic', 'underline'],
-          ]"
-              v-model="data.choice[0]"
-              min-height="5rem"
-            />
-          </div>
-        </div>
-        <div class="q-py-sm">
-          <span>ตัวเลือก #2</span>
-          <div>
-            <q-editor
-              square
-              outlined
-              :content-class="!isChoice2? 'brx' : null "
-              @input="checkEditor('choice2')"
-              :toolbar="[
-        ['bold', 'italic', 'underline'],
-        ]"
-              v-model="data.choice[1]"
-              min-height="5rem"
-            />
-          </div>
-        </div>
-        <div class="q-py-sm">
-          <span>ตัวเลือก #3</span>
-          <div>
-            <q-editor
-              square
-              outlined
-              :toolbar="[
-        ['bold', 'italic', 'underline'],
-        ]"
-              v-model="data.choice[2]"
-              min-height="5rem"
-            />
-          </div>
-        </div>
-        <div class="q-py-sm">
-          <span>ตัวเลือก #4</span>
-          <div>
-            <q-editor
-              square
-              outlined
-              :toolbar="[
-        ['bold', 'italic', 'underline'],
-        ]"
-              v-model="data.choice[3]"
-              min-height="5rem"
-            />
-          </div>
+          <input
+            @change="fileSound4($event.target.files)"
+            type="file"
+            :id="'soundId4'"
+            accept="audio/*"
+            class="visually-hidden"
+          />
         </div>
       </div>
       <div class="q-py-sm">
@@ -310,7 +294,7 @@
             :toolbar="[
         ['bold', 'italic', 'underline'],
         ]"
-            v-model="data.meaning"
+            v-model="data.description"
             min-height="5rem"
           />
         </div>
@@ -340,32 +324,58 @@
           </div>
         </div>
       </div>
+      <!-- finish -->
+      <q-dialog v-model="finishDialog">
+        <q-card style="max-width:600px;width:100%;height:200px">
+          <div class="text-h6 text-center q-pt-md q-pb-sm">
+            <div class="q-py-md q-mt-md">
+              <q-icon color="secondary" size="46px" name="far fa-check-circle" />
+            </div>
+            <div>{{text}}</div>
+          </div>
+        </q-card>
+      </q-dialog>
     </div>
   </q-page>
 </template>
 
 <script>
-import { db } from "../router";
+import { db, st } from "../router";
 export default {
   data() {
     return {
       file: null,
       uploadImg: null,
       uploadSound: null,
+      user: "",
+      dataFile1: null,
+      dataFile2: null,
+      dataFile3: null,
+      dataFile4: null,
       data: {
         key: "",
-        orderid: "",
+        order: "",
         question: "",
-        meaning: "",
-        choice: ["", "", "", ""],
-        correctAnswer: 1
+        description: "",
+        correctAnswer: 1,
+        choices: [
+          { choice: "", soundUrl: "" },
+          { choice: "", soundUrl: "" },
+          { choice: "", soundUrl: "" },
+          { choice: "", soundUrl: "" }
+        ],
+        imageUrl: "",
+        soundUrl: "",
+        isAnswerSound: false
       },
+      choices: ["", "", "", ""],
       activeType: "messenger",
-      isAnswerSound: false,
       //   เช็คช่องคำถามข้อมูล & ตัวเลือก
       isQuestion: true,
       isChoice1: true,
-      isChoice2: true
+      isChoice2: true,
+      finishDialog: false,
+      text: ""
     };
   },
   methods: {
@@ -374,16 +384,16 @@ export default {
         .doc(this.$route.params.key)
         .get()
         .then(doc => {
+          this.choices = [];
+          let change = doc.data().choices;
+          for (let index = 0; index < change.length; index++) {
+            this.choices.push(change[index].choice);
+          }
           this.data = doc.data();
-          console.log(this.data);
-          // doc.forEach(element => {
-          //   this.data.push(element.data());
-          // });
         });
     },
-
     saveBtn() {
-      let hasChoice = this.data.choice.filter(x => x != "");
+      let hasChoice = this.choices.filter(x => x != "");
       this.$refs.orderid.validate();
       if (this.$refs.orderid.hasError) {
       }
@@ -391,25 +401,41 @@ export default {
         this.isQuestion = false;
       }
       if (hasChoice.length < 2) {
-        let index = this.data.choice.findIndex(x => x == "");
+        let index = this.choices.findIndex(x => x == "");
+        console.log(index);
         if (index == 0) {
           this.isChoice1 = false;
         } else if (index == 1) {
           this.isChoice2 = false;
         }
+        return;
       }
       if (this.$route.name == "multipleInputAdd") {
-        console.log(this.data);
-        db.collection("multiple_draft").add(this.data);
+        let change = [
+          { choice: this.choices[0] },
+          { choice: this.choices[1] },
+          { choice: this.choices[2] },
+          { choice: this.choices[3] }
+        ];
+        this.data.choices = change;
+        db.collection("multiple_draft")
+          .add(this.data)
+          .then(doc => {
+            db.collection("multiple_draft")
+              .doc(doc.id)
+              .update({ key: doc.id });
+            this.finishDialog = true;
+            this.text = "บันทึกข้อมูลเรียบร้อย";
+            // this.$router.push("/multipleMain");
+          });
       } else {
+        db.collection("multiple_draft")
+          .doc(this.$route.params.key)
+          .set(this.data)
+          .then(doc => {
+            this.$router.push("/multipleMain");
+          });
       }
-
-      // this.isChoice1 = true;
-      // this.isChoice2 = true;
-
-      //   //   this.choice.map(x => x == "");
-
-      //   console.log(this.choice.findIndex(x => x == ""));
     },
     checkEditor(type) {
       if (type == "question") {
@@ -419,21 +445,66 @@ export default {
           this.isQuestion = false;
         }
       } else if (type == "choice1") {
-        if (this.data.choice[0].length) {
+        if (this.choices[0].length) {
           this.isChoice1 = true;
         } else {
-          this.data.isChoice1 = false;
+          this.isChoice1 = false;
         }
       } else if (type == "choice2") {
-        if (this.data.choice[1].length) {
+        if (this.choices[1].length) {
           this.isChoice2 = true;
         } else {
           this.isChoice2 = false;
         }
       }
     },
-    uploadIt() {
-      console.log("5555");
+    fileSound1(val) {
+      this.dataFile1 = val[0].name;
+    },
+    fileSound2(val) {
+      this.dataFile2 = val[0].name;
+    },
+    fileSound3(val) {
+      this.dataFile3 = val[0].name;
+    },
+    fileSound4(val) {
+      this.dataFile4 = val[0].name;
+    },
+    uploadIt1() {
+      const elemClick = document.getElementById("soundId1");
+      addEventListener("click", function clear() {
+        if (elemClick) {
+          elemClick.click();
+        }
+        event.currentTarget.removeEventListener(event.type, clear);
+      });
+    },
+    uploadIt2() {
+      const elemClick = document.getElementById("soundId2");
+      addEventListener("click", function clear() {
+        if (elemClick) {
+          elemClick.click();
+        }
+        event.currentTarget.removeEventListener(event.type, clear);
+      });
+    },
+    uploadIt3() {
+      const elemClick = document.getElementById("soundId3");
+      addEventListener("click", function clear() {
+        if (elemClick) {
+          elemClick.click();
+        }
+        event.currentTarget.removeEventListener(event.type, clear);
+      });
+    },
+    uploadIt4() {
+      const elemClick = document.getElementById("soundId4");
+      addEventListener("click", function clear() {
+        if (elemClick) {
+          elemClick.click();
+        }
+        event.currentTarget.removeEventListener(event.type, clear);
+      });
     }
   },
   mounted() {
@@ -445,4 +516,15 @@ export default {
 };
 </script>
 <style  scoped>
+.box {
+  border: 1px solid #d4d4d4;
+  background-color: white;
+}
+.visually-hidden {
+  position: absolute !important;
+  height: 1px;
+  width: 1px;
+  overflow: hidden;
+  clip: rect(1px, 1px, 1px, 1px);
+}
 </style>
