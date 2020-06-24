@@ -104,7 +104,7 @@
               :class="{'bg-secondary answer' : item.correctAnswer == 2}"
               v-if="item.choices[1].choice"
             >
-              <span class="q-pr-sm" v-if="item.choices[0].soundUrl">
+              <span class="q-pr-sm" v-if="item.choices[1].soundUrl">
                 <q-btn @click="playAudio(item.key + '2.mp3')" round flat icon="fas fa-volume-up" />
               </span>
               2)
@@ -112,7 +112,7 @@
             </span>
           </div>
           <div>
-            <span class="q-pr-sm" v-if="item.choices[0].soundUrl">
+            <span class="q-pr-sm" v-if="item.choices[2].soundUrl">
               <q-btn @click="playAudio(item.key  + '3.mp3')" round flat icon="fas fa-volume-up" />
             </span>
             <span
@@ -124,7 +124,7 @@
             </span>
           </div>
           <div>
-            <span class="q-pr-sm" v-if="item.choices[0].soundUrl">
+            <span class="q-pr-sm" v-if="item.choices[3].soundUrl">
               <q-btn @click="playAudio(item.key + '4.mp3')" round flat icon="fas fa-volume-up" />
             </span>
             <span

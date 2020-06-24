@@ -116,7 +116,7 @@
             <div v-if="data.isAnswerSound" class="q-pa-md box row">
               <div class="col row justify-center self-center">
                 <span v-if="!dataFile1">ยังไม่ใส่ไฟล์เสียง</span>
-                <span v-if="dataFile1">{{dataFile1}}</span>
+                <span v-if="dataFile1">{{dataFile1.name}}</span>
               </div>
               <span v-if="dataFile1">
                 <q-btn
@@ -129,7 +129,7 @@
             </div>
           </div>
           <input
-            @change="fileSound1($event.target.files)"
+            @change="fileSound($event.target.files,1)"
             type="file"
             :id="'soundId1'"
             accept="audio/*"
@@ -153,7 +153,7 @@
             <div v-if="data.isAnswerSound" class="q-pa-md box row">
               <div class="col row justify-center self-center">
                 <span v-if="!dataFile2">ยังไม่ใส่ไฟล์เสียง</span>
-                <span v-if="dataFile2">{{dataFile2}}</span>
+                <span v-if="dataFile2">{{dataFile2.name}}</span>
               </div>
               <span v-if="dataFile2">
                 <q-btn
@@ -166,7 +166,7 @@
             </div>
           </div>
           <input
-            @change="fileSound2($event.target.files)"
+            @change="fileSound($event.target.files,2)"
             type="file"
             :id="'soundId2'"
             accept="audio/*"
@@ -188,7 +188,7 @@
             <div v-if="data.isAnswerSound" class="q-pa-md box row">
               <div class="col row justify-center self-center">
                 <span v-if="!dataFile3">ยังไม่ใส่ไฟล์เสียง</span>
-                <span v-if="dataFile3">{{dataFile3}}</span>
+                <span v-if="dataFile3">{{dataFile3.name}}</span>
               </div>
               <span v-if="dataFile3">
                 <q-btn
@@ -201,7 +201,7 @@
             </div>
           </div>
           <input
-            @change="fileSound3($event.target.files)"
+            @change="fileSound($event.target.files,3)"
             type="file"
             :id="'soundId3'"
             accept="audio/*"
@@ -223,7 +223,7 @@
             <div v-if="data.isAnswerSound" class="q-pa-md box row">
               <div class="col row justify-center self-center">
                 <span v-if="!dataFile4">ยังไม่ใส่ไฟล์เสียง</span>
-                <span v-if="dataFile4">{{dataFile4}}</span>
+                <span v-if="dataFile4">{{dataFile4.name}}</span>
               </div>
               <span v-if="dataFile4">
                 <q-btn
@@ -236,7 +236,7 @@
             </div>
           </div>
           <input
-            @change="fileSound4($event.target.files)"
+            @change="fileSound($event.target.files,4)"
             type="file"
             :id="'soundId4'"
             accept="audio/*"
@@ -269,6 +269,7 @@
             <q-radio
               style="margin:-10px"
               color="blue-grey-10"
+              :disable="choices[0].length > 0 && !choices[2].length "
               v-model.number="data.correctAnswer"
               :val="3"
               label="3"
@@ -278,7 +279,7 @@
             <q-radio
               style="margin:-10px"
               color="blue-grey-10 "
-              :disable="choices[0].length > 0 "
+              :disable="choices[0].length > 0  && !choices[3].length "
               v-model.number="data.correctAnswer"
               :val="4"
               label="4"
@@ -467,48 +468,43 @@ export default {
                       .update({ audioUrl: getUrl });
                   }
                   // this.$router.push("/multipleMain");
+
                   if (this.data.isAnswerSound == true) {
+                    let getUrl1 = "";
+                    let getUrl2 = "";
+                    let getUrl3 = "";
+                    let getUrl4 = "";
                     if (this.dataFile1) {
                       let getAudio = await st
-                        .child("/multiple/audio/" + doc.id + ".mp3")
+                        .child("/multiple/audio/" + doc.id + "1.mp3")
                         .put(this.dataFile1);
-                      let getUrl = await getAudio.ref.getDownloadURL();
-                      change.soundUrl = getUrl;
-                      console.log(change.soundUrl);
-                      return;
-                      db.collection("practice_draft")
-                        .doc(doc.id)
-                        .update({ choices });
+                      getUrl1 = await getAudio.ref.getDownloadURL();
                     }
-                    console.log("5555");
-                    return;
-                    // if (this.dataFile2) {
-                    //   let getAudio = await st
-                    //     .child("/multiple/audio/" + doc.id + ".mp3")
-                    //     .put(this.dataFile2);
-                    //   let getUrl = await getAudio.ref.getDownloadURL();
-                    //   db.collection("practice_draft")
-                    //     .doc(doc.id)
-                    //     .update((this.data.choices[1].soundUrl = getUrl));
-                    // }
-                    // if (this.dataFile3) {
-                    //   let getAudio = await st
-                    //     .child("/multiple/audio/" + doc.id + ".mp3")
-                    //     .put(this.dataFile3);
-                    //   let getUrl = await getAudio.ref.getDownloadURL();
-                    //   db.collection("practice_draft")
-                    //     .doc(doc.id)
-                    //     .update((this.data.choices[2].soundUrl = getUrl));
-                    // }
-                    // if (this.dataFile4) {
-                    //   let getAudio = await st
-                    //     .child("/multiple/audio/" + doc.id + ".mp3")
-                    //     .put(this.dataFile4);
-                    //   let getUrl = await getAudio.ref.getDownloadURL();
-                    //   db.collection("practice_draft")
-                    //     .doc(doc.id)
-                    //     .update((this.data.choices[3].soundUrl = getUrl));
-                    // }
+                    if (this.dataFile2) {
+                      let getAudio = await st
+                        .child("/multiple/audio/" + doc.id + "2.mp3")
+                        .put(this.dataFile2);
+                      getUrl2 = await getAudio.ref.getDownloadURL();
+                    }
+                    if (this.dataFile3) {
+                      let getAudio = await st
+                        .child("/multiple/audio/" + doc.id + "3.mp3")
+                        .put(this.dataFile3);
+                      getUrl3 = await getAudio.ref.getDownloadURL();
+                    }
+                    if (this.dataFile4) {
+                      let getAudio = await st
+                        .child("/multiple/audio/" + doc.id + "4.mp3")
+                        .put(this.dataFile4);
+                      getUrl4 = await getAudio.ref.getDownloadURL();
+                    }
+                    this.data.choices[0].soundUrl = getUrl1;
+                    this.data.choices[1].soundUrl = getUrl2;
+                    this.data.choices[2].soundUrl = getUrl3;
+                    this.data.choices[3].soundUrl = getUrl4;
+                    db.collection("practice_draft")
+                      .doc(doc.id)
+                      .update({ choices: this.data.choices });
                   }
                 });
             }
@@ -564,17 +560,19 @@ export default {
         }
       }
     },
-    fileSound1(val) {
-      this.dataFile1 = val[0].name;
-    },
-    fileSound2(val) {
-      this.dataFile2 = val[0].name;
-    },
-    fileSound3(val) {
-      this.dataFile3 = val[0].name;
-    },
-    fileSound4(val) {
-      this.dataFile4 = val[0].name;
+    fileSound(val, type) {
+      if (type == 1) {
+        this.dataFile1 = val[0];
+      }
+      if (type == 2) {
+        this.dataFile2 = val[0];
+      }
+      if (type == 3) {
+        this.dataFile3 = val[0];
+      }
+      if (type == 4) {
+        this.dataFile4 = val[0];
+      }
     },
     uploadIt1() {
       const elemClick = document.getElementById("soundId1");
