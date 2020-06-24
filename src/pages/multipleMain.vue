@@ -82,7 +82,13 @@
         </div>
         <div class="q-pa-md">
           <span class="q-pr-sm" v-if="item.audioUrl">
-            <q-btn @click="playAudio(item.key + '.mp3')" round flat icon="fas fa-volume-up" />
+            <q-btn
+              size="sm"
+              @click="playAudio(item.key + '.mp3')"
+              round
+              flat
+              icon="fas fa-volume-up"
+            />
           </span>
           <span v-html=" item.question "></span>
         </div>
@@ -93,7 +99,13 @@
               v-if="item.choices[0].choice"
             >
               <span class="q-pr-sm" v-if="item.choices[0].soundUrl">
-                <q-btn @click="playAudio(item.key + '1.mp3')" round flat icon="fas fa-volume-up" />
+                <q-btn
+                  size="sm"
+                  @click="playAudio(item.key + '1.mp3')"
+                  round
+                  flat
+                  icon="fas fa-volume-up"
+                />
               </span>
               1)
               <span v-html="item.choices[0].choice"></span>
@@ -105,7 +117,13 @@
               v-if="item.choices[1].choice"
             >
               <span class="q-pr-sm" v-if="item.choices[1].soundUrl">
-                <q-btn @click="playAudio(item.key + '2.mp3')" round flat icon="fas fa-volume-up" />
+                <q-btn
+                  size="sm"
+                  @click="playAudio(item.key + '2.mp3')"
+                  round
+                  flat
+                  icon="fas fa-volume-up"
+                />
               </span>
               2)
               <span v-html=" item.choices[1].choice"></span>
@@ -113,7 +131,13 @@
           </div>
           <div>
             <span class="q-pr-sm" v-if="item.choices[2].soundUrl">
-              <q-btn @click="playAudio(item.key  + '3.mp3')" round flat icon="fas fa-volume-up" />
+              <q-btn
+                size="sm"
+                @click="playAudio(item.key  + '3.mp3')"
+                round
+                flat
+                icon="fas fa-volume-up"
+              />
             </span>
             <span
               :class="{'bg-secondary answer' : item.correctAnswer == 3}"
@@ -125,7 +149,13 @@
           </div>
           <div>
             <span class="q-pr-sm" v-if="item.choices[3].soundUrl">
-              <q-btn @click="playAudio(item.key + '4.mp3')" round flat icon="fas fa-volume-up" />
+              <q-btn
+                size="sm"
+                @click="playAudio(item.key + '4.mp3')"
+                round
+                flat
+                icon="fas fa-volume-up"
+              />
             </span>
             <span
               :class="{'bg-secondary answer' : item.correctAnswer == 4}"
@@ -317,6 +347,18 @@ export default {
           if (doc.data().audioUrl.length > 0) {
             st.child("/multiple/audio/" + this.deleteKey + ".mp3").delete();
           }
+          if (doc.data().choices[0].soundUrl.length > 0) {
+            st.child("/multiple/audio/" + this.deleteKey + "1.mp3").delete();
+          }
+          if (doc.data().choices[1].soundUrl.length > 0) {
+            st.child("/multiple/audio/" + this.deleteKey + "2.mp3").delete();
+          }
+          if (doc.data().choices[2].soundUrl.length > 0) {
+            st.child("/multiple/audio/" + this.deleteKey + "3.mp3").delete();
+          }
+          if (doc.data().choices[3].soundUrl.length > 0) {
+            st.child("/multiple/audio/" + this.deleteKey + "4.mp3").delete();
+          }
           db.collection("practice_draft")
             .doc(this.deleteKey)
             .delete()
@@ -337,7 +379,6 @@ export default {
       this.$router.push("/multipleInputEdit" + "/" + key);
     },
     playAudio(sound) {
-      console.log(sound);
       let audio = new Audio(this.audioPath + sound);
       audio.play();
     }

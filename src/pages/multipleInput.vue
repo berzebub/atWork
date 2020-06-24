@@ -368,12 +368,7 @@ export default {
         question: "",
         description: "",
         correctAnswer: 1,
-        choices: [
-          { choice: "", soundUrl: "" },
-          { choice: "", soundUrl: "" },
-          { choice: "", soundUrl: "" },
-          { choice: "", soundUrl: "" }
-        ],
+        choices: [],
         imageUrl: "",
         audioUrl: "",
         isAnswerSound: false
@@ -516,7 +511,6 @@ export default {
           .then(async doc => {
             this.finishDialog = true;
             this.text = "บันทึกข้อมูลเรียบร้อย";
-
             // this.$router.push("/multipleMain");
             if (this.uploadImg) {
               let getImage = await st
@@ -535,6 +529,43 @@ export default {
               db.collection("practice_draft")
                 .doc(this.$route.params.key)
                 .update({ audioUrl: getUrl });
+            }
+            if (this.data.isAnswerSound == true) {
+              let getUrl1 = "";
+              let getUrl2 = "";
+              let getUrl3 = "";
+              let getUrl4 = "";
+              if (this.dataFile1) {
+                let getAudio = await st
+                  .child("/multiple/audio/" + this.$route.params.key + "1.mp3")
+                  .put(this.dataFile1);
+                getUrl1 = await getAudio.ref.getDownloadURL();
+              }
+              if (this.dataFile2) {
+                let getAudio = await st
+                  .child("/multiple/audio/" + this.$route.params.key + "2.mp3")
+                  .put(this.dataFile2);
+                getUrl2 = await getAudio.ref.getDownloadURL();
+              }
+              if (this.dataFile3) {
+                let getAudio = await st
+                  .child("/multiple/audio/" + this.$route.params.key + "3.mp3")
+                  .put(this.dataFile3);
+                getUrl3 = await getAudio.ref.getDownloadURL();
+              }
+              if (this.dataFile4) {
+                let getAudio = await st
+                  .child("/multiple/audio/" + this.$route.params.key + "4.mp3")
+                  .put(this.dataFile4);
+                getUrl4 = await getAudio.ref.getDownloadURL();
+              }
+              this.data.choices[0].soundUrl = getUrl1;
+              this.data.choices[1].soundUrl = getUrl2;
+              this.data.choices[2].soundUrl = getUrl3;
+              this.data.choices[3].soundUrl = getUrl4;
+              db.collection("practice_draft")
+                .doc(this.$route.params.key)
+                .update({ choices: this.data.choices });
             }
           });
       }
