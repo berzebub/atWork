@@ -62,6 +62,7 @@
         />
       </div>
       <!-- โชว์ DATA -->
+      {{this.imgURL}}
       <div v-for="(item,index) in data" :key="index" class="box text-left q-my-md">
         <div class="boxQuestion bg-blue-grey-10 text-white q-py-xs q-px-md row justify-between">
           <div class="col row items-center">รหัสลำดับ {{item.order}}</div>
@@ -77,11 +78,11 @@
             <q-btn @click="editData(item.key)" size="sm" round icon="far fa-edit" />
           </div>
         </div>
-        <div class="q-mx-md q-mt-md text-center" v-if="item.imageUrl">
-          <img style="height:300px;width:400px" :src="item.imageUrl" alt />
+        <div class="text-center" v-if="item.imgURL">
+          <img style="height:300px;width:400px " :src="item.imgURL" alt />
         </div>
         <div class="q-pa-md">
-          <span v-if="item.audioUrl">
+          <span v-if="item.audioURL">
             <q-btn
               size="sm"
               @click="playAudio(item.key + '.mp3')"
@@ -274,6 +275,8 @@ export default {
       deleteDialog: false,
       finishDialog: false,
       text: "",
+      imgURL: "",
+      audioURL: "",
       data: [],
       dataDraft: [],
       deleteKey: "",
@@ -283,23 +286,37 @@ export default {
   },
   methods: {
     loadDataAll() {
+      st.child("images")
+        .listAll()
+        .then(getItem => {
+          // getItem.items คือการดึงข้อมูลที่เป็น Array ออกมา
+          console.log(getItem.items);
+
+          // วนเพื่อเก็บค่าที่อยู่ใน Array ออกมา
+          getItem.items.forEach(result => {
+            result.getDownloadURL().then(getURL => {
+              // getURL ทำการส่ง LINK URL มาให้
+              console.log(getURL);
+            });
+          });
+        });
       this.dataDraft = [];
       db.collection("practice_draft")
         .where("practiceId", "==", "m")
         .get()
         .then(doc => {
+          let key = [];
           doc.forEach(element => {
             let dataKey = {
-              key: element.id
+              key: element.id,
+              imgURL: "",
+              audioURL: ""
             };
             let final = {
               ...dataKey,
               ...element.data()
             };
             this.dataDraft.push(final);
-          });
-          this.dataDraft.sort((a, b) => {
-            return a.order - b.order;
           });
         });
       this.loadDraft();
@@ -337,40 +354,47 @@ export default {
       this.finishDialog = true;
     },
     deleteBtn() {
+      this.dataDraft.forEach(element => {
+        return;
+        st.child("/multiple/image/" + this.deleteKey + ".jpg").delete();
+      });
+      return;
+      db.collection("practice_draft")
+        .doc(this.deleteKey)
+        .delete()
+        .then(() => {
+          this.loadDataAll();
+          this.text = "ลบข้อมูลเรียบร้อย";
+          this.deleteDialog = false;
+          this.finishDialog = true;
+          setTimeout(() => {
+            this.finishDialog = false;
+          }, 1000);
+        });
+      return;
       db.collection("practice_draft")
         .doc(this.deleteKey)
         .get()
         .then(doc => {
-          if (doc.data().imageUrl.length > 0) {
+          return;
+          if (this.dataDraft.imgURL.length > 0) {
             st.child("/multiple/image/" + this.deleteKey + ".jpg").delete();
           }
-          if (doc.data().audioUrl.length > 0) {
-            st.child("/multiple/audio/" + this.deleteKey + ".mp3").delete();
-          }
-          if (doc.data().choices[0].soundUrl.length > 0) {
-            st.child("/multiple/audio/" + this.deleteKey + "1.mp3").delete();
-          }
-          if (doc.data().choices[1].soundUrl.length > 0) {
-            st.child("/multiple/audio/" + this.deleteKey + "2.mp3").delete();
-          }
-          if (doc.data().choices[2].soundUrl.length > 0) {
-            st.child("/multiple/audio/" + this.deleteKey + "3.mp3").delete();
-          }
-          if (doc.data().choices[3].soundUrl.length > 0) {
-            st.child("/multiple/audio/" + this.deleteKey + "4.mp3").delete();
-          }
-          db.collection("practice_draft")
-            .doc(this.deleteKey)
-            .delete()
-            .then(() => {
-              this.loadDataAll();
-              this.text = "ลบข้อมูลเรียบร้อย";
-              this.deleteDialog = false;
-              this.finishDialog = true;
-              setTimeout(() => {
-                this.finishDialog = false;
-              }, 1000);
-            });
+          // if (doc.data().audioUrl.length > 0) {
+          //   st.child("/multiple/audio/" + this.deleteKey + ".mp3").delete();
+          // }
+          // if (doc.data().choices[0].soundUrl.length > 0) {
+          //   st.child("/multiple/audio/" + this.deleteKey + "1.mp3").delete();
+          // }
+          // if (doc.data().choices[1].soundUrl.length > 0) {
+          //   st.child("/multiple/audio/" + this.deleteKey + "2.mp3").delete();
+          // }
+          // if (doc.data().choices[2].soundUrl.length > 0) {
+          //   st.child("/multiple/audio/" + this.deleteKey + "3.mp3").delete();
+          // }
+          // if (doc.data().choices[3].soundUrl.length > 0) {
+          //   st.child("/multiple/audio/" + this.deleteKey + "4.mp3").delete();
+          // }
         });
     },
     deleteData(key, id) {
