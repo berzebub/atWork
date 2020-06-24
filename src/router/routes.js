@@ -1,5 +1,4 @@
-const routes = [
-  {
+const routes = [{
     path: "/",
     component: () => import("pages/login.vue")
   },
@@ -85,13 +84,7 @@ const routes = [
         name: "lessonMain"
       },
 
-      // ------------------- business กิจการ -------------------
-      {
-        path: "businessMain",
-        component: () => import("pages/businessMain.vue"),
-        name: "businessMain"
-      },
-      // ------------------- account พนักงาน -------------------
+      // ------------------- account ผู้ใช้งาน -------------------
       {
         path: "accountMain",
         component: () => import("pages/accountMain.vue"),

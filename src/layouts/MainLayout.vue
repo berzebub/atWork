@@ -86,7 +86,7 @@
           <div>
             <q-icon name="fas fa-user-tie" size="25px" />
           </div>
-          <div class="q-pt-sm">พนักงาน</div>
+          <div class="q-pt-sm">ผู้ใช้งาน</div>
         </div>
         <div
           class="full-width q-py-md relative-position curso-r-pointer"
@@ -109,7 +109,7 @@
           <div>
             <q-icon name="fas fa-cog" size="25px" />
           </div>
-          <div class="q-pt-sm">โปรไฟล์</div>
+          <div class="q-pt-sm">ตั้งค่า</div>
         </div>
       </div>
       <div class="self-end"></div>
@@ -145,7 +145,7 @@
         >
           <q-icon name="fas fa-user-tie" size="25px" />
           <br />
-          <span style="font-size:11px">จัดธุรกิจ</span>
+          <span style="font-size:11px">ผู้ใช้งาน</span>
         </div>
         <div
           class="col q-pa-xs q-pt-sm relative-position cursor-pointer"
@@ -165,7 +165,7 @@
         >
           <q-icon name="fas fa-cog" size="25px" />
           <br />
-          <span style="font-size:11px">โปรไฟล์</span>
+          <span style="font-size:11px">ตั้งค่า</span>
         </div>
       </div>
     </q-footer>
