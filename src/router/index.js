@@ -69,6 +69,17 @@ Vue.mixin({
           });
         });
     },
+    async getUserInfo(uid) {
+      console.log(uid);
+      return new Promise((a, b) => {
+        db.collection("user_admin")
+          .where("uid", "==", uid)
+          .get()
+          .then(data => {
+            a(data.docs[0].data())
+          })
+      })
+    },
     loadingShow() {
       this.$q.loading.show({
         delay: 400

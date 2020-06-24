@@ -214,6 +214,7 @@ export default {
         .update(this.dataUser)
         .then(() => {
           this.saveDataDialog = true;
+          this.loadingHide();
           setTimeout(() => {
             this.$router.push("userMain");
           }, 1000);

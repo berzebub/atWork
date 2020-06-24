@@ -71,15 +71,11 @@ export default {
   },
   methods: {
     login() {
-      // if (this.email == 0 || this.password == 0) {
-      //   this.dialogWrongPassword = true;
-      // } else {
-      //
-      // }
       auth
         .signInWithEmailAndPassword(this.email, this.password)
         .then(user => {
-          console.log(user);
+          // console.log(user.user.uid);
+          this.$q.localStorage.set("uid", user.user.uid);
           this.$router.push("/practiceList");
         })
         .catch(error => {

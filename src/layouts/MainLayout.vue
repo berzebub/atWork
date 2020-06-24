@@ -39,8 +39,10 @@
         class="row text-body2 text-blue-grey-4 self-start"
         style="border-right: 1px solid #000"
         align="center"
+        v-if="isLoadUserInfo"
       >
         <div
+          v-if="userInfo.userGroup.includes('practice')"
           class="full-width q-py-md relative-position cursor-pointer"
           :class="$route.name=='practiceList'?'active-line active-text':'no-active-line'"
           v-ripple
@@ -56,6 +58,7 @@
           :class="$route.name=='lessonMain'?'active-line active-text':'no-active-line'"
           v-ripple
           @click="$router.push('/lessonMain')"
+          v-if="userInfo.userGroup.includes('level')"
         >
           <div>
             <q-icon name="fas fa-signal" size="25px" />
@@ -78,6 +81,7 @@
           :class="$route.name=='accountMain'?'active-line active-text':'no-active-line'"
           v-ripple
           @click="$router.push('/accountMain')"
+          v-if="userInfo.userGroup.includes('personel')"
         >
           <div>
             <q-icon name="fas fa-user-tie" size="25px" />
@@ -89,6 +93,7 @@
           :class="$route.name=='userMain'?'active-line active-text':'no-active-line'"
           v-ripple
           @click="$router.push('/userMain')"
+          v-if="userInfo.userGroup.includes('admin')"
         >
           <div>
             <q-icon name="fas fa-user-edit" size="25px" />
@@ -175,16 +180,28 @@
 </template>
 
 <script>
+import { auth } from "../router";
 export default {
   name: "MainLayout",
 
   data() {
-    return {};
+    return {
+      userInfo: "",
+      isLoadUserInfo: false
+    };
   },
   methods: {
     toPracticeList() {
       console.log("object");
+    },
+    async loadUserInfo() {
+      let uid = this.$q.localStorage.getItem("uid");
+      this.userInfo = await this.getUserInfo(uid);
+      this.isLoadUserInfo = true;
     }
+  },
+  mounted() {
+    this.loadUserInfo();
   }
 };
 </script>
