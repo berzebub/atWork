@@ -133,6 +133,7 @@ export default {
         console.log("ไม่ได้เลือกเช็คบ็อค");
         return;
       }
+      this.loadingShow();
       // บันทึกข้อมูล
       if (this.$route.name == "userAdd") {
         let dataUser = {
@@ -147,10 +148,12 @@ export default {
         let getCreateUser = await axios.get(url);
         let newDataUser = { ...this.dataUser };
         delete newDataUser.password;
+        newDataUser.uid = getCreateUser.data.uid;
 
         db.collection("user_admin")
           .add(newDataUser)
           .then(() => {
+            this.loadingHide();
             this.saveDataDialog = true;
             setTimeout(() => {
               this.$router.push("userMain");

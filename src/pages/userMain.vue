@@ -12,12 +12,13 @@
           <q-card-section
             class="no-padding"
             v-for="(item2,index) in dataUser.filter(x => x.name[0] == item)"
+            :key="index"
           >
             <div class="row q-px-md">
               <div class="col-11">
                 <div class="text-subtitle1">{{ item2.name}}</div>
                 <div class="text-subtitle2 text-blue-grey-7">{{item2.email }}</div>
-                <span v-for="(item3,index) in item2.userGroup " :key="item3">
+                <span v-for="(item3,index2) in item2.userGroup " :key="index2">
                   <q-badge :label="item3" color="blue-grey-7" outline class="q-mr-sm q-mt-sm"></q-badge>
                 </span>
               </div>
@@ -82,7 +83,8 @@ export default {
       dataUser: [],
       nameArr: "",
       deleteDataDialog: false,
-      nameDialog: ""
+      nameDialog: "",
+      uid: ""
     };
   },
   methods: {
@@ -127,17 +129,21 @@ export default {
       this.deleteKey = id.id;
       this.nameDialog = id.name;
       this.deleteDataDialog = true;
+      this.uid = id.uid;
     },
     cencel() {
       this.deleteDataDialog = false;
     },
-    confirm() {
+    async confirm() {
+      let apiUrl = `https://api-winner-adventures.herokuapp.com/deleteUser?uid=${this.uid}`;
+      // console.log(apiUrl);
+      let deleteUser = await axios.get(apiUrl);
+      console.log(deleteUser);
       db.collection("user_admin")
         .doc(this.deleteKey)
         .delete()
         .then(() => {
           this.deleteDataDialog = false;
-          // this.loadDataUser();
         });
     }
   },

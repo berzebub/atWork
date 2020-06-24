@@ -11,21 +11,11 @@
             val="draft"
             label="แบบร่าง"
           />
-          <q-radio
-            color="blue-grey-10"
-            v-model="expressionType"
-            val="server"
-            label="เซิร์ฟเวอร์"
-          />
+          <q-radio color="blue-grey-10" v-model="expressionType" val="server" label="เซิร์ฟเวอร์" />
         </div>
         <!-- ปุ่มพิมพ์ -->
         <div class="mobile-hide">
-          <q-btn
-            v-if="expressionType == 'draft'"
-            round
-            color="blue-grey-10"
-            icon="fas fa-print"
-          />
+          <q-btn v-if="expressionType == 'draft'" round color="blue-grey-10" icon="fas fa-print" />
         </div>
       </div>
       <!-- หัวข้อ -->
@@ -66,8 +56,7 @@
           @click="cancelDeleteExpression(item.id, item.order)"
           style="width:190px; z-index:2000"
           class="absolute-center bg-blue-grey-10 text-white"
-          >ยกเลิกการลบ</q-btn
-        >
+        >ยกเลิกการลบ</q-btn>
         <q-card-section class="text-white bg-blue-grey-10">
           <div class="text-h6">รหัสลำดับ {{ item.order }}</div>
           <div class="row items-center absolute-right">
@@ -119,28 +108,11 @@
           </div>
         </q-card-section>
         <!-- ประโยคข้อความ -->
-        <q-card-section
-          v-for="(item2, index2) in item.expression"
-          class="no-padding"
-        >
-          <div
-            v-if="item2.speaker == 'employee'"
-            class="q-px-md q-pt-md q-pb-sm text-h6"
-          >
-            พนักงาน:
-          </div>
-          <div
-            v-if="item2.speaker == 'customer'"
-            class="q-px-md q-pt-md q-pb-sm text-h6"
-          >
-            ลูกค้า:
-          </div>
-          <div class="q-px-md q-p-md q-pb-sm text-h6">
-            {{ item2.sentenceEng }}
-          </div>
-          <div class="q-px-md q-pb-md text-subtitle1">
-            {{ item2.sentenceTh }}
-          </div>
+        <q-card-section v-for="(item2, index2) in item.expression" :key="index2" class="no-padding">
+          <div v-if="item2.speaker == 'employee'" class="q-px-md q-pt-md q-pb-sm text-h6">พนักงาน:</div>
+          <div v-if="item2.speaker == 'customer'" class="q-px-md q-pt-md q-pb-sm text-h6">ลูกค้า:</div>
+          <div class="q-px-md q-p-md q-pb-sm text-h6">{{ item2.sentenceEng }}</div>
+          <div class="q-px-md q-pb-md text-subtitle1">{{ item2.sentenceTh }}</div>
 
           <q-separator />
         </q-card-section>
@@ -153,19 +125,11 @@
     <q-dialog v-model="dialogDelete" persistent>
       <q-card style="min-width: 350px; height:170px">
         <q-card-section>
-          <div class="q-mt-lg text-h6">
-            ต้องการลบ "รหัสลำดับ {{ getOrder }}" หรือไม่
-          </div>
+          <div class="q-mt-lg text-h6">ต้องการลบ "รหัสลำดับ {{ getOrder }}" หรือไม่</div>
         </q-card-section>
 
         <q-card-actions align="center">
-          <q-btn
-            style="width:120px"
-            outline
-            color="blue-grey-10"
-            label="ยกเลิก"
-            v-close-popup
-          />
+          <q-btn style="width:120px" outline color="blue-grey-10" label="ยกเลิก" v-close-popup />
           <q-btn
             @click="deleteDataExpression()"
             color="blue-grey-10"
@@ -179,19 +143,11 @@
     <q-dialog v-model="dialogCancelDelete" persistent>
       <q-card style="min-width: 350px; height:170px">
         <q-card-section>
-          <div class="q-mt-lg text-h6">
-            ต้องการลบ "รหัสลำดับ {{ getOrder }}" หรือไม่
-          </div>
+          <div class="q-mt-lg text-h6">ต้องการลบ "รหัสลำดับ {{ getOrder }}" หรือไม่</div>
         </q-card-section>
 
         <q-card-actions align="center">
-          <q-btn
-            style="width:120px"
-            outline
-            color="blue-grey-10"
-            label="ยกเลิก"
-            v-close-popup
-          />
+          <q-btn style="width:120px" outline color="blue-grey-10" label="ยกเลิก" v-close-popup />
           <q-btn
             @click="cancelDeleteExpression()"
             color="blue-grey-10"
