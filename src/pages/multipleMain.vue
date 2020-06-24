@@ -81,7 +81,7 @@
           <img style="height:300px;width:400px" :src="item.imageUrl" alt />
         </div>
         <div class="q-pa-md">
-          <span class="q-pr-sm" v-if="item.audioUrl">
+          <span v-if="item.audioUrl">
             <q-btn
               size="sm"
               @click="playAudio(item.key + '.mp3')"
@@ -98,7 +98,7 @@
               :class="{'bg-secondary answer ' : item.correctAnswer == 1}"
               v-if="item.choices[0].choice"
             >
-              <span class="q-pr-sm" v-if="item.choices[0].soundUrl">
+              <span v-if="item.choices[0].soundUrl">
                 <q-btn
                   size="sm"
                   @click="playAudio(item.key + '1.mp3')"
@@ -116,7 +116,7 @@
               :class="{'bg-secondary answer' : item.correctAnswer == 2}"
               v-if="item.choices[1].choice"
             >
-              <span class="q-pr-sm" v-if="item.choices[1].soundUrl">
+              <span v-if="item.choices[1].soundUrl">
                 <q-btn
                   size="sm"
                   @click="playAudio(item.key + '2.mp3')"
@@ -130,7 +130,7 @@
             </span>
           </div>
           <div>
-            <span class="q-pr-sm" v-if="item.choices[2].soundUrl">
+            <span v-if="item.choices[2].soundUrl">
               <q-btn
                 size="sm"
                 @click="playAudio(item.key  + '3.mp3')"
@@ -148,7 +148,7 @@
             </span>
           </div>
           <div>
-            <span class="q-pr-sm" v-if="item.choices[3].soundUrl">
+            <span v-if="item.choices[3].soundUrl">
               <q-btn
                 size="sm"
                 @click="playAudio(item.key + '4.mp3')"
@@ -367,6 +367,9 @@ export default {
               this.text = "ลบข้อมูลเรียบร้อย";
               this.deleteDialog = false;
               this.finishDialog = true;
+              setTimeout(() => {
+                this.finishDialog = false;
+              }, 1000);
             });
         });
     },

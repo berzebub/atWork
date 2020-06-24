@@ -417,14 +417,15 @@ export default {
         }
         return;
       }
-      let change = [
-        { choice: this.choices[0], soundUrl: "" },
-        { choice: this.choices[1], soundUrl: "" },
-        { choice: this.choices[2], soundUrl: "" },
-        { choice: this.choices[3], soundUrl: "" }
-      ];
-      this.data.choices = change;
+
       if (this.$route.name == "multipleInputAdd") {
+        let change = [
+          { choice: this.choices[0], soundUrl: "" },
+          { choice: this.choices[1], soundUrl: "" },
+          { choice: this.choices[2], soundUrl: "" },
+          { choice: this.choices[3], soundUrl: "" }
+        ];
+        this.data.choices = change;
         db.collection("practice_draft")
           .where("order", "==", this.data.order)
           .get()
@@ -434,6 +435,9 @@ export default {
               this.iconTrueDialog = false;
               this.iconfailDialog = true;
               this.text = "รหัสลำดับนี้มีการใช้งานแล้ว";
+              setTimeout(() => {
+                this.finishDialog = false;
+              }, 1000);
               return;
             } else {
               console.log("ยังไม่มีรหัสลำดับนี้แล้ว");
@@ -444,25 +448,20 @@ export default {
                   this.iconfailDialog = false;
                   this.iconTrueDialog = true;
                   this.text = "บันทึกข้อมูลเรียบร้อย";
+                  let getUrlImge = "";
+                  let getUrlAudio = "";
                   if (this.uploadImg) {
                     let getImage = await st
                       .child("/multiple/image/" + doc.id + ".jpg")
                       .put(this.uploadImg);
-                    let getUrl = await getImage.ref.getDownloadURL();
-                    db.collection("practice_draft")
-                      .doc(doc.id)
-                      .update({ imageUrl: getUrl });
+                    getUrlImge = await getImage.ref.getDownloadURL();
                   }
                   if (this.uploadAudio) {
                     let getAudio = await st
                       .child("/multiple/audio/" + doc.id + ".mp3")
                       .put(this.uploadAudio);
-                    let getUrl = await getAudio.ref.getDownloadURL();
-                    db.collection("practice_draft")
-                      .doc(doc.id)
-                      .update({ audioUrl: getUrl });
+                    getUrlAudio = await getAudio.ref.getDownloadURL();
                   }
-                  // this.$router.push("/multipleMain");
 
                   if (this.data.isAnswerSound == true) {
                     let getUrl1 = "";
@@ -493,6 +492,8 @@ export default {
                         .put(this.dataFile4);
                       getUrl4 = await getAudio.ref.getDownloadURL();
                     }
+                    this.data.uploadImg = getUrlImge;
+                    this.data.uploadImg = getUrlAudio;
                     this.data.choices[0].soundUrl = getUrl1;
                     this.data.choices[1].soundUrl = getUrl2;
                     this.data.choices[2].soundUrl = getUrl3;
@@ -501,6 +502,10 @@ export default {
                       .doc(doc.id)
                       .update({ choices: this.data.choices });
                   }
+                  setTimeout(() => {
+                    this.finishDialog = false;
+                    this.$router.push("/multipleMain");
+                  }, 1000);
                 });
             }
           });
@@ -511,62 +516,63 @@ export default {
           .then(async doc => {
             this.finishDialog = true;
             this.text = "บันทึกข้อมูลเรียบร้อย";
-            // this.$router.push("/multipleMain");
+            let getUrlImge = "";
+            let getUrlAudio = "";
             if (this.uploadImg) {
               let getImage = await st
                 .child("/multiple/image/" + this.$route.params.key + ".jpg")
                 .put(this.uploadImg);
-              let getUrl = await getImage.ref.getDownloadURL();
-              db.collection("practice_draft")
-                .doc(this.$route.params.key)
-                .update({ imageUrl: getUrl });
+              getUrlImge = await getImage.ref.getDownloadURL();
             }
             if (this.uploadAudio) {
               let getAudio = await st
                 .child("/multiple/audio/" + this.$route.params.key + ".mp3")
                 .put(this.uploadAudio);
-              let getUrl = await getAudio.ref.getDownloadURL();
-              db.collection("practice_draft")
-                .doc(this.$route.params.key)
-                .update({ audioUrl: getUrl });
+              getUrlAudio = await getAudio.ref.getDownloadURL();
             }
             if (this.data.isAnswerSound == true) {
-              let getUrl1 = "";
-              let getUrl2 = "";
-              let getUrl3 = "";
-              let getUrl4 = "";
               if (this.dataFile1) {
                 let getAudio = await st
                   .child("/multiple/audio/" + this.$route.params.key + "1.mp3")
                   .put(this.dataFile1);
-                getUrl1 = await getAudio.ref.getDownloadURL();
+                let getUrl1 = await getAudio.ref.getDownloadURL();
+                this.data.choices[0].soundUrl = getUrl1;
               }
               if (this.dataFile2) {
                 let getAudio = await st
                   .child("/multiple/audio/" + this.$route.params.key + "2.mp3")
                   .put(this.dataFile2);
-                getUrl2 = await getAudio.ref.getDownloadURL();
+                let getUrl2 = await getAudio.ref.getDownloadURL();
+                this.data.choices[1].soundUrl = getUrl2;
               }
               if (this.dataFile3) {
                 let getAudio = await st
                   .child("/multiple/audio/" + this.$route.params.key + "3.mp3")
                   .put(this.dataFile3);
-                getUrl3 = await getAudio.ref.getDownloadURL();
+                let getUrl3 = await getAudio.ref.getDownloadURL();
+                this.data.choices[2].soundUrl = getUrl3;
               }
               if (this.dataFile4) {
                 let getAudio = await st
                   .child("/multiple/audio/" + this.$route.params.key + "4.mp3")
                   .put(this.dataFile4);
-                getUrl4 = await getAudio.ref.getDownloadURL();
+                let getUrl4 = await getAudio.ref.getDownloadURL();
+                this.data.choices[3].soundUrl = getUrl4;
               }
-              this.data.choices[0].soundUrl = getUrl1;
-              this.data.choices[1].soundUrl = getUrl2;
-              this.data.choices[2].soundUrl = getUrl3;
-              this.data.choices[3].soundUrl = getUrl4;
+              this.data.uploadImg = getUrlImge;
+              this.data.uploadImg = getUrlAudio;
+              this.data.choices[0].choice = this.choices[0];
+              this.data.choices[1].choice = this.choices[1];
+              this.data.choices[2].choice = this.choices[2];
+              this.data.choices[3].choice = this.choices[3];
               db.collection("practice_draft")
                 .doc(this.$route.params.key)
                 .update({ choices: this.data.choices });
             }
+            setTimeout(() => {
+              this.finishDialog = false;
+              this.$router.push("/multipleMain");
+            }, 1000);
           });
       }
     },
