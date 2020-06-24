@@ -15,7 +15,7 @@
             </div>
             <q-input
               ref="order"
-              :rules="[val => val]"
+              :rules="[val => val || 'กรุณากรอกข้อมูลให้ถูกต้อง']"
               outlined
               type="number"
               v-model.number="order"
@@ -24,41 +24,75 @@
           <!-- ไฟล์รูปภาพ -->
           <div>
             <div class="row items-center">
-              <div class="text-h6">ไฟล์รูปภาพ</div>
-              <div class="q-mx-md text-subtitle1 text-blue-grey-4">
-                ไฟล์ jpg ขนาด 400x300 px เท่านั้น
-              </div>
+              <div align="left" class="text-h6">ไฟล์รูปภาพ</div>
+              <div class="q-ml-md text-blue-grey-4">ไฟล์ jpg ขนาด 400x300 px เท่านั้น</div>
             </div>
-            <div class="brg2" style="width:600px;height:80px; margin:auto">
-              <q-input
-                @input="
-                  val => {
-                    files = val;
-                  }
-                "
-                type="file"
+            <div class="q-px-lg">
+              <q-file
+                accept="image/*"
+                bg-color="white"
+                class="q-pa-sm"
+                outlined
+                v-model="uploadImg "
               >
-              </q-input>
+                <template v-slot:append>
+                  <div
+                    style="width:100px"
+                    class="text-subtitle1 rounded-borders text-center bg-blue-grey-10 text-white q-pa-xs cursor-pointer"
+                    @click.stop="uploadImg = null"
+                    v-if="!uploadImg"
+                  >เลือกไฟล์</div>
+                  <div
+                    class="cursor-pointer rounded-borders text-white bg-blue-grey-10"
+                    v-if="uploadImg "
+                    @click.stop="uploadImg  = null"
+                  >
+                    <span style class="far fa-trash-alt q-px-xs"></span>
+                  </div>
+                </template>
+                <div
+                  style="width:1000px"
+                  class="text-subtitle1 text-grey-7 self-center"
+                  v-if="!uploadImg"
+                >ลากแล้ววาง หรือ</div>
+              </q-file>
             </div>
           </div>
-          <!-- ไฟล์รูปภาพ -->
-          <div class="q-mt-lg">
+          <!-- ไฟล์เสียง -->
+          <div>
             <div class="row items-center">
-              <div class="text-h6">ไฟล์เสียง</div>
-              <div class="q-mx-md text-subtitle1 text-blue-grey-4">
-                ไฟล์ mp3 เท่านั้น
-              </div>
+              <div align="left" class="text-h6">ไฟล์เสียง</div>
+              <div class="q-ml-md text-blue-grey-4">ไฟล์ mp3 เท่านั้น</div>
             </div>
-            <div class="brg2" style="width:600px;height:80px; margin:auto">
-              <q-input
-                @input="
-                  val => {
-                    files = val;
-                  }
-                "
-                type="file"
+            <div class="q-px-lg">
+              <q-file
+                accept="audio/*"
+                bg-color="white"
+                class="q-pa-sm"
+                outlined
+                v-model="uploadSound"
               >
-              </q-input>
+                <template v-slot:append>
+                  <div
+                    style="width:100px;"
+                    class="text-subtitle1 rounded-borders text-center bg-blue-grey-10 text-white q-pa-xs cursor-pointer"
+                    @click.stop="uploadSound = null"
+                    v-if="!uploadSound"
+                  >เลือกไฟล์</div>
+                  <div
+                    class="cursor-pointer rounded-borders text-white bg-blue-grey-10"
+                    v-if="uploadSound"
+                    @click.stop="uploadSound = null"
+                  >
+                    <span style class="far fa-trash-alt q-px-xs"></span>
+                  </div>
+                </template>
+                <div
+                  style="width:1000px"
+                  class="text-subtitle1 text-grey-7 self-center"
+                  v-if="!uploadSound"
+                >ลากแล้ววาง หรือ</div>
+              </q-file>
             </div>
           </div>
           <!-- คำศัพท์ -->
@@ -67,16 +101,43 @@
               <div class="text-h6" align="left">คำศัพท์</div>
             </div>
             <q-input
-              ref="order"
-              :rules="[val => val]"
+              ref="vocabulary"
+              v-model="vocabulary"
               outlined
-              type="number"
-              v-model.number="order"
+              :rules="[val => !!val || 'กรุณากรอกข้อมูลให้ถูกต้อง']"
+            />
+          </div>
+          <!-- คำอ่าน -->
+          <div>
+            <div class="text-h6" align="left">คำอ่าน</div>
+            <div>
+              <q-editor
+                @input="checkRead()"
+                :class="this.checkValidate == true?'error-border': null  "
+                ref="read"
+                v-model="read"
+                min-height="5rem"
+                :toolbar="[
+        ['bold', 'italic', 'underline']
+      ]"
+              />
+            </div>
+          </div>
+          <!-- คำแปล -->
+          <div class="q-mt-md">
+            <div>
+              <div class="text-h6" align="left">คำแปล</div>
+            </div>
+            <q-input
+              ref="meaning"
+              v-model="meaning"
+              outlined
+              :rules="[val => !!val || 'กรุณากรอกข้อมูลให้ถูกต้อง']"
             />
           </div>
         </div>
       </div>
-      <div class=" row" style="width:360px; margin-left:21%">
+      <div class="row" style="width:360px; margin-left:21%">
         <!-- ยกเลิก -->
         <div class="q-mt-md col">
           <q-btn
@@ -102,43 +163,6 @@
         </div>
       </div>
       <!-- --------------------------------------dialog--------------------------------------- -->
-      <!-- ยืนยันการลบ -->
-      <q-dialog v-model="dialogdeleteCard" persistent>
-        <q-card style="min-width: 350px; height:170px">
-          <q-card-section></q-card-section>
-
-          <q-card-section align="center" class="q-pt-md text-h6"
-            >คุณต้องการลบ "ประโยคที่ {{ getIndex }}"</q-card-section
-          >
-
-          <q-card-actions align="center">
-            <q-btn
-              style="width:120px"
-              outline
-              label="ยกเลิก"
-              color="blue-grey-10"
-              v-close-popup
-            />
-            <q-btn
-              @click="confirmDeleteCard()"
-              style="width:120px"
-              label="ตกลง"
-              color="blue-grey-10"
-            />
-          </q-card-actions>
-        </q-card>
-      </q-dialog>
-      <!-- เพิ่มข้อมูลสำเร็จ -->
-      <q-dialog v-model="successData">
-        <q-card style="min-width: 350px; height:170px">
-          <q-card-section class="absolute-center" align="center">
-            <div>
-              <q-icon color="secondary" size="lg" name="far fa-check-circle" />
-            </div>
-            <div class="q-mt-lg">บันทึกข้อมูลเรียบร้อย</div>
-          </q-card-section>
-        </q-card>
-      </q-dialog>
     </div>
   </q-page>
 </template>
@@ -148,48 +172,24 @@ import { db } from "../router";
 export default {
   data() {
     return {
+      checkValidate: false,
       practiceId: "",
       levelId: this.$route.params.levelId,
-      successData: false,
-      getIndex: "",
-      dialogdeleteCard: false,
       unitId: this.$route.params.unitId,
-      boxCount: 1,
       order: "",
-      errorSentenceEng1: false,
-      sentence: [
-        {
-          sentenceEng: "",
-          sentenceTh: "",
-          speaker: "customer",
-          errorEng: false,
-          errorTh: false
-        },
-        {
-          sentenceEng: "",
-          sentenceTh: "",
-          speaker: "customer",
-          errorEng: false,
-          errorTh: false
-        },
-        {
-          sentenceEng: "",
-          sentenceTh: "",
-          speaker: "customer",
-          errorEng: false,
-          errorTh: false
-        },
-        {
-          sentenceEng: "",
-          sentenceTh: "",
-          speaker: "customer",
-          errorEng: false,
-          errorTh: false
-        }
-      ]
+      vocabulary: "",
+      read: "",
+      meaning: ""
     };
   },
   methods: {
+    checkRead() {
+      if (this.read == "") {
+        this.checkValidate = true;
+      } else {
+        this.checkValidate = false;
+      }
+    },
     editMode() {
       if (this.$route.params.levelId == undefined) {
         this.$router.push("/expressionMain");
@@ -211,36 +211,11 @@ export default {
       this.sentence = getSentence;
     },
     saveData() {
-      for (let i = 0; i < this.boxCount + 1; i++) {
-        this.sentence[i].errorEng = false;
-        this.sentence[i].errorTh = false;
-      }
-      for (let i = 0; i < this.boxCount + 1; i++) {
-        if (!this.sentence[i].sentenceEng.length) {
-          this.sentence[i].errorEng = true;
-        }
-        if (!this.sentence[i].sentenceTh.length) {
-          this.sentence[i].errorTh = true;
-        }
-      }
-      let filter = this.sentence.filter(
-        x => x.errorEng == true || x.errorTh == true
-      );
-      if (filter.length > 0) {
-        this.$q.notify({
-          message: "กรุณาตรวจสอบข้อมูลให้ถูกต้อง",
-          color: "red",
-          position: "top"
-        });
-        return;
-      }
       this.$refs.order.validate();
-      if (this.$refs.order.hasError) {
-        this.$q.notify({
-          message: "กรุณาตรวจสอบข้อมูลให้ถูกต้อง",
-          color: "red",
-          position: "top"
-        });
+      this.$refs.vocabulary.validate();
+      this.$refs.meaning.validate();
+      if (this.read == "") {
+        this.checkValidate = true;
         return;
       }
       if (this.$route.name == "expressionInput") {
@@ -312,26 +287,6 @@ export default {
         .then(() => {
           this.$router.push("expressionMain");
         });
-    },
-    opendialogDeleteCard(index) {
-      this.getIndex = index + 1;
-      if (
-        this.sentence[index].sentenceEng.length > 0 ||
-        this.sentence[index].sentenceTh.length > 0
-      ) {
-        this.dialogdeleteCard = true;
-      } else {
-        this.moveData(index);
-      }
-    },
-    moveData() {
-      this.sentence.splice(this.getIndex - 1, 1);
-      this.sentence.push({ sentenceEng: "", sentenceTh: "" });
-      this.boxCount--;
-    },
-    confirmDeleteCard() {
-      this.dialogdeleteCard = false;
-      this.moveData();
     }
   },
   mounted() {

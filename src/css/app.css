@@ -30,6 +30,9 @@ body {
 .brg2 {
   border: 1px solid #d4d4d4;
 }
+.error-border {
+  border: 2px solid #c10015;
+}
 
 .br {
   border-radius: 10px;
