@@ -77,7 +77,19 @@
             <q-btn @click="editData(item.key)" size="sm" round icon="far fa-edit" />
           </div>
         </div>
+        <div class="q-mx-md q-mt-md text-center" v-if="item.imageUrl">
+          <img style="height:300px;width:400px" :src="item.imageUrl" alt />
+        </div>
         <div class="q-pa-md">
+          <span class="q-pr-sm" v-if="item.audioUrl">
+            <q-btn
+              size="sm"
+              @click="playAudio(item.key + '.mp3')"
+              round
+              flat
+              icon="fas fa-volume-up"
+            />
+          </span>
           <span v-html=" item.question "></span>
         </div>
         <div class="q-px-md">
@@ -86,6 +98,15 @@
               :class="{'bg-secondary answer ' : item.correctAnswer == 1}"
               v-if="item.choices[0].choice"
             >
+              <span class="q-pr-sm" v-if="item.choices[0].soundUrl">
+                <q-btn
+                  size="sm"
+                  @click="playAudio(item.key + '1.mp3')"
+                  round
+                  flat
+                  icon="fas fa-volume-up"
+                />
+              </span>
               1)
               <span v-html="item.choices[0].choice"></span>
             </span>
@@ -95,11 +116,29 @@
               :class="{'bg-secondary answer' : item.correctAnswer == 2}"
               v-if="item.choices[1].choice"
             >
+              <span class="q-pr-sm" v-if="item.choices[1].soundUrl">
+                <q-btn
+                  size="sm"
+                  @click="playAudio(item.key + '2.mp3')"
+                  round
+                  flat
+                  icon="fas fa-volume-up"
+                />
+              </span>
               2)
               <span v-html=" item.choices[1].choice"></span>
             </span>
           </div>
           <div>
+            <span class="q-pr-sm" v-if="item.choices[2].soundUrl">
+              <q-btn
+                size="sm"
+                @click="playAudio(item.key  + '3.mp3')"
+                round
+                flat
+                icon="fas fa-volume-up"
+              />
+            </span>
             <span
               :class="{'bg-secondary answer' : item.correctAnswer == 3}"
               v-if="item.choices[2].choice"
@@ -109,6 +148,15 @@
             </span>
           </div>
           <div>
+            <span class="q-pr-sm" v-if="item.choices[3].soundUrl">
+              <q-btn
+                size="sm"
+                @click="playAudio(item.key + '4.mp3')"
+                round
+                flat
+                icon="fas fa-volume-up"
+              />
+            </span>
             <span
               :class="{'bg-secondary answer' : item.correctAnswer == 4}"
               v-if="item.choices[3].choice"
@@ -213,7 +261,7 @@
 </template>
 
 <script>
-import { db } from "../router";
+import { db, st } from "../router";
 export default {
   data() {
     return {
@@ -228,7 +276,9 @@ export default {
       text: "",
       data: [],
       dataDraft: [],
-      deleteKey: ""
+      deleteKey: "",
+      audioPath:
+        "https://storage.cloud.google.com/atwork-dee11.appspot.com/multiple/audio/"
     };
   },
   methods: {
@@ -289,12 +339,35 @@ export default {
     deleteBtn() {
       db.collection("practice_draft")
         .doc(this.deleteKey)
-        .delete()
-        .then(() => {
-          this.loadDataAll();
-          this.text = "ลบข้อมูลเรียบร้อย";
-          this.deleteDialog = false;
-          this.finishDialog = true;
+        .get()
+        .then(doc => {
+          if (doc.data().imageUrl.length > 0) {
+            st.child("/multiple/image/" + this.deleteKey + ".jpg").delete();
+          }
+          if (doc.data().audioUrl.length > 0) {
+            st.child("/multiple/audio/" + this.deleteKey + ".mp3").delete();
+          }
+          if (doc.data().choices[0].soundUrl.length > 0) {
+            st.child("/multiple/audio/" + this.deleteKey + "1.mp3").delete();
+          }
+          if (doc.data().choices[1].soundUrl.length > 0) {
+            st.child("/multiple/audio/" + this.deleteKey + "2.mp3").delete();
+          }
+          if (doc.data().choices[2].soundUrl.length > 0) {
+            st.child("/multiple/audio/" + this.deleteKey + "3.mp3").delete();
+          }
+          if (doc.data().choices[3].soundUrl.length > 0) {
+            st.child("/multiple/audio/" + this.deleteKey + "4.mp3").delete();
+          }
+          db.collection("practice_draft")
+            .doc(this.deleteKey)
+            .delete()
+            .then(() => {
+              this.loadDataAll();
+              this.text = "ลบข้อมูลเรียบร้อย";
+              this.deleteDialog = false;
+              this.finishDialog = true;
+            });
         });
     },
     deleteData(key, id) {
@@ -304,6 +377,10 @@ export default {
     },
     editData(key) {
       this.$router.push("/multipleInputEdit" + "/" + key);
+    },
+    playAudio(sound) {
+      let audio = new Audio(this.audioPath + sound);
+      audio.play();
     }
   },
   mounted() {
