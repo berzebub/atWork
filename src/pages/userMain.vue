@@ -87,33 +87,34 @@ export default {
   },
   methods: {
     loadDataUser() {
-      db.collection("user_admin")
-        .get()
-        .then(doc => {
-          let nameArr = [];
-          doc.forEach(element => {
-            nameArr.push(element.data().name[0]);
-            let dataKey = {
-              id: element.id
-            };
-            let dataFinal = {
-              ...dataKey,
-              ...element.data()
-            };
+      db.collection("user_admin").onSnapshot(doc => {
+        let nameArr = [];
+        let userTemp = [];
+        doc.forEach(element => {
+          nameArr.push(element.data().name[0]);
+          let dataKey = {
+            id: element.id
+          };
+          let dataFinal = {
+            ...dataKey,
+            ...element.data()
+          };
 
-            this.dataUser.push(dataFinal);
-          });
-          nameArr = [...new Set(nameArr)];
-
-          nameArr.sort((a, b) => {
-            return a < b ? -1 : 1;
-          });
-          this.nameArr = nameArr;
-
-          this.dataUser.sort((a, b) => {
-            return a.name < b.name ? -1 : 1;
-          });
+          userTemp.push(dataFinal);
         });
+
+        nameArr = [...new Set(nameArr)];
+
+        nameArr.sort((a, b) => {
+          return a < b ? -1 : 1;
+        });
+        this.nameArr = nameArr;
+
+        userTemp.sort((a, b) => {
+          return a.name < b.name ? -1 : 1;
+        });
+        this.dataUser = userTemp;
+      });
     },
 
     addUser() {
@@ -123,7 +124,6 @@ export default {
       this.$router.push({ name: "userEdit", params: data });
     },
     deleteBtn(id) {
-      console.log(id.name);
       this.deleteKey = id.id;
       this.nameDialog = id.name;
       this.deleteDataDialog = true;
@@ -137,8 +137,7 @@ export default {
         .delete()
         .then(() => {
           this.deleteDataDialog = false;
-          this.dataUser = [];
-          this.loadDataUser();
+          // this.loadDataUser();
         });
     }
   },

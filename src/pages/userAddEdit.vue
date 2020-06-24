@@ -15,6 +15,7 @@
           outlined
           dense
           v-model="dataUser.email"
+          lazy-rules
           :rules="[val => !!val 
           ,isCheckEmail,isValidEmail]"
         ></q-input>
@@ -30,7 +31,8 @@
           dense
           outlined
           :type="isPwd ? 'password' : 'text'"
-          :rules="[val => val.length>=4 ]"
+          lazy-rules
+          :rules="[val => val.length>=6 ]"
         >
           <template v-slot:append>
             <q-icon
@@ -84,7 +86,7 @@
 </template>
 
 <script>
-import { db } from "../router";
+import { db, axios } from "../router";
 export default {
   data() {
     return {
@@ -111,7 +113,7 @@ export default {
       this.$router.push("userMain");
     },
 
-    saveData() {
+    async saveData() {
       // check validate
       this.$refs.name.validate();
       this.$refs.email.validate();
@@ -133,15 +135,26 @@ export default {
       }
       // บันทึกข้อมูล
       if (this.$route.name == "userAdd") {
+        let dataUser = {
+          email: this.dataUser.email,
+          password: this.dataUser.password,
+          emailVerified: false,
+          disabled: false,
+          displayName: this.dataUser.name
+        };
+        let jsonString = JSON.stringify(dataUser);
+        const url = `https://api-winner-adventures.herokuapp.com/createUser?user=${jsonString}`;
+        let getCreateUser = await axios.get(url);
+        let newDataUser = { ...this.dataUser };
+        delete newDataUser.password;
+
         db.collection("user_admin")
-          .add(this.dataUser)
+          .add(newDataUser)
           .then(() => {
             this.saveDataDialog = true;
             setTimeout(() => {
               this.$router.push("userMain");
             }, 1000);
-
-            console.log("saved");
           });
       } else {
         this.editMode();
@@ -154,10 +167,9 @@ export default {
     async isCheckEmail(val) {
       if (this.$route.name != "userEdit") {
         let doc = await db
-          .collection("userAdmin")
+          .collection("user_admin")
           .where("email", "==", val)
           .get();
-        console.log("123");
         return !doc.size || "E-mail นี้มีผู้ใช้งานแล้ว";
       }
     },

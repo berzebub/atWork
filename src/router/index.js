@@ -68,11 +68,19 @@ Vue.mixin({
             }
           });
         });
+    },
+    loadingShow() {
+      this.$q.loading.show({
+        delay: 400
+      })
+    },
+    loadingHide() {
+      this.$q.loading.hide()
     }
   }
 });
 
-export default function ( /* { store, ssrContext } */) {
+export default function ( /* { store, ssrContext } */ ) {
   const Router = new VueRouter({
     scrollBehavior: () => ({
       x: 0,
