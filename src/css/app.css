@@ -33,7 +33,9 @@ body {
 .error-border {
   border: 2px solid #c10015;
 }
-
+.error-text {
+  color: #c10015;
+}
 .br {
   border-radius: 10px;
 }

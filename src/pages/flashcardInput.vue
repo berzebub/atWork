@@ -65,13 +65,7 @@
               <div class="q-ml-md text-blue-grey-4">ไฟล์ mp3 เท่านั้น</div>
             </div>
             <div class="q-px-lg">
-              <q-file
-                accept="audio/*"
-                bg-color="white"
-                class="q-pa-sm"
-                outlined
-                v-model="uploadSound"
-              >
+              <q-file accept=".mp3" bg-color="white" class="q-pa-sm" outlined v-model="uploadSound">
                 <template v-slot:append>
                   <div
                     style="width:100px;"
@@ -122,6 +116,11 @@
       ]"
               />
             </div>
+            <div
+              :style="this.checkValidate == false?'visibility:hidden': null"
+              align="left"
+              class="error-text"
+            >กรุณากรอกข้อมูลให้ถูกต้อง</div>
           </div>
           <!-- คำแปล -->
           <div class="q-mt-md">
@@ -172,6 +171,8 @@ import { db } from "../router";
 export default {
   data() {
     return {
+      uploadSound: null,
+      uploadImg: null,
       checkValidate: false,
       practiceId: "",
       levelId: this.$route.params.levelId,
