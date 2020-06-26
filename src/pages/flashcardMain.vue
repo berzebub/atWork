@@ -53,7 +53,7 @@
         <!-- cancel-delete -->
         <q-btn
           v-if="item.status == 'waitForDelete'"
-          @click="cancelDeleteExpression(item.id, item.order)"
+          @click="cancelDeleteFlashcard(item.id, item.order)"
           style="width:190px; z-index:2000"
           class="absolute-center bg-blue-grey-10 text-white"
         >ยกเลิกการลบ</q-btn>
@@ -65,12 +65,12 @@
               @click="openDialogDelete(item.id, item.order)"
               v-if="expressionType == 'draft'"
               class="cursor-pointer q-pr-lg desktop-only"
-              name="fas fa-trash-alt"
+              name="far fa-trash-alt"
               style="color:white; font-size: 1.4em;"
             />
             <!-- icon-edit -->
             <q-icon
-              @click="editDataExpression(item)"
+              @click="editDataFlashcard(item)"
               v-if="expressionType == 'draft'"
               class="cursor-pointer q-pr-md desktop-only"
               name="fas fa-edit"
@@ -89,7 +89,7 @@
                 <q-item
                   clickable
                   v-close-popup
-                  @click="editDataExpression(item)"
+                  @click="editDataFlashcard(item)"
                   class="cursor-pointer mobile-only"
                 >
                   <q-item-section>แก้ไข</q-item-section>
@@ -109,9 +109,29 @@
         </q-card-section>
         <!-- ประโยคข้อความ -->
         <q-card-section class="no-padding">
-          <div class="q-px-md q-pt-md q-pb-sm text-h6">{{item.vocabulary}}</div>
-          <div class="q-px-md q-pt-md q-pb-sm text-h6">{{item.read}}</div>
-          <div class="q-px-md q-p-md q-pb-sm text-h6">{{item.meaning}}</div>
+          <div class="row">
+            <!-- รูป -->
+            <div class="col-sm-6 col-xs-12 q-px-md q-pt-md q-pb-sm text-h6" align="center">
+              <q-img :src="item.img" :ratio="4/3" style="max-width:400px; width:100%" class></q-img>
+            </div>
+            <!-- คำ -->
+            <div class="col-6">
+              <div class="row items-center q-ml-md">
+                <div>
+                  <q-btn
+                    style="margin-top:10%"
+                    flat
+                    icon="fas fa-volume-up"
+                    color="blue-grey-10"
+                    @click="playSound(item.audio)"
+                  ></q-btn>
+                </div>
+                <div class="q-px-md q-pt-md q-pb-sm text-h6 text-blue-grey-10">{{item.vocabulary}}</div>
+              </div>
+              <div class="q-ml-md q-px-md q-pt-md q-pb-sm text-h6 text-blue-grey-10">{{item.read}}</div>
+              <div class="q-ml-md q-px-md q-p-md q-pb-sm text-h6 text-blue-grey-10">{{item.meaning}}</div>
+            </div>
+          </div>
           <q-separator />
         </q-card-section>
 
@@ -147,7 +167,7 @@
         <q-card-actions align="center">
           <q-btn style="width:120px" outline color="blue-grey-10" label="ยกเลิก" v-close-popup />
           <q-btn
-            @click="cancelDeleteExpression()"
+            @click="cancelDeleteFlashcard()"
             color="blue-grey-10"
             style="width:120px"
             label="ยืนยัน"
@@ -182,20 +202,52 @@ export default {
         .onSnapshot(dataDraft => {
           let temp = [];
           dataDraft.forEach(element => {
+            let getImage = "";
+            let getSound = "";
+            if (element.data().isImage == true) {
+              getImage =
+                " https://storage.cloud.google.com/atwork-dee11.appspot.com/practice/image/" +
+                element.id +
+                ".jpg";
+            }
+            if (element.data().isSound == true) {
+              getSound =
+                "https://storage.cloud.google.com/atwork-dee11.appspot.com/practice/audio/" +
+                element.id +
+                ".mp3";
+            }
             temp.push({
               ...element.data(),
               collection: "draft",
-              id: element.id
+              id: element.id,
+              img: getImage,
+              audio: getSound
             });
           });
           db.collection("practice_server")
             .get()
             .then(dataServer => {
               dataServer.forEach(element => {
+                let getImage = "";
+                let getSound = "";
+                if (element.data().isImage == true) {
+                  getImage =
+                    " https://storage.cloud.google.com/atwork-dee11.appspot.com/practice/image/" +
+                    element.id +
+                    ".jpg";
+                }
+                if (element.data().isSound == true) {
+                  getSound =
+                    "https://storage.cloud.google.com/atwork-dee11.appspot.com/practice/audio/" +
+                    element.id +
+                    ".mp3";
+                }
                 temp.push({
                   ...element.data(),
-                  collection: "server",
-                  id: element.id
+                  collection: "draft",
+                  id: element.id,
+                  img: getImage,
+                  audio: getSound
                 });
               });
               temp.sort((a, b) => {
@@ -210,7 +262,7 @@ export default {
       this.getId = id;
       this.getOrder = order;
     },
-    cancelDeleteExpression(id) {
+    cancelDeleteFlashcard(id) {
       db.collection("practice_draft")
         .doc(id)
         .update({ status: "notSync" })
@@ -228,11 +280,16 @@ export default {
           this.dialogDelete = false;
         });
     },
-    editDataExpression(item) {
+    editDataFlashcard(item) {
       this.$router.push({
-        name: "expressionEdit",
-        params: { ...item, levelId: this.levelId, unitId: this.unitId }
+        name: "flashcardEdit",
+        params: { data: item }
       });
+    },
+    playSound(pathSound) {
+      console.log(pathSound);
+      let audio = new Audio(pathSound);
+      audio.play();
     }
   },
   mounted() {

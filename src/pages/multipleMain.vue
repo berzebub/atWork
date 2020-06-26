@@ -5,6 +5,7 @@
       <div class="row justify-between">
         <div class="col text-left">
           <div class="row boxServer">
+            <!-- แบบร่าง -->
             <div class="col">
               <q-radio
                 color="blue-grey-10"
@@ -14,6 +15,7 @@
                 label="แบบร่าง"
               />
             </div>
+            <!-- เซิร์ฟเวอร์ -->
             <div class="col">
               <q-radio
                 color="blue-grey-10"
@@ -31,7 +33,6 @@
           </div>
         </div>
       </div>
-
       <div class="text-h6">
         <div class="q-pt-md">อาหารและเครื่องดื่ม</div>
         <div>1. จองโต๊ะ</div>
@@ -62,13 +63,13 @@
         />
       </div>
       <!-- โชว์ DATA -->
-      {{this.imgURL}}
+
       <div v-for="(item,index) in data" :key="index" class="box text-left q-my-md">
         <div class="boxQuestion bg-blue-grey-10 text-white q-py-xs q-px-md row justify-between">
           <div class="col row items-center">รหัสลำดับ {{item.order}}</div>
           <div class="q-px-xs">
             <q-btn
-              @click="deleteData(item.key, item.order)"
+              @click="deleteData(item.key, item.order,index)"
               size="sm"
               round
               icon="far fa-trash-alt"
@@ -78,18 +79,12 @@
             <q-btn @click="editData(item.key)" size="sm" round icon="far fa-edit" />
           </div>
         </div>
-        <div class="text-center" v-if="item.imgURL">
-          <img style="height:300px;width:400px " :src="item.imgURL" alt />
+        <div class="text-center q-pt-md" v-if="item.imageURL">
+          <img style="height:300px;width:400px " :src="item.imageURL" alt />
         </div>
         <div class="q-pa-md">
           <span v-if="item.audioURL">
-            <q-btn
-              size="sm"
-              @click="playAudio(item.key + '.mp3')"
-              round
-              flat
-              icon="fas fa-volume-up"
-            />
+            <q-btn size="sm" @click="playAudio(item.audioURL)" round flat icon="fas fa-volume-up" />
           </span>
           <span v-html=" item.question "></span>
         </div>
@@ -99,10 +94,10 @@
               :class="{'bg-secondary answer ' : item.correctAnswer == 1}"
               v-if="item.choices[0].choice"
             >
-              <span v-if="item.choices[0].soundUrl">
+              <span v-if="item.choices[0].soundURL">
                 <q-btn
                   size="sm"
-                  @click="playAudio(item.key + '1.mp3')"
+                  @click="playAudio(item.choices[0].soundURL)"
                   round
                   flat
                   icon="fas fa-volume-up"
@@ -117,10 +112,10 @@
               :class="{'bg-secondary answer' : item.correctAnswer == 2}"
               v-if="item.choices[1].choice"
             >
-              <span v-if="item.choices[1].soundUrl">
+              <span v-if="item.choices[1].soundURL">
                 <q-btn
                   size="sm"
-                  @click="playAudio(item.key + '2.mp3')"
+                  @click="playAudio(item.choices[1].soundURL)"
                   round
                   flat
                   icon="fas fa-volume-up"
@@ -131,10 +126,10 @@
             </span>
           </div>
           <div>
-            <span v-if="item.choices[2].soundUrl">
+            <span v-if="item.choices[2].soundURL">
               <q-btn
                 size="sm"
-                @click="playAudio(item.key  + '3.mp3')"
+                @click="playAudio(item.choices[2].soundURL)"
                 round
                 flat
                 icon="fas fa-volume-up"
@@ -149,10 +144,10 @@
             </span>
           </div>
           <div>
-            <span v-if="item.choices[3].soundUrl">
+            <span v-if="item.choices[3].soundURL">
               <q-btn
                 size="sm"
-                @click="playAudio(item.key + '4.mp3')"
+                @click="playAudio(item.choices[3].soundURL)"
                 round
                 flat
                 icon="fas fa-volume-up"
@@ -275,67 +270,86 @@ export default {
       deleteDialog: false,
       finishDialog: false,
       text: "",
-      imgURL: "",
+      imageURL: "",
       audioURL: "",
+      dataImgeURL: [],
+      dataAudioURL: [],
       data: [],
       dataDraft: [],
+      indexKey: "",
       deleteKey: "",
-      audioPath:
-        "https://storage.cloud.google.com/atwork-dee11.appspot.com/multiple/audio/"
+      pathFile:
+        "https://storage.cloud.google.com/atwork-dee11.appspot.com/practice/"
     };
   },
   methods: {
+    // โหลดข้อมูลเข้ามาเก็บไว้ทั้งหมด
     loadDataAll() {
-      st.child("images")
-        .listAll()
-        .then(getItem => {
-          // getItem.items คือการดึงข้อมูลที่เป็น Array ออกมา
-          console.log(getItem.items);
-
-          // วนเพื่อเก็บค่าที่อยู่ใน Array ออกมา
-          getItem.items.forEach(result => {
-            result.getDownloadURL().then(getURL => {
-              // getURL ทำการส่ง LINK URL มาให้
-              console.log(getURL);
-            });
-          });
-        });
       this.dataDraft = [];
       db.collection("practice_draft")
         .where("practiceId", "==", "m")
         .get()
         .then(doc => {
-          let key = [];
           doc.forEach(element => {
+            let getSound = "";
+            let getImage = "";
+            let getChoiceSound = element.data().choices;
+            if (element.data().isImage) {
+              getImage = this.pathFile + "image/" + element.id + ".jpg";
+            }
+            if (element.data().isSound) {
+              getSound = this.pathFile + "audio/" + element.id + ".mp3";
+            }
+            if (element.data().isAnswerSound) {
+              getChoiceSound = element.data().choices.map((x, index) => {
+                let newChoice = {};
+                return (newChoice = {
+                  soundURL:
+                    this.pathFile +
+                    "audio/" +
+                    element.id +
+                    "-" +
+                    (index + 1) +
+                    ".mp3",
+                  choice: x.choice
+                });
+              });
+            }
             let dataKey = {
               key: element.id,
-              imgURL: "",
-              audioURL: ""
+              imageURL: getImage,
+              audioURL: getSound,
+              choices: getChoiceSound
             };
             let final = {
-              ...dataKey,
-              ...element.data()
+              ...element.data(),
+              ...dataKey
             };
             this.dataDraft.push(final);
           });
         });
       this.loadDraft();
     },
+
+    // โหลด แบบร่าง
     loadDraft() {
       this.data = [];
       this.data = this.dataDraft;
       this.finishDialog = false;
     },
+    // โหลด เซิร์ฟเวอร์
     loadServer() {
       this.data = [];
     },
+    // กดไปหน้าเพิ่มข้อมูล
     addQuestion() {
       this.$router.push("/multipleInputAdd");
     },
+    // กดไปหน้าแก้ไขข้อมูล
     editQuestion() {
       this.questionDialog = true;
     },
-    addBtn() {},
+    // บันทึกข้อมูล
     saveBtn() {
       this.$refs.instrunctionTh.validate();
       this.$refs.instrunctionEng.validate();
@@ -353,60 +367,41 @@ export default {
       this.questionDialog = false;
       this.finishDialog = true;
     },
+    // ลบข้อมูล
     deleteBtn() {
-      this.dataDraft.forEach(element => {
-        return;
-        st.child("/multiple/image/" + this.deleteKey + ".jpg").delete();
-      });
-      return;
       db.collection("practice_draft")
         .doc(this.deleteKey)
         .delete()
         .then(() => {
-          this.loadDataAll();
-          this.text = "ลบข้อมูลเรียบร้อย";
-          this.deleteDialog = false;
-          this.finishDialog = true;
-          setTimeout(() => {
-            this.finishDialog = false;
-          }, 1000);
-        });
-      return;
-      db.collection("practice_draft")
-        .doc(this.deleteKey)
-        .get()
-        .then(doc => {
-          return;
-          if (this.dataDraft.imgURL.length > 0) {
-            st.child("/multiple/image/" + this.deleteKey + ".jpg").delete();
+          if (this.dataDraft[this.indexKey].isImage) {
+            st.child("/practice/image/" + this.deleteKey + ".jpg").delete();
           }
-          // if (doc.data().audioUrl.length > 0) {
-          //   st.child("/multiple/audio/" + this.deleteKey + ".mp3").delete();
-          // }
-          // if (doc.data().choices[0].soundUrl.length > 0) {
-          //   st.child("/multiple/audio/" + this.deleteKey + "1.mp3").delete();
-          // }
-          // if (doc.data().choices[1].soundUrl.length > 0) {
-          //   st.child("/multiple/audio/" + this.deleteKey + "2.mp3").delete();
-          // }
-          // if (doc.data().choices[2].soundUrl.length > 0) {
-          //   st.child("/multiple/audio/" + this.deleteKey + "3.mp3").delete();
-          // }
-          // if (doc.data().choices[3].soundUrl.length > 0) {
-          //   st.child("/multiple/audio/" + this.deleteKey + "4.mp3").delete();
-          // }
+          if (this.dataDraft[this.indexKey].isSound) {
+            st.child("/practice/audio/" + this.deleteKey + ".mp3").delete();
+          }
+          if (this.dataDraft[this.indexKey].isAnswerSound) {
+            this.dataDraft[this.indexKey].choices.map((x, index) => {
+              st.child(
+                "/practice/audio/" + this.deleteKey + "-" + (index + 1) + ".mp3"
+              ).delete();
+            });
+          }
         });
     },
-    deleteData(key, id) {
+    // กดปุ่ม ICON ลบ เพื่องเก็บ KEY
+    deleteData(key, id, index) {
       this.deleteDialog = true;
       this.orderId = id;
       this.deleteKey = key;
+      this.indexKey = index;
     },
+    // กดปุ่ม ICON แก้ไข เพื่องเก็บ KEY ส่งไปหน้า แก้ไขข้อมูล
     editData(key) {
       this.$router.push("/multipleInputEdit" + "/" + key);
     },
+    // เล่นเสียง
     playAudio(sound) {
-      let audio = new Audio(this.audioPath + sound);
+      let audio = new Audio(sound);
       audio.play();
     }
   },

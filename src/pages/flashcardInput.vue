@@ -18,14 +18,17 @@
               :rules="[val => val || 'กรุณากรอกข้อมูลให้ถูกต้อง']"
               outlined
               type="number"
-              v-model.number="order"
+              v-model.number="data.order"
             />
           </div>
           <!-- ไฟล์รูปภาพ -->
           <div>
             <div class="row items-center">
               <div align="left" class="text-h6">ไฟล์รูปภาพ</div>
-              <div class="q-ml-md text-blue-grey-4">ไฟล์ jpg ขนาด 400x300 px เท่านั้น</div>
+              <div
+                class="q-ml-md text-blue-grey-4"
+                style="margin-top:0.7%"
+              >ไฟล์ jpg ขนาด 400x300 px เท่านั้น</div>
             </div>
             <div>
               <q-file accept="image/*" bg-color="white" outlined v-model="uploadImg ">
@@ -56,7 +59,7 @@
           <div>
             <div class="row items-center">
               <div align="left" class="text-h6">ไฟล์เสียง</div>
-              <div class="q-ml-md text-blue-grey-4">ไฟล์ mp3 เท่านั้น</div>
+              <div class="q-ml-md text-blue-grey-4" style="margin-top:0.7%">ไฟล์ mp3 เท่านั้น</div>
             </div>
             <div>
               <q-file accept=".mp3" bg-color="white" outlined v-model="uploadSound">
@@ -90,7 +93,7 @@
             </div>
             <q-input
               ref="vocabulary"
-              v-model="vocabulary"
+              v-model="data.vocabulary"
               outlined
               :rules="[val => !!val || 'กรุณากรอกข้อมูลให้ถูกต้อง']"
             />
@@ -103,7 +106,7 @@
                 @input="checkRead()"
                 :class="this.checkValidate == true?'error-border': null  "
                 ref="read"
-                v-model="read"
+                v-model="data.read"
                 min-height="5rem"
                 :toolbar="[
         ['bold', 'italic', 'underline']
@@ -112,7 +115,6 @@
             </div>
             <div
               :style="this.checkValidate == false?'visibility:hidden': null"
-              align="left"
               class="error-text"
             >กรุณากรอกข้อมูลให้ถูกต้อง</div>
           </div>
@@ -123,7 +125,7 @@
             </div>
             <q-input
               ref="meaning"
-              v-model="meaning"
+              v-model="data.meaning"
               outlined
               :rules="[val => !!val || 'กรุณากรอกข้อมูลให้ถูกต้อง']"
             />
@@ -134,7 +136,7 @@
         <!-- ยกเลิก -->
         <div class="q-mt-md col">
           <q-btn
-            :to="'/flashcardMain/' + levelId + '/'+ unitId "
+            :to="'/flashcardMain/' + data.levelId + '/'+ data.unitId "
             label="ยกเลิก"
             dense
             style="width:150px"
@@ -181,14 +183,19 @@ export default {
       uploadSound: null,
       uploadImg: null,
       checkValidate: false,
-      practiceId: "",
-      levelId: this.$route.params.levelId,
-      unitId: this.$route.params.unitId,
-      order: "",
-      vocabulary: "",
-      read: "",
-      meaning: "",
-      isClick: false
+      isClick: false,
+      data: {
+        order: "",
+        vocabulary: "",
+        read: "",
+        meaning: "",
+        levelId: this.$route.params.levelId,
+        unitId: this.$route.params.unitId,
+        status: "notSync",
+        practiceId: "",
+        isImage: false,
+        isSound: false
+      }
     };
   },
   methods: {
@@ -203,18 +210,9 @@ export default {
       if (this.$route.params.levelId == undefined) {
         this.$router.push("/flashcardMain");
       }
-      this.levelId = this.$route.params.levelId;
-      this.practiceId = this.$route.params.practiceId;
-      this.order = this.$route.params.order;
-      this.unitId = this.$route.params.unitId;
+      this.data = this.$route.params.data;
     },
     saveData() {
-      st.child("practice/image/")
-        .put()
-        .then(getImg => {
-          console.log(getImg);
-        });
-      return;
       this.$refs.order.validate();
       this.$refs.vocabulary.validate();
       this.$refs.meaning.validate();
@@ -231,23 +229,31 @@ export default {
       }
       this.isClick = true;
       if (this.$route.name == "flashcardInput") {
+        if (this.uploadImg != null) {
+          this.data.isImage = true;
+        }
+        if (this.uploadSound != null) {
+          this.data.isSound = true;
+        }
         db.collection("practice_draft")
-          .add({
-            unitId: this.unitId,
-            levelId: this.levelId,
-            practiceId: this.practiceId,
-            order: this.order,
-            vocabulary: this.vocabulary,
-            read: this.read,
-            meaning: this.meaning,
-            status: "notSync"
-          })
-          .then(() => {
+          .add(this.data)
+          .then(getId => {
+            console.log(getId.id);
+            if (this.data.isImage == true) {
+              st.child("practice/image/" + getId.id + ".jpg").put(
+                this.uploadImg
+              );
+            }
+            if (this.data.isSound == true) {
+              st.child("practice/audio/" + getId.id + ".mp3").put(
+                this.uploadSound
+              );
+            }
             this.successData = true;
             setTimeout(() => {
               this.successData = false;
               this.$router.push(
-                "/flashcardMain/" + this.levelId + "/" + this.unitId
+                "/flashcardMain/" + this.data.levelId + "/" + this.data.unitId
               );
             }, 700);
           });
@@ -267,13 +273,14 @@ export default {
           vocabulary: this.vocabulary,
           read: this.read,
           meaning: this.meaning,
-          uploadImg: this.uploadImg,
-          uploadSound: this.uploadSound,
           status: "notSync"
         })
-        .then(() => {
+        .then(getId => {
+          console.log(getId.id);
+          st.child("practice/image/" + getId.id + ".jpg").put(this.uploadImg);
+          st.child("practice/audio/" + getId.id + ".mp3").put(this.uploadSound);
           this.$router.push(
-            "/flashcardMain/" + this.levelId + "/" + this.unitId
+            "/flashcardMain/" + this.data.levelId + "/" + this.data.unitId
           );
         });
     }

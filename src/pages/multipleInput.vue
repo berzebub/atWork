@@ -355,12 +355,14 @@ export default {
       file: null,
       uploadImg: null,
       uploadAudio: null,
-      user: "",
       dataFile1: null,
       dataFile2: null,
       dataFile3: null,
       dataFile4: null,
+      // ข้อมูล
       data: {
+        isImage: false,
+        isSound: false,
         practiceId: "m",
         levelId: "aa",
         unitId: "bb",
@@ -373,7 +375,6 @@ export default {
         status: "notSync"
       },
       choices: ["", "", "", ""],
-      activeType: "messenger",
       //   เช็คช่องคำถามข้อมูล & ตัวเลือก
       isQuestion: true,
       isChoice1: true,
@@ -385,6 +386,7 @@ export default {
     };
   },
   methods: {
+    // โหลด ข้อมูล หน้าแก้ไข
     loadDataEdit() {
       db.collection("practice_draft")
         .doc(this.$route.params.key)
@@ -392,13 +394,16 @@ export default {
         .then(doc => {
           this.choices = [];
           let change = doc.data().choices;
+          // การวน ข้อมูล ตัวเลือกออกมาเก็บในช่องตัวเลือกต่างๆ
           for (let index = 0; index < change.length; index++) {
             this.choices.push(change[index].choice);
           }
           this.data = doc.data();
         });
     },
+    // บันทึก
     saveBtn() {
+      // เช็คช่องกรอกข้อมูล ก่อนบันทึก ว่ากรอกข้อมูลรึยัง ข้อมูลที่จำเป็นต้องกรอก
       let hasChoice = this.choices.filter(x => x != "");
       this.$refs.orderid.validate();
       if (this.$refs.orderid.hasError) {
@@ -409,6 +414,7 @@ export default {
         return;
       }
       if (hasChoice.length < 2) {
+        // การเช็คตัวเลือก 1&2 ถ้าข้อความน้อยก่ว่า 0 ให้ มีกรอบสีแดง
         let index = this.choices.findIndex(x => x == "");
         if (index == 0) {
           this.isChoice1 = false;
@@ -417,6 +423,7 @@ export default {
         }
         return;
       }
+      // put ตัวเลือก เข้าไปเก็บ แต้ละช่อง
       let change = [
         { choice: this.choices[0] },
         { choice: this.choices[1] },
@@ -424,11 +431,19 @@ export default {
         { choice: this.choices[3] }
       ];
       this.data.choices = change;
+      if (this.uploadImg) {
+        this.data.isImage = true;
+      }
+      if (this.uploadAudio) {
+        this.data.isSound = true;
+      }
+      //  หน้า เพิ่มข้อมูล
       if (this.$route.name == "multipleInputAdd") {
         db.collection("practice_draft")
           .where("order", "==", this.data.order)
           .get()
           .then(doc => {
+            // เช็ครหัสลำดับ ถ้า มากกว่า 0 คือมีแล้ว แต่ถ้าไม่ บันทึกเพิ่มได้เลย
             if (doc.size > 0) {
               this.finishDialog = true;
               this.iconTrueDialog = false;
@@ -446,37 +461,37 @@ export default {
                   this.iconfailDialog = false;
                   this.iconTrueDialog = true;
                   this.text = "บันทึกข้อมูลเรียบร้อย";
+                  // เช็คขูอมูลภาพและเสียง
                   if (this.uploadImg) {
-                    let getImage = await st
-                      .child("/multiple/image/" + doc.id + ".jpg")
+                    await st
+                      .child("/practice/image/" + doc.id + ".jpg")
                       .put(this.uploadImg);
-
-                    let getUrlImge = await getImage.ref.getDownloadURL();
                   }
                   if (this.uploadAudio) {
-                    let getAudio = await st
-                      .child("/multiple/audio/" + doc.id + ".mp3")
+                    await st
+                      .child("/practice/audio/" + doc.id + ".mp3")
                       .put(this.uploadAudio);
                   }
+                  // แบบมีเสียง เพิ่ม
                   if (this.data.isAnswerSound == true) {
                     if (this.dataFile1) {
-                      let getAudio = await st
-                        .child("/multiple/audio/" + doc.id + "1.mp3")
+                      await st
+                        .child("/practice/audio/" + doc.id + "-1.mp3")
                         .put(this.dataFile1);
                     }
                     if (this.dataFile2) {
-                      let getAudio = await st
-                        .child("/multiple/audio/" + doc.id + "2.mp3")
+                      await st
+                        .child("/practice/audio/" + doc.id + "-2.mp3")
                         .put(this.dataFile2);
                     }
                     if (this.dataFile3) {
-                      let getAudio = await st
-                        .child("/multiple/audio/" + doc.id + "3.mp3")
+                      await st
+                        .child("/practice/audio/" + doc.id + "-3.mp3")
                         .put(this.dataFile3);
                     }
                     if (this.dataFile4) {
-                      let getAudio = await st
-                        .child("/multiple/audio/" + doc.id + "4.mp3")
+                      await st
+                        .child("/practice/audio/" + doc.id + "-4.mp3")
                         .put(this.dataFile4);
                     }
                   }
@@ -487,43 +502,47 @@ export default {
                 });
             }
           });
-      } else {
+      }
+
+      // หน้า แก้ไข
+      else {
         db.collection("practice_draft")
           .doc(this.$route.params.key)
           .set(this.data)
           .then(async doc => {
             this.finishDialog = true;
             this.text = "บันทึกข้อมูลเรียบร้อย";
-
+            // เช็คขูอมูลภาพและเสียง
             if (this.uploadImg) {
-              let getImage = await st
-                .child("/multiple/image/" + this.$route.params.key + ".jpg")
+              await st
+                .child("/practice/image/" + this.$route.params.key + ".jpg")
                 .put(this.uploadImg);
             }
             if (this.uploadAudio) {
-              let getAudio = await st
-                .child("/multiple/audio/" + this.$route.params.key + ".mp3")
+              await st
+                .child("/practice/audio/" + this.$route.params.key + ".mp3")
                 .put(this.uploadAudio);
             }
+            // แบบมีเสียง Edit
             if (this.data.isAnswerSound == true) {
               if (this.dataFile1) {
-                let getAudio = await st
-                  .child("/multiple/audio/" + this.$route.params.key + "1.mp3")
+                await st
+                  .child("/practice/audio/" + this.$route.params.key + "1.mp3")
                   .put(this.dataFile1);
               }
               if (this.dataFile2) {
-                let getAudio = await st
-                  .child("/multiple/audio/" + this.$route.params.key + "2.mp3")
+                await st
+                  .child("/practice/audio/" + this.$route.params.key + "2.mp3")
                   .put(this.dataFile2);
               }
               if (this.dataFile3) {
-                let getAudio = await st
-                  .child("/multiple/audio/" + this.$route.params.key + "3.mp3")
+                await st
+                  .child("/practice/audio/" + this.$route.params.key + "3.mp3")
                   .put(this.dataFile3);
               }
               if (this.dataFile4) {
-                let getAudio = await st
-                  .child("/multiple/audio/" + this.$route.params.key + "4.mp3")
+                await st
+                  .child("/practice/audio/" + this.$route.params.key + "4.mp3")
                   .put(this.dataFile4);
               }
               db.collection("practice_draft")
@@ -558,6 +577,7 @@ export default {
         }
       }
     },
+    // การบันทึก ข้อมูลเสียงเข้าตัวแปล
     fileSound(val, type) {
       if (type == 1) {
         this.dataFile1 = val[0];
@@ -612,7 +632,6 @@ export default {
   mounted() {
     if (this.$route.name == "multipleInputEdit") {
       this.loadDataEdit();
-    } else {
     }
   }
 };

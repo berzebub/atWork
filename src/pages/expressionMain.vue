@@ -64,7 +64,7 @@
               @click="openDialogDelete(item.id,item.order)"
               v-if="expressionType == 'draft'"
               class="cursor-pointer q-pr-lg desktop-only"
-              name="fas fa-trash-alt"
+              name="far fa-trash-alt"
               style="color:white; font-size: 1.4em;"
             />
             <!-- icon-edit -->
