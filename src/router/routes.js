@@ -42,7 +42,7 @@ const routes = [
       },
       {
         path: "flashcardEdit/:levelId/:unitId",
-        component: () => import("pages/flashcardEdit.vue"),
+        component: () => import("pages/flashcardInput.vue"),
         name: "flashcardEdit"
       },
       // ------------------- multiple -------------------
