@@ -17,6 +17,7 @@
           label="เพิ่มแบบฝึกหัด"
         />
       </div>
+
       <!-- การ์ดแบบฝึกหัด -->
       <div
         v-for="(item, index) in practiceListShow"
@@ -182,10 +183,11 @@ export default {
       data: {
         order: "",
         practiceType: "flashcard",
-        levelId: "",
-        unitId: ""
+        levelId: this.levelId,
+        unitId: this.unitId
       },
-      practiceListShow: ""
+      practiceListShow: "",
+      isSnap: ""
     };
   },
   methods: {
@@ -229,12 +231,12 @@ export default {
       }
 
       if (this.isEditMode) {
-        console.log("edit");
-        return;
+        // console.log("edit");
+        // return;
         this.saveOldData();
       } else {
-        console.log("add");
-        return;
+        // console.log("add");
+        // return;
         this.saveNewData();
       }
     },
@@ -264,11 +266,13 @@ export default {
         });
     },
     loadData() {
-      db.collection("practice_list")
+      console.log(this.levelId, this.unitId);
+
+      this.isSnap = db
+        .collection("practice_list")
         .where("levelId", "==", this.levelId)
         .where("unitId", "==", this.unitId)
-        .get()
-        .then(doc => {
+        .onSnapshot(doc => {
           let temp = [];
           doc.forEach(element => {
             // console.log(element.data());
@@ -278,7 +282,6 @@ export default {
           this.practiceListShow = temp;
         });
     },
-
     gotoPractice(item) {
       if (item.practiceType == "flashcard") {
         this.$router.push("/flashcardMain/" + item.levelId + "/" + item.unitId);
@@ -298,6 +301,14 @@ export default {
   },
   mounted() {
     this.loadData();
+  },
+  watch: {
+    unitId(newValue, oldValue) {
+      this.loadData();
+    }
+  },
+  beforeDestroy() {
+    this.isSanp();
   }
 };
 </script>

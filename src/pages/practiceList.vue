@@ -69,6 +69,7 @@ export default {
   },
   methods: {
     gotoEdit(unitId, levelId) {
+      this.isShowPracticeMain = false;
       this.activeKey = unitId;
       this.levelId = levelId;
       this.unitId = unitId;
@@ -78,20 +79,7 @@ export default {
         this.$router.push("/practiceMain"); //ต้องใส่ key เพื่อไปยัง L/U นั้น
       }
     },
-    gotoPractice(practiceType) {
-      if (practiceType == "flashcard") {
-        this.$router.push("/flashcard/");
-      } else if (practiceType == "multipleChoies") {
-        this.$router.push("/multipleMain/");
-      } else if (practiceType == "expression") {
-        this.$router.push("/expressionMain/");
-      } else if (practiceType == "vdo/") {
-        this.$router.push("/vdo");
-      } else {
-        // ไม่อยู่ type ไหนเลยให้แก้ มีแจ้งเตือน
-        this.$router.push("/practiceList");
-      }
-    },
+
     loadLevel() {
       db.collection("level")
         .get()
