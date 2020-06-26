@@ -1,6 +1,6 @@
 <template>
   <q-page>
-    <div class="text-subtitle1">ชื่อระดับการเรียน</div>
+    <div class="text-subtitle1">ชื่อตำแหน่ง</div>
     <div>
       <q-input dense outlined v-model="nameLevel"></q-input>
       <div class="row q-pt-md">
