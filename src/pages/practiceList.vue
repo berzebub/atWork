@@ -15,65 +15,22 @@
         </div>
         <div class="shadow-3 bg-white" style=" height: calc(100vh - 64px)">
           <q-list class="rounded-borders">
-            <q-expansion-item label="อาหารและเครื่องดื่ม">
+            <q-expansion-item
+              v-for="(itemLv,index) in levelList"
+              :key="index"
+              :label="itemLv.label"
+              @click="showUnit(itemLv.levelId)"
+              group="unitgroup"
+            >
               <q-card>
                 <div
+                  v-for="(item2,index2) in unitListShow"
                   class="row q-px-md q-py-sm relative-position cursor-pointer"
-                  :class="activeKey==1?'bg-blue-grey-4':''"
+                  :class="activeKey==item2.unitId?'bg-blue-grey-4':''"
                   v-ripple
-                  @click="gotoEdit(1)"
+                  @click="gotoEdit(item2.unitId,item2.levelId)"
                 >
-                  <div class="col">1. จองโต๊ะ</div>
-                  <div class="col-1" align="right">
-                    <q-icon name="fas fa-sync-alt"></q-icon>
-                  </div>
-                </div>
-                <div
-                  class="row q-px-md q-py-sm relative-position cursor-pointer"
-                  :class="activeKey==2?'bg-blue-grey-4':''"
-                  v-ripple
-                  @click="gotoEdit(2)"
-                >
-                  <div class="col">2. สั่งอาหาร</div>
-                  <div class="col-1" align="right">
-                    <q-icon name="fas fa-sync-alt"></q-icon>
-                  </div>
-                </div>
-                <div
-                  class="row q-px-md q-py-sm relative-position cursor-pointer"
-                  :class="activeKey==3?'bg-blue-grey-4 ':''"
-                  v-ripple
-                  @click="gotoEdit(3)"
-                >
-                  <div class="col">3. สั่งเครื่องดื่ม</div>
-                  <div class="col-1" align="right">
-                    <q-icon name="fas fa-sync-alt"></q-icon>
-                  </div>
-                </div>
-              </q-card>
-            </q-expansion-item>
-            <q-separator />
-            <q-expansion-item label="พนักงานต้อนรับ">
-              <q-card>
-                <div
-                  class="row q-px-md q-py-sm relative-position cursor-pointer"
-                  :class="isActive?'bg-blue-grey-4':''"
-                  v-ripple
-                  @click="gotoEdit()"
-                >
-                  <div class="col">1. จองโต๊ะ</div>
-                  <div class="col-1" align="right">
-                    <q-icon name="fas fa-sync-alt"></q-icon>
-                  </div>
-                </div>
-                <div class="row q-px-md q-py-sm relative-position cursor-pointer" v-ripple>
-                  <div class="col">2. สั่งอาหาร</div>
-                  <div class="col-1" align="right">
-                    <q-icon name="fas fa-sync-alt"></q-icon>
-                  </div>
-                </div>
-                <div class="row q-px-md q-py-sm relative-position cursor-pointer" v-ripple>
-                  <div class="col">3. สั่งเครื่องดื่ม</div>
+                  <div class="col">{{index2+1}}. {{item2.label}}</div>
                   <div class="col-1" align="right">
                     <q-icon name="fas fa-sync-alt"></q-icon>
                   </div>
@@ -85,7 +42,7 @@
         </div>
       </div>
       <div class="col q-pa-md">
-        <practice-main v-if="isShowPracticeMain"></practice-main>
+        <practice-main v-if="isShowPracticeMain" :levelId="levelId" :unitId="unitId"></practice-main>
       </div>
     </div>
   </q-page>
@@ -102,13 +59,19 @@ export default {
     return {
       isShowPracticeMain: false,
       isActive: false,
-      activeKey: ""
+      activeKey: "",
+      levelList: [],
+      unitList: [],
+      unitListShow: [],
+      levelId: "",
+      unitId: ""
     };
   },
   methods: {
-    gotoEdit(key) {
-      this.activeKey = key;
-
+    gotoEdit(unitId, levelId) {
+      this.activeKey = unitId;
+      this.levelId = levelId;
+      this.unitId = unitId;
       if (this.$q.platform.is.desktop) {
         this.isShowPracticeMain = true;
       } else {
@@ -117,20 +80,66 @@ export default {
     },
     gotoPractice(practiceType) {
       if (practiceType == "flashcard") {
-        this.$router.push("/flashcard");
+        this.$router.push("/flashcard/");
       } else if (practiceType == "multipleChoies") {
-        this.$router.push("/multipleMain");
+        this.$router.push("/multipleMain/");
       } else if (practiceType == "expression") {
-        this.$router.push("/expressionMain/a/a");
-      } else if (practiceType == "vdo") {
+        this.$router.push("/expressionMain/");
+      } else if (practiceType == "vdo/") {
         this.$router.push("/vdo");
       } else {
         // ไม่อยู่ type ไหนเลยให้แก้ มีแจ้งเตือน
         this.$router.push("/practiceList");
       }
+    },
+    loadLevel() {
+      db.collection("level")
+        .get()
+        .then(doc => {
+          console.log("level");
+          doc.forEach(element => {
+            let showData = {
+              levelId: element.id,
+              label: element.data().name
+            };
+            this.levelList.push(showData);
+            this.levelList.sort((a, b) => {
+              return a.label - b.label ? 1 : -1;
+            });
+          });
+          this.loadUnit();
+        });
+    },
+    loadUnit() {
+      db.collection("unit")
+        .get()
+        .then(doc => {
+          console.log("unit");
+          doc.forEach(element => {
+            let showData = {
+              unitId: element.id,
+              levelId: element.data().levelId,
+              label: element.data().name,
+              order: element.data().order
+            };
+            this.unitList.push(showData);
+            this.unitList.sort((a, b) => {
+              return a.order - b.order;
+            });
+          });
+        });
+    },
+    showUnit(levelId) {
+      console.log(levelId);
+      this.unitListShow = this.unitList.filter(x => x.levelId == levelId);
+    },
+    test(key) {
+      console.log(key);
     }
   },
-  mounted() {}
+  mounted() {
+    this.loadLevel();
+  }
 };
 </script>
 
