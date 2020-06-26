@@ -1,4 +1,5 @@
-const routes = [{
+const routes = [
+  {
     path: "/",
     component: () => import("pages/login.vue")
   },
@@ -82,6 +83,16 @@ const routes = [{
         path: "lessonMain",
         component: () => import("pages/lessonMain.vue"),
         name: "lessonMain"
+      },
+      {
+        path: "lessonInput",
+        component: () => import("pages/lessonInputEdit.vue"),
+        name: "lessonInput"
+      },
+      {
+        path: "lessonEdit",
+        component: () => import("pages/lessonInputEdit.vue"),
+        name: "lessonEdit"
       },
 
       // ------------------- account ผู้ใช้งาน -------------------
