@@ -202,6 +202,7 @@ export default {
   },
   mounted() {
     this.loadUserInfo();
+    console.log(auth.currentUser);
   }
 };
 </script>

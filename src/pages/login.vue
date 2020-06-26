@@ -59,7 +59,7 @@
 </template>
 
 <script>
-import { auth } from "../router";
+import { auth, axios } from "../router";
 export default {
   data() {
     return {
@@ -88,6 +88,9 @@ export default {
     confirmWrongEmail() {
       this.dialogWrongPassword = false;
     }
+  },
+  mounted() {
+    console.log(auth.currentUser);
   }
 };
 </script>
