@@ -89,7 +89,11 @@ const routes = [
         component: () => import("pages/lessonMain.vue"),
         name: "lessonMain"
       },
-
+      {
+        path: "lessonInputEdit",
+        component: () => import("pages/lessonInputEdit.vue"),
+        name: "lessonInputEdit"
+      },
       // ------------------- account ผู้ใช้งาน -------------------
       {
         path: "accountMain",

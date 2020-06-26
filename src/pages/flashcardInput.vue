@@ -27,14 +27,8 @@
               <div align="left" class="text-h6">ไฟล์รูปภาพ</div>
               <div class="q-ml-md text-blue-grey-4">ไฟล์ jpg ขนาด 400x300 px เท่านั้น</div>
             </div>
-            <div class="q-px-lg">
-              <q-file
-                accept="image/*"
-                bg-color="white"
-                class="q-pa-sm"
-                outlined
-                v-model="uploadImg "
-              >
+            <div>
+              <q-file accept="image/*" bg-color="white" outlined v-model="uploadImg ">
                 <template v-slot:append>
                   <div
                     style="width:100px"
@@ -64,8 +58,8 @@
               <div align="left" class="text-h6">ไฟล์เสียง</div>
               <div class="q-ml-md text-blue-grey-4">ไฟล์ mp3 เท่านั้น</div>
             </div>
-            <div class="q-px-lg">
-              <q-file accept=".mp3" bg-color="white" class="q-pa-sm" outlined v-model="uploadSound">
+            <div>
+              <q-file accept=".mp3" bg-color="white" outlined v-model="uploadSound">
                 <template v-slot:append>
                   <div
                     style="width:100px;"
@@ -140,7 +134,7 @@
         <!-- ยกเลิก -->
         <div class="q-mt-md col">
           <q-btn
-            :to="'/flashcardMain'"
+            :to="'/flashcardMain/' + levelId + '/'+ unitId "
             label="ยกเลิก"
             dense
             style="width:150px"
@@ -151,6 +145,7 @@
         <!-- บันทึกข้อมูล -->
         <div class="q-mt-md col">
           <q-btn
+            :disable="isClick"
             @click="saveData()"
             label="บันทึก"
             dense
@@ -162,15 +157,27 @@
         </div>
       </div>
       <!-- --------------------------------------dialog--------------------------------------- -->
+      <!-- เพิ่มข้อมูลสำเร็จ -->
+      <q-dialog v-model="successData">
+        <q-card style="min-width: 350px; height:170px">
+          <q-card-section class="absolute-center" align="center">
+            <div>
+              <q-icon color="secondary" size="lg" name="far fa-check-circle" />
+            </div>
+            <div class="q-mt-lg">บันทึกข้อมูลเรียบร้อย</div>
+          </q-card-section>
+        </q-card>
+      </q-dialog>
     </div>
   </q-page>
 </template>
 
 <script>
-import { db } from "../router";
+import { db, st } from "../router";
 export default {
   data() {
     return {
+      successData: false,
       uploadSound: null,
       uploadImg: null,
       checkValidate: false,
@@ -180,7 +187,8 @@ export default {
       order: "",
       vocabulary: "",
       read: "",
-      meaning: ""
+      meaning: "",
+      isClick: false
     };
   },
   methods: {
@@ -193,77 +201,53 @@ export default {
     },
     editMode() {
       if (this.$route.params.levelId == undefined) {
-        this.$router.push("/expressionMain");
+        this.$router.push("/flashcardMain");
       }
       this.levelId = this.$route.params.levelId;
       this.practiceId = this.$route.params.practiceId;
       this.order = this.$route.params.order;
       this.unitId = this.$route.params.unitId;
-      let getSentence = this.$route.params.expression;
-      this.boxCount = this.$route.params.expression.length - 1;
-      let loop = 4 - this.$route.params.expression.length;
-      for (let i = 0; i < loop; i++) {
-        getSentence.push({
-          sentenceEng: "",
-          sentenceTh: "",
-          speaker: ""
-        });
-      }
-      this.sentence = getSentence;
     },
     saveData() {
+      st.child("practice/image/")
+        .put()
+        .then(getImg => {
+          console.log(getImg);
+        });
+      return;
       this.$refs.order.validate();
       this.$refs.vocabulary.validate();
       this.$refs.meaning.validate();
+      if (
+        this.$refs.order.hasError ||
+        this.$refs.vocabulary.hasError ||
+        this.$refs.meaning.hasError
+      ) {
+        return;
+      }
       if (this.read == "") {
         this.checkValidate = true;
         return;
       }
-      if (this.$route.name == "expressionInput") {
-        let filterData = this.sentence.filter(
-          x => x.sentenceEng != "" && x.sentenceTh != ""
-        );
-        filterData.forEach(element => {
-          delete element.errorEng;
-          delete element.errorTh;
-        });
+      this.isClick = true;
+      if (this.$route.name == "flashcardInput") {
         db.collection("practice_draft")
           .add({
             unitId: this.unitId,
             levelId: this.levelId,
             practiceId: this.practiceId,
-            expression: filterData,
             order: this.order,
+            vocabulary: this.vocabulary,
+            read: this.read,
+            meaning: this.meaning,
             status: "notSync"
           })
           .then(() => {
-            this.sentence = [
-              {
-                sentenceEng: "",
-                sentenceTh: "",
-                speaker: "customer"
-              },
-              {
-                sentenceEng: "",
-                sentenceTh: "",
-                speaker: "customer"
-              },
-              {
-                sentenceEng: "",
-                sentenceTh: "",
-                speaker: "customer"
-              },
-              {
-                sentenceEng: "",
-                sentenceTh: "",
-                speaker: "customer"
-              }
-            ];
             this.successData = true;
             setTimeout(() => {
               this.successData = false;
               this.$router.push(
-                "/expressionMain/" + this.levelId + "/" + this.unitId
+                "/flashcardMain/" + this.levelId + "/" + this.unitId
               );
             }, 700);
           });
@@ -273,25 +257,29 @@ export default {
     },
 
     editData() {
-      let filterData = this.sentence.filter(
-        x => x.sentenceEng != "" && x.sentenceTh != ""
-      );
       db.collection("practice_draft")
         .doc(this.$route.params.id)
         .update({
-          levelId: this.levelId,
           unitId: this.unitId,
+          levelId: this.levelId,
+          practiceId: this.practiceId,
           order: this.order,
-          status: "notSync",
-          expression: filterData
+          vocabulary: this.vocabulary,
+          read: this.read,
+          meaning: this.meaning,
+          uploadImg: this.uploadImg,
+          uploadSound: this.uploadSound,
+          status: "notSync"
         })
         .then(() => {
-          this.$router.push("expressionMain");
+          this.$router.push(
+            "/flashcardMain/" + this.levelId + "/" + this.unitId
+          );
         });
     }
   },
   mounted() {
-    if (this.$route.name == "expressionEdit") this.editMode();
+    if (this.$route.name == "flashcardEdit") this.editMode();
   }
 };
 </script>

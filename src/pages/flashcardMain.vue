@@ -31,7 +31,7 @@
           v-if="expressionType == 'draft'"
           style="width:190px; height:36px"
           class="bg-blue-grey-10"
-          :to="'/flashcardInput'"
+          :to="'/flashcardInput' + '/' + levelId +'/'+unitId"
           color="white"
           label="เพิ่มคำศัพท์ "
         ></q-btn>
@@ -39,7 +39,7 @@
       <!-- การ์ดข้อความ -->
 
       <q-card
-        v-for="(item, index) in showDataExpression"
+        v-for="(item, index) in showDataFlashcard"
         v-show="item.collection == expressionType"
         :key="index"
         class="q-mt-md"
@@ -108,12 +108,10 @@
           </div>
         </q-card-section>
         <!-- ประโยคข้อความ -->
-        <q-card-section v-for="(item2, index2) in item.expression" :key="index2" class="no-padding">
-          <div v-if="item2.speaker == 'employee'" class="q-px-md q-pt-md q-pb-sm text-h6">พนักงาน:</div>
-          <div v-if="item2.speaker == 'customer'" class="q-px-md q-pt-md q-pb-sm text-h6">ลูกค้า:</div>
-          <div class="q-px-md q-p-md q-pb-sm text-h6">{{ item2.sentenceEng }}</div>
-          <div class="q-px-md q-pb-md text-subtitle1">{{ item2.sentenceTh }}</div>
-
+        <q-card-section class="no-padding">
+          <div class="q-px-md q-pt-md q-pb-sm text-h6">{{item.vocabulary}}</div>
+          <div class="q-px-md q-pt-md q-pb-sm text-h6">{{item.read}}</div>
+          <div class="q-px-md q-p-md q-pb-sm text-h6">{{item.meaning}}</div>
           <q-separator />
         </q-card-section>
 
@@ -170,43 +168,43 @@ export default {
       dialogCancelDelete: false,
       getId: "",
       getOrder: "",
-      showDataExpression: "",
+      showDataFlashcard: "",
       levelId: this.$route.params.levelId,
       unitId: this.$route.params.unitId,
       isSnap: ""
     };
   },
   methods: {
-    // loadDataFlashcard() {
-    //   db.collection("practice_draft")
-    //     .where("levelId", "==", this.levelId)
-    //     .where("unitId", "==", this.unitId)
-    //     .onSnapshot(dataDraft => {
-    //       let temp = [];
-    //       dataDraft.forEach(element => {
-    //         temp.push({
-    //           ...element.data(),
-    //           collection: "draft",
-    //           id: element.id
-    //         });
-    //       });
-    //       db.collection("practice_server")
-    //         .get()
-    //         .then(dataServer => {
-    //           dataServer.forEach(element => {
-    //             temp.push({
-    //               ...element.data(),
-    //               collection: "server",
-    //               id: element.id
-    //             });
-    //           });
-    //           temp.sort((a, b) => {
-    //             return a.order - b.order;
-    //           });
-    //           this.showDataExpression = temp;
-    //         });
-    //     });
-    // },
+    loadDataFlashcard() {
+      db.collection("practice_draft")
+        .where("levelId", "==", this.levelId)
+        .where("unitId", "==", this.unitId)
+        .onSnapshot(dataDraft => {
+          let temp = [];
+          dataDraft.forEach(element => {
+            temp.push({
+              ...element.data(),
+              collection: "draft",
+              id: element.id
+            });
+          });
+          db.collection("practice_server")
+            .get()
+            .then(dataServer => {
+              dataServer.forEach(element => {
+                temp.push({
+                  ...element.data(),
+                  collection: "server",
+                  id: element.id
+                });
+              });
+              temp.sort((a, b) => {
+                return a.order - b.order;
+              });
+              this.showDataFlashcard = temp;
+            });
+        });
+    },
     openDialogDelete(id, order) {
       this.dialogDelete = true;
       this.getId = id;
@@ -238,7 +236,7 @@ export default {
     }
   },
   mounted() {
-    // this.loadDataFlashcard();
+    this.loadDataFlashcard();
     // var user = auth.currentUser;
     // console.log(user.email);
   }
