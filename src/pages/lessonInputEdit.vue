@@ -5,7 +5,7 @@
       <q-input dense outlined v-model="nameLevel"></q-input>
       <div class="row q-pt-md">
         <div class="col-6">
-          <q-btn dense style="width:150px" outline label="ยกเลิก"></q-btn>
+          <q-btn dense style="width:150px" @click="cancel()" outline label="ยกเลิก"></q-btn>
         </div>
         <div class="col-6" align="right">
           <q-btn dense color="blue-grey-10" style="width:150px" label="บันทึก"></q-btn>
@@ -21,6 +21,11 @@ export default {
     return {
       nameLevel: ""
     };
+  },
+  methods: {
+    cancel() {
+      this.$router.push("lessonMain");
+    }
   }
 };
 </script>
