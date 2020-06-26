@@ -31,14 +31,19 @@ const routes = [
       },
       // ------------------- flashcard -------------------
       {
-        path: "flashcardMain",
+        path: "flashcardMain/:levelId/:unitId",
         component: () => import("pages/flashcardMain.vue"),
         name: "flashcardMain"
       },
       {
-        path: "flashcardInput",
+        path: "flashcardInput/:levelId/:unitId",
         component: () => import("pages/flashcardInput.vue"),
         name: "flashcardInput"
+      },
+      {
+        path: "flashcardEdit/:levelId/:unitId",
+        component: () => import("pages/flashcardEdit.vue"),
+        name: "flashcardEdit"
       },
       // ------------------- multiple -------------------
       {
@@ -83,16 +88,6 @@ const routes = [
         path: "lessonMain",
         component: () => import("pages/lessonMain.vue"),
         name: "lessonMain"
-      },
-      {
-        path: "lessonInput",
-        component: () => import("pages/lessonInputEdit.vue"),
-        name: "lessonInput"
-      },
-      {
-        path: "lessonEdit",
-        component: () => import("pages/lessonInputEdit.vue"),
-        name: "lessonEdit"
       },
 
       // ------------------- account ผู้ใช้งาน -------------------
