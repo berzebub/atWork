@@ -38,6 +38,7 @@ Vue.mixin({
   methods: {
     // ฟังชั่น ซิงโครไนค์
     sync(practiceId) {
+
       db.collection("practice_draft")
         .where("practiceId", "==", practiceId)
         .get()

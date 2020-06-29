@@ -35,8 +35,8 @@
                     <q-item clickable @click="editPractice(itemPrac)">
                       <q-item-section>แก้ไขรหัสลำดับ</q-item-section>
                     </q-item>
-                    <q-item clickable @click="deletePractice(itemPrac.practiceId)">
-                      <q-item-section>ลบ</q-item-section>
+                    <q-item clickable @click="deletePractice(itemPrac)">
+                      <q-item-section>ลบแบบฝึกหัด</q-item-section>
                     </q-item>
                   </q-list>
                 </q-menu>
@@ -45,10 +45,20 @@
           </div>
         </div>
         <div class="row q-py-sm">
-          <div class="col q-pa-sm" align="left">{{itemPrac.practiceType}}</div>
+          <div class="col q-pa-sm" align="left">
+            <span v-if="itemPrac.practiceType=='flashcard'">การ์ดคำศัพท์</span>
+            <span v-if="itemPrac.practiceType=='multipleChoice'">เลือกคำตอบ</span>
+            <span v-if="itemPrac.practiceType=='expression'">ประโยคสนทนา</span>
+            <span v-if="itemPrac.practiceType=='vdo'">บทสนทนา</span>
+          </div>
           <div class="row" :class="$q.platform.is.desktop ? 'col-2':'col-4'" align="center">
             <div class="col">
-              <q-btn round color="blue-grey-10" icon="fas fa-sync-alt" />
+              <q-btn
+                round
+                color="blue-grey-10"
+                icon="fas fa-sync-alt"
+                @click="sync(itemPrac.practiceId)"
+              />
             </div>
             <div class="col">
               <q-btn
@@ -76,42 +86,50 @@
           ref="order"
         />
       </div>
-      <div class="q-pt-md">ชื่อแบบฝึกหัด</div>
-      <div>
-        <q-radio
-          v-model="data.practiceType"
-          color="blue-grey-10"
-          keep-color
-          val="flashcard"
-          label="การ์ดคำศัพท์"
-        ></q-radio>
+      <div>ชื่อแบบฝึกหัด</div>
+      <div v-if="!isEditMode">
+        <div>
+          <q-radio
+            v-model="data.practiceType"
+            color="blue-grey-10"
+            keep-color
+            val="flashcard"
+            label="การ์ดคำศัพท์"
+          ></q-radio>
+        </div>
+        <div>
+          <q-radio
+            v-model="data.practiceType"
+            color="blue-grey-10"
+            keep-color
+            val="multipleChoice"
+            label="เลือกคำตอบ"
+          ></q-radio>
+        </div>
+        <div>
+          <q-radio
+            v-model="data.practiceType"
+            color="blue-grey-10"
+            keep-color
+            val="expression"
+            label="ประโยคสนทนา"
+          ></q-radio>
+        </div>
+        <div>
+          <q-radio
+            v-model="data.practiceType"
+            color="blue-grey-10"
+            keep-color
+            val="vdo"
+            label="บทสนทนา"
+          ></q-radio>
+        </div>
       </div>
-      <div>
-        <q-radio
-          v-model="data.practiceType"
-          color="blue-grey-10"
-          keep-color
-          val="multipleChoice"
-          label="เลือกคำตอบ"
-        ></q-radio>
-      </div>
-      <div>
-        <q-radio
-          v-model="data.practiceType"
-          color="blue-grey-10"
-          keep-color
-          val="expression"
-          label="ประโยคสนทนา"
-        ></q-radio>
-      </div>
-      <div>
-        <q-radio
-          v-model="data.practiceType"
-          color="blue-grey-10"
-          keep-color
-          val="vdo"
-          label="บทสนทนา"
-        ></q-radio>
+      <div v-else class="q-px-md q-py-sm">
+        <span v-if="data.practiceType=='flashcard'">การ์ดคำศัพท์</span>
+        <span v-if="data.practiceType=='multipleChoice'">เลือกคำตอบ</span>
+        <span v-if="data.practiceType=='expression'">ประโยคสนทนา</span>
+        <span v-if="data.practiceType=='vdo'">บทสนทนา</span>
       </div>
       <div class="row q-pa-sm">
         <div class="col q-px-sm" align="right">
@@ -136,7 +154,7 @@
           <div class="text-h6">Small</div>
         </q-card-section>-->
 
-        <div class="q-py-lg">ต้องการลบ " 1000-ชื่อแบบฝึกหัด " หรือไม่</div>
+        <div class="q-py-lg">ต้องการลบ " {{order}}-{{practiceType}} " หรือไม่</div>
 
         <div class="row">
           <div class="col">
@@ -149,7 +167,13 @@
             />
           </div>
           <div class="col">
-            <q-btn style="width:120px" color="blue-grey-10" label="ยืนยัน" v-close-popup />
+            <q-btn
+              style="width:120px"
+              color="blue-grey-10"
+              label="ยืนยัน"
+              v-close-popup
+              @click="deletePracticeConfirm()"
+            />
           </div>
         </div>
       </q-card>
@@ -188,7 +212,9 @@ export default {
       },
       practiceListShow: "",
       isSnap: "",
-      practiceId: ""
+      order: "",
+      practiceId: "",
+      practiceType: ""
     };
   },
   methods: {
@@ -198,25 +224,30 @@ export default {
     },
     editPractice(itemPrac) {
       // กดสามจุด+กดแก้ไขแบบฝึกหัด แก้ได้เฉพาะรหัสลำดับ
-      // console.log(order);
       this.data.order = itemPrac.order;
       this.data.practiceType = itemPrac.practiceType;
       this.practiceId = itemPrac.practiceId;
-      // console.log(this.data.order);
-      // return;
       this.isShowPractice = false;
       this.isEditMode = true;
     },
     cancelPractice() {
       // ยกเลิกการแก้ไขแบบฝึกหัด
       this.data.order = "";
+      this.data.practiceType = "flashcard";
       this.isShowPractice = true;
       this.isEditMode = false;
     },
-    deletePractice(practiceId) {
+    deletePractice(itemPrac) {
+      console.log("delete");
+      this.order = itemPrac.order;
+      this.practiceType = itemPrac.practiceType;
+      this.practiceId = itemPrac.practiceId;
       this.dialogDelete = true;
-      //  db.collection("practiceList")
-      //   .doc(this.deleteKey)
+    },
+    deletePracticeConfirm() {
+      console.log("กดยืนยัน");
+      //  db.collection("practice_list")
+      //   .doc(this.practiceId)
       //   .delete()
       //   .then(() => {
       //     this.loadDataAll();
@@ -239,12 +270,8 @@ export default {
       }
 
       if (this.isEditMode) {
-        console.log("edit");
-        // return;
         this.saveOldData();
       } else {
-        console.log("add");
-        return;
         this.saveNewData();
       }
     },
@@ -261,9 +288,7 @@ export default {
         });
     },
     saveOldData() {
-      // console.log(this.practiceId);
-      // return;
-      // this.loadingShow();
+      // this.loadingShow();  // ถามเรื่องการ loadingshow
       db.collection("practice_list")
         .doc(this.practiceId)
         .set(this.data)
@@ -272,15 +297,14 @@ export default {
           this.dialogSuccess = true;
           setTimeout(() => {
             this.data.order = "";
-
+            this.data.practiceType = "flashcard";
             this.dialogSuccess = false;
             this.isShowPractice = true;
           }, 1000);
         });
     },
     loadData() {
-      console.log(this.levelId, this.unitId);
-
+      // console.log(this.levelId, this.unitId);
       this.isSnap = db
         .collection("practice_list")
         .where("levelId", "==", this.levelId)
@@ -327,7 +351,7 @@ export default {
     }
   },
   beforeDestroy() {
-    this.isSanp();
+    this.isSnap();
   }
 };
 </script>

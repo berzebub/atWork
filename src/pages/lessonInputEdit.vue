@@ -4,7 +4,7 @@
     <div>
       <q-input dense outlined v-model="nameLevel"></q-input>
       <div class="row q-pt-md">
-        <div class="col-6">
+        <div class="col-6 brx" align="left">
           <q-btn dense style="width:150px" @click="cancel()" outline label="ยกเลิก"></q-btn>
         </div>
         <div class="col-6" align="right">

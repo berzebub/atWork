@@ -14,13 +14,12 @@
           </div>
         </div>
         <div class="shadow-3 bg-white" style=" height: calc(100vh - 64px)">
-          <q-list class="rounded-borders">
+          <q-list class="rounded-borders" v-for="(itemLv,index) in levelList" :key="index">
             <q-expansion-item
-              v-for="(itemLv,index) in levelList"
-              :key="index"
-              :label="itemLv.label"
+              :label="itemLv.name"
               @click="showUnit(itemLv.levelId)"
               group="unitgroup"
+              :disable="unitList.filter(x => x.levelId == itemLv.levelId).length == 0"
             >
               <q-card>
                 <div
@@ -28,7 +27,7 @@
                   class="row q-px-md q-py-sm relative-position cursor-pointer"
                   :class="activeKey==itemUnit.unitId?'bg-blue-grey-4':''"
                   v-ripple
-                  @click="gotoEdit(itemUnit.unitId,itemUnit.levelId,index2,itemUnit.label,itemLv.label)"
+                  @click="gotoEdit(itemUnit.unitId,itemUnit.levelId,index2,itemUnit.label,itemLv.name)"
                 >
                   <div class="col">{{index2+1}}. {{itemUnit.label}}</div>
                   <div class="col-1" align="right">
@@ -101,13 +100,14 @@ export default {
           doc.forEach(element => {
             let showData = {
               levelId: element.id,
-              label: element.data().name
+              name: element.data().name
             };
             this.levelList.push(showData);
             this.levelList.sort((a, b) => {
-              return a.label - b.label ? 1 : -1;
+              return a.name > b.name ? 1 : -1;
             });
           });
+
           this.loadUnit();
         });
     },
