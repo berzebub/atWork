@@ -11,7 +11,7 @@
           </q-card-section>
           <q-card-section
             class="no-padding"
-            v-for="(item2,index) in dataUser.filter(x => x.name[0] == item)"
+            v-for="(item2,index) in dataUser.filter(x => x.name[0].toUpperCase() == item)"
             :key="index"
           >
             <div class="row q-px-md">
@@ -38,14 +38,14 @@
               </div>
             </div>
             <q-separator
-              v-if="index != dataUser.filter(x => x.name[0] == item).length - 1"
+              v-if="index != dataUser.filter(x => x.name[0].toUpperCase() == item).length - 1"
               class="q-my-md"
             />
           </q-card-section>
         </q-card>
       </div>
       <!-- dialog ต้องการลบข้อมูล -->
-      <q-dialog v-model="deleteDataDialog">
+      <q-dialog v-model="deleteDataDialog" persistent>
         <div
           class="bg-white row justify-center items-center"
           style="width:320px;height:152px"
@@ -93,7 +93,8 @@ export default {
         let nameArr = [];
         let userTemp = [];
         doc.forEach(element => {
-          nameArr.push(element.data().name[0]);
+          nameArr.push(element.data().name[0].toUpperCase());
+
           let dataKey = {
             id: element.id
           };
@@ -138,7 +139,6 @@ export default {
       let apiUrl = `https://api-winner-adventures.herokuapp.com/deleteUser?uid=${this.uid}`;
       // console.log(apiUrl);
       let deleteUser = await axios.get(apiUrl);
-      console.log(deleteUser);
       db.collection("user_admin")
         .doc(this.deleteKey)
         .delete()

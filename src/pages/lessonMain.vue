@@ -71,6 +71,7 @@
 </template>
 
 <script>
+import { db } from "../router";
 export default {
   data() {
     return {

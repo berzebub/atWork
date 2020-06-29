@@ -1,9 +1,9 @@
 <template>
   <div class="container">
     <div class="text-h6" align="center">
-      <span>อาหารและเครื่องดื่ม</span>
+      <span>{{levelName}}</span>
       <br />
-      <span>1. จองโต๊ะ</span>
+      <span>{{num}}. {{unitName}}</span>
     </div>
     <!-- หน้าหลัก -->
     <div v-if="isShowPractice" align="center">
@@ -20,22 +20,22 @@
 
       <!-- การ์ดแบบฝึกหัด -->
       <div
-        v-for="(item, index) in practiceListShow"
+        v-for="(itemPrac, index) in practiceListShow"
         class="q-mb-md rounded-border"
         style="border: 1px solid #263238; border-radius: 5px"
       >
         <div class="bg-blue-grey-10 text-white q-pa-sm row" align="left">
-          <div class="col self-center">รหัสลำดับ {{item.order}}</div>
+          <div class="col self-center">รหัสลำดับ {{itemPrac.order}}</div>
           <div class="col-1" align="right">
             <!-- ปุ่ม สามจุด -->
             <div class="col-1" align="right">
               <q-btn round size="sm" color="blue-grey-10" icon="fas fa-ellipsis-v">
                 <q-menu auto-close :offset="[5, 10]" content-class="shadow-3">
                   <q-list style="min-width: 100px">
-                    <q-item clickable @click="editPractice()">
+                    <q-item clickable @click="editPractice(itemPrac)">
                       <q-item-section>แก้ไขรหัสลำดับ</q-item-section>
                     </q-item>
-                    <q-item clickable @click="deletePractice()">
+                    <q-item clickable @click="deletePractice(itemPrac)">
                       <q-item-section>ลบแบบฝึกหัด</q-item-section>
                     </q-item>
                   </q-list>
@@ -45,17 +45,27 @@
           </div>
         </div>
         <div class="row q-py-sm">
-          <div class="col q-pa-sm" align="left">{{item.practiceType}}</div>
+          <div class="col q-pa-sm" align="left">
+            <span v-if="itemPrac.practiceType=='flashcard'">การ์ดคำศัพท์</span>
+            <span v-if="itemPrac.practiceType=='multipleChoice'">เลือกคำตอบ</span>
+            <span v-if="itemPrac.practiceType=='expression'">ประโยคสนทนา</span>
+            <span v-if="itemPrac.practiceType=='vdo'">บทสนทนา</span>
+          </div>
           <div class="row" :class="$q.platform.is.desktop ? 'col-2':'col-4'" align="center">
             <div class="col">
-              <q-btn round color="blue-grey-10" icon="fas fa-sync-alt" />
+              <q-btn
+                round
+                color="blue-grey-10"
+                icon="fas fa-sync-alt"
+                @click="sync(itemPrac.practiceId)"
+              />
             </div>
             <div class="col">
               <q-btn
                 round
                 color="blue-grey-10"
                 icon="fas fa-pencil-alt"
-                @click="gotoPractice(item)"
+                @click="gotoPractice(itemPrac)"
               />
             </div>
           </div>
@@ -76,42 +86,50 @@
           ref="order"
         />
       </div>
-      <div class="q-pt-md">ชื่อแบบฝึกหัด</div>
-      <div>
-        <q-radio
-          v-model="data.practiceType"
-          color="blue-grey-10"
-          keep-color
-          val="flashcard"
-          label="การ์ดคำศัพท์"
-        ></q-radio>
+      <div>ชื่อแบบฝึกหัด</div>
+      <div v-if="!isEditMode">
+        <div>
+          <q-radio
+            v-model="data.practiceType"
+            color="blue-grey-10"
+            keep-color
+            val="flashcard"
+            label="การ์ดคำศัพท์"
+          ></q-radio>
+        </div>
+        <div>
+          <q-radio
+            v-model="data.practiceType"
+            color="blue-grey-10"
+            keep-color
+            val="multipleChoice"
+            label="เลือกคำตอบ"
+          ></q-radio>
+        </div>
+        <div>
+          <q-radio
+            v-model="data.practiceType"
+            color="blue-grey-10"
+            keep-color
+            val="expression"
+            label="ประโยคสนทนา"
+          ></q-radio>
+        </div>
+        <div>
+          <q-radio
+            v-model="data.practiceType"
+            color="blue-grey-10"
+            keep-color
+            val="vdo"
+            label="บทสนทนา"
+          ></q-radio>
+        </div>
       </div>
-      <div>
-        <q-radio
-          v-model="data.practiceType"
-          color="blue-grey-10"
-          keep-color
-          val="multipleChoice"
-          label="เลือกคำตอบ"
-        ></q-radio>
-      </div>
-      <div>
-        <q-radio
-          v-model="data.practiceType"
-          color="blue-grey-10"
-          keep-color
-          val="expression"
-          label="ประโยคสนทนา"
-        ></q-radio>
-      </div>
-      <div>
-        <q-radio
-          v-model="data.practiceType"
-          color="blue-grey-10"
-          keep-color
-          val="vdo"
-          label="บทสนทนา"
-        ></q-radio>
+      <div v-else class="q-px-md q-py-sm">
+        <span v-if="data.practiceType=='flashcard'">การ์ดคำศัพท์</span>
+        <span v-if="data.practiceType=='multipleChoice'">เลือกคำตอบ</span>
+        <span v-if="data.practiceType=='expression'">ประโยคสนทนา</span>
+        <span v-if="data.practiceType=='vdo'">บทสนทนา</span>
       </div>
       <div class="row q-pa-sm">
         <div class="col q-px-sm" align="right">
@@ -136,7 +154,7 @@
           <div class="text-h6">Small</div>
         </q-card-section>-->
 
-        <div class="q-py-lg">ต้องการลบ " 1000-ชื่อแบบฝึกหัด " หรือไม่</div>
+        <div class="q-py-lg">ต้องการลบ " {{order}}-{{practiceType}} " หรือไม่</div>
 
         <div class="row">
           <div class="col">
@@ -149,7 +167,13 @@
             />
           </div>
           <div class="col">
-            <q-btn style="width:120px" color="blue-grey-10" label="ยืนยัน" v-close-popup />
+            <q-btn
+              style="width:120px"
+              color="blue-grey-10"
+              label="ยืนยัน"
+              v-close-popup
+              @click="deletePracticeConfirm()"
+            />
           </div>
         </div>
       </q-card>
@@ -173,7 +197,7 @@
 import { db } from "../router";
 import flashcardMainVue from "../pages/flashcardMain.vue";
 export default {
-  props: ["levelId", "unitId"],
+  props: ["levelId", "unitId", "num", "levelName", "unitName"],
   data() {
     return {
       isShowPractice: true,
@@ -187,7 +211,10 @@ export default {
         unitId: this.unitId
       },
       practiceListShow: "",
-      isSnap: ""
+      isSnap: "",
+      order: "",
+      practiceId: "",
+      practiceType: ""
     };
   },
   methods: {
@@ -195,20 +222,32 @@ export default {
       // เพิ่มแบบฝึกหัด
       this.isShowPractice = false;
     },
-    editPractice() {
-      // แก้ไขแบบฝึกหัด แก้ได้เฉพาะรหัสลำดับ
+    editPractice(itemPrac) {
+      // กดสามจุด+กดแก้ไขแบบฝึกหัด แก้ได้เฉพาะรหัสลำดับ
+      this.data.order = itemPrac.order;
+      this.data.practiceType = itemPrac.practiceType;
+      this.practiceId = itemPrac.practiceId;
       this.isShowPractice = false;
       this.isEditMode = true;
     },
     cancelPractice() {
       // ยกเลิกการแก้ไขแบบฝึกหัด
+      this.data.order = "";
+      this.data.practiceType = "flashcard";
       this.isShowPractice = true;
       this.isEditMode = false;
     },
-    deletePractice() {
+    deletePractice(itemPrac) {
+      console.log("delete");
+      this.order = itemPrac.order;
+      this.practiceType = itemPrac.practiceType;
+      this.practiceId = itemPrac.practiceId;
       this.dialogDelete = true;
-      //  db.collection("practiceList")
-      //   .doc(this.deleteKey)
+    },
+    deletePracticeConfirm() {
+      console.log("กดยืนยัน");
+      //  db.collection("practice_list")
+      //   .doc(this.practiceId)
       //   .delete()
       //   .then(() => {
       //     this.loadDataAll();
@@ -231,12 +270,8 @@ export default {
       }
 
       if (this.isEditMode) {
-        // console.log("edit");
-        // return;
         this.saveOldData();
       } else {
-        // console.log("add");
-        // return;
         this.saveNewData();
       }
     },
@@ -245,6 +280,7 @@ export default {
         .add(this.data)
         .then(doc => {
           this.dialogSuccess = true;
+          this.data.order = "";
           setTimeout(() => {
             this.dialogSuccess = false;
             this.isShowPractice = true;
@@ -252,22 +288,23 @@ export default {
         });
     },
     saveOldData() {
+      // this.loadingShow();  // ถามเรื่องการ loadingshow
       db.collection("practice_list")
-        .doc(this.$route.params.id)
-        .update({
-          order: this.data.checkOrder
-        })
+        .doc(this.practiceId)
+        .set(this.data)
         .then(doc => {
+          // this.loadingHide();
           this.dialogSuccess = true;
           setTimeout(() => {
+            this.data.order = "";
+            this.data.practiceType = "flashcard";
             this.dialogSuccess = false;
             this.isShowPractice = true;
           }, 1000);
         });
     },
     loadData() {
-      console.log(this.levelId, this.unitId);
-
+      // console.log(this.levelId, this.unitId);
       this.isSnap = db
         .collection("practice_list")
         .where("levelId", "==", this.levelId)
@@ -282,17 +319,23 @@ export default {
           this.practiceListShow = temp;
         });
     },
-    gotoPractice(item) {
-      if (item.practiceType == "flashcard") {
-        this.$router.push("/flashcardMain/" + item.levelId + "/" + item.unitId);
-      } else if (item.practiceType == "multipleChoies") {
-        this.$router.push("/multipleMain/" + item.levelId + "/" + item.unitId);
-      } else if (item.practiceType == "expression") {
+    gotoPractice(itemPrac) {
+      if (itemPrac.practiceType == "flashcard") {
         this.$router.push(
-          "/expressionMain/" + item.levelId + "/" + item.unitId
+          "/flashcardMain/" + itemPrac.levelId + "/" + itemPrac.unitId
         );
-      } else if (item.practiceType == "vdo/") {
-        this.$router.push("/vdoMain/" + item.levelId + "/" + item.unitId);
+      } else if (itemPrac.practiceType == "multipleChoies") {
+        this.$router.push(
+          "/multipleMain/" + itemPrac.levelId + "/" + itemPrac.unitId
+        );
+      } else if (itemPrac.practiceType == "expression") {
+        this.$router.push(
+          "/expressionMain/" + itemPrac.levelId + "/" + itemPrac.unitId
+        );
+      } else if (itemPrac.practiceType == "vdo/") {
+        this.$router.push(
+          "/vdoMain/" + itemPrac.levelId + "/" + itemPrac.unitId
+        );
       } else {
         // ไม่อยู่ type ไหนเลยให้แก้ มีแจ้งเตือน
         this.$router.push("/practiceList");
@@ -308,7 +351,7 @@ export default {
     }
   },
   beforeDestroy() {
-    this.isSanp();
+    this.isSnap();
   }
 };
 </script>

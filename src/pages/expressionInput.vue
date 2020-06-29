@@ -15,7 +15,6 @@
               v-if="boxCount+2 && boxCount < 3 "
               style="width:190px"
               class="bg-blue-grey-10"
-              to="/expressionInput"
               color="white"
             >เพิ่มประโยคที่ {{boxCount+2}}</q-btn>
           </div>

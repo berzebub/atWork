@@ -145,7 +145,9 @@ export default {
         };
         let jsonString = JSON.stringify(dataUser);
         const url = `https://api-winner-adventures.herokuapp.com/createUser?user=${jsonString}`;
+
         let getCreateUser = await axios.get(url);
+
         let newDataUser = { ...this.dataUser };
         delete newDataUser.password;
         newDataUser.uid = getCreateUser.data.uid;

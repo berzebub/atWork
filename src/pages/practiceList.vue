@@ -14,23 +14,22 @@
           </div>
         </div>
         <div class="shadow-3 bg-white" style=" height: calc(100vh - 64px)">
-          <q-list class="rounded-borders">
+          <q-list class="rounded-borders" v-for="(itemLv,index) in levelList" :key="index">
             <q-expansion-item
-              v-for="(itemLv,index) in levelList"
-              :key="index"
-              :label="itemLv.label"
+              :label="itemLv.name"
               @click="showUnit(itemLv.levelId)"
               group="unitgroup"
+              :disable="unitList.filter(x => x.levelId == itemLv.levelId).length == 0"
             >
               <q-card>
                 <div
-                  v-for="(item2,index2) in unitListShow"
+                  v-for="(itemUnit,index2) in unitListShow"
                   class="row q-px-md q-py-sm relative-position cursor-pointer"
-                  :class="activeKey==item2.unitId?'bg-blue-grey-4':''"
+                  :class="activeKey==itemUnit.unitId?'bg-blue-grey-4':''"
                   v-ripple
-                  @click="gotoEdit(item2.unitId,item2.levelId)"
+                  @click="gotoEdit(itemUnit.unitId,itemUnit.levelId,index2,itemUnit.label,itemLv.name)"
                 >
-                  <div class="col">{{index2+1}}. {{item2.label}}</div>
+                  <div class="col">{{index2+1}}. {{itemUnit.label}}</div>
                   <div class="col-1" align="right">
                     <q-icon name="fas fa-sync-alt"></q-icon>
                   </div>
@@ -42,7 +41,14 @@
         </div>
       </div>
       <div class="col q-pa-md">
-        <practice-main v-if="isShowPracticeMain" :levelId="levelId" :unitId="unitId"></practice-main>
+        <practice-main
+          v-if="isShowPracticeMain"
+          :levelId="levelId"
+          :unitId="unitId"
+          :unitName="unitName"
+          :num="num"
+          :levelName="levelName"
+        ></practice-main>
       </div>
     </div>
   </q-page>
@@ -64,15 +70,21 @@ export default {
       unitList: [],
       unitListShow: [],
       levelId: "",
-      unitId: ""
+      unitId: "",
+      num: "",
+      unitName: "",
+      levelName: ""
     };
   },
   methods: {
-    gotoEdit(unitId, levelId) {
+    gotoEdit(unitId, levelId, index, unitName, levelName) {
       this.isShowPracticeMain = false;
       this.activeKey = unitId;
       this.levelId = levelId;
       this.unitId = unitId;
+      this.num = index + 1;
+      this.unitName = unitName;
+      this.levelName = levelName;
       if (this.$q.platform.is.desktop) {
         this.isShowPracticeMain = true;
       } else {
@@ -84,17 +96,18 @@ export default {
       db.collection("level")
         .get()
         .then(doc => {
-          console.log("level");
+          // console.log("level");
           doc.forEach(element => {
             let showData = {
               levelId: element.id,
-              label: element.data().name
+              name: element.data().name
             };
             this.levelList.push(showData);
             this.levelList.sort((a, b) => {
-              return a.label - b.label ? 1 : -1;
+              return a.name > b.name ? 1 : -1;
             });
           });
+
           this.loadUnit();
         });
     },
@@ -102,7 +115,7 @@ export default {
       db.collection("unit")
         .get()
         .then(doc => {
-          console.log("unit");
+          // console.log("unit");
           doc.forEach(element => {
             let showData = {
               unitId: element.id,
@@ -118,11 +131,8 @@ export default {
         });
     },
     showUnit(levelId) {
-      console.log(levelId);
+      // console.log(levelId);
       this.unitListShow = this.unitList.filter(x => x.levelId == levelId);
-    },
-    test(key) {
-      console.log(key);
     }
   },
   mounted() {
