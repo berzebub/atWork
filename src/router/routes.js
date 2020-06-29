@@ -85,9 +85,9 @@ const routes = [
       },
       // ------------------- lessonMain ระดับการเรียน -------------------
       {
-        path: "lessonMain",
-        component: () => import("pages/lessonMain.vue"),
-        name: "lessonMain"
+        path: "lessonMainList",
+        component: () => import("pages/lessonMainList.vue"),
+        name: "lessonMainList"
       },
       {
         path: "lessonInput",
@@ -98,6 +98,11 @@ const routes = [
         path: "lessonEdit",
         component: () => import("pages/lessonInputEdit.vue"),
         name: "lessonEdit"
+      },
+      {
+        path: "lessonUnitlist",
+        component: () => import("pages/lessonUnitList.vue"),
+        name: "lessonUnitlist"
       },
       // ------------------- account ผู้ใช้งาน -------------------
       {
