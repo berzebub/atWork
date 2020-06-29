@@ -94,7 +94,7 @@
               :class="{'bg-secondary answer ' : item.correctAnswer == 1}"
               v-if="item.choices[0].choice"
             >
-              <span v-if="item.choices[0].soundURL">
+              <span v-if="item.choices[0].soundURL && item.choices[0].choice.length > 0">
                 <q-btn
                   size="sm"
                   @click="playAudio(item.choices[0].soundURL)"
@@ -112,7 +112,7 @@
               :class="{'bg-secondary answer' : item.correctAnswer == 2}"
               v-if="item.choices[1].choice"
             >
-              <span v-if="item.choices[1].soundURL">
+              <span v-if="item.choices[1].soundURL && item.choices[1].choice.length > 0">
                 <q-btn
                   size="sm"
                   @click="playAudio(item.choices[1].soundURL)"
@@ -126,7 +126,7 @@
             </span>
           </div>
           <div>
-            <span v-if="item.choices[2].soundURL">
+            <span v-if="item.choices[2].soundURL && item.choices[2].choice.length > 0">
               <q-btn
                 size="sm"
                 @click="playAudio(item.choices[2].soundURL)"
@@ -144,7 +144,7 @@
             </span>
           </div>
           <div>
-            <span v-if="item.choices[3].soundURL">
+            <span v-if="item.choices[3].soundURL && item.choices[3].choice.length > 0">
               <q-btn
                 size="sm"
                 @click="playAudio(item.choices[3].soundURL)"
@@ -272,8 +272,6 @@ export default {
       text: "",
       imageURL: "",
       audioURL: "",
-      dataImgeURL: [],
-      dataAudioURL: [],
       data: [],
       dataDraft: [],
       indexKey: "",
@@ -366,6 +364,9 @@ export default {
       this.text = "บันทึกข้อมูลเรียบร้อย";
       this.questionDialog = false;
       this.finishDialog = true;
+      setTimeout(() => {
+        this.finishDialog = false;
+      }, 1000);
     },
     // ลบข้อมูล
     deleteBtn() {

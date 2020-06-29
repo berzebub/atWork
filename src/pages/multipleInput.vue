@@ -394,10 +394,15 @@ export default {
         .then(doc => {
           this.choices = [];
           let change = doc.data().choices;
+
+          change.map((x, index) => {
+            this.choices.push(x.choice);
+          });
           // การวน ข้อมูล ตัวเลือกออกมาเก็บในช่องตัวเลือกต่างๆ
-          for (let index = 0; index < change.length; index++) {
-            this.choices.push(change[index].choice);
-          }
+          // return;
+          // for (let index = 0; index < change.length; index++) {
+          //   this.choices.push(change[index].choice);
+          // }
           this.data = doc.data();
         });
     },
@@ -416,6 +421,7 @@ export default {
       if (hasChoice.length < 2) {
         // การเช็คตัวเลือก 1&2 ถ้าข้อความน้อยก่ว่า 0 ให้ มีกรอบสีแดง
         let index = this.choices.findIndex(x => x == "");
+        console.log(index);
         if (index == 0) {
           this.isChoice1 = false;
         } else if (index == 1) {
