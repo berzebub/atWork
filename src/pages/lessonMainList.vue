@@ -111,36 +111,6 @@
         </div>
       </div>
     </q-dialog>
-    <!-- dialog เพิ่มบทเรียน -->
-    <q-dialog v-model="dialogLesson">
-      <div class="bg-white row q-pa-md" style="width:330px">
-        <div class="text-subtitle1 col-12" align="letf">รหัสลำดับ</div>
-        <div style="width:300px">
-          <q-input dense outlined v-model="dataLesson.order"></q-input>
-        </div>
-        <span class="text-subtitle1 q-pt-sm">ชื่อบทเรียน</span>
-        <div style="width:300px">
-          <q-input dense outlined v-model="dataLesson.nameLesson"></q-input>
-        </div>
-        <div class="col-12 q-pt-md">
-          <span class="text-black text-subtitle1">การใช้งานบทเรียน</span>
-
-          <q-toggle v-model="dataLesson.statusLesson" color="secondary" />
-        </div>
-        <div class="col-6 q-pr-sm q-pt-md" align="right">
-          <q-btn @click="cancelAddLesson()" dense style="width:120px" outline label="ยกเลิก"></q-btn>
-        </div>
-        <div class="col-6 q-pl-sm q-pt-md">
-          <q-btn
-            @click="saveLesson()"
-            dense
-            color="blue-grey-10"
-            style="width:120px"
-            label="ยืนยัน"
-          ></q-btn>
-        </div>
-      </div>
-    </q-dialog>
   </q-page>
 </template>
 
@@ -149,7 +119,6 @@ import { db } from "../router";
 export default {
   data() {
     return {
-      dataLesson: { order: "", nameLesson: "", statusLesson: false },
       text: "",
       model: 1,
       options: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
@@ -157,7 +126,7 @@ export default {
       deleteDialog: "",
       dialogDelete: false,
       dialogDelete2: false,
-      dialogLesson: false,
+
       dataPosition: []
     };
   },
@@ -166,16 +135,9 @@ export default {
       this.$router.push("lessonInput");
     },
     addLesson() {
-      this.dialogLesson = true;
+      this.$router.push("lessonUnitList");
     },
-    cancelAddLesson() {
-      this.dialogLesson = false;
-    },
-    saveLesson() {
-      db.collection("unit")
-        .add(this.dataLesson)
-        .then(() => {});
-    },
+
     loadDataPosition() {
       db.collection("level").onSnapshot(doc => {
         doc.forEach(element => {

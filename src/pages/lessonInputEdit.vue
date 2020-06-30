@@ -8,7 +8,7 @@
         outlined
         v-model="dataPosition.name"
         :rules="[val => !!val 
-          ,isCheckEmail]"
+          ,isCheckName]"
       ></q-input>
       <div class="row q-pt-lg">
         <div class="col-6 q-pr-sm" align="right">
@@ -53,7 +53,7 @@ export default {
   },
   methods: {
     cancelNamePosition() {
-      this.$router.push("lessonMain");
+      this.$router.push("lessonMainList");
     },
     saveNamePosition() {
       this.$refs.namePosition.validate();
@@ -68,15 +68,15 @@ export default {
           this.loadingHide();
           this.savedDataDialog = true;
           setTimeout(() => {
-            this.$router.push("lessonMain");
+            this.$router.push("lessonMainList");
           }, 1000);
         });
     },
-    async isCheckEmail(val) {
+    async isCheckName(val) {
       if (this.$route.name != "lessonEdit") {
         let doc = await db
           .collection("level")
-          .where("namePosition", "==", val)
+          .where("name", "==", val)
           .get();
         return !doc.size || "ชื่อนี้ถูกใช้งานแล้ว";
       }
