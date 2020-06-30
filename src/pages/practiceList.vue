@@ -21,19 +21,24 @@
               group="unitgroup"
               :disable="unitList.filter(x => x.levelId == itemLv.levelId).length == 0"
             >
-              <q-card>
+              <!-- <q-separator /> -->
+              <q-card v-for="(itemUnit,index2) in unitListShow">
                 <div
-                  v-for="(itemUnit,index2) in unitListShow"
                   class="row q-px-md q-py-sm relative-position cursor-pointer"
                   :class="activeKey==itemUnit.unitId?'bg-blue-grey-4':''"
                   v-ripple
                   @click="gotoEdit(itemUnit.unitId,itemUnit.levelId,index2,itemUnit.label,itemLv.name)"
                 >
-                  <div class="col">{{index2+1}}. {{itemUnit.label}}</div>
+                  <div class="col">
+                    {{itemUnit.order}} -
+                    <span style="text-decoration:underline">{{itemUnit.label}}</span>
+                  </div>
                   <div class="col-1" align="right">
                     <q-icon name="fas fa-sync-alt"></q-icon>
+                    <!-- เช็คว่ามีการซิงค์มั๊ย -->
                   </div>
                 </div>
+                <!-- <q-separator />  -->
               </q-card>
             </q-expansion-item>
             <q-separator />
