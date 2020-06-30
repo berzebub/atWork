@@ -9,7 +9,7 @@
           dense
           color="blue-grey-10"
           class="text-subtitle1"
-          label="เพิ่ม"
+          label="เพิ่มตำแหน่ง"
         />
       </div>
       <!-- list -->
@@ -40,13 +40,13 @@
                       <q-menu>
                         <q-list style="min-width: 170px">
                           <q-item clickable v-close-popup>
-                            <q-item-section @click="editBtn(item2)">แก้ไขระดับการเรียน</q-item-section>
+                            <q-item-section @click="editPositionBtn(item)">แก้ไขระดับการเรียน</q-item-section>
                           </q-item>
                           <q-item clickable v-close-popup>
-                            <q-item-section @click="editBtn(item2)">แก้ไขบทเรียน</q-item-section>
+                            <q-item-section @click="editLessonBtn(item)">แก้ไขบทเรียน</q-item-section>
                           </q-item>
                           <q-item clickable v-close-popup>
-                            <q-item-section @click="deleteBtn(item2)">ลบ</q-item-section>
+                            <q-item-section @click="deletePositionBtn(item)">ลบ</q-item-section>
                           </q-item>
                         </q-list>
                       </q-menu>
@@ -134,9 +134,15 @@ export default {
     addPosition() {
       this.$router.push("lessonInput");
     },
+    editPositionBtn() {},
     addLesson() {
       this.$router.push("lessonUnitList");
     },
+    editLessonBtn(item) {
+      this.$router.push("lessonUnitlist/" + item.levelId);
+    },
+
+    deletePositionBtn() {},
 
     loadDataPosition() {
       db.collection("level").onSnapshot(doc => {
@@ -156,9 +162,11 @@ export default {
   },
   mounted() {
     this.loadDataPosition();
+    console.log(this.$q.platform.is.desktop);
   }
 };
 </script>
+
 
 <style lang="scss" scoped>
 </style>

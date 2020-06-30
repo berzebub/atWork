@@ -6,6 +6,7 @@
         ref="namePosition"
         dense
         outlined
+        lazy-rules
         v-model="dataPosition.name"
         :rules="[val => !!val 
           ,isCheckName]"
@@ -58,7 +59,6 @@ export default {
     saveNamePosition() {
       this.$refs.namePosition.validate();
       if (this.$refs.namePosition.hasError) {
-        console.log("ยังไม่กรอกข้อมูล");
         return;
       }
       this.loadingShow();
