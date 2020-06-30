@@ -30,6 +30,7 @@
             v-model="data.question"
             min-height="5rem"
           />
+          <div class="q-pt-sm text-red text-body2">{{isTextQuestion}}</div>
         </div>
       </div>
       <div class="row">
@@ -41,12 +42,14 @@
                 style="width:100px"
                 class="text-subtitle1 rounded-borders text-center bg-blue-grey-10 text-white q-pa-xs cursor-pointer"
                 @click.stop="uploadImg = null"
-                v-if="!uploadImg"
+                v-if="!uploadImg && !isKeyImage"
               >เลือกไฟล์</div>
+              <span v-if="uploadImg || isKeyImage" class="text-body1 q-px-md">{{isKeyImage}}</span>
               <div
                 class="cursor-pointer rounded-borders text-white bg-blue-grey-10"
-                v-if="uploadImg "
+                v-if="uploadImg || isKeyImage"
                 @click.stop="uploadImg  = null"
+                @click="isKeyImage  = ''"
               >
                 <span style class="far fa-trash-alt q-px-xs"></span>
               </div>
@@ -54,7 +57,7 @@
             <div
               style="width:1000px"
               class="text-subtitle1 text-grey-7 self-center"
-              v-if="!uploadImg"
+              v-if="!uploadImg && !isKeyImage"
             >ลากแล้ววาง หรือ</div>
           </q-file>
         </div>
@@ -66,12 +69,14 @@
                 style="width:100px;"
                 class="text-subtitle1 rounded-borders text-center bg-blue-grey-10 text-white q-pa-xs cursor-pointer"
                 @click.stop="uploadAudio = null"
-                v-if="!uploadAudio"
+                v-if="!uploadAudio && !isKeySound"
               >เลือกไฟล์</div>
+              <span v-if="uploadAudio || isKeySound" class="text-body1 q-px-md">{{isKeySound}}</span>
               <div
                 class="cursor-pointer rounded-borders text-white bg-blue-grey-10"
-                v-if="uploadAudio"
+                v-if="uploadAudio || isKeySound"
                 @click.stop="uploadAudio = null"
+                @click="isKeySound = ''"
               >
                 <span style class="far fa-trash-alt q-px-xs"></span>
               </div>
@@ -79,7 +84,7 @@
             <div
               style="width:1000px"
               class="text-subtitle1 text-grey-7 self-center"
-              v-if="!uploadAudio"
+              v-if="!uploadAudio && !isKeySound"
             >ลากแล้ววาง หรือ</div>
           </q-file>
         </div>
@@ -135,6 +140,8 @@
             accept="audio/*"
             class="visually-hidden"
           />
+          <div class="q-pt-sm text-red text-body2">{{isTextChoice1}}</div>
+          <div class="q-pt-sm text-red text-body2">{{isText1}}</div>
         </div>
         <div class="q-py-sm">
           <span>ตัวเลือก #2</span>
@@ -172,6 +179,8 @@
             accept="audio/*"
             class="visually-hidden"
           />
+          <div class="q-pt-sm text-red text-body2">{{isTextChoice2}}</div>
+          <div class="q-pt-sm text-red text-body2">{{isText2}}</div>
         </div>
         <div class="q-py-sm">
           <span>ตัวเลือก #3</span>
@@ -179,6 +188,7 @@
             <q-editor
               square
               outlined
+              :content-class="!isChoice3? 'brx' : null "
               :definitions="data.isAnswerSound ?  {
                upload: {icon: 'cloud_upload',label: 'อัปโหลดเสียง',handler: uploadIt3   }} : null "
               :toolbar="[['bold', 'italic', 'underline'],['upload', 'save']]"
@@ -207,6 +217,7 @@
             accept="audio/*"
             class="visually-hidden"
           />
+          <div class="q-pt-sm text-red text-body2">{{isTextChoice3}}</div>
         </div>
         <div class="q-py-sm">
           <span>ตัวเลือก #4</span>
@@ -214,6 +225,7 @@
             <q-editor
               square
               outlined
+              :content-class="!isChoice4? 'brx' : null "
               :definitions="data.isAnswerSound ?  {
                upload: {icon: 'cloud_upload',label: 'อัปโหลดเสียง',handler: uploadIt4   }} : null "
               :toolbar="[['bold', 'italic', 'underline'],['upload', 'save']]"
@@ -242,6 +254,7 @@
             accept="audio/*"
             class="visually-hidden"
           />
+          <div class="q-pt-sm text-red text-body2">{{isTextChoice4}}</div>
         </div>
       </div>
       <div class="q-py-sm">
@@ -379,8 +392,19 @@ export default {
       isQuestion: true,
       isChoice1: true,
       isChoice2: true,
+      isChoice3: true,
+      isChoice4: true,
       finishDialog: false,
       text: "",
+      isKeyImage: "",
+      isKeySound: "",
+      isTextQuestion: "",
+      isText1: "",
+      isText2: "",
+      isTextChoice1: "",
+      isTextChoice2: "",
+      isTextChoice3: "",
+      isTextChoice4: "",
       iconTrueDialog: true,
       iconfailDialog: false
     };
@@ -392,6 +416,13 @@ export default {
         .doc(this.$route.params.key)
         .get()
         .then(doc => {
+          if (doc.data().isImage) {
+            this.isKeyImage = doc.id + ".jpg";
+          }
+          if (doc.data().isSound) {
+            this.isKeySound = doc.id + ".mp3";
+          }
+
           let choices1 = "";
           let choices2 = "";
           let choices3 = "";
@@ -426,6 +457,7 @@ export default {
         return;
       }
       if (this.data.question == "") {
+        this.isTextQuestion = "กรุณาใส่คำถาม";
         this.isQuestion = false;
         return;
       }
@@ -434,8 +466,10 @@ export default {
         let index = this.choices.findIndex(x => x.choice == "");
         if (index == 0) {
           this.isChoice1 = false;
+          this.isText1 = "กรุณาใส่ตัวเลือก#1 และตัวเลือก#2";
         } else if (index == 1) {
           this.isChoice2 = false;
+          this.isText2 = "กรุณาใส่ตัวเลือก#1 และตัวเลือก#2";
         }
         return;
       }
@@ -446,37 +480,24 @@ export default {
       if (this.uploadAudio) {
         this.data.isSound = true;
       }
-      if (
-        this.data.isAnswerSound &&
-        this.choices[0].choice.length > 0 &&
-        !this.dataFile1
-      ) {
-        console.log("888");
-        return;
-      }
-      if (
-        this.data.isAnswerSound &&
-        this.choices[1].choice.length > 0 &&
-        !this.dataFile2
-      ) {
-        console.log("888");
-        return;
-      }
-      if (
-        this.data.isAnswerSound &&
-        this.choices[2].choice.length > 0 &&
-        !this.dataFile3
-      ) {
-        console.log("688");
-        return;
-      }
-      if (
-        this.data.isAnswerSound &&
-        this.choices[3].choice.length > 0 &&
-        !this.dataFile4
-      ) {
-        console.log("77777");
-        return;
+      if (this.data.isAnswerSound) {
+        if (this.choices[0].choice.length > 0 && !this.dataFile1) {
+          this.isChoice1 = false;
+          this.isTextChoice1 = "กรุณาใส่เสียงตัวเลือก#1";
+          return;
+        } else if (this.choices[1].choice.length > 0 && !this.dataFile2) {
+          this.isChoice2 = false;
+          this.isTextChoice2 = "กรุณาใส่เสียงตัวเลือก#2";
+          return;
+        } else if (this.choices[2].choice.length > 0 && !this.dataFile3) {
+          this.isChoice3 = false;
+          this.isTextChoice3 = "กรุณาใส่เสียงตัวเลือก#3";
+          return;
+        } else if (this.choices[3].choice.length > 0 && !this.dataFile4) {
+          this.isChoice4 = false;
+          this.isTextChoice4 = "กรุณาใส่เสียงตัวเลือก#4";
+          return;
+        }
       }
       //  หน้า เพิ่มข้อมูล
       if (this.$route.name == "multipleInputAdd") {
@@ -601,11 +622,13 @@ export default {
       if (type == "question") {
         if (this.data.question.length) {
           this.isQuestion = true;
+          this.isTextQuestion = "";
         } else {
           this.isQuestion = false;
         }
       } else if (type == "choice1") {
         if (this.choices[0].choice.length) {
+          this.isText1 = "";
           this.isChoice1 = true;
         } else {
           this.isChoice1 = false;
@@ -613,6 +636,7 @@ export default {
       } else if (type == "choice2") {
         if (this.choices[1].choice.length) {
           this.isChoice2 = true;
+          this.isText2 = "";
         } else {
           this.isChoice2 = false;
         }
@@ -621,15 +645,23 @@ export default {
     // การบันทึก ข้อมูลเสียงเข้าตัวแปล
     fileSound(val, type) {
       if (type == 1) {
+        this.isTextChoice1 = "";
+        this.isChoice1 = true;
         this.dataFile1 = val[0];
       }
       if (type == 2) {
+        this.isTextChoice2 = "";
+        this.isChoice2 = true;
         this.dataFile2 = val[0];
       }
       if (type == 3) {
+        this.isTextChoice3 = "";
+        this.isChoice3 = true;
         this.dataFile3 = val[0];
       }
       if (type == 4) {
+        this.isTextChoice4 = "";
+        this.isChoice4 = true;
         this.dataFile4 = val[0];
       }
     },

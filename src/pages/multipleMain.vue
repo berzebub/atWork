@@ -398,7 +398,6 @@ export default {
               ...dataKey
             };
             this.dataDraft.push(final);
-            console.log(final);
           });
         });
       this.loadDraft();
