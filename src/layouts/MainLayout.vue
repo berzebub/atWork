@@ -52,6 +52,9 @@
             <q-icon name="book" size="25px" />
           </div>
           <div class="q-pt-sm">แบบฝึกหัด</div>
+          <div>
+            <q-btn color="white" class="text-red" @click="logOut()">logout</q-btn>
+          </div>
         </div>
         <div
           class="full-width q-py-md relative-position cursor-pointer"
