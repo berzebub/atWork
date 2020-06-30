@@ -27,7 +27,11 @@
             />
           </template>
         </q-input>
-        <div @click="forgetPassword()" class="q-mt-sm cursor-pointer" align="right">
+        <div
+          @click="forgetPassword()"
+          class="q-mt-sm cursor-pointer"
+          align="right"
+        >
           <u>ลืมรหัสผ่าน?</u>
         </div>
       </div>
@@ -49,10 +53,17 @@
             </div>
           </q-card-section>
 
-          <q-card-section align="center" class="q-pt-none">E-mail หรือ รหัสผ่านผิดพลาด</q-card-section>
+          <q-card-section align="center" class="q-pt-none"
+            >E-mail หรือ รหัสผ่านผิดพลาด</q-card-section
+          >
 
           <q-card-actions align="center">
-            <q-btn v-close-popup style="width:190px" label="ตกลง" color="blue-grey-10" />
+            <q-btn
+              v-close-popup
+              style="width:190px"
+              label="ตกลง"
+              color="blue-grey-10"
+            />
           </q-card-actions>
         </q-card>
       </q-dialog>
@@ -77,35 +88,58 @@ export default {
   methods: {
     login() {
       auth
-        .signInWithEmailAndPassword(this.email, this.password)
-        .then(user => {
-          this.$q.localStorage.set("uid", user.user.uid);
-          db.collection("user_admin")
-            .where("uid", "==", user.user.uid)
-            .get()
-            .then(getUserId => {
-              getUserId.docs[0].data().loginKey;
-              this.$q.localStorage.set(
-                "loginKey",
-                getUserId.docs[0].data().loginKey
-              );
-              this.$router.push("/practiceList");
+        .setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+        .then(() => {
+          return auth
+            .signInWithEmailAndPassword(this.email, this.password)
+            .then(user => {
+              this.$q.localStorage.set("uid", user.user.uid);
+              db.collection("user_admin")
+                .where("uid", "==", user.user.uid)
+                .get()
+                .then(getUserId => {
+                  getUserId.docs[0].data().loginKey;
+                  this.$q.localStorage.set(
+                    "loginKey",
+                    getUserId.docs[0].data().loginKey
+                  );
+                  this.$router.push("/practiceList");
+                });
+            })
+            .catch(error => {
+              console.log(error);
+              this.confirmWrongEmail();
             });
         })
-        .catch(error => {
-          console.log(error);
-          this.confirmWrongEmail();
-        });
+        .catch(error => {});
     },
     forgetPassword() {
       this.$router.push("/forgetPassword");
     },
     confirmWrongEmail() {
       this.dialogWrongPassword = true;
+    },
+    checkUserLogin() {
+      this.loadingShow();
+
+      let user = new Promise((resolve, reject) => {
+        setTimeout(() => {
+          resolve(auth.currentUser);
+        }, 1000);
+      });
+
+      user.then(result => {
+        if (result) {
+          this.$router.push("/practiceList");
+          this.loadingHide();
+        } else {
+          this.loadingHide();
+        }
+      });
     }
   },
-  mounted() {
-    console.log(auth.currentUser);
+  async mounted() {
+    this.checkUserLogin();
   }
 };
 </script>

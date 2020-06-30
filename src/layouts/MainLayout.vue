@@ -3,30 +3,37 @@
     <q-header
       class="bg-blue-grey-10"
       elevated
-      v-if="$route.name!='practiceList' && $route.name!='userInfo' "
+      v-if="$route.name != 'practiceList' && $route.name != 'userInfo'"
     >
       <q-toolbar>
-        <q-toolbar-title class="q-pa-md" v-if="$route.name=='lessonMain' ">
+        <q-toolbar-title class="q-pa-md" v-if="$route.name == 'lessonMain'">
           <span class="text-h6">ระดับการเรียน</span>
         </q-toolbar-title>
         <q-toolbar-title
           class="q-pa-md"
-          v-if="$route.name=='practiceList' || $route.name=='practiceMain' "
+          v-if="$route.name == 'practiceList' || $route.name == 'practiceMain'"
         >
-          <q-btn dense round flat size="12px" icon="fas fa-arrow-left" to="/practiceList"></q-btn>
+          <q-btn
+            dense
+            round
+            flat
+            size="12px"
+            icon="fas fa-arrow-left"
+            to="/practiceList"
+          ></q-btn>
 
           <span class="text-h6 q-ml-sm">แบบฝึกหัด</span>
         </q-toolbar-title>
-        <q-toolbar-title class="q-pa-md" v-if="$route.name=='flashcardMain' ">
+        <q-toolbar-title class="q-pa-md" v-if="$route.name == 'flashcardMain'">
           <span class="text-h6">การ์ดคำศัพท์</span>
         </q-toolbar-title>
-        <q-toolbar-title class="q-pa-md" v-if="$route.name=='multipleMain' ">
+        <q-toolbar-title class="q-pa-md" v-if="$route.name == 'multipleMain'">
           <span class="text-h6">เลือกคำตอบ</span>
         </q-toolbar-title>
-        <q-toolbar-title class="q-pa-md" v-if="$route.name=='expressionMain' ">
+        <q-toolbar-title class="q-pa-md" v-if="$route.name == 'expressionMain'">
           <span class="text-h6">ประโยคสนทนา</span>
         </q-toolbar-title>
-        <q-toolbar-title class="q-pa-md" v-if="$route.name=='vdoMain' ">
+        <q-toolbar-title class="q-pa-md" v-if="$route.name == 'vdoMain'">
           <span class="text-h6">บทสนทนา</span>
         </q-toolbar-title>
       </q-toolbar>
@@ -48,7 +55,11 @@
         <div
           v-if="userInfo.userGroup.includes('practice')"
           class="full-width q-py-md relative-position cursor-pointer"
-          :class="$route.name=='practiceList'?'active-line active-text':'no-active-line'"
+          :class="
+            $route.name == 'practiceList'
+              ? 'active-line active-text'
+              : 'no-active-line'
+          "
           v-ripple
           @click="$router.push('/practiceList')"
         >
@@ -59,7 +70,11 @@
         </div>
         <div
           class="full-width q-py-md relative-position cursor-pointer"
-          :class="$route.name=='lessonMain'?'active-line active-text':'no-active-line'"
+          :class="
+            $route.name == 'lessonMain'
+              ? 'active-line active-text'
+              : 'no-active-line'
+          "
           v-ripple
           @click="$router.push('/lessonMain')"
           v-if="userInfo.userGroup.includes('level')"
@@ -82,7 +97,11 @@
         </div>-->
         <div
           class="full-width q-py-md relative-position cursor-pointer"
-          :class="$route.name=='accountMain'?'active-line active-text':'no-active-line'"
+          :class="
+            $route.name == 'accountMain'
+              ? 'active-line active-text'
+              : 'no-active-line'
+          "
           v-ripple
           @click="$router.push('/accountMain')"
           v-if="userInfo.userGroup.includes('personel')"
@@ -94,7 +113,11 @@
         </div>
         <div
           class="full-width q-py-md relative-position curso-r-pointer"
-          :class="$route.name=='userMain'?'active-line active-text':'no-active-line'"
+          :class="
+            $route.name == 'userMain'
+              ? 'active-line active-text'
+              : 'no-active-line'
+          "
           v-ripple
           @click="$router.push('/userMain')"
           v-if="userInfo.userGroup.includes('admin')"
@@ -106,7 +129,11 @@
         </div>
         <div
           class="full-width q-py-md relative-position cursor-pointer"
-          :class="$route.name=='userInfo'?'active-line active-text':'no-active-line'"
+          :class="
+            $route.name == 'userInfo'
+              ? 'active-line active-text'
+              : 'no-active-line'
+          "
           v-ripple
           @click="$router.push('/userInfo')"
         >
@@ -120,10 +147,17 @@
     </q-drawer>
     <!-- เมนูมือถือ -->
     <q-footer elevated>
-      <div class="mobile-only row bg-blue-grey-10 text-blue-grey-4" align="center">
+      <div
+        class="mobile-only row bg-blue-grey-10 text-blue-grey-4"
+        align="center"
+      >
         <div
           class="col q-pa-xs q-pt-sm relative-position cursor-pointer"
-          :class="$route.name=='practiceMain' || $route.name=='practiceList'?'active-line-bottom active-text':'no-active-line-bottom'"
+          :class="
+            $route.name == 'practiceMain' || $route.name == 'practiceList'
+              ? 'active-line-bottom active-text'
+              : 'no-active-line-bottom'
+          "
           @click="$router.push('/practiceList')"
           v-ripple
         >
@@ -133,7 +167,11 @@
         </div>
         <div
           class="col q-pa-xs q-pt-sm relative-position cursor-pointer"
-          :class="$route.name=='lessonMain'?'active-line-bottom active-text':'no-active-line-bottom'"
+          :class="
+            $route.name == 'lessonMain'
+              ? 'active-line-bottom active-text'
+              : 'no-active-line-bottom'
+          "
           @click="$router.push('/lessonMain')"
           v-ripple
         >
@@ -143,7 +181,11 @@
         </div>
         <div
           class="col q-pa-xs q-pt-sm relative-position cursor-pointer"
-          :class="$route.name=='accountMain'?'active-line-bottom active-text':'no-active-line-bottom'"
+          :class="
+            $route.name == 'accountMain'
+              ? 'active-line-bottom active-text'
+              : 'no-active-line-bottom'
+          "
           @click="$router.push('/accountMain')"
           v-ripple
         >
@@ -153,7 +195,11 @@
         </div>
         <div
           class="col q-pa-xs q-pt-sm relative-position cursor-pointer"
-          :class="$route.name=='userMain'?'active-line-bottom active-text':'no-active-line-bottom'"
+          :class="
+            $route.name == 'userMain'
+              ? 'active-line-bottom active-text'
+              : 'no-active-line-bottom'
+          "
           @click="$router.push('/userMain')"
           v-ripple
         >
@@ -163,7 +209,11 @@
         </div>
         <div
           class="col q-pa-xs q-pt-sm relative-position cursor-pointer"
-          :class="$route.name=='userInfo'?'active-line-bottom active-text':'no-active-line-bottom'"
+          :class="
+            $route.name == 'userInfo'
+              ? 'active-line-bottom active-text'
+              : 'no-active-line-bottom'
+          "
           @click="$router.push('/userInfo')"
           v-ripple
         >
@@ -176,8 +226,16 @@
 
     <q-page-container class="bg-grey-1">
       <router-view
-        :class="$route.name=='practiceList' || $route.name == 'userInfo'?'':'q-pa-md' "
-        :style="$route.name=='practiceList' || $route.name == 'userInfo' ?'':'max-width:1000px;width:100%;margin:auto' "
+        :class="
+          $route.name == 'practiceList' || $route.name == 'userInfo'
+            ? ''
+            : 'q-pa-md'
+        "
+        :style="
+          $route.name == 'practiceList' || $route.name == 'userInfo'
+            ? ''
+            : 'max-width:1000px;width:100%;margin:auto'
+        "
       />
     </q-page-container>
   </q-layout>
@@ -197,9 +255,6 @@ export default {
     };
   },
   methods: {
-    toPracticeList() {
-      console.log("object");
-    },
     async loadUserInfo() {
       let getLoginKey = this.$q.localStorage.getItem("loginKey");
       let uid = this.$q.localStorage.getItem("uid");
@@ -208,7 +263,6 @@ export default {
       db.collection("user_admin")
         .where("uid", "==", uid)
         .onSnapshot(getUserId => {
-          console.clear();
           if (getLoginKey != getUserId.docs[0].data().loginKey) {
             this.logOut();
           }
@@ -223,11 +277,23 @@ export default {
           console.log("loginkey ไม่เท่ากัน");
         })
         .catch(function(error) {});
+    },
+    async checkUserLogin() {
+      let getAuthUser = await new Promise((resolve, reject) => {
+        setTimeout(() => {
+          resolve(auth.currentUser);
+        }, 1000);
+      });
+
+      if (!getAuthUser) {
+        this.$q.localStorage.clear();
+        this.$router.push("/");
+      }
     }
   },
   mounted() {
     this.loadUserInfo();
-    console.log(auth.currentUser);
+    this.checkUserLogin();
   }
 };
 </script>

@@ -30,7 +30,7 @@ export const db = firebase.firestore();
 const storage = firebase.storage();
 export const st = storage.ref();
 export const auth = firebase.auth();
-export const axios = require('axios').default
+export const axios = require("axios").default;
 Vue.mixin({
   data() {
     return {};
@@ -38,7 +38,6 @@ Vue.mixin({
   methods: {
     // ฟังชั่น ซิงโครไนค์
     sync(practiceId) {
-
       db.collection("practice_draft")
         .where("practiceId", "==", practiceId)
         .get()
@@ -71,28 +70,27 @@ Vue.mixin({
         });
     },
     async getUserInfo(uid) {
-      console.log(uid);
       return new Promise((a, b) => {
         db.collection("user_admin")
           .where("uid", "==", uid)
           .get()
           .then(data => {
-            a(data.docs[0].data())
-          })
-      })
+            a(data.docs[0].data());
+          });
+      });
     },
     loadingShow() {
       this.$q.loading.show({
         delay: 400
-      })
+      });
     },
     loadingHide() {
-      this.$q.loading.hide()
+      this.$q.loading.hide();
     }
   }
 });
 
-export default function ( /* { store, ssrContext } */ ) {
+export default function(/* { store, ssrContext } */) {
   const Router = new VueRouter({
     scrollBehavior: () => ({
       x: 0,
