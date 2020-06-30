@@ -261,7 +261,7 @@ import { db, st } from "../router";
 export default {
   data() {
     return {
-      instrunction: { eng: "ยังไม่ระบุ", th: "ยังไม่ระบุ" },
+      instrunction: { eng: "", th: "" },
       orderId: "",
       instrunctionTh: "",
       instrunctionEng: "",
@@ -283,6 +283,10 @@ export default {
   methods: {
     // โหลดข้อมูลเข้ามาเก็บไว้ทั้งหมด
     loadDataAll() {
+      if (this.instrunction.eng == "" && this.instrunction.th == "") {
+        this.questionDialog = true;
+        return;
+      }
       this.dataDraft = [];
       db.collection("practice_draft")
         .where("practiceId", "==", "m")
@@ -365,6 +369,7 @@ export default {
       this.questionDialog = false;
       this.finishDialog = true;
       setTimeout(() => {
+        this.loadDataAll();
         this.finishDialog = false;
       }, 1000);
     },
