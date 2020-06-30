@@ -100,7 +100,7 @@ const routes = [
         name: "lessonEdit"
       },
       {
-        path: "lessonUnitlist",
+        path: "lessonUnitlist/:levelId",
         component: () => import("pages/lessonUnitList.vue"),
         name: "lessonUnitlist"
       },

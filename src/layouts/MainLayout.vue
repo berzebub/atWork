@@ -13,14 +13,7 @@
           class="q-pa-md"
           v-if="$route.name == 'practiceList' || $route.name == 'practiceMain'"
         >
-          <q-btn
-            dense
-            round
-            flat
-            size="12px"
-            icon="fas fa-arrow-left"
-            to="/practiceList"
-          ></q-btn>
+          <q-btn dense round flat size="12px" icon="fas fa-arrow-left" to="/practiceList"></q-btn>
 
           <span class="text-h6 q-ml-sm">แบบฝึกหัด</span>
         </q-toolbar-title>
@@ -147,10 +140,7 @@
     </q-drawer>
     <!-- เมนูมือถือ -->
     <q-footer elevated>
-      <div
-        class="mobile-only row bg-blue-grey-10 text-blue-grey-4"
-        align="center"
-      >
+      <div class="mobile-only row bg-blue-grey-10 text-blue-grey-4" align="center">
         <div
           class="col q-pa-xs q-pt-sm relative-position cursor-pointer"
           :class="
@@ -168,11 +158,11 @@
         <div
           class="col q-pa-xs q-pt-sm relative-position cursor-pointer"
           :class="
-            $route.name == 'lessonMain'
+            $route.name == 'lessonMainList'
               ? 'active-line-bottom active-text'
               : 'no-active-line-bottom'
           "
-          @click="$router.push('/lessonMain')"
+          @click="$router.push('/lessonMainList')"
           v-ripple
         >
           <q-icon name="fas fa-signal" size="25px" />
