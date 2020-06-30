@@ -261,7 +261,7 @@ import { db, st } from "../router";
 export default {
   data() {
     return {
-      instrunction: { eng: "", th: "" },
+      instrunction: { eng: "ยังไม่ระบุ", th: "ยังไม่ระบุ" },
       orderId: "",
       instrunctionTh: "",
       instrunctionEng: "",
@@ -276,17 +276,41 @@ export default {
       dataDraft: [],
       indexKey: "",
       deleteKey: "",
+      questionAdd: false,
+      questionKey: "",
       pathFile:
         "https://storage.cloud.google.com/atwork-dee11.appspot.com/practice/"
     };
   },
   methods: {
+    loadInstrunction() {
+      db.collection("practice_list")
+        .where("practiceType", "==", "multiplechoice")
+        .get()
+        .then(doc => {
+          if (doc.size > 0) {
+            doc.forEach(element => {
+              this.questionKey = element.id;
+              this.instrunction = {
+                eng: element.data().eng,
+                th: element.data().th
+              };
+            });
+            this.loadDataAll();
+          } else {
+            if (
+              this.instrunction.eng == "ยังไม่ระบุ" &&
+              this.instrunction.th == "ยังไม่ระบุ"
+            ) {
+              this.questionAdd = true;
+              this.questionDialog = true;
+              return;
+            }
+          }
+        });
+    },
     // โหลดข้อมูลเข้ามาเก็บไว้ทั้งหมด
     loadDataAll() {
-      if (this.instrunction.eng == "" && this.instrunction.th == "") {
-        this.questionDialog = true;
-        return;
-      }
       this.dataDraft = [];
       db.collection("practice_draft")
         .where("practiceId", "==", "m")
@@ -351,7 +375,7 @@ export default {
     editQuestion() {
       this.questionDialog = true;
     },
-    // บันทึกข้อมูล
+    // บันทึกข้อมูลคำสั่ง
     saveBtn() {
       this.$refs.instrunctionTh.validate();
       this.$refs.instrunctionEng.validate();
@@ -361,15 +385,24 @@ export default {
       ) {
         return;
       }
+      let practiceType = "";
       this.instrunction.eng = this.instrunctionEng;
       this.instrunction.th = this.instrunctionTh;
+      this.instrunction.practiceType = practiceType = "multiplechoice";
+      if (this.questionAdd) {
+        db.collection("practice_list").add(this.instrunction);
+      } else {
+        db.collection("practice_list")
+          .doc(this.questionKey)
+          .set(this.instrunction);
+      }
       this.instrunctionEng = "";
       this.instrunctionTh = "";
       this.text = "บันทึกข้อมูลเรียบร้อย";
       this.questionDialog = false;
       this.finishDialog = true;
       setTimeout(() => {
-        this.loadDataAll();
+        this.loadInstrunction();
         this.finishDialog = false;
       }, 1000);
     },
@@ -419,7 +452,7 @@ export default {
     }
   },
   mounted() {
-    this.loadDataAll();
+    this.loadInstrunction();
   }
 };
 </script>
