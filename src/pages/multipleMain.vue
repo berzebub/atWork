@@ -370,6 +370,7 @@ export default {
     },
     // ลบข้อมูล
     deleteBtn() {
+      this.loadingShow();
       db.collection("practice_draft")
         .doc(this.deleteKey)
         .delete()
@@ -390,6 +391,7 @@ export default {
           this.deleteDialog = true;
           setTimeout(() => {
             this.deleteDialog = false;
+            this.loadingHide();
             this.loadDataAll();
           }, 1000);
         });

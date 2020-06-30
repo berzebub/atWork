@@ -527,6 +527,7 @@ export default {
       }
       //  หน้า เพิ่มข้อมูล
       if (this.$route.name == "multipleInputAdd") {
+        this.loadingShow();
         this.checkble = true;
         db.collection("practice_draft")
           .where("order", "==", this.data.order)
@@ -587,6 +588,7 @@ export default {
                   setTimeout(() => {
                     this.checkble = false;
                     this.finishDialog = false;
+                    this.loadingHide();
                     this.$router.push("/multipleMain");
                   }, 1000);
                 });
@@ -596,6 +598,7 @@ export default {
 
       // หน้า แก้ไข
       else {
+        this.loadingShow();
         this.checkble = true;
         db.collection("practice_draft")
           .doc(this.$route.params.key)
@@ -643,6 +646,7 @@ export default {
             setTimeout(() => {
               this.checkble = false;
               this.finishDialog = false;
+              this.loadingHide();
               this.$router.push("/multipleMain");
             }, 1000);
           });
