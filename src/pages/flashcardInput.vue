@@ -95,7 +95,7 @@
                     style="width:1000px"
                     class="text-subtitle1 text-grey-7 self-center"
                   >
-                    <span v-if="uploadImg == null">{{data.id + ".jpg"}}</span>
+                    <span v-if="uploadImg == null">{{practiceKey + ".jpg"}}</span>
                   </div>
                   <div
                     style="width:1000px"
@@ -177,7 +177,7 @@
                     style="width:1000px"
                     class="text-subtitle1 text-grey-7 self-center"
                   >
-                    <span v-if="uploadSound == null">{{data.id + ".jpg"}}</span>
+                    <span v-if="uploadSound == null">{{practiceKey + ".jpg"}}</span>
                   </div>
                   <div
                     style="width:1000px"
@@ -299,12 +299,13 @@ export default {
         practiceId: "",
         isImage: false,
         isSound: false
-      }
+      },
+      practiceKey: this.$route.params.id
     };
   },
   methods: {
     checkRead() {
-      if (this.read == "") {
+      if (this.data.read == "") {
         this.checkValidate = true;
       } else {
         this.checkValidate = false;
@@ -328,7 +329,7 @@ export default {
       ) {
         return;
       }
-      if (this.read == "") {
+      if (this.data.read == "") {
         this.checkValidate = true;
         return;
       }
@@ -343,7 +344,6 @@ export default {
         db.collection("practice_draft")
           .add(this.data)
           .then(getId => {
-            console.log(getId.id);
             if (this.data.isImage == true) {
               st.child("practice/image/" + getId.id + ".jpg").put(
                 this.uploadImg
@@ -371,19 +371,24 @@ export default {
       db.collection("practice_draft")
         .doc(this.$route.params.id)
         .update(this.data)
-        .then(getId => {
-          console.log(getId.id);
-          if (this.data.isImage == true) {
-            st.child("practice/image/" + getId.id + ".jpg").put(this.uploadImg);
+        .then(() => {
+          if (this.uploadImg) {
+            st.child("practice/image/" + this.practiceKey + ".jpg").put(
+              this.uploadImg
+            );
           }
-          if (this.data.isSound == true) {
-            st.child("practice/audio/" + getId.id + ".mp3").put(
+          if (this.uploadSound) {
+            st.child("practice/audio/" + this.practiceKey + ".mp3").put(
               this.uploadSound
             );
           }
-          this.$router.push(
-            "/flashcardMain/" + this.data.levelId + "/" + this.data.unitId
-          );
+          this.successData = true;
+          setTimeout(() => {
+            this.successData = false;
+            this.$router.push(
+              "/flashcardMain/" + this.data.levelId + "/" + this.data.unitId
+            );
+          }, 700);
         });
     }
   },

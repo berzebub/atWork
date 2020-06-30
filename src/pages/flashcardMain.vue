@@ -111,7 +111,11 @@
         <q-card-section class="no-padding">
           <div class="row">
             <!-- รูป -->
-            <div class="col-sm-6 col-xs-12 q-px-md q-pt-md q-pb-sm text-h6" align="center">
+            <div
+              v-if="item.isImage == true"
+              class="col-sm-6 col-xs-12 q-px-md q-pt-md q-pb-sm text-h6"
+              align="center"
+            >
               <q-img :src="item.img" :ratio="4/3" style="max-width:400px; width:100%" class></q-img>
             </div>
             <!-- คำ -->
@@ -119,6 +123,7 @@
               <div class="row items-center q-ml-md">
                 <div>
                   <q-btn
+                    v-if="item.isSound == true"
                     style="margin-top:10%"
                     flat
                     icon="fas fa-volume-up"
@@ -283,7 +288,21 @@ export default {
     editDataFlashcard(item) {
       this.$router.push({
         name: "flashcardEdit",
-        params: { data: item }
+        params: {
+          data: {
+            isImage: item.isImage,
+            isSound: item.isSound,
+            levelId: item.levelId,
+            unitId: item.unitId,
+            vocabulary: item.vocabulary,
+            meaning: item.meaning,
+            read: item.read,
+            order: item.order,
+            status: item.status,
+            practiceId: item.practiceId
+          },
+          id: item.id
+        }
       });
     },
     playSound(pathSound) {
