@@ -336,6 +336,7 @@
           </div>
           <div class="col-6 q-py-sm text-right">
             <q-btn
+              :disable="checkble"
               @click="saveBtn()"
               dense
               style="width:150px"
@@ -371,6 +372,7 @@ import { db, st } from "../router";
 export default {
   data() {
     return {
+      checkble: false,
       file: null,
       uploadImg: null,
       uploadAudio: null,
@@ -435,16 +437,16 @@ export default {
           let getChoiceSound = "";
           if (doc.data().isAnswerSound) {
             if (doc.data().choices[0]) {
-              this.isAudio1 = doc.id + "-1mp3";
+              this.isAudio1 = doc.id + "-1.mp3";
             }
             if (doc.data().choices[1]) {
-              this.isAudio2 = doc.id + "-2mp3";
+              this.isAudio2 = doc.id + "-2.mp3";
             }
             if (doc.data().choices[2]) {
-              this.isAudio3 = doc.id + "-3mp3";
+              this.isAudio3 = doc.id + "-3.mp3";
             }
             if (doc.data().choices[3]) {
-              this.isAudio4 = doc.id + "-4mp3";
+              this.isAudio4 = doc.id + "-4.mp3";
             }
           }
           let choices1 = "";
@@ -525,6 +527,7 @@ export default {
       }
       //  หน้า เพิ่มข้อมูล
       if (this.$route.name == "multipleInputAdd") {
+        this.checkble = true;
         db.collection("practice_draft")
           .where("order", "==", this.data.order)
           .get()
@@ -582,6 +585,7 @@ export default {
                     }
                   }
                   setTimeout(() => {
+                    this.checkble = false;
                     this.finishDialog = false;
                     this.$router.push("/multipleMain");
                   }, 1000);
@@ -592,6 +596,7 @@ export default {
 
       // หน้า แก้ไข
       else {
+        this.checkble = true;
         db.collection("practice_draft")
           .doc(this.$route.params.key)
           .set(this.data)
@@ -636,6 +641,7 @@ export default {
                 .update({ choices: this.data.choices });
             }
             setTimeout(() => {
+              this.checkble = false;
               this.finishDialog = false;
               this.$router.push("/multipleMain");
             }, 1000);
