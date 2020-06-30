@@ -22,7 +22,7 @@
               :disable="unitList.filter(x => x.levelId == itemLv.levelId).length == 0"
             >
               <!-- <q-separator /> -->
-              <q-card v-for="(itemUnit,index2) in unitListShow">
+              <q-card v-for="(itemUnit,index2) in unitListShow" :key="index2">
                 <div
                   class="row q-px-md q-py-sm relative-position cursor-pointer"
                   :class="activeKey==itemUnit.unitId?'bg-blue-grey-4':''"
