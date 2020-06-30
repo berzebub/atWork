@@ -27,7 +27,7 @@
               <div class="row items-center">
                 <div align="left" class="text-h6">ไฟล์รูปภาพ</div>
                 <div
-                  class="q-ml-md text-blue-grey-4"
+                  class="q-ml-md text-blue-grey-7"
                   style="margin-top:0.7%"
                 >ไฟล์ jpg ขนาด 400x300 px เท่านั้น</div>
               </div>
@@ -68,7 +68,7 @@
               <div class="row items-center">
                 <div align="left" class="text-h6">ไฟล์รูปภาพ</div>
                 <div
-                  class="q-ml-md text-blue-grey-4"
+                  class="q-ml-md text-blue-grey-7"
                   style="margin-top:0.7%"
                 >ไฟล์ jpg ขนาด 400x300 px เท่านั้น</div>
               </div>
@@ -112,7 +112,7 @@
             <div>
               <div class="row items-center">
                 <div align="left" class="text-h6">ไฟล์เสียง</div>
-                <div class="q-ml-md text-blue-grey-4" style="margin-top:0.7%">ไฟล์ mp3 เท่านั้น</div>
+                <div class="q-ml-md text-blue-grey-7" style="margin-top:0.7%">ไฟล์ mp3 เท่านั้น</div>
               </div>
               <div>
                 <q-file accept=".mp3" bg-color="white" outlined v-model="uploadSound">
@@ -151,7 +151,7 @@
             <div>
               <div class="row items-center">
                 <div align="left" class="text-h6">ไฟล์เสียง</div>
-                <div class="q-ml-md text-blue-grey-4" style="margin-top:0.7%">ไฟล์ mp3 เท่านั้น</div>
+                <div class="q-ml-md text-blue-grey-7" style="margin-top:0.7%">ไฟล์ mp3 เท่านั้น</div>
               </div>
               <div>
                 <q-file accept=".mp3" bg-color="white" outlined v-model="uploadSound">

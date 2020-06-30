@@ -1,6 +1,10 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-header class="bg-blue-grey-10" elevated v-if="$route.name!='practiceList' ">
+    <q-header
+      class="bg-blue-grey-10"
+      elevated
+      v-if="$route.name!='practiceList' && $route.name!='userInfo' "
+    >
       <q-toolbar>
         <q-toolbar-title class="q-pa-md" v-if="$route.name=='lessonMain' ">
           <span class="text-h6">ระดับการเรียน</span>
@@ -52,9 +56,6 @@
             <q-icon name="book" size="25px" />
           </div>
           <div class="q-pt-sm">แบบฝึกหัด</div>
-          <div>
-            <q-btn color="white" class="text-red" @click="logOut()">logout</q-btn>
-          </div>
         </div>
         <div
           class="full-width q-py-md relative-position cursor-pointer"
@@ -175,8 +176,8 @@
 
     <q-page-container class="bg-grey-1">
       <router-view
-        :class="$route.name=='practiceList' ?'':'q-pa-md' "
-        :style="$route.name=='practiceList' ?'':'max-width:1000px;width:100%;margin:auto' "
+        :class="$route.name=='practiceList' || $route.name == 'userInfo'?'':'q-pa-md' "
+        :style="$route.name=='practiceList' || $route.name == 'userInfo' ?'':'max-width:1000px;width:100%;margin:auto' "
       />
     </q-page-container>
   </q-layout>
