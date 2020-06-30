@@ -110,7 +110,7 @@
               :definitions="data.isAnswerSound ?  {
                upload: {icon: 'cloud_upload',label: 'อัปโหลดเสียง',handler: uploadIt1   }} : null "
               :toolbar="[['bold', 'italic', 'underline'],['upload', 'save']]"
-              v-model="choices[0]"
+              v-model="choices[0].choice"
               min-height="5rem"
             />
             <div v-if="data.isAnswerSound" class="q-pa-md box row">
@@ -147,7 +147,7 @@
               :definitions="data.isAnswerSound ?  {
                upload: {icon: 'cloud_upload',label: 'อัปโหลดเสียง',handler: uploadIt2   }} : null "
               :toolbar="[['bold', 'italic', 'underline'],['upload', 'save']]"
-              v-model="choices[1]"
+              v-model="choices[1].choice"
               min-height="5rem"
             />
             <div v-if="data.isAnswerSound" class="q-pa-md box row">
@@ -182,7 +182,7 @@
               :definitions="data.isAnswerSound ?  {
                upload: {icon: 'cloud_upload',label: 'อัปโหลดเสียง',handler: uploadIt3   }} : null "
               :toolbar="[['bold', 'italic', 'underline'],['upload', 'save']]"
-              v-model="choices[2]"
+              v-model="choices[2].choice"
               min-height="5rem"
             />
             <div v-if="data.isAnswerSound" class="q-pa-md box row">
@@ -217,7 +217,7 @@
               :definitions="data.isAnswerSound ?  {
                upload: {icon: 'cloud_upload',label: 'อัปโหลดเสียง',handler: uploadIt4   }} : null "
               :toolbar="[['bold', 'italic', 'underline'],['upload', 'save']]"
-              v-model="choices[3]"
+              v-model="choices[3].choice"
               min-height="5rem"
             />
             <div v-if="data.isAnswerSound" class="q-pa-md box row">
@@ -269,7 +269,7 @@
             <q-radio
               style="margin:-10px"
               color="blue-grey-10"
-              :disable="choices[0].length > 0 && !choices[2].length "
+              :disable="choices[0].choice.length > 0 && !choices[2].choice.length "
               v-model.number="data.correctAnswer"
               :val="3"
               label="3"
@@ -279,7 +279,7 @@
             <q-radio
               style="margin:-10px"
               color="blue-grey-10 "
-              :disable="choices[0].length > 0  && !choices[3].length "
+              :disable="choices[0].choice.length > 0  && !choices[3].choice.length "
               v-model.number="data.correctAnswer"
               :val="4"
               label="4"
@@ -374,7 +374,7 @@ export default {
         isAnswerSound: false,
         status: "notSync"
       },
-      choices: ["", "", "", ""],
+      choices: [{ choice: "" }, { choice: "" }, { choice: "" }, { choice: "" }],
       //   เช็คช่องคำถามข้อมูล & ตัวเลือก
       isQuestion: true,
       isChoice1: true,
@@ -392,24 +392,35 @@ export default {
         .doc(this.$route.params.key)
         .get()
         .then(doc => {
-          this.choices = [];
-          let change = doc.data().choices;
-
-          change.map((x, index) => {
-            this.choices.push(x.choice);
-          });
-          // การวน ข้อมูล ตัวเลือกออกมาเก็บในช่องตัวเลือกต่างๆ
-          // return;
-          // for (let index = 0; index < change.length; index++) {
-          //   this.choices.push(change[index].choice);
-          // }
+          let choices1 = "";
+          let choices2 = "";
+          let choices3 = "";
+          let choices4 = "";
+          if (doc.data().choices[0]) {
+            choices1 = doc.data().choices[0].choice;
+          }
+          if (doc.data().choices[1]) {
+            choices2 = doc.data().choices[1].choice;
+          }
+          if (doc.data().choices[2]) {
+            choices3 = doc.data().choices[2].choice;
+          }
+          if (doc.data().choices[3]) {
+            choices4 = doc.data().choices[0].choice;
+          }
+          this.choices = [
+            { choice: choices1 },
+            { choice: choices2 },
+            { choice: choices3 },
+            { choice: choices4 }
+          ];
           this.data = doc.data();
         });
     },
     // บันทึก
     saveBtn() {
       // เช็คช่องกรอกข้อมูล ก่อนบันทึก ว่ากรอกข้อมูลรึยัง ข้อมูลที่จำเป็นต้องกรอก
-      let hasChoice = this.choices.filter(x => x != "");
+      let hasChoice = this.choices.filter(x => x.choice != "");
       this.$refs.orderid.validate();
       if (this.$refs.orderid.hasError) {
         return;
@@ -420,8 +431,7 @@ export default {
       }
       if (hasChoice.length < 2) {
         // การเช็คตัวเลือก 1&2 ถ้าข้อความน้อยก่ว่า 0 ให้ มีกรอบสีแดง
-        let index = this.choices.findIndex(x => x == "");
-        console.log(index);
+        let index = this.choices.findIndex(x => x.choice == "");
         if (index == 0) {
           this.isChoice1 = false;
         } else if (index == 1) {
@@ -429,19 +439,44 @@ export default {
         }
         return;
       }
-      // put ตัวเลือก เข้าไปเก็บ แต้ละช่อง
-      let change = [
-        { choice: this.choices[0] },
-        { choice: this.choices[1] },
-        { choice: this.choices[2] },
-        { choice: this.choices[3] }
-      ];
-      this.data.choices = change;
+      this.data.choices = hasChoice;
       if (this.uploadImg) {
         this.data.isImage = true;
       }
       if (this.uploadAudio) {
         this.data.isSound = true;
+      }
+      if (
+        this.data.isAnswerSound &&
+        this.choices[0].choice.length > 0 &&
+        !this.dataFile1
+      ) {
+        console.log("888");
+        return;
+      }
+      if (
+        this.data.isAnswerSound &&
+        this.choices[1].choice.length > 0 &&
+        !this.dataFile2
+      ) {
+        console.log("888");
+        return;
+      }
+      if (
+        this.data.isAnswerSound &&
+        this.choices[2].choice.length > 0 &&
+        !this.dataFile3
+      ) {
+        console.log("688");
+        return;
+      }
+      if (
+        this.data.isAnswerSound &&
+        this.choices[3].choice.length > 0 &&
+        !this.dataFile4
+      ) {
+        console.log("77777");
+        return;
       }
       //  หน้า เพิ่มข้อมูล
       if (this.$route.name == "multipleInputAdd") {
@@ -570,13 +605,13 @@ export default {
           this.isQuestion = false;
         }
       } else if (type == "choice1") {
-        if (this.choices[0].length) {
+        if (this.choices[0].choice.length) {
           this.isChoice1 = true;
         } else {
           this.isChoice1 = false;
         }
       } else if (type == "choice2") {
-        if (this.choices[1].length) {
+        if (this.choices[1].choice.length) {
           this.isChoice2 = true;
         } else {
           this.isChoice2 = false;

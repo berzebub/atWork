@@ -89,7 +89,7 @@
           <span v-html=" item.question "></span>
         </div>
         <div class="q-px-md">
-          <div>
+          <div v-if="item.choices[0]">
             <span
               :class="{'bg-secondary answer ' : item.correctAnswer == 1}"
               v-if="item.choices[0].choice"
@@ -107,9 +107,9 @@
               <span v-html="item.choices[0].choice"></span>
             </span>
           </div>
-          <div>
+          <div v-if="item.choices[1]">
             <span
-              :class="{'bg-secondary answer' : item.correctAnswer == 2}"
+              :class="{'bg-secondary answer ' : item.correctAnswer == 2}"
               v-if="item.choices[1].choice"
             >
               <span v-if="item.choices[1].soundURL && item.choices[1].choice.length > 0">
@@ -122,14 +122,88 @@
                 />
               </span>
               2)
+              <span v-html="item.choices[1].choice"></span>
+            </span>
+          </div>
+          <div v-if="item.choices[2]">
+            <span
+              :class="{'bg-secondary answer ' : item.correctAnswer == 3}"
+              v-if="item.choices[2].choice"
+            >
+              <span v-if="item.choices[2].soundURL && item.choices[2].choice.length > 0">
+                <q-btn
+                  size="sm"
+                  @click="playAudio(item.choices[2].soundURL)"
+                  round
+                  flat
+                  icon="fas fa-volume-up"
+                />
+              </span>
+              3)
+              <span v-html="item.choices[2].choice"></span>
+            </span>
+          </div>
+          <div v-if="item.choices[3]">
+            <span
+              :class="{'bg-secondary answer ' : item.correctAnswer == 4}"
+              v-if="item.choices[3].choice"
+            >
+              <span v-if="item.choices[3].soundURL && item.choices[3].choice.length > 0">
+                <q-btn
+                  size="sm"
+                  @click="playAudio(item.choices[3].soundURL)"
+                  round
+                  flat
+                  icon="fas fa-volume-up"
+                />
+              </span>
+              4)
+              <span v-html="item.choices[3].choice"></span>
+            </span>
+          </div>
+        </div>
+        <!-- <div class="q-px-md">
+          <div>
+            <span
+              :class="{'bg-secondary answer ' : item.correctAnswer == 1}"
+              v-if="item.choices[0].choice"
+            >
+              <span v-if="item.choices[0] && item.choices[0].choice.length > 0">
+                <q-btn
+                  size="sm"
+                  @click="playAudio(item.choices[0])"
+                  round
+                  flat
+                  icon="fas fa-volume-up"
+                />
+              </span>
+              1)
+              <span v-html="item.choices[0].choice"></span>
+            </span>
+          </div>
+          <div>
+            <span
+              :class="{'bg-secondary answer' : item.correctAnswer == 2}"
+              v-if="item.choices[1].choice"
+            >
+              <span v-if="item.choices[1] && item.choices[1].choice.length > 0">
+                <q-btn
+                  size="sm"
+                  @click="playAudio(item.choices[1])"
+                  round
+                  flat
+                  icon="fas fa-volume-up"
+                />
+              </span>
+              2)
               <span v-html=" item.choices[1].choice"></span>
             </span>
           </div>
           <div>
-            <span v-if="item.choices[2].soundURL && item.choices[2].choice.length > 0">
+            <span v-if="item.choices[2] && item.choices[2].choice.length > 0">
               <q-btn
                 size="sm"
-                @click="playAudio(item.choices[2].soundURL)"
+                @click="playAudio(item.choices[2])"
                 round
                 flat
                 icon="fas fa-volume-up"
@@ -144,10 +218,10 @@
             </span>
           </div>
           <div>
-            <span v-if="item.choices[3].soundURL && item.choices[3].choice.length > 0">
+            <span v-if="item.choices[3] && item.choices[3].choice.length > 0">
               <q-btn
                 size="sm"
-                @click="playAudio(item.choices[3].soundURL)"
+                @click="playAudio(item.choices[3])"
                 round
                 flat
                 icon="fas fa-volume-up"
@@ -161,7 +235,7 @@
               <span v-html="item.choices[3].choice"></span>
             </span>
           </div>
-        </div>
+        </div>-->
         <div class="q-pa-md">
           <span v-html="item.description "></span>
         </div>
@@ -324,6 +398,7 @@ export default {
               ...dataKey
             };
             this.dataDraft.push(final);
+            console.log(final);
           });
         });
       this.loadDraft();
@@ -387,6 +462,11 @@ export default {
               ).delete();
             });
           }
+          this.deleteDialog = true;
+          setTimeout(() => {
+            this.deleteDialog = false;
+            this.loadDataAll();
+          }, 1000);
         });
     },
     // กดปุ่ม ICON ลบ เพื่องเก็บ KEY
