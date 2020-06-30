@@ -30,7 +30,7 @@
             v-model="data.question"
             min-height="5rem"
           />
-          <div class="q-pt-sm text-red text-body2">{{isTextQuestion}}</div>
+          <div class="q-pt-xs text-red text-body2">{{isTextQuestion}}</div>
         </div>
       </div>
       <div class="row">
@@ -44,7 +44,7 @@
                 @click.stop="uploadImg = null"
                 v-if="!uploadImg && !isKeyImage"
               >เลือกไฟล์</div>
-              <span v-if="uploadImg || isKeyImage" class="text-body1 q-px-md">{{isKeyImage}}</span>
+              <span v-if="uploadImg || isKeyImage" class="text-body1 q-pr-md">{{isKeyImage}}</span>
               <div
                 class="cursor-pointer rounded-borders text-white bg-blue-grey-10"
                 v-if="uploadImg || isKeyImage"
@@ -71,7 +71,7 @@
                 @click.stop="uploadAudio = null"
                 v-if="!uploadAudio && !isKeySound"
               >เลือกไฟล์</div>
-              <span v-if="uploadAudio || isKeySound" class="text-body1 q-px-md">{{isKeySound}}</span>
+              <span v-if="uploadAudio || isKeySound" class="text-body1 q-pr-md">{{isKeySound}}</span>
               <div
                 class="cursor-pointer rounded-borders text-white bg-blue-grey-10"
                 v-if="uploadAudio || isKeySound"
@@ -120,12 +120,14 @@
             />
             <div v-if="data.isAnswerSound" class="q-pa-md box row">
               <div class="col row justify-center self-center">
-                <span v-if="!dataFile1">ยังไม่ใส่ไฟล์เสียง</span>
-                <span v-if="dataFile1">{{dataFile1.name}}</span>
+                <span v-if="!dataFile1 && !isAudio1">ยังไม่ใส่ไฟล์เสียง</span>
+                <span v-if="dataFile1 ">{{dataFile1.name}}</span>
+                <span v-if="isAudio1 ">{{isAudio1}}</span>
               </div>
-              <span v-if="dataFile1">
+              <span v-if="dataFile1 || isAudio1">
                 <q-btn
-                  @click="dataFile1 = null"
+                  @click.stop="dataFile1 = null"
+                  @click="isAudio1 = ''"
                   dense
                   icon="far fa-trash-alt"
                   color="blue-grey-10"
@@ -140,8 +142,8 @@
             accept="audio/*"
             class="visually-hidden"
           />
-          <div class="q-pt-sm text-red text-body2">{{isTextChoice1}}</div>
-          <div class="q-pt-sm text-red text-body2">{{isText1}}</div>
+          <div class="q-pt-xs text-red text-body2">{{isTextChoice1}}</div>
+          <div class="q-pt-xs text-red text-body2">{{isText1}}</div>
         </div>
         <div class="q-py-sm">
           <span>ตัวเลือก #2</span>
@@ -159,12 +161,14 @@
             />
             <div v-if="data.isAnswerSound" class="q-pa-md box row">
               <div class="col row justify-center self-center">
-                <span v-if="!dataFile2">ยังไม่ใส่ไฟล์เสียง</span>
+                <span v-if="!dataFile2 &&  !isAudio2">ยังไม่ใส่ไฟล์เสียง</span>
                 <span v-if="dataFile2">{{dataFile2.name}}</span>
+                <span v-if="isAudio2 ">{{isAudio2}}</span>
               </div>
-              <span v-if="dataFile2">
+              <span v-if="dataFile2 || isAudio2">
                 <q-btn
-                  @click="dataFile2 = null"
+                  @click.stop="dataFile2 = null"
+                  @click="isAudio2 = ''"
                   dense
                   icon="far fa-trash-alt"
                   color="blue-grey-10"
@@ -179,8 +183,8 @@
             accept="audio/*"
             class="visually-hidden"
           />
-          <div class="q-pt-sm text-red text-body2">{{isTextChoice2}}</div>
-          <div class="q-pt-sm text-red text-body2">{{isText2}}</div>
+          <div class="q-pt-xs text-red text-body2">{{isTextChoice2}}</div>
+          <div class="q-pt-xs text-red text-body2">{{isText2}}</div>
         </div>
         <div class="q-py-sm">
           <span>ตัวเลือก #3</span>
@@ -197,10 +201,11 @@
             />
             <div v-if="data.isAnswerSound" class="q-pa-md box row">
               <div class="col row justify-center self-center">
-                <span v-if="!dataFile3">ยังไม่ใส่ไฟล์เสียง</span>
+                <span v-if="!dataFile3 && !isAudio3">ยังไม่ใส่ไฟล์เสียง</span>
                 <span v-if="dataFile3">{{dataFile3.name}}</span>
+                <span v-if="isAudio3 ">{{isAudio3}}</span>
               </div>
-              <span v-if="dataFile3">
+              <span v-if="dataFile3 || isAudio3">
                 <q-btn
                   @click="dataFile3 = null"
                   dense
@@ -217,7 +222,7 @@
             accept="audio/*"
             class="visually-hidden"
           />
-          <div class="q-pt-sm text-red text-body2">{{isTextChoice3}}</div>
+          <div class="q-pt-xs text-red text-body2">{{isTextChoice3}}</div>
         </div>
         <div class="q-py-sm">
           <span>ตัวเลือก #4</span>
@@ -234,10 +239,11 @@
             />
             <div v-if="data.isAnswerSound" class="q-pa-md box row">
               <div class="col row justify-center self-center">
-                <span v-if="!dataFile4">ยังไม่ใส่ไฟล์เสียง</span>
+                <span v-if="!dataFile4 && !isAudio4">ยังไม่ใส่ไฟล์เสียง</span>
                 <span v-if="dataFile4">{{dataFile4.name}}</span>
+                <span v-if="isAudio4 ">{{isAudio4}}</span>
               </div>
-              <span v-if="dataFile4">
+              <span v-if="dataFile4 ||isAudio4">
                 <q-btn
                   @click="dataFile4 = null"
                   dense
@@ -254,7 +260,7 @@
             accept="audio/*"
             class="visually-hidden"
           />
-          <div class="q-pt-sm text-red text-body2">{{isTextChoice4}}</div>
+          <div class="q-pt-xs text-red text-body2">{{isTextChoice4}}</div>
         </div>
       </div>
       <div class="q-py-sm">
@@ -396,6 +402,10 @@ export default {
       isChoice4: true,
       finishDialog: false,
       text: "",
+      isAudio1: "",
+      isAudio2: "",
+      isAudio3: "",
+      isAudio4: "",
       isKeyImage: "",
       isKeySound: "",
       isTextQuestion: "",
@@ -422,7 +432,21 @@ export default {
           if (doc.data().isSound) {
             this.isKeySound = doc.id + ".mp3";
           }
-
+          let getChoiceSound = "";
+          if (doc.data().isAnswerSound) {
+            if (doc.data().choices[0]) {
+              this.isAudio1 = doc.id + "-1mp3";
+            }
+            if (doc.data().choices[1]) {
+              this.isAudio2 = doc.id + "-2mp3";
+            }
+            if (doc.data().choices[2]) {
+              this.isAudio3 = doc.id + "-3mp3";
+            }
+            if (doc.data().choices[3]) {
+              this.isAudio4 = doc.id + "-4mp3";
+            }
+          }
           let choices1 = "";
           let choices2 = "";
           let choices3 = "";
@@ -483,19 +507,19 @@ export default {
       if (this.data.isAnswerSound) {
         if (this.choices[0].choice.length > 0 && !this.dataFile1) {
           this.isChoice1 = false;
-          this.isTextChoice1 = "กรุณาใส่เสียงตัวเลือก#1";
+          this.isTextChoice1 = "กรุณาอัปโหลดเสียงตัวเลือก#1";
           return;
         } else if (this.choices[1].choice.length > 0 && !this.dataFile2) {
           this.isChoice2 = false;
-          this.isTextChoice2 = "กรุณาใส่เสียงตัวเลือก#2";
+          this.isTextChoice2 = "กรุณาอัปโหลดเสียงตัวเลือก#2";
           return;
         } else if (this.choices[2].choice.length > 0 && !this.dataFile3) {
           this.isChoice3 = false;
-          this.isTextChoice3 = "กรุณาใส่เสียงตัวเลือก#3";
+          this.isTextChoice3 = "กรุณาอัปโหลดเสียงตัวเลือก#3";
           return;
         } else if (this.choices[3].choice.length > 0 && !this.dataFile4) {
           this.isChoice4 = false;
-          this.isTextChoice4 = "กรุณาใส่เสียงตัวเลือก#4";
+          this.isTextChoice4 = "กรุณาอัปโหลดเสียงตัวเลือก#4";
           return;
         }
       }
