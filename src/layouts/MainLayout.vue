@@ -180,14 +180,16 @@
 </template>
 
 <script>
-import { auth } from "../router";
+import { auth, db } from "../router";
 export default {
   name: "MainLayout",
 
   data() {
     return {
       userInfo: "",
-      isLoadUserInfo: false
+      isLoadUserInfo: false,
+      isKey: false,
+      loginKey: ""
     };
   },
   methods: {
@@ -195,9 +197,28 @@ export default {
       console.log("object");
     },
     async loadUserInfo() {
+      let getLoginKey = this.$q.localStorage.getItem("loginKey");
       let uid = this.$q.localStorage.getItem("uid");
       this.userInfo = await this.getUserInfo(uid);
       this.isLoadUserInfo = true;
+      db.collection("user_admin")
+        .where("uid", "==", uid)
+        .onSnapshot(getUserId => {
+          console.clear();
+          if (getLoginKey != getUserId.docs[0].data().loginKey) {
+            this.logOut();
+          }
+        });
+    },
+    logOut() {
+      auth
+        .signOut()
+        .then(() => {
+          this.$q.localStorage.clear();
+          this.$router.push("/");
+          console.log("loginkey ไม่เท่ากัน");
+        })
+        .catch(function(error) {});
     }
   },
   mounted() {

@@ -134,6 +134,7 @@ export default {
         return;
       }
       this.loadingShow();
+
       // บันทึกข้อมูล
       if (this.$route.name == "userAdd") {
         let dataUser = {
@@ -151,7 +152,10 @@ export default {
         let newDataUser = { ...this.dataUser };
         delete newDataUser.password;
         newDataUser.uid = getCreateUser.data.uid;
-
+        let genCode = Math.random()
+          .toString(36)
+          .substring(7);
+        newDataUser.loginKey = genCode;
         db.collection("user_admin")
           .add(newDataUser)
           .then(() => {
