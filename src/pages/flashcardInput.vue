@@ -22,70 +22,173 @@
             />
           </div>
           <!-- ไฟล์รูปภาพ -->
-          <div>
-            <div class="row items-center">
-              <div align="left" class="text-h6">ไฟล์รูปภาพ</div>
-              <div
-                class="q-ml-md text-blue-grey-4"
-                style="margin-top:0.7%"
-              >ไฟล์ jpg ขนาด 400x300 px เท่านั้น</div>
-            </div>
+          <div v-if="isAddMode">
             <div>
-              <q-file accept="image/*" bg-color="white" outlined v-model="uploadImg ">
-                <template v-slot:append>
+              <div class="row items-center">
+                <div align="left" class="text-h6">ไฟล์รูปภาพ</div>
+                <div
+                  class="q-ml-md text-blue-grey-4"
+                  style="margin-top:0.7%"
+                >ไฟล์ jpg ขนาด 400x300 px เท่านั้น</div>
+              </div>
+              <div>
+                <q-file accept="image/*" bg-color="white" outlined v-model="uploadImg">
+                  <template v-slot:append>
+                    <!-- ปุ่มเลือกไฟล์ -->
+                    <div
+                      style="width:100px"
+                      class="text-subtitle1 rounded-borders text-center bg-blue-grey-10 text-white q-pa-xs cursor-pointer"
+                      @click.stop="uploadImg = null"
+                      v-if="!uploadImg "
+                    >เลือกไฟล์</div>
+                    <div
+                      class="cursor-pointer rounded-borders text-white bg-blue-grey-10"
+                      v-if="uploadImg "
+                      @click.stop="uploadImg  = null"
+                    >
+                      <span style class="far fa-trash-alt q-px-xs"></span>
+                    </div>
+                  </template>
                   <div
-                    style="width:100px"
-                    class="text-subtitle1 rounded-borders text-center bg-blue-grey-10 text-white q-pa-xs cursor-pointer"
-                    @click.stop="uploadImg = null"
+                    v-if="data.isImage == true"
+                    style="width:1000px"
+                    class="text-subtitle1 text-grey-7 self-center"
+                  >{{uploadImg}}</div>
+                  <div
+                    style="width:1000px"
+                    class="text-subtitle1 text-grey-7 self-center"
                     v-if="!uploadImg"
-                  >เลือกไฟล์</div>
-                  <div
-                    class="cursor-pointer rounded-borders text-white bg-blue-grey-10"
-                    v-if="uploadImg "
-                    @click.stop="uploadImg  = null"
-                  >
-                    <span style class="far fa-trash-alt q-px-xs"></span>
-                  </div>
-                </template>
-                <div
-                  style="width:1000px"
-                  class="text-subtitle1 text-grey-7 self-center"
-                  v-if="!uploadImg"
-                >ลากแล้ววาง หรือ</div>
-              </q-file>
+                  >ลากแล้ววาง หรือ</div>
+                </q-file>
+              </div>
             </div>
           </div>
-          <!-- ไฟล์เสียง -->
-          <div>
-            <div class="row items-center">
-              <div align="left" class="text-h6">ไฟล์เสียง</div>
-              <div class="q-ml-md text-blue-grey-4" style="margin-top:0.7%">ไฟล์ mp3 เท่านั้น</div>
-            </div>
+          <div v-if="!isAddMode">
             <div>
-              <q-file accept=".mp3" bg-color="white" outlined v-model="uploadSound">
-                <template v-slot:append>
-                  <div
-                    style="width:100px;"
-                    class="text-subtitle1 rounded-borders text-center bg-blue-grey-10 text-white q-pa-xs cursor-pointer"
-                    @click.stop="uploadSound = null"
-                    v-if="!uploadSound"
-                  >เลือกไฟล์</div>
-                  <div
-                    class="cursor-pointer rounded-borders text-white bg-blue-grey-10"
-                    v-if="uploadSound"
-                    @click.stop="uploadSound = null"
-                  >
-                    <span style class="far fa-trash-alt q-px-xs"></span>
-                  </div>
-                </template>
+              <div class="row items-center">
+                <div align="left" class="text-h6">ไฟล์รูปภาพ</div>
                 <div
-                  style="width:1000px"
-                  class="text-subtitle1 text-grey-7 self-center"
-                  v-if="!uploadSound"
-                >ลากแล้ววาง หรือ</div>
-              </q-file>
+                  class="q-ml-md text-blue-grey-4"
+                  style="margin-top:0.7%"
+                >ไฟล์ jpg ขนาด 400x300 px เท่านั้น</div>
+              </div>
+              <div>
+                <q-file accept="image/*" bg-color="white" outlined v-model="uploadImg">
+                  <template v-slot:append>
+                    <!-- ปุ่มเลือกไฟล์ -->
+                    <div
+                      style="width:100px"
+                      class="text-subtitle1 rounded-borders text-center bg-blue-grey-10 text-white q-pa-xs cursor-pointer"
+                      @click.stop="uploadImg = null"
+                      v-if="!data.isImage"
+                    >เลือกไฟล์</div>
+                    <div
+                      class="cursor-pointer rounded-borders text-white bg-blue-grey-10"
+                      v-if="data.isImage "
+                      @click.stop="uploadImg  = null"
+                    >
+                      <span style class="far fa-trash-alt q-px-xs"></span>
+                    </div>
+                  </template>
+                  <div
+                    v-if="data.isImage == true"
+                    style="width:1000px"
+                    class="text-subtitle1 text-grey-7 self-center"
+                  >
+                    <span v-if="uploadImg == null">{{practiceKey + ".jpg"}}</span>
+                  </div>
+                  <div
+                    style="width:1000px"
+                    class="text-subtitle1 text-grey-7 self-center"
+                    v-if="!data.isImage"
+                  >ลากแล้ววาง หรือ</div>
+                </q-file>
+              </div>
             </div>
           </div>
+
+          <!-- ไฟล์เสียง -->
+          <div v-if="isAddMode">
+            <div>
+              <div class="row items-center">
+                <div align="left" class="text-h6">ไฟล์เสียง</div>
+                <div class="q-ml-md text-blue-grey-4" style="margin-top:0.7%">ไฟล์ mp3 เท่านั้น</div>
+              </div>
+              <div>
+                <q-file accept=".mp3" bg-color="white" outlined v-model="uploadSound">
+                  <template v-slot:append>
+                    <!-- ปุ่มเลือกไฟล์ -->
+                    <div
+                      style="width:100px;"
+                      class="text-subtitle1 rounded-borders text-center bg-blue-grey-10 text-white q-pa-xs cursor-pointer"
+                      @click.stop="uploadSound = null"
+                      v-if="!uploadSound"
+                    >เลือกไฟล์</div>
+                    <!-- ปุ่มลบไฟล์ -->
+                    <div
+                      class="cursor-pointer rounded-borders text-white bg-blue-grey-10"
+                      v-if="uploadSound"
+                      @click.stop="uploadSound = null"
+                    >
+                      <span style class="far fa-trash-alt q-px-xs"></span>
+                    </div>
+                  </template>
+                  <div
+                    v-if="data.isSound == true"
+                    style="width:1000px"
+                    class="text-subtitle1 text-grey-7 self-center"
+                  >{{uploadSound}}</div>
+                  <div
+                    style="width:1000px"
+                    class="text-subtitle1 text-grey-7 self-center"
+                    v-if="!uploadSound"
+                  >ลากแล้ววาง หรือ</div>
+                </q-file>
+              </div>
+            </div>
+          </div>
+          <div v-if="!isAddMode">
+            <div>
+              <div class="row items-center">
+                <div align="left" class="text-h6">ไฟล์เสียง</div>
+                <div class="q-ml-md text-blue-grey-4" style="margin-top:0.7%">ไฟล์ mp3 เท่านั้น</div>
+              </div>
+              <div>
+                <q-file accept=".mp3" bg-color="white" outlined v-model="uploadSound">
+                  <template v-slot:append>
+                    <!-- ปุ่มเลือกไฟล์ -->
+                    <div
+                      style="width:100px;"
+                      class="text-subtitle1 rounded-borders text-center bg-blue-grey-10 text-white q-pa-xs cursor-pointer"
+                      @click.stop="uploadSound = null"
+                      v-if="!data.isSound"
+                    >เลือกไฟล์</div>
+                    <!-- ปุ่มลบไฟล์ -->
+                    <div
+                      class="cursor-pointer rounded-borders text-white bg-blue-grey-10"
+                      v-if="data.isSound"
+                      @click.stop="uploadSound = null"
+                    >
+                      <span style class="far fa-trash-alt q-px-xs"></span>
+                    </div>
+                  </template>
+                  <div
+                    v-if="data.isSound == true"
+                    style="width:1000px"
+                    class="text-subtitle1 text-grey-7 self-center"
+                  >
+                    <span v-if="uploadSound == null">{{practiceKey + ".jpg"}}</span>
+                  </div>
+                  <div
+                    style="width:1000px"
+                    class="text-subtitle1 text-grey-7 self-center"
+                    v-if="!data.isSound"
+                  >ลากแล้ววาง หรือ</div>
+                </q-file>
+              </div>
+            </div>
+          </div>
+
           <!-- คำศัพท์ -->
           <div class="q-mt-md">
             <div>
@@ -184,6 +287,7 @@ export default {
       uploadImg: null,
       checkValidate: false,
       isClick: false,
+      isAddMode: true,
       data: {
         order: "",
         vocabulary: "",
@@ -195,18 +299,20 @@ export default {
         practiceId: "",
         isImage: false,
         isSound: false
-      }
+      },
+      practiceKey: this.$route.params.id
     };
   },
   methods: {
     checkRead() {
-      if (this.read == "") {
+      if (this.data.read == "") {
         this.checkValidate = true;
       } else {
         this.checkValidate = false;
       }
     },
     editMode() {
+      this.isAddMode = false;
       if (this.$route.params.levelId == undefined) {
         this.$router.push("/flashcardMain");
       }
@@ -223,7 +329,7 @@ export default {
       ) {
         return;
       }
-      if (this.read == "") {
+      if (this.data.read == "") {
         this.checkValidate = true;
         return;
       }
@@ -238,7 +344,6 @@ export default {
         db.collection("practice_draft")
           .add(this.data)
           .then(getId => {
-            console.log(getId.id);
             if (this.data.isImage == true) {
               st.child("practice/image/" + getId.id + ".jpg").put(
                 this.uploadImg
@@ -265,23 +370,25 @@ export default {
     editData() {
       db.collection("practice_draft")
         .doc(this.$route.params.id)
-        .update({
-          unitId: this.unitId,
-          levelId: this.levelId,
-          practiceId: this.practiceId,
-          order: this.order,
-          vocabulary: this.vocabulary,
-          read: this.read,
-          meaning: this.meaning,
-          status: "notSync"
-        })
-        .then(getId => {
-          console.log(getId.id);
-          st.child("practice/image/" + getId.id + ".jpg").put(this.uploadImg);
-          st.child("practice/audio/" + getId.id + ".mp3").put(this.uploadSound);
-          this.$router.push(
-            "/flashcardMain/" + this.data.levelId + "/" + this.data.unitId
-          );
+        .update(this.data)
+        .then(() => {
+          if (this.uploadImg) {
+            st.child("practice/image/" + this.practiceKey + ".jpg").put(
+              this.uploadImg
+            );
+          }
+          if (this.uploadSound) {
+            st.child("practice/audio/" + this.practiceKey + ".mp3").put(
+              this.uploadSound
+            );
+          }
+          this.successData = true;
+          setTimeout(() => {
+            this.successData = false;
+            this.$router.push(
+              "/flashcardMain/" + this.data.levelId + "/" + this.data.unitId
+            );
+          }, 700);
         });
     }
   },
