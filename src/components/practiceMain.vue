@@ -305,6 +305,7 @@ export default {
         });
     },
     loadData() {
+      this.loadingShow();
       this.isSnap = db
         .collection("practice_list")
         .where("levelId", "==", this.levelId)
@@ -316,17 +317,17 @@ export default {
               .where("practiceId", "==", element.id)
               .get()
               .then(practice => {
-                let practiceTemp = [];
-                practice.forEach(practiceElement => {
-                  practiceTemp.push(practiceElement.data().status);
-                });
                 let syncCheck = false;
-                if (
-                  practiceTemp.includes("notSync") ||
-                  practiceTemp.includes("waitForDelete")
-                ) {
-                  syncCheck = true;
+                for (const practiceElement of practice.docs) {
+                  if (
+                    practiceElement.data().status == "notSync" ||
+                    practiceElement.data().status == "waitForDelete"
+                  ) {
+                    syncCheck = true;
+                    break;
+                  }
                 }
+
                 temp.push({
                   ...element.data(),
                   practiceId: element.id,
@@ -336,6 +337,7 @@ export default {
           });
           temp.sort((a, b) => a.order - b.order);
           this.practiceListShow = temp;
+          this.loadingHide();
         });
     },
     gotoPractice(itemPrac) {
