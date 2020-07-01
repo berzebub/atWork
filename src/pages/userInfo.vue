@@ -34,7 +34,7 @@
             <div class="row items-center cursor-pointer">
               <div class="col-6 q-pa-md">
                 <div class="text-subtitle1">อีเมล</div>
-                <div class="text-body2 text-blue-grey-7">PloyKik@gmail.com</div>
+                <div class="text-body2 text-blue-grey-7">{{}}</div>
               </div>
             </div>
             <q-separator class="q-m-md"></q-separator>
@@ -58,9 +58,10 @@
           <div class="col-12 self-end">
             <q-separator></q-separator>
             <div
-              @click="logOut()"
+              @click="markLogOut()"
               v-ripple
               class="q-pa-md row items-center justify-center relative-position cursor-pointer"
+              :class="isLogOutClick == true? 'bg-blue-grey-4' : 'bg-white'"
             >
               <div class="q-mr-md">
                 <q-icon size="1.7em" name="fas fa-sign-out-alt" />
@@ -72,9 +73,17 @@
           </div>
         </div>
       </div>
-
-      <div class="col q-pa-md">
-        <user-setting></user-setting>
+      <!-- box1 หน้าแรก -->
+      <div v-if="mainPage == true" align="center" class="absolute-center" style="margin-left:10%">
+        <div class="row justify-center items-center">
+          <div>
+            <q-icon name="fas fa-arrow-left" size="1.7em" />
+          </div>
+          <div class="q-ml-sm text-subtitle1">กรุณาเลือกการตั้งค่า</div>
+        </div>
+      </div>
+      <div v-if="infoSetting == true" class="col q-pa-md">
+        <user-setting :infoData="type"></user-setting>
       </div>
     </div>
   </q-page>
@@ -90,30 +99,44 @@ export default {
   data() {
     return {
       isNameClick: false,
-      isPasswordClick: false
+      isPasswordClick: false,
+      isLogOutClick: false,
+      infoSetting: false,
+      mainPage: true,
+      type: "",
+      userInfo: ""
     };
   },
   methods: {
-    logOut() {
-      auth
-        .signOut()
-        .then(() => {
-          this.$q.localStorage.clear();
-          this.$router.push("/");
-          console.log("loginkey ไม่เท่ากัน");
-        })
-        .catch(function(error) {});
-    },
     markName() {
+      this.mainPage = false;
+      this.infoSetting = true;
       this.isNameClick = true;
       this.isPasswordClick = false;
+      this.isLogOutClick = false;
+      this.type = "1";
     },
     markPassword() {
+      this.mainPage = false;
+      this.infoSetting = true;
       this.isPasswordClick = true;
       this.isNameClick = false;
+      this.isLogOutClick = false;
+      this.type = "2";
+    },
+    markLogOut() {
+      this.mainPage = false;
+      this.infoSetting = true;
+      this.isNameClick = false;
+      this.isPasswordClick = false;
+      this.isLogOutClick = true;
+      this.type = "3";
     }
   },
-  mounted() {}
+  async mounted() {
+    let userInfo = await this.getUserInfo(this.$q.localStorage.getItem("uid"));
+    console.log(userInfo);
+  }
 };
 </script>
 

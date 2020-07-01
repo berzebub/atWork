@@ -85,6 +85,7 @@ export default {
             .catch(error => {
               console.log(error);
               this.confirmWrongEmail();
+              this.loadingHide();
             });
         })
         .catch(error => {});
@@ -120,6 +121,7 @@ export default {
           this.loadingHide();
         } else {
           this.$q.localStorage.clear();
+          this.$router.push("/");
           this.loadingHide();
         }
       });
