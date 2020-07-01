@@ -1,6 +1,7 @@
 const routes = [{
     path: "/",
-    component: () => import("pages/login.vue")
+    component: () => import("pages/login.vue"),
+    name: "login"
   },
   {
     path: "/forgetPassword",

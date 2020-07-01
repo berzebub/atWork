@@ -150,9 +150,7 @@ export default {
     };
   },
   methods: {
-    logOut() {
-      auth.signOut().catch(function(error) {});
-    },
+  
     saveChangeName() {
       this.$refs.name.validate();
       if (this.$refs.name.hasError) {

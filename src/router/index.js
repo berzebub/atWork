@@ -36,6 +36,9 @@ Vue.mixin({
     return {};
   },
   methods: {
+    logOut() {
+      auth.signOut().then(() => this.$router.push("/")).catch(function (error) {});
+    },
     // ฟังชั่น ซิงโครไนค์
     sync(practiceId) {
       db.collection("practice_draft")

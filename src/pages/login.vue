@@ -121,7 +121,9 @@ export default {
           this.loadingHide();
         } else {
           this.$q.localStorage.clear();
-          this.$router.push("/");
+          if (this.$route.name != "login") {
+            this.$router.push("/");
+          }
           this.loadingHide();
         }
       });

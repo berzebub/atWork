@@ -6,7 +6,7 @@
       v-if="$route.name != 'practiceList' && $route.name != 'userInfo'"
     >
       <q-toolbar>
-        <q-toolbar-title class="q-pa-md" v-if="$route.name == 'lessonMain'">
+        <q-toolbar-title class="q-pa-md" v-if="$route.name == 'lessonMainList'">
           <span class="text-h6">ระดับการเรียน</span>
         </q-toolbar-title>
         <q-toolbar-title
@@ -64,12 +64,12 @@
         <div
           class="full-width q-py-md relative-position cursor-pointer"
           :class="
-            $route.name == 'lessonMain'
+            $route.name == 'lessonMainList'
               ? 'active-line active-text'
               : 'no-active-line'
           "
           v-ripple
-          @click="$router.push('/lessonMain')"
+          @click="$router.push('/lessonMainList')"
           v-if="userInfo.userGroup.includes('level')"
         >
           <div>
@@ -257,12 +257,6 @@ export default {
             this.logOut();
           }
         });
-    },
-    logOut() {
-      auth
-        .signOut()
-
-        .catch(function(error) {});
     }
   },
   mounted() {
