@@ -6,10 +6,9 @@
         ref="namePosition"
         dense
         outlined
-        lazy-rules
         v-model="dataPosition.name"
-        :rules="[val => !!val 
-          ,isCheckName]"
+        :error="errorNamePosition"
+        @keyup="errorNamePosition=false"
       ></q-input>
       <div class="row q-pt-lg">
         <div class="col-6 q-pr-sm" align="right">
@@ -49,37 +48,73 @@ export default {
   data() {
     return {
       dataPosition: { name: "", status: false },
-      savedDataDialog: false
+      savedDataDialog: false,
+      errorNamePosition: false,
+      nameOld: ""
     };
   },
   methods: {
     cancelNamePosition() {
-      this.$router.push("lessonMainList");
+      this.$router.push("/lessonMainList");
     },
-    saveNamePosition() {
-      this.$refs.namePosition.validate();
-      if (this.$refs.namePosition.hasError) {
-        return;
+    async saveNamePosition() {
+      if (this.nameOld != this.dataPosition.name) {
+        let checkName = false;
+        checkName = await this.isCheckName(this.dataPosition.name);
+        this.errorNamePosition = false;
+
+        if (checkName) {
+          this.errorNamePosition = true;
+          return;
+        }
       }
       this.loadingShow();
-      db.collection("level")
-        .add(this.dataPosition)
-        .then(() => {
-          this.loadingHide();
-          this.savedDataDialog = true;
-          setTimeout(() => {
-            this.$router.push("lessonMainList");
-          }, 1000);
-        });
+      if (this.$route.name == "lessonEdit") {
+        console.log(this.$route.params.levelId);
+        console.log(this.dataPosition.name);
+        db.collection("level")
+          .doc(this.$route.params.levelId)
+          .update(this.dataPosition)
+          .then(() => {
+            this.loadingHide();
+            this.savedDataDialog = true;
+            setTimeout(() => {
+              this.$router.push("/lessonMainList");
+            }, 1000);
+          });
+      } else {
+        db.collection("level")
+          .add(this.dataPosition)
+          .then(() => {
+            this.loadingHide();
+            this.savedDataDialog = true;
+            setTimeout(() => {
+              this.$router.push("/lessonMainList");
+            }, 1000);
+          });
+      }
     },
     async isCheckName(val) {
-      if (this.$route.name != "lessonEdit") {
-        let doc = await db
-          .collection("level")
-          .where("name", "==", val)
-          .get();
-        return !doc.size || "ชื่อนี้ถูกใช้งานแล้ว";
-      }
+      let doc = await db
+        .collection("level")
+        .where("name", "==", val)
+        .get();
+      return doc.size ? true : false;
+    },
+
+    loadNamePisition() {
+      db.collection("level")
+        .doc(this.$route.params.levelId)
+        .get()
+        .then(doc => {
+          this.dataPosition.name = doc.data().name;
+          this.nameOld = doc.data().name;
+        });
+    }
+  },
+  mounted() {
+    if (this.$route.name == "lessonEdit") {
+      this.loadNamePisition();
     }
   }
 };

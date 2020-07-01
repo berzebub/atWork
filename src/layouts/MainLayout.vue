@@ -217,7 +217,7 @@
     <q-page-container class="bg-grey-1">
       <router-view
         :class="
-          $route.name == 'practiceList' || $route.name == 'userInfo'
+          $route.name == 'practiceList' || $route.name == 'userInfo' || $route.name == 'lessonUnitlist'
             ? ''
             : 'q-pa-md'
         "

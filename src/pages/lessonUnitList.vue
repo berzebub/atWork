@@ -1,9 +1,12 @@
 <template>
   <q-page>
-    <div class="text-subtitle1">ชื่อตำแหน่ง</div>
-    <div>
-      <q-input dense outlined readonly :value="positionName"></q-input>
+    <div class="q-pa-md">
+      <div class="text-subtitle1">ชื่อตำแหน่ง</div>
+      <div>
+        <q-input dense outlined readonly :value="positionName"></q-input>
+      </div>
     </div>
+
     <div align="center" class="q-py-md text-subtitle1">
       <q-btn
         dense
@@ -147,7 +150,7 @@
         </div>
       </div>
     </q-dialog>
-    <!-- dialog บันทึกสำเร็จ -->
+    <!-- dialog ลบสำเร็จ -->
     <q-dialog v-model="deleted">
       <div
         class="bg-white row justify-center items-center"

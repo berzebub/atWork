@@ -8,7 +8,7 @@
             <div class="col">
               <q-radio
                 color="blue-grey-10"
-                @input="loadDraft()"
+                @input="loadDarft()"
                 v-model="status"
                 val="draft"
                 label="แบบร่าง"
@@ -58,7 +58,13 @@
             <q-tab-panel align="center" name="vdio">
               <div style="max-width:328px">
                 <div class="text-left">รูปภาพหน้าปก</div>
-                <q-file accept="image/*" bg-color="white" outlined v-model="uploadImg">
+                <q-file
+                  @input="checkImg()"
+                  accept="image/*"
+                  bg-color="white"
+                  outlined
+                  v-model="uploadImg"
+                >
                   <template v-slot:append>
                     <div
                       style="width:100px"
@@ -85,7 +91,7 @@
                 <div class="q-pt-md">
                   <div class="text-left">วิดีโอ</div>
                   <q-file
-                    accept="mp4/*"
+                    accept="video/*"
                     bg-color="white"
                     style="max-width:328px"
                     outlined
@@ -131,9 +137,26 @@
                 <div>
                   <div v-for="item,index in data" :key="index" class="q-mt-md boxCard text-left">
                     <div
-                      style="border-top-left-radius: 6px;border-top-right-radius: 6px"
-                      class="bg-blue-grey-10 text-white q-py-sm q-px-md text-subtitle1"
-                    >รหัสลำดับ {{item.order}}</div>
+                      style="border-top-left-radius: 6px;border-top-right-radius: 6px "
+                      class="bg-blue-grey-10 text-white q-py-sm q-pr-xs q-pl-md text-subtitle1 row justify-between"
+                    >
+                      <div class="self-center">รหัสลำดับ {{item.order}}</div>
+                      <div>
+                        <q-btn size="13px" icon="fas fa-ellipsis-v" round dense flat>
+                          <q-menu>
+                            <q-list style="min-width: 120px">
+                              <q-item clickable v-close-popup>
+                                <q-item-section @click="editBtn(item.key)">แก้ไขข้อมูล</q-item-section>
+                              </q-item>
+                              <q-item clickable v-close-popup>
+                                <q-item-section @click="deleteBtn(item.key)">ลบ</q-item-section>
+                              </q-item>
+                            </q-list>
+                          </q-menu>
+                        </q-btn>
+                      </div>
+                    </div>
+
                     <div class="q-px-md q-py-sm">
                       <div class="row">
                         <div
@@ -179,33 +202,54 @@ export default {
       status: "draft",
       tab: "sentence",
       data: [],
+      dataDraft: [],
+      dataServer: [],
       pathFile:
         "https://storage.cloud.google.com/atwork-dee11.appspot.com/practice/"
     };
   },
   methods: {
-    loadData() {
+    loadDataAll() {
       this.data = [];
-      db.collection("practice_draft")
-        .where("practiceType", "==", "vdo")
-        .get()
-        .then(doc => {
-          let getSound = "";
-          doc.forEach(element => {
-            if (element.data().isSound) {
-              getSound = this.pathFile + "audio/" + element.id + ".mp3";
-            }
-            let dataKey = {
-              key: element.id,
-              soundURL: getSound
-            };
-            let final = {
-              ...dataKey,
-              ...element.data()
-            };
-            this.data.push(final);
+      if (this.status == "draft") {
+        this.dataDraft = [];
+        db.collection("practice_draft")
+          .where("practiceId", "==", "vdo")
+          .get()
+          .then(doc => {
+            let getSound = "";
+            doc.forEach(element => {
+              if (element.data().isSound) {
+                getSound = this.pathFile + "audio/" + element.id + ".mp3";
+              }
+              let dataKey = {
+                key: element.id,
+                soundURL: getSound
+              };
+              let final = {
+                ...dataKey,
+                ...element.data()
+              };
+              this.dataDraft.push(final);
+            });
+            this.loadDarft();
           });
-        });
+      } else {
+        this.dataServer = [];
+      }
+    },
+    loadDarft() {
+      this.data = this.dataDraft;
+    },
+    loadServer() {
+      this.data = this.dataServer;
+    },
+    checkImg() {
+      if (this.uploadImg) {
+        console.log("4444");
+      } else {
+        console.log("5555");
+      }
     },
     addBtn() {
       this.$router.push("/vdoInputAdd");
@@ -214,10 +258,24 @@ export default {
     playAudio(sound) {
       let audio = new Audio(sound);
       audio.play();
+    },
+    editBtn(key) {
+      this.$router.push("/vdoInputEdit/" + key);
+    },
+    deleteBtn(key) {
+      this.loadingShow();
+      db.collection("practice_draft")
+        .doc(key)
+        .delete()
+        .then(async () => {
+          await st.child("/practice/audio/" + key + ".mp3").delete();
+          this.loadingHide();
+          this.loadDataAll();
+        });
     }
   },
   mounted() {
-    this.loadData();
+    this.loadDataAll();
   }
 };
 </script>
