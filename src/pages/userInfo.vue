@@ -83,7 +83,7 @@
         </div>
       </div>
       <div v-if="infoSetting == true" class="col q-pa-md">
-        <user-setting :infoData="type"></user-setting>
+        <user-setting :infoData="type" :userInfo="userInfo" @backStep="val => getBackPage(val)"></user-setting>
       </div>
     </div>
   </q-page>
@@ -92,6 +92,7 @@
 <script>
 import { db, auth } from "../router";
 import userSetting from "../components/userSetting";
+import flashcardMainVue from "./flashcardMain.vue";
 export default {
   components: {
     userSetting
@@ -108,6 +109,16 @@ export default {
     };
   },
   methods: {
+    async getBackPage(val) {
+      this.isNameClick = false;
+      this.isPasswordClick = false;
+      this.isLogOutClick = false;
+      this.infoSetting = false;
+      this.mainPage = true;
+      this.userInfo = await this.getUserInfo(
+        this.$q.localStorage.getItem("uid")
+      );
+    },
     markName() {
       this.mainPage = false;
       this.infoSetting = true;
@@ -135,7 +146,6 @@ export default {
   },
   async mounted() {
     this.userInfo = await this.getUserInfo(this.$q.localStorage.getItem("uid"));
-    console.log(userInfo);
   }
 };
 </script>

@@ -37,7 +37,10 @@ Vue.mixin({
   },
   methods: {
     logOut() {
-      auth.signOut().then(() => this.$router.push("/")).catch(function (error) {});
+      auth
+        .signOut()
+        .then(() => this.$router.push("/"))
+        .catch(function(error) {});
     },
     // ฟังชั่น ซิงโครไนค์
     sync(practiceId) {
@@ -57,13 +60,14 @@ Vue.mixin({
                     .doc(element.id)
                     .update({
                       status: "updated"
-                    }).then(() => {
+                    })
+                    .then(() => {
                       db.collection("practice_list")
                         .doc(practiceId)
                         .update({
                           timestamp: new Date().getTime()
-                        })
-                    })
+                        });
+                    });
                 });
             } else if (element.data().status == "waitForDelete") {
               db.collection("practice_server")
@@ -72,13 +76,14 @@ Vue.mixin({
                 .then(() => {
                   db.collection("practice_draft")
                     .doc(element.id)
-                    .delete().then(() => {
+                    .delete()
+                    .then(() => {
                       db.collection("practice_list")
                         .doc(practiceId)
                         .update({
                           timestamp: new Date().getTime()
-                        })
-                    })
+                        });
+                    });
                 });
             }
           });
@@ -90,7 +95,7 @@ Vue.mixin({
           .where("uid", "==", uid)
           .get()
           .then(data => {
-            a(data.docs[0].data());
+            a({ ...data.docs[0].data(), userId: data.docs[0].id });
           });
       });
     },
@@ -105,7 +110,7 @@ Vue.mixin({
   }
 });
 
-export default function ( /* { store, ssrContext } */ ) {
+export default function(/* { store, ssrContext } */) {
   const Router = new VueRouter({
     scrollBehavior: () => ({
       x: 0,

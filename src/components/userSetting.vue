@@ -10,7 +10,14 @@
         </div>
       </div>
       <div class="row justify-center">
-        <q-btn class="q-mx-md" label="ยกเลิก" style="width:150px" outline color="blue-grey-10" />
+        <q-btn
+          @click="backMainPage()"
+          class="q-mx-md"
+          label="ยกเลิก"
+          style="width:150px"
+          outline
+          color="blue-grey-10"
+        />
         <q-btn
           @click="saveChangeName()"
           class="q-mx-md bg-blue-grey-10 text-white"
@@ -88,7 +95,14 @@
         </div>
       </div>
       <div class="row justify-center">
-        <q-btn class="q-mx-md" label="ยกเลิก" style="width:150px" outline color="blue-grey-10" />
+        <q-btn
+          @click="backMainPage()"
+          class="q-mx-md"
+          label="ยกเลิก"
+          style="width:150px"
+          outline
+          color="blue-grey-10"
+        />
         <q-btn
           @click="saveChangePassword()"
           class="q-mx-md bg-blue-grey-10 text-white"
@@ -112,7 +126,7 @@
         <q-btn style="width:190px" label="อุปกรณ์ทั้งหมด" outline />
       </div>
       <div class="q-mt-md">
-        <q-btn style="width:190px" label="กลับสู่โปรแกรม" outline />
+        <q-btn @click="backMainPage()" style="width:190px" label="กลับสู่โปรแกรม" outline />
       </div>
     </div>
     <!-- -------------------------------------------Diaolog--------------------------------------- -->
@@ -131,12 +145,15 @@
 </template>
 
 <script>
-import { auth } from "../router";
+import { auth, db } from "../router";
+import flashcardMainVue from "../pages/flashcardMain.vue";
+import { uid } from "quasar";
+import userInfoVue from "../pages/userInfo.vue";
 export default {
-  props: ["infoData"],
+  props: ["infoData", "userInfo"],
   data() {
     return {
-      name: "",
+      name: this.userInfo.name,
       oldPassword: "",
       newPassword: "",
       confrimPassword: "",
@@ -163,17 +180,25 @@ export default {
     }
   },
   methods: {
-  
+    backMainPage() {
+      this.$emit("backStep", false);
+    },
     saveChangeName() {
       this.$refs.name.validate();
       if (this.$refs.name.hasError) {
         return;
       }
-      this.isDialogSuccess = true;
-      setTimeout(() => {
-        this.isDialogSuccess = false;
-      }, 700);
-      this.isNamePage = false;
+      db.collection("user_admin")
+        .doc(this.userInfo.userId)
+        .update({ name: this.name })
+        .then(() => {
+          this.isDialogSuccess = true;
+          setTimeout(() => {
+            this.isDialogSuccess = false;
+            this.backMainPage();
+          }, 700);
+          this.isNamePage = false;
+        });
     },
     saveChangePassword() {
       this.$refs.oldPassword.validate();
@@ -186,6 +211,14 @@ export default {
       ) {
         return;
       }
+      auth.currentUser
+        .updatePassword(this.newPassword)
+        .then(() => {
+          console.log(" update สำเร็จ");
+        })
+        .catch(error => {
+          console.log(error);
+        });
       this.isDialogSuccess = true;
       setTimeout(() => {
         this.isDialogSuccess = false;
