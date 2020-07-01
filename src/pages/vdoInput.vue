@@ -138,8 +138,7 @@ export default {
       isKeyAudio: "",
       data: {
         order: "",
-        practiceType: "vdo",
-        practiceId: "m",
+        practiceId: "vdo",
         levelId: "aa",
         unitId: "bb",
         sentenceEng: "",
@@ -151,6 +150,17 @@ export default {
     };
   },
   methods: {
+    loadEdit() {
+      db.collection("practice_draft")
+        .doc(this.$route.params.key)
+        .get()
+        .then(doc => {
+          if (doc.data().isSound) {
+            this.isKeyAudio = doc.id + ".mp3";
+          }
+          this.data = doc.data();
+        });
+    },
     saveBtn() {
       this.$refs.orderid.validate();
       this.$refs.eng.validate();
@@ -160,6 +170,9 @@ export default {
         this.$refs.eng.hasError ||
         this.$refs.th.hasError
       ) {
+        return;
+      }
+      if (this.uploadAudio == null) {
         return;
       }
       if (this.uploadAudio) {
@@ -174,10 +187,18 @@ export default {
                 .child("/practice/audio/" + doc.id + ".mp3")
                 .put(this.uploadAudio);
             }
-            doc.id;
+            setTimeout(() => {
+              this.loadingHide();
+              this.$router.push("/vdoMain");
+            }, 1000);
           });
       } else {
       }
+    }
+  },
+  mounted() {
+    if (this.$route.name == "vdoInputEdit") {
+      this.loadEdit();
     }
   }
 };
