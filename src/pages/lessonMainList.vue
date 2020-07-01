@@ -13,9 +13,11 @@
         />
       </div>
       <!-- list -->
-      <div class="shadow-1 bg-blue-grey-10" v-for="(item,index) in dataPosition ">
+      <div class="shadow-1 bg-blue-grey-10" v-for="(item,index) in dataPosition " :key="index">
         <q-list class="rounded-borders">
           <q-expansion-item
+            group="level"
+            @click="showLesson(item.levelId)"
             style="border-radius: 5px"
             class="text-white text-subtitle1"
             :label="item.name"
@@ -57,15 +59,23 @@
                 <!-- ปุ่มเพิ่มบทเรียน -->
 
                 <div align="center" class="q-py-lg">
-                  <q-btn
-                    label="เพิ่มบทเรียน"
-                    @click="addLesson()"
-                    class="bg-blue-grey-6"
-                    style="width:190px"
-                  ></q-btn>
+                  <div @click="addLesson(item) " class="text-blue-grey-10">
+                    <u>เพิ่มบทเรียน</u>
+                  </div>
                 </div>
                 <!-- เนื้อหาบทเรียน  -->
-                <div class="text-blue-grey-10">100 - จองโต๊ะ</div>
+                <div class="row" v-for="(item2,index2) in showLessonList " :key="index2">
+                  <q-separator />
+                  <div
+                    class="bg-white text-blue-grey-10 q-pa-md text-subtitle1 col-9"
+                  >{{item2.order}} - {{item2.name}}</div>
+
+                  <div v-show="item2.status != true" class="col q-py-md bg-white" align="right">
+                    <q-icon size="16px" name="fas fa-power-off" dense color="negative" flat></q-icon>
+                  </div>
+
+                  <q-separator />
+                </div>
               </div>
             </q-card>
           </q-expansion-item>
@@ -127,7 +137,10 @@ export default {
       dialogDelete: false,
       dialogDelete2: false,
 
-      dataPosition: []
+      dataPosition: [],
+      lessonList: "",
+      showLessonList: "",
+      isSnap: ""
     };
   },
   methods: {
@@ -135,8 +148,8 @@ export default {
       this.$router.push("lessonInput");
     },
     editPositionBtn() {},
-    addLesson() {
-      this.$router.push("lessonUnitList");
+    addLesson(levelId) {
+      this.$router.push("lessonUnitList/" + levelId.levelId);
     },
     editLessonBtn(item) {
       this.$router.push("lessonUnitlist/" + item.levelId);
@@ -157,7 +170,36 @@ export default {
             return a.name < b.name ? -1 : 1;
           });
         });
+        this.loadDataLesson();
       });
+    },
+    loadDataLesson() {
+      this.isSnap = db
+        .collection("unit")
+
+        .onSnapshot(doc => {
+          let temp = [];
+          doc.forEach(element => {
+            let dataLesson = {
+              levelId: element.data().levelId,
+              name: element.data().name,
+              order: element.data().order,
+              status: element.data().status,
+              unitId: element.id
+            };
+
+            temp.push(dataLesson);
+          });
+          temp.sort((a, b) => {
+            return a.order - b.order;
+          });
+          console.log(temp);
+          this.lessonList = temp;
+        });
+    },
+    showLesson(levelId) {
+      console.log(levelId);
+      this.showLessonList = this.lessonList.filter(x => x.levelId == levelId);
     }
   },
   mounted() {
