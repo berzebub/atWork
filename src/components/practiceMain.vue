@@ -54,6 +54,7 @@
           <div class="row" :class="$q.platform.is.desktop ? 'col-2':'col-4'" align="center">
             <div class="col">
               <q-btn
+                v-show="itemPrac.showSync"
                 round
                 color="blue-grey-10"
                 icon="fas fa-sync-alt"
@@ -304,7 +305,6 @@ export default {
         });
     },
     loadData() {
-      // console.log(this.levelId, this.unitId);
       this.isSnap = db
         .collection("practice_list")
         .where("levelId", "==", this.levelId)
@@ -312,8 +312,27 @@ export default {
         .onSnapshot(doc => {
           let temp = [];
           doc.forEach(element => {
-            // console.log(element.data());
-            temp.push({ ...element.data(), practiceId: element.id });
+            db.collection("practice_draft")
+              .where("practiceId", "==", element.id)
+              .get()
+              .then(practice => {
+                let practiceTemp = [];
+                practice.forEach(practiceElement => {
+                  practiceTemp.push(practiceElement.data().status);
+                });
+                let syncCheck = false;
+                if (
+                  practiceTemp.includes("notSync") ||
+                  practiceTemp.includes("waitForDelete")
+                ) {
+                  syncCheck = true;
+                }
+                temp.push({
+                  ...element.data(),
+                  practiceId: element.id,
+                  showSync: syncCheck
+                });
+              });
           });
           temp.sort((a, b) => a.order - b.order);
           this.practiceListShow = temp;
@@ -322,7 +341,12 @@ export default {
     gotoPractice(itemPrac) {
       if (itemPrac.practiceType == "flashcard") {
         this.$router.push(
-          "/flashcardMain/" + itemPrac.levelId + "/" + itemPrac.unitId
+          "/flashcardMain/" +
+            itemPrac.levelId +
+            "/" +
+            itemPrac.unitId +
+            "/" +
+            itemPrac.practiceId
         );
       } else if (itemPrac.practiceType == "multipleChoies") {
         this.$router.push(

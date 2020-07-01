@@ -21,7 +21,6 @@
               group="unitgroup"
               :disable="unitList.filter(x => x.levelId == itemLv.levelId).length == 0"
             >
-              <!-- <q-separator /> -->
               <q-card v-for="(itemUnit,index2) in unitListShow" :key="index2">
                 <div
                   class="row q-px-md q-py-sm relative-position cursor-pointer"
@@ -38,7 +37,6 @@
                     <!-- เช็คว่ามีการซิงค์มั๊ย -->
                   </div>
                 </div>
-                <!-- <q-separator />  -->
               </q-card>
             </q-expansion-item>
             <q-separator />

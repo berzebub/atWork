@@ -253,50 +253,20 @@ export default {
       db.collection("user_admin")
         .where("uid", "==", uid)
         .onSnapshot(getUserId => {
-          console.log(
-            getUserId.docs[0].data().loginKey,
-            getUserId.docs[0].data().loginKey
-          );
-          // if (getLoginKey != getUserId.docs[0].data().loginKey) {
-          //   this.logOut();
-          // }
+          if (getLoginKey != getUserId.docs[0].data().loginKey) {
+            this.logOut();
+          }
         });
     },
     logOut() {
-      console.log("signout");
       auth
         .signOut()
-        .then(() => {
-          this.$q.localStorage.clear();
-        })
+
         .catch(function(error) {});
-    },
-    checkUserLogin() {
-      auth.onAuthStateChanged(user => {
-        if (!user) {
-          this.$router.push("/");
-        }
-        // if (!user) {
-        //   this.$q.localStorage.clear();
-        //   this.$router.push("/");
-        // }
-      });
-
-      // let getAuthUser = await new Promise((resolve, reject) => {
-      //   setTimeout(() => {
-      //     resolve(auth.currentUser);
-      //   }, 1000);
-      // });
-
-      // if (!getAuthUser) {
-      //   this.$q.localStorage.clear();
-      //   this.$router.push("/");
-      // }
     }
   },
   mounted() {
     this.loadUserInfo();
-    this.checkUserLogin();
   }
 };
 </script>

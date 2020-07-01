@@ -1,5 +1,4 @@
-const routes = [
-  {
+const routes = [{
     path: "/",
     component: () => import("pages/login.vue")
   },
@@ -31,17 +30,17 @@ const routes = [
       },
       // ------------------- flashcard -------------------
       {
-        path: "flashcardMain/:levelId/:unitId",
+        path: "flashcardMain/:levelId/:unitId/:practiceId",
         component: () => import("pages/flashcardMain.vue"),
         name: "flashcardMain"
       },
       {
-        path: "flashcardInput/:levelId/:unitId",
+        path: "flashcardInput/:levelId/:unitId/:practiceId",
         component: () => import("pages/flashcardInput.vue"),
         name: "flashcardInput"
       },
       {
-        path: "flashcardEdit/:levelId/:unitId",
+        path: "flashcardEdit/:levelId/:unitId/:practiceId",
         component: () => import("pages/flashcardInput.vue"),
         name: "flashcardEdit"
       },

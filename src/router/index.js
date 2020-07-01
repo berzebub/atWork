@@ -54,7 +54,13 @@ Vue.mixin({
                     .doc(element.id)
                     .update({
                       status: "updated"
-                    });
+                    }).then(() => {
+                      db.collection("practice_list")
+                        .doc(practiceId)
+                        .update({
+                          timestamp: new Date().getTime()
+                        })
+                    })
                 });
             } else if (element.data().status == "waitForDelete") {
               db.collection("practice_server")
@@ -63,7 +69,13 @@ Vue.mixin({
                 .then(() => {
                   db.collection("practice_draft")
                     .doc(element.id)
-                    .delete();
+                    .delete().then(() => {
+                      db.collection("practice_list")
+                        .doc(practiceId)
+                        .update({
+                          timestamp: new Date().getTime()
+                        })
+                    })
                 });
             }
           });
@@ -90,7 +102,7 @@ Vue.mixin({
   }
 });
 
-export default function(/* { store, ssrContext } */) {
+export default function ( /* { store, ssrContext } */ ) {
   const Router = new VueRouter({
     scrollBehavior: () => ({
       x: 0,

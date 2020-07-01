@@ -296,7 +296,7 @@ export default {
         levelId: this.$route.params.levelId,
         unitId: this.$route.params.unitId,
         status: "notSync",
-        practiceId: "",
+        practiceId: this.$route.params.practiceId,
         isImage: false,
         isSound: false
       },
@@ -358,7 +358,12 @@ export default {
             setTimeout(() => {
               this.successData = false;
               this.$router.push(
-                "/flashcardMain/" + this.data.levelId + "/" + this.data.unitId
+                "/flashcardMain/" +
+                  this.data.levelId +
+                  "/" +
+                  this.data.unitId +
+                  "/" +
+                  this.data.practiceId
               );
             }, 700);
           });

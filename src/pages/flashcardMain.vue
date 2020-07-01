@@ -31,7 +31,7 @@
           v-if="expressionType == 'draft'"
           style="width:190px; height:36px"
           class="bg-blue-grey-10"
-          :to="'/flashcardInput' + '/' + levelId +'/'+unitId"
+          :to="'/flashcardInput' + '/' + levelId +'/'+unitId + '/' + practiceId"
           color="white"
           label="เพิ่มคำศัพท์ "
         ></q-btn>
@@ -47,7 +47,7 @@
       >
         <div
           v-if="item.status == 'waitForDelete'"
-          class="brx absolute-center fit row items-center justify-center"
+          class="absolute-center fit row items-center justify-center"
           style="background-color:black;opacity:0.6; z-index:1000"
         ></div>
         <!-- cancel-delete -->
@@ -196,7 +196,8 @@ export default {
       showDataFlashcard: "",
       levelId: this.$route.params.levelId,
       unitId: this.$route.params.unitId,
-      isSnap: ""
+      isSnap: "",
+      practiceId: this.$route.params.practiceId
     };
   },
   methods: {
@@ -230,6 +231,8 @@ export default {
             });
           });
           db.collection("practice_server")
+            .where("levelId", "==", this.levelId)
+            .where("unitId", "==", this.unitId)
             .get()
             .then(dataServer => {
               dataServer.forEach(element => {
@@ -249,15 +252,17 @@ export default {
                 }
                 temp.push({
                   ...element.data(),
-                  collection: "draft",
+                  collection: "server",
                   id: element.id,
                   img: getImage,
                   audio: getSound
                 });
               });
+
               temp.sort((a, b) => {
                 return a.order - b.order;
               });
+
               this.showDataFlashcard = temp;
             });
         });
@@ -313,8 +318,6 @@ export default {
   },
   mounted() {
     this.loadDataFlashcard();
-    // var user = auth.currentUser;
-    // console.log(user.email);
   }
 };
 </script>
