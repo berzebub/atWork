@@ -1,5 +1,5 @@
 <template>
-  <div class="container brx">
+  <div class="container">
     <!-- box2 แก้ไขชื่อ -->
     <div v-show="infoData == '1'" align="center">
       <div class="text-subtitle1">แก้ไข ชื่อ สกุล</div>
@@ -9,8 +9,15 @@
           <q-input outlined style="width:328px" ref="name" v-model="name" :rules="[val => !!val]" />
         </div>
       </div>
-      <div class="row justify-center q-ma-lg">
-        <q-btn class="q-mx-md" label="ยกเลิก" style="width:150px" outline color="blue-grey-10" />
+      <div class="row justify-center">
+        <q-btn
+          @click="backMainPage()"
+          class="q-mx-md"
+          label="ยกเลิก"
+          style="width:150px"
+          outline
+          color="blue-grey-10"
+        />
         <q-btn
           @click="saveChangeName()"
           class="q-mx-md bg-blue-grey-10 text-white"
@@ -43,7 +50,7 @@
           </q-input>
         </div>
       </div>
-      <div class="q-mt-lg">
+      <div class="q-mt-md">
         <div style="width:328px" align="left" class="text-body2">รหัสผ่านใหม่</div>
         <div class="text-blue-grey-7" style="width:328px" align="left">ไม่ต่ำกว่า 6 ตัวอักษร</div>
         <div>
@@ -65,7 +72,7 @@
           </q-input>
         </div>
       </div>
-      <div class="q-mt-lg">
+      <div class="q-mt-md">
         <div style="width:328px" align="left" class="text-body2">ยืนยันรหัสผ่านใหม่</div>
         <div>
           <q-input
@@ -87,8 +94,15 @@
           </q-input>
         </div>
       </div>
-      <div class="row justify-center q-ma-lg">
-        <q-btn class="q-mx-md" label="ยกเลิก" style="width:150px" outline color="blue-grey-10" />
+      <div class="row justify-center">
+        <q-btn
+          @click="backMainPage()"
+          class="q-mx-md"
+          label="ยกเลิก"
+          style="width:150px"
+          outline
+          color="blue-grey-10"
+        />
         <q-btn
           @click="saveChangePassword()"
           class="q-mx-md bg-blue-grey-10 text-white"
@@ -99,12 +113,12 @@
     </div>
     <!-- box4 ออกจากระบบ -->
     <div v-show="infoData == '3'" align="center" style="margin-top:50%">
-      <div class="text-h6">ออกจากระบบ</div>
+      <div class="text-h6 q-mb-md">ออกจากระบบ</div>
       <div>
         <q-btn
           @click="logOut()"
           class="bg-blue-grey-10 text-white"
-          style="width:190px"
+          style="width:190px;"
           label="เฉพาะอุปกรณ์ปัจจุบัน"
         />
       </div>
@@ -112,7 +126,7 @@
         <q-btn style="width:190px" label="อุปกรณ์ทั้งหมด" outline />
       </div>
       <div class="q-mt-md">
-        <q-btn style="width:190px" label="กลับสู่โปรแกรม" outline />
+        <q-btn @click="backMainPage()" style="width:190px" label="กลับสู่โปรแกรม" outline />
       </div>
     </div>
     <!-- -------------------------------------------Diaolog--------------------------------------- -->
@@ -131,12 +145,15 @@
 </template>
 
 <script>
-import { auth } from "../router";
+import { auth, db } from "../router";
+import flashcardMainVue from "../pages/flashcardMain.vue";
+import { uid } from "quasar";
+import userInfoVue from "../pages/userInfo.vue";
 export default {
-  props: ["infoData"],
+  props: ["infoData", "userInfo"],
   data() {
     return {
-      name: "",
+      name: this.userInfo.name,
       oldPassword: "",
       newPassword: "",
       confrimPassword: "",
@@ -149,18 +166,39 @@ export default {
       isDialogSuccess: false
     };
   },
+  watch: {
+    infoData() {
+      console.log(this.infoData);
+      if (this.infoData == "1") {
+        this.$refs.name.resetValidation();
+      }
+      if (this.infoData == "2") {
+        this.$refs.oldPassword.resetValidation();
+        this.$refs.newPassword.resetValidation();
+        this.$refs.confrimPassword.resetValidation();
+      }
+    }
+  },
   methods: {
-  
+    backMainPage() {
+      this.$emit("backStep", false);
+    },
     saveChangeName() {
       this.$refs.name.validate();
       if (this.$refs.name.hasError) {
         return;
       }
-      this.isDialogSuccess = true;
-      setTimeout(() => {
-        this.isDialogSuccess = false;
-      }, 700);
-      this.isNamePage = false;
+      db.collection("user_admin")
+        .doc(this.userInfo.userId)
+        .update({ name: this.name })
+        .then(() => {
+          this.isDialogSuccess = true;
+          setTimeout(() => {
+            this.isDialogSuccess = false;
+            this.backMainPage();
+          }, 700);
+          this.isNamePage = false;
+        });
     },
     saveChangePassword() {
       this.$refs.oldPassword.validate();
@@ -173,6 +211,14 @@ export default {
       ) {
         return;
       }
+      auth.currentUser
+        .updatePassword(this.newPassword)
+        .then(() => {
+          console.log(" update สำเร็จ");
+        })
+        .catch(error => {
+          console.log(error);
+        });
       this.isDialogSuccess = true;
       setTimeout(() => {
         this.isDialogSuccess = false;
@@ -183,9 +229,7 @@ export default {
     //   return this.newPassword == val || "รหัสผ่านไม่ตรงกัน";
     // }
   },
-  mounted() {
-    console.log(this.infoData);
-  }
+  mounted() {}
 };
 </script>
 
