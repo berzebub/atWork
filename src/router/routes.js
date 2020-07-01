@@ -83,6 +83,16 @@ const routes = [
         component: () => import("pages/vdoMain.vue"),
         name: "vdoMain"
       },
+      {
+        path: "vdoInputAdd",
+        component: () => import("pages/vdoInput.vue"),
+        name: "vdoInputAdd"
+      },
+      {
+        path: "vdoInputEdit/:key",
+        component: () => import("pages/vdoInput.vue"),
+        name: "vdoInputEdit"
+      },
       // ------------------- lessonMain ระดับการเรียน -------------------
       {
         path: "lessonMainList",
@@ -100,7 +110,7 @@ const routes = [
         name: "lessonEdit"
       },
       {
-        path: "lessonUnitlist/:levelId",
+        path: "lessonUnitlist",
         component: () => import("pages/lessonUnitList.vue"),
         name: "lessonUnitlist"
       },
