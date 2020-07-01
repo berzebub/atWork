@@ -29,7 +29,12 @@
         </div>
         <div class="desktop-only">
           <div class="text-right">
-            <q-btn round color="blue-grey-10" icon="fas fa-print" to="/multiplePrint" />
+            <q-btn
+              round
+              color="blue-grey-10"
+              icon="fas fa-print"
+              to="/multiplePrint"
+            />
           </div>
         </div>
       </div>
@@ -39,16 +44,18 @@
       </div>
       <!-- box คำสั่ง -->
       <div class="box text-left q-my-md">
-        <div class="bg-blue-grey-10 text-white q-py-sm q-px-md boxQuestion row justify-between">
+        <div
+          class="bg-blue-grey-10 text-white q-py-sm q-px-md boxQuestion row justify-between"
+        >
           <div class="row text-subtitle1 items-center">คำสั่ง</div>
           <div>
             <q-btn @click="editQuestion()" size="sm" round icon="far fa-edit" />
           </div>
         </div>
         <div class="q-pa-md">
-          <span>{{instrunction.eng}}</span>
+          <span>{{ instrunction.eng }}</span>
           <q-separator class="q-my-md" />
-          <span>{{instrunction.th}}</span>
+          <span>{{ instrunction.th }}</span>
         </div>
       </div>
       <q-separator class="q-my-md" />
@@ -64,19 +71,30 @@
       </div>
       <!-- โชว์ DATA -->
 
-      <div v-for="(item,index) in data" :key="index" class="box text-left q-my-md">
-        <div class="boxQuestion bg-blue-grey-10 text-white q-py-xs q-px-md row justify-between">
-          <div class="col row items-center">รหัสลำดับ {{item.order}}</div>
+      <div
+        v-for="(item, index) in data"
+        :key="index"
+        class="box text-left q-my-md"
+      >
+        <div
+          class="boxQuestion bg-blue-grey-10 text-white q-py-xs q-px-md row justify-between"
+        >
+          <div class="col row items-center">รหัสลำดับ {{ item.order }}</div>
           <div class="q-px-xs">
             <q-btn
-              @click="deleteData(item.key, item.order,index)"
+              @click="deleteData(item.key, item.order, index)"
               size="sm"
               round
               icon="far fa-trash-alt"
             />
           </div>
           <div>
-            <q-btn @click="editData(item.key)" size="sm" round icon="far fa-edit" />
+            <q-btn
+              @click="editData(item.key)"
+              size="sm"
+              round
+              icon="far fa-edit"
+            />
           </div>
         </div>
         <div class="text-center q-pt-md" v-if="item.imageURL">
@@ -84,17 +102,27 @@
         </div>
         <div class="q-pa-md">
           <span v-if="item.audioURL">
-            <q-btn size="sm" @click="playAudio(item.audioURL)" round flat icon="fas fa-volume-up" />
+            <q-btn
+              size="sm"
+              @click="playAudio(item.audioURL)"
+              round
+              flat
+              icon="fas fa-volume-up"
+            />
           </span>
-          <span v-html=" item.question "></span>
+          <span v-html="item.question"></span>
         </div>
         <div class="q-px-md">
           <div v-if="item.choices[0]">
             <span
-              :class="{'bg-secondary answer ' : item.correctAnswer == 1}"
+              :class="{ 'bg-secondary answer ': item.correctAnswer == 1 }"
               v-if="item.choices[0].choice"
             >
-              <span v-if="item.choices[0].soundURL && item.choices[0].choice.length > 0">
+              <span
+                v-if="
+                  item.choices[0].soundURL && item.choices[0].choice.length > 0
+                "
+              >
                 <q-btn
                   size="sm"
                   @click="playAudio(item.choices[0].soundURL)"
@@ -109,10 +137,14 @@
           </div>
           <div v-if="item.choices[1]">
             <span
-              :class="{'bg-secondary answer ' : item.correctAnswer == 2}"
+              :class="{ 'bg-secondary answer ': item.correctAnswer == 2 }"
               v-if="item.choices[1].choice"
             >
-              <span v-if="item.choices[1].soundURL && item.choices[1].choice.length > 0">
+              <span
+                v-if="
+                  item.choices[1].soundURL && item.choices[1].choice.length > 0
+                "
+              >
                 <q-btn
                   size="sm"
                   @click="playAudio(item.choices[1].soundURL)"
@@ -127,10 +159,14 @@
           </div>
           <div v-if="item.choices[2]">
             <span
-              :class="{'bg-secondary answer ' : item.correctAnswer == 3}"
+              :class="{ 'bg-secondary answer ': item.correctAnswer == 3 }"
               v-if="item.choices[2].choice"
             >
-              <span v-if="item.choices[2].soundURL && item.choices[2].choice.length > 0">
+              <span
+                v-if="
+                  item.choices[2].soundURL && item.choices[2].choice.length > 0
+                "
+              >
                 <q-btn
                   size="sm"
                   @click="playAudio(item.choices[2].soundURL)"
@@ -145,10 +181,14 @@
           </div>
           <div v-if="item.choices[3]">
             <span
-              :class="{'bg-secondary answer ' : item.correctAnswer == 4}"
+              :class="{ 'bg-secondary answer ': item.correctAnswer == 4 }"
               v-if="item.choices[3].choice"
             >
-              <span v-if="item.choices[3].soundURL && item.choices[3].choice.length > 0">
+              <span
+                v-if="
+                  item.choices[3].soundURL && item.choices[3].choice.length > 0
+                "
+              >
                 <q-btn
                   size="sm"
                   @click="playAudio(item.choices[3].soundURL)"
@@ -163,7 +203,7 @@
           </div>
         </div>
         <div class="q-pa-md">
-          <span v-html="item.description "></span>
+          <span v-html="item.description"></span>
         </div>
       </div>
       <!-- dialog แก่ไข คำสั่ง -->
@@ -175,7 +215,7 @@
               <q-input
                 autogrow
                 dense
-                :rules="[ val => !!val || 'กรุณาใสคำสั่งภาษาอังกฤษ']"
+                :rules="[val => !!val || 'กรุณาใสคำสั่งภาษาอังกฤษ']"
                 ref="instrunctionEng"
                 outlined
                 v-model="instrunctionEng"
@@ -186,7 +226,7 @@
               <q-input
                 autogrow
                 dense
-                :rules="[ val => !!val || 'กรุณาใสคำสั่งภาษาไทย']"
+                :rules="[val => !!val || 'กรุณาใสคำสั่งภาษาไทย']"
                 ref="instrunctionTh"
                 outlined
                 v-model="instrunctionTh"
@@ -208,7 +248,13 @@
                 />
               </div>
               <div class="q-px-md q-pb-md">
-                <q-btn @click="saveBtn()" dense style="width:150px" color="black" label="บันทึก" />
+                <q-btn
+                  @click="saveBtn()"
+                  dense
+                  style="width:150px"
+                  color="black"
+                  label="บันทึก"
+                />
               </div>
             </div>
           </div>
@@ -219,7 +265,7 @@
         <q-card style="max-width:600px;width:100%">
           <div class="text-h6 text-center q-pt-md q-pb-sm">
             <div>ต้องการลบข้อมูล</div>
-            <div>“รหัสลำดับ {{orderId}}” หรือไม่</div>
+            <div>“รหัสลำดับ {{ orderId }}” หรือไม่</div>
           </div>
           <div>
             <div class="row reverse-wrap justify-center q-px-md">
@@ -235,7 +281,13 @@
                 />
               </div>
               <div class="q-px-md q-pb-md">
-                <q-btn @click="deleteBtn()" dense style="width:150px" color="black" label="บันทึก" />
+                <q-btn
+                  @click="deleteBtn()"
+                  dense
+                  style="width:150px"
+                  color="black"
+                  label="บันทึก"
+                />
               </div>
             </div>
           </div>
@@ -246,9 +298,13 @@
         <q-card style="max-width:600px;width:100%;height:200px">
           <div class="text-h6 text-center q-pt-md q-pb-sm">
             <div class="q-py-md q-mt-md">
-              <q-icon color="secondary" size="46px" name="far fa-check-circle" />
+              <q-icon
+                color="secondary"
+                size="46px"
+                name="far fa-check-circle"
+              />
             </div>
-            <div>{{text}}</div>
+            <div>{{ text }}</div>
           </div>
         </q-card>
       </q-dialog>
@@ -311,15 +367,17 @@ export default {
     },
     // โหลดข้อมูลเข้ามาเก็บไว้ทั้งหมด
     loadDataAll() {
-      this.dataDraft = [];
       db.collection("practice_draft")
         .where("practiceId", "==", "m")
         .get()
         .then(doc => {
+          let temp = [];
+
           doc.forEach(element => {
             let getSound = "";
             let getImage = "";
             let getChoiceSound = element.data().choices;
+
             if (element.data().isImage) {
               getImage = this.pathFile + "image/" + element.id + ".jpg";
             }
@@ -327,34 +385,40 @@ export default {
               getSound = this.pathFile + "audio/" + element.id + ".mp3";
             }
             if (element.data().isAnswerSound) {
-              getChoiceSound = element.data().choices.map((x, index) => {
-                let newChoice = {};
-                return (newChoice = {
-                  soundURL:
+              getChoiceSound.map(async (x, index) => {
+                if (x.isImage) {
+                  getChoiceSound[index].soundURL =
                     this.pathFile +
                     "audio/" +
                     element.id +
                     "-" +
                     (index + 1) +
-                    ".mp3",
-                  choice: x.choice
-                });
+                    ".mp3";
+                }
               });
             }
+
             let dataKey = {
               key: element.id,
               imageURL: getImage,
               audioURL: getSound,
               choices: getChoiceSound
             };
+
             let final = {
               ...element.data(),
               ...dataKey
             };
-            this.dataDraft.push(final);
+
+            temp.push(final);
           });
+
+          temp.sort((a, b) => a.order - b.order);
+
+          this.dataDraft = temp;
+
+          this.loadDraft();
         });
-      this.loadDraft();
     },
 
     // โหลด แบบร่าง
@@ -456,7 +520,7 @@ export default {
   }
 };
 </script>
-<style  scoped>
+<style scoped>
 .box {
   border: 1px solid #263238;
   border-radius: 10px;
