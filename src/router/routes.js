@@ -104,12 +104,12 @@ const routes = [{
         name: "lessonInput"
       },
       {
-        path: "lessonEdit",
+        path: "lessonEdit/:levelId",
         component: () => import("pages/lessonInputEdit.vue"),
         name: "lessonEdit"
       },
       {
-        path: "lessonUnitlist",
+        path: "lessonUnitlist/:levelId",
         component: () => import("pages/lessonUnitList.vue"),
         name: "lessonUnitlist"
       },
