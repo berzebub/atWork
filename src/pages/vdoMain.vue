@@ -1,6 +1,6 @@
 <template>
   <q-page class="text-blue-grey-10">
-    <div align="center">
+    <div class="container">
       <div style="max-width:700px" class="row justify-between">
         <div class="col text-left">
           <div class="row boxServer">
@@ -32,6 +32,11 @@
           </div>
         </div>
       </div>
+      <div class="text-h6 text-center q-pt-md">
+        <div>อาหารและเครื่องดื่ม</div>
+        <div>1. จองโต๊ะ</div>
+      </div>
+
       <div class="q-pt-md">
         <div class="text-right box" style="max-width:700px">
           <q-tabs
@@ -80,7 +85,7 @@
                 <div class="q-pt-md">
                   <div class="text-left">วิดีโอ</div>
                   <q-file
-                    accept="image/*"
+                    accept="mp4/*"
                     bg-color="white"
                     style="max-width:328px"
                     outlined
@@ -117,34 +122,38 @@
               <div>
                 <span>
                   <q-btn
+                    @click="addBtn()"
                     style="max-width :190px;width:100%"
                     class="bg-blue-grey-10 text-white text-subtitle1"
                     label="เพิ่มประโยค"
                   />
                 </span>
                 <div>
-                  <div class="q-mt-md boxCard text-left">
+                  <div v-for="item,index in data" :key="index" class="q-mt-md boxCard text-left">
                     <div
                       style="border-top-left-radius: 6px;border-top-right-radius: 6px"
                       class="bg-blue-grey-10 text-white q-py-sm q-px-md text-subtitle1"
-                    >รหัสลำดับ 1000</div>
+                    >รหัสลำดับ {{item.order}}</div>
                     <div class="q-px-md q-py-sm">
-                      <div class="text-subtitle1">ลูกค้า:</div>
                       <div class="row">
-                        <div>
+                        <div
+                          :v-show="item.customer == 1 ? text = 'ลูกค้า:' : text = 'พนักงาน:' "
+                          class="text-subtitle1"
+                        >{{text}}</div>
+                        <div class="q-px-sm">
                           <q-btn
                             size="sm"
-                            @click="playAudio(item.choices[0].soundURL)"
+                            @click="playAudio(item.soundURL)"
                             round
                             flat
                             icon="fas fa-volume-up"
                           />
                         </div>
                         <div class="col">
-                          <span class="text-subtitle1">I’d like to order a drink, please.</span>
+                          <span class="text-subtitle1">{{item.sentenceEng}}</span>
                         </div>
                       </div>
-                      <div class="text-blue-grey-7 text-subtitle2">ผมต้องการสั่งเครื่องดื่มครับ</div>
+                      <div class="text-blue-grey-7 text-subtitle2">{{item.sentenceTh}}</div>
                     </div>
                   </div>
                 </div>
@@ -162,17 +171,54 @@ import { db, st } from "../router";
 export default {
   data() {
     return {
+      text: "",
       uploadImg: null,
       uploadVdo: null,
       isKeyVdio: "",
       isKeyImage: "",
       status: "draft",
       tab: "sentence",
-      data: []
+      data: [],
+      pathFile:
+        "https://storage.cloud.google.com/atwork-dee11.appspot.com/practice/"
     };
   },
-  methods: {},
-  mounted() {}
+  methods: {
+    loadData() {
+      this.data = [];
+      db.collection("practice_draft")
+        .where("practiceType", "==", "vdo")
+        .get()
+        .then(doc => {
+          let getSound = "";
+          doc.forEach(element => {
+            if (element.data().isSound) {
+              getSound = this.pathFile + "audio/" + element.id + ".mp3";
+            }
+            let dataKey = {
+              key: element.id,
+              soundURL: getSound
+            };
+            let final = {
+              ...dataKey,
+              ...element.data()
+            };
+            this.data.push(final);
+          });
+        });
+    },
+    addBtn() {
+      this.$router.push("/vdoInputAdd");
+    },
+    // เล่นเสียง
+    playAudio(sound) {
+      let audio = new Audio(sound);
+      audio.play();
+    }
+  },
+  mounted() {
+    this.loadData();
+  }
 };
 </script>
 
