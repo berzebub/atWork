@@ -1,5 +1,5 @@
 <template>
-  <div class="container brx">
+  <div class="container">
     <!-- box2 แก้ไขชื่อ -->
     <div v-show="infoData == '1'" align="center">
       <div class="text-subtitle1">แก้ไข ชื่อ สกุล</div>
@@ -9,7 +9,7 @@
           <q-input outlined style="width:328px" ref="name" v-model="name" :rules="[val => !!val]" />
         </div>
       </div>
-      <div class="row justify-center q-ma-lg">
+      <div class="row justify-center">
         <q-btn class="q-mx-md" label="ยกเลิก" style="width:150px" outline color="blue-grey-10" />
         <q-btn
           @click="saveChangeName()"
@@ -43,7 +43,7 @@
           </q-input>
         </div>
       </div>
-      <div class="q-mt-lg">
+      <div class="q-mt-md">
         <div style="width:328px" align="left" class="text-body2">รหัสผ่านใหม่</div>
         <div class="text-blue-grey-7" style="width:328px" align="left">ไม่ต่ำกว่า 6 ตัวอักษร</div>
         <div>
@@ -65,7 +65,7 @@
           </q-input>
         </div>
       </div>
-      <div class="q-mt-lg">
+      <div class="q-mt-md">
         <div style="width:328px" align="left" class="text-body2">ยืนยันรหัสผ่านใหม่</div>
         <div>
           <q-input
@@ -87,7 +87,7 @@
           </q-input>
         </div>
       </div>
-      <div class="row justify-center q-ma-lg">
+      <div class="row justify-center">
         <q-btn class="q-mx-md" label="ยกเลิก" style="width:150px" outline color="blue-grey-10" />
         <q-btn
           @click="saveChangePassword()"
@@ -99,12 +99,12 @@
     </div>
     <!-- box4 ออกจากระบบ -->
     <div v-show="infoData == '3'" align="center" style="margin-top:50%">
-      <div class="text-h6">ออกจากระบบ</div>
+      <div class="text-h6 q-mb-md">ออกจากระบบ</div>
       <div>
         <q-btn
           @click="logOut()"
           class="bg-blue-grey-10 text-white"
-          style="width:190px"
+          style="width:190px;"
           label="เฉพาะอุปกรณ์ปัจจุบัน"
         />
       </div>
@@ -149,6 +149,19 @@ export default {
       isDialogSuccess: false
     };
   },
+  watch: {
+    infoData() {
+      console.log(this.infoData);
+      if (this.infoData == "1") {
+        this.$refs.name.resetValidation();
+      }
+      if (this.infoData == "2") {
+        this.$refs.oldPassword.resetValidation();
+        this.$refs.newPassword.resetValidation();
+        this.$refs.confrimPassword.resetValidation();
+      }
+    }
+  },
   methods: {
   
     saveChangeName() {
@@ -183,9 +196,7 @@ export default {
     //   return this.newPassword == val || "รหัสผ่านไม่ตรงกัน";
     // }
   },
-  mounted() {
-    console.log(this.infoData);
-  }
+  mounted() {}
 };
 </script>
 

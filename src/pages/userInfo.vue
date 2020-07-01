@@ -23,7 +23,7 @@
             >
               <div class="col-6 q-pa-md">
                 <div class="text-subtitle1">ชื่อ - สกุล</div>
-                <div class="text-body2 text-blue-grey-7">Ploy Kik</div>
+                <div class="text-body2 text-blue-grey-7">{{userInfo.name}}</div>
               </div>
               <div class="col-6 q-pr-sm" align="right">
                 <q-icon name="fas fa-angle-right" />
@@ -31,10 +31,10 @@
             </div>
             <q-separator class="q-m-md"></q-separator>
 
-            <div class="row items-center cursor-pointer">
+            <div class="row items-center">
               <div class="col-6 q-pa-md">
                 <div class="text-subtitle1">อีเมล</div>
-                <div class="text-body2 text-blue-grey-7">{{}}</div>
+                <div class="text-body2 text-blue-grey-7">{{userInfo.email}}</div>
               </div>
             </div>
             <q-separator class="q-m-md"></q-separator>
@@ -134,7 +134,7 @@ export default {
     }
   },
   async mounted() {
-    let userInfo = await this.getUserInfo(this.$q.localStorage.getItem("uid"));
+    this.userInfo = await this.getUserInfo(this.$q.localStorage.getItem("uid"));
     console.log(userInfo);
   }
 };
