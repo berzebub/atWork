@@ -1,4 +1,5 @@
-const routes = [{
+const routes = [
+  {
     path: "/",
     component: () => import("pages/login.vue"),
     name: "login"
@@ -141,6 +142,11 @@ const routes = [{
         path: "userInfo",
         component: () => import("pages/userInfo.vue"),
         name: "userInfo"
+      },
+      {
+        path: "userSettingMobile",
+        component: () => import("pages/userSettingMobile.vue"),
+        name: "userSettingMobile"
       }
     ]
   }

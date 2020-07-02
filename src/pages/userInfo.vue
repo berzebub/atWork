@@ -13,7 +13,10 @@
             <span class="text-white text-h6">ตั้งค่า</span>
           </div>
         </div>
-        <div class="shadow-3 bg-white row" style=" height: calc(100vh - 64px)">
+        <div
+          class="shadow-3 bg-white row"
+          :style=" $q.platform.is.mobile?'height: calc(100vh - 148px)':'height: calc(100vh - 64px)'"
+        >
           <div class="col-12">
             <div
               @click="markName()"
@@ -65,7 +68,12 @@
         </div>
       </div>
       <!-- box1 หน้าแรก -->
-      <div v-if="mainPage == true" align="center" class="absolute-center" style="margin-left:10%">
+      <div
+        v-if="mainPage == true"
+        align="center"
+        class="absolute-center desktop-only"
+        style="margin-left:10%"
+      >
         <div class="row justify-center items-center">
           <div>
             <q-icon name="fas fa-arrow-left" size="1.7em" />
@@ -73,7 +81,7 @@
           <div class="q-ml-sm text-subtitle1">กรุณาเลือกการตั้งค่า</div>
         </div>
       </div>
-      <div v-if="infoSetting == true" class="col q-pa-md">
+      <div v-if="infoSetting == true" class="col q-pa-md desktop-only">
         <user-setting :infoData="type" :userInfo="userInfo" @backStep="val => getBackPage(val)"></user-setting>
       </div>
     </div>
@@ -83,7 +91,7 @@
 <script>
 import { db, auth } from "../router";
 import userSetting from "../components/userSetting";
-import flashcardMainVue from "./flashcardMain.vue";
+import userSettingMobileVue from "./userSettingMobile.vue";
 export default {
   components: {
     userSetting
@@ -111,28 +119,49 @@ export default {
       );
     },
     markName() {
-      this.mainPage = false;
-      this.infoSetting = true;
-      this.isNameClick = true;
-      this.isPasswordClick = false;
-      this.isLogOutClick = false;
-      this.type = "1";
+      if (this.$q.platform.is.desktop) {
+        this.mainPage = false;
+        this.infoSetting = true;
+        this.isNameClick = true;
+        this.isPasswordClick = false;
+        this.isLogOutClick = false;
+        this.type = "1";
+      } else {
+        this.$router.push({
+          name: "userSettingMobile",
+          params: { type: "1", userInfo: this.userInfo }
+        });
+      }
     },
     markPassword() {
-      this.mainPage = false;
-      this.infoSetting = true;
-      this.isPasswordClick = true;
-      this.isNameClick = false;
-      this.isLogOutClick = false;
-      this.type = "2";
+      if (this.$q.platform.is.desktop) {
+        this.mainPage = false;
+        this.infoSetting = true;
+        this.isNameClick = false;
+        this.isPasswordClick = true;
+        this.isLogOutClick = false;
+        this.type = "2";
+      } else {
+        this.$router.push({
+          name: "userSettingMobile",
+          params: { type: "2", userInfo: this.userInfo }
+        });
+      }
     },
     markLogOut() {
-      this.mainPage = false;
-      this.infoSetting = true;
-      this.isNameClick = false;
-      this.isPasswordClick = false;
-      this.isLogOutClick = true;
-      this.type = "3";
+      if (this.$q.platform.is.desktop) {
+        this.mainPage = false;
+        this.infoSetting = true;
+        this.isNameClick = false;
+        this.isPasswordClick = false;
+        this.isLogOutClick = true;
+        this.type = "3";
+      } else {
+        this.$router.push({
+          name: "userSettingMobile",
+          params: { type: "3", userInfo: this.userInfo }
+        });
+      }
     }
   },
   async mounted() {

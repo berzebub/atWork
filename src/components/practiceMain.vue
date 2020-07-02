@@ -306,6 +306,7 @@ export default {
     },
     loadData() {
       this.loadingShow();
+      console.log("UNIT CHANGED");
       this.isSnap = db
         .collection("practice_list")
         .where("levelId", "==", this.levelId)
@@ -373,7 +374,11 @@ export default {
   },
   watch: {
     unitId(newValue, oldValue) {
+      this.data.unitId = newValue;
       this.loadData();
+    },
+    levelId(newValue, oldValue) {
+      this.data.levelId = newValue;
     }
   },
   beforeDestroy() {
