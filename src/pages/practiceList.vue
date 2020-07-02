@@ -33,7 +33,7 @@
                     <span style="text-decoration:underline">{{itemUnit.label}}</span>
                   </div>
                   <div class="col-1" align="right">
-                    <q-icon name="fas fa-sync-alt"></q-icon>
+                    <q-icon name="fas fa-sync-alt" v-if="itemUnit.isShowSyncBtn"></q-icon>
                     <!-- เช็คว่ามีการซิงค์มั๊ย -->
                   </div>
                 </div>
@@ -51,6 +51,7 @@
           :unitName="unitName"
           :num="num"
           :levelName="levelName"
+          @finishSync="finishSync"
         ></practice-main>
       </div>
     </div>
@@ -80,6 +81,10 @@ export default {
     };
   },
   methods: {
+    finishSync(val) {
+      this.showUnit(val.levelId);
+    },
+
     gotoEdit(unitId, levelId, index, unitName, levelName) {
       this.isShowPracticeMain = false;
       this.activeKey = unitId;
@@ -115,29 +120,45 @@ export default {
         });
     },
     loadUnit() {
-      db.collection("unit")
-        .get()
-        .then(doc => {
-          // console.log("unit");
-          doc.forEach(element => {
-            let showData = {
-              unitId: element.id,
-              levelId: element.data().levelId,
-              label: element.data().name,
-              order: element.data().order
-            };
-            this.unitList.push(showData);
-            this.unitList.sort((a, b) => {
-              return a.order - b.order;
-            });
-          });
+      db.collection("unit").onSnapshot(doc => {
+        let temp = [];
+        doc.forEach(element => {
+          let showData = {
+            unitId: element.id,
+            levelId: element.data().levelId,
+            label: element.data().name,
+            order: element.data().order
+          };
+          temp.push(showData);
         });
+        temp.sort((a, b) => {
+          return a.order - b.order;
+        });
+        this.unitList = [];
+
+        for (const item of temp) {
+          db.collection("practice_draft")
+            .where("levelId", "==", item.levelId)
+            .where("unitId", "==", item.unitId)
+            .get()
+            .then(doc => {
+              let isShowSyncBtn = false;
+              for (const docElement of doc.docs) {
+                if (
+                  docElement.data().status == "notSync" ||
+                  docElement.data().status == "waitForDelete"
+                ) {
+                  isShowSyncBtn = true;
+                  break;
+                }
+              }
+              item.isShowSyncBtn = isShowSyncBtn;
+              this.unitList = temp;
+            });
+        }
+      });
     },
     showUnit(levelId) {
-      // console.log(levelId);
-      this.isShowPracticeMain = false;
-      this.levelId = levelId;
-      this.unitId = "";
       this.unitListShow = this.unitList.filter(x => x.levelId == levelId);
     }
   },

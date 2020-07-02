@@ -219,6 +219,9 @@ export default {
     };
   },
   methods: {
+    emitData(item) {
+      this.$emit("finishSync", item);
+    },
     addPractice() {
       // เพิ่มแบบฝึกหัด
       this.isShowPractice = false;
@@ -306,35 +309,34 @@ export default {
     },
     loadData() {
       this.loadingShow();
-      console.log("UNIT CHANGED");
       this.isSnap = db
         .collection("practice_list")
         .where("levelId", "==", this.levelId)
         .where("unitId", "==", this.unitId)
         .onSnapshot(doc => {
           let temp = [];
-          doc.forEach(element => {
-            db.collection("practice_draft")
+          doc.forEach(async element => {
+            let practice = await db
+              .collection("practice_draft")
               .where("practiceId", "==", element.id)
-              .get()
-              .then(practice => {
-                let syncCheck = false;
-                for (const practiceElement of practice.docs) {
-                  if (
-                    practiceElement.data().status == "notSync" ||
-                    practiceElement.data().status == "waitForDelete"
-                  ) {
-                    syncCheck = true;
-                    break;
-                  }
-                }
+              .get();
+            let syncCheck = false;
+            for (const practiceElement of practice.docs) {
+              console.log(practiceElement.data());
+              if (
+                practiceElement.data().status == "notSync" ||
+                practiceElement.data().status == "waitForDelete"
+              ) {
+                syncCheck = true;
+                break;
+              }
+            }
 
-                temp.push({
-                  ...element.data(),
-                  practiceId: element.id,
-                  showSync: syncCheck
-                });
-              });
+            temp.push({
+              ...element.data(),
+              practiceId: element.id,
+              showSync: syncCheck
+            });
           });
           temp.sort((a, b) => a.order - b.order);
           this.practiceListShow = temp;

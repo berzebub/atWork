@@ -40,54 +40,58 @@ Vue.mixin({
       auth
         .signOut()
         .then(() => this.$router.push("/"))
-        .catch(function(error) {});
+        .catch(function (error) {});
     },
     // ฟังชั่น ซิงโครไนค์
-    sync(practiceId) {
+    async sync(practiceId) {
       db.collection("practice_draft")
         .where("practiceId", "==", practiceId)
         .get()
-        .then(doc => {
-          doc.forEach(element => {
+        .then(async doc => {
+          // let unitId
+          doc.forEach(async element => {
+            console.log("LOOP");
+            // unitId = element.data().unitId
             if (element.data().status == "notSync") {
               let data = element.data();
               delete data.status;
-              db.collection("practice_server")
+              await db.collection("practice_server")
                 .doc(element.id)
                 .set(data)
-                .then(() => {
-                  db.collection("practice_draft")
-                    .doc(element.id)
-                    .update({
-                      status: "updated"
-                    })
-                    .then(() => {
-                      db.collection("practice_list")
-                        .doc(practiceId)
-                        .update({
-                          timestamp: new Date().getTime()
-                        });
-                    });
-                });
+
+              await db.collection("practice_draft")
+                .doc(element.id)
+                .update({
+                  status: "updated"
+                })
+
             } else if (element.data().status == "waitForDelete") {
-              db.collection("practice_server")
+              await db.collection("practice_server")
                 .doc(element.id)
                 .delete()
-                .then(() => {
-                  db.collection("practice_draft")
-                    .doc(element.id)
-                    .delete()
-                    .then(() => {
-                      db.collection("practice_list")
-                        .doc(practiceId)
-                        .update({
-                          timestamp: new Date().getTime()
-                        });
-                    });
-                });
+
+              await db.collection("practice_draft")
+                .doc(element.id)
+                .delete()
+
             }
           });
+
+          this.loadingShow()
+
+          setTimeout(() => {
+            db.collection("practice_list")
+              .doc(practiceId)
+              .update({
+                timestamp: new Date().getTime()
+              }).then(() => this.loadingHide())
+          }, 2000);
+
+
+
+
         });
+
     },
     async getUserInfo(uid) {
       return new Promise((a, b) => {
@@ -95,7 +99,10 @@ Vue.mixin({
           .where("uid", "==", uid)
           .get()
           .then(data => {
-            a({ ...data.docs[0].data(), userId: data.docs[0].id });
+            a({
+              ...data.docs[0].data(),
+              userId: data.docs[0].id
+            });
           });
       });
     },
@@ -110,7 +117,7 @@ Vue.mixin({
   }
 });
 
-export default function(/* { store, ssrContext } */) {
+export default function ( /* { store, ssrContext } */ ) {
   const Router = new VueRouter({
     scrollBehavior: () => ({
       x: 0,
