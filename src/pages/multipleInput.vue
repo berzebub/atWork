@@ -521,6 +521,7 @@
           </div>
         </div>
       </div>
+
       <!-- finish -->
       <q-dialog v-model="isSaveComplete">
         <q-card style="max-width:600px;width:100%;height:200px">
@@ -547,9 +548,9 @@ export default {
       data: {
         isImage: false,
         isSound: false,
-        practiceId: "m",
-        levelId: "aa",
-        unitId: "bb",
+        practiceId: this.$route.params.practiceId,
+        levelId: this.$route.params.levelId,
+        unitId: this.$route.params.unitId,
         order: "",
         question: "",
         description: "",
@@ -632,6 +633,7 @@ export default {
       let getOrder = await db
         .collection("practice_draft")
         .where("order", "==", val)
+        .where("practiceId", "==", this.data.practiceId)
         .get();
 
       if (this.oldOrder != val) {
@@ -724,7 +726,14 @@ export default {
 
             setTimeout(() => {
               this.loadingHide();
-              this.$router.push("/multipleMain");
+              this.$router.push(
+                "/multipleMain/" +
+                  this.data.levelId +
+                  "/" +
+                  this.data.unitId +
+                  "/" +
+                  this.data.practiceId
+              );
             }, 1000);
           });
       }

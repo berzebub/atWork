@@ -1,4 +1,5 @@
-const routes = [{
+const routes = [
+  {
     path: "/",
     component: () => import("pages/login.vue"),
     name: "login"
@@ -52,7 +53,7 @@ const routes = [{
         name: "multipleMain"
       },
       {
-        path: "multipleInputAdd",
+        path: "multipleInputAdd/:levelId/:unitId/:practiceId",
         component: () => import("pages/multipleInput.vue"),
         name: "multipleInputAdd"
       },

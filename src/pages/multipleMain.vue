@@ -8,7 +8,7 @@
             <!-- แบบร่าง -->
             <div class="col">
               <q-radio
-                @input="loadDataAll()"
+                @input="loadPracticeData()"
                 color="blue-grey-10"
                 v-model="mode"
                 val="draft"
@@ -18,7 +18,7 @@
             <!-- เซิร์ฟเวอร์ -->
             <div class="col">
               <q-radio
-                @input="loadDataAll()"
+                @input="loadPracticeData()"
                 color="blue-grey-10"
                 v-model="mode"
                 val="server"
@@ -34,21 +34,25 @@
         </div>
       </div>
       <div class="text-h6">
-        <div class="q-pt-md">อาหารและเครื่องดื่ม</div>
-        <div>1. จองโต๊ะ</div>
+        <div class="q-pt-md">{{practiceData.levelName}}</div>
+        <div>{{ practiceData.unitOrder + ". " + practiceData.unitName}}</div>
       </div>
       <!-- box คำสั่ง -->
       <div class="box text-left q-my-md">
-        <div class="bg-blue-grey-10 text-white q-py-sm q-px-md boxQuestion row justify-between">
-          <div class="row text-subtitle1 items-center">คำสั่ง</div>
-          <div>
-            <q-btn @click="editQuestion()" size="sm" round icon="far fa-edit" />
+        <div class="bg-blue-grey-10 text-white boxQuestion row q-px-sm">
+          <div class="col self-center">คำสั่ง</div>
+          <div class="col self-center" align="right">
+            <q-btn @click="editQuestion()" size="sm" round flat icon="far fa-edit" />
           </div>
         </div>
-        <div class="q-pa-md">
-          <span>{{ instrunctionEng }}</span>
-          <q-separator class="q-my-md" />
-          <span>{{ instrunctionTh }}</span>
+        <div class="row q-px-md q-py-sm" style="height:120px;">
+          <div class="col-12 self-center q-py-sm">
+            <span class="text-subtitle1">{{ instrunctionEng }}</span>
+          </div>
+          <q-separator class="q-my-xs" />
+          <div class="col-12 self-center q-py-sm">
+            <span class="text-subtitle1">{{ instrunctionTh }}</span>
+          </div>
         </div>
       </div>
       <q-separator class="q-my-md" />
@@ -150,7 +154,7 @@
       </div>
 
       <!-- dialog แก่ไข คำสั่ง -->
-      <q-dialog v-model="questionDialog" persistent>
+      <q-dialog v-model="isQuestionDialog" persistent>
         <q-card style="max-width:600px;width:100%">
           <div class="text-h6 text-center q-pt-md q-pb-sm">แก้ไขคำสั่ง</div>
           <div class="q-px-md">
@@ -197,8 +201,9 @@
           </div>
         </q-card>
       </q-dialog>
+
       <!-- delete -->
-      <q-dialog v-model="deleteDialog" persistent>
+      <q-dialog v-model="isDeleteDialog" persistent>
         <q-card style="max-width:600px;width:100%">
           <div class="text-h6 text-center q-pt-md q-pb-sm">
             <div>ต้องการลบข้อมูล</div>
@@ -219,7 +224,7 @@
               </div>
               <div class="q-px-md q-pb-md">
                 <q-btn
-                  @click="deleteBtn(),deleteDialog = false"
+                  @click="deleteBtn(),isDeleteDialog = false"
                   dense
                   style="width:150px"
                   color="black"
@@ -231,13 +236,14 @@
         </q-card>
       </q-dialog>
       <!-- finish -->
-      <q-dialog v-model="finishDialog">
+
+      <q-dialog v-model="isSaveComplete">
         <q-card style="max-width:600px;width:100%;height:200px">
           <div class="text-h6 text-center q-pt-md q-pb-sm">
             <div class="q-py-md q-mt-md">
               <q-icon color="secondary" size="46px" name="far fa-check-circle" />
             </div>
-            <div>{{ text }}</div>
+            <div>บันทึกข้อมูลเรียบร้อย</div>
           </div>
         </q-card>
       </q-dialog>
@@ -251,16 +257,17 @@ export default {
   data() {
     return {
       mode: "draft",
+
+      practiceData: {
+        levelName: "",
+        unitName: "",
+        unitOrder: ""
+      },
+
       practiceDataList: [],
       orderId: "",
       instrunctionTh: "",
       instrunctionEng: "",
-      questionDialog: false,
-      deleteDialog: false,
-      finishDialog: false,
-      text: "",
-      imageURL: "",
-      audioURL: "",
 
       indexKey: "",
       deleteKey: "",
@@ -270,43 +277,72 @@ export default {
         "https://storage.cloud.google.com/atwork-dee11.appspot.com/practice/",
       playSoundURL: "",
 
+      isSaveComplete: false,
+      isQuestionDialog: false,
+      isDeleteDialog: false,
+
       syncData: ""
     };
   },
   methods: {
-    loadInstrunction() {
-      db.collection("practice_list")
-        .where("practiceType", "==", "multiplechoice")
-        .get()
-        .then(doc => {
-          if (doc.size) {
-            doc.forEach(element => {
-              this.questionKey = element.id;
-              this.instrunctionEng = element.data().eng;
-              this.instrunctionTh = element.data().th;
-            });
-            this.loadDataAll();
-          } else {
-            this.instrunctionEng = "ยังไม่ระบุ";
-            this.instrunctionTh = "ยังไม่ระบุ";
+    loadLevel() {
+      this.loadingShow();
 
-            // if (
-            //   this.instrunction.eng == "ยังไม่ระบุ" &&
-            //   this.instrunction.th == "ยังไม่ระบุ"
-            // ) {
-            //   this.questionAdd = true;
-            //   this.questionDialog = true;
-            //   return;
-            // }
+      let levelKey = this.$route.params.levelId;
+
+      db.collection("level")
+        .doc(levelKey)
+        .get()
+        .then(result => {
+          if (result.exists) {
+            this.practiceData.levelName = result.data().name;
+
+            // โหลดข้อมูล Unit
+            this.loadUnit();
           }
         });
     },
+    loadUnit() {
+      let unitKey = this.$route.params.unitId;
+
+      db.collection("unit")
+        .doc(unitKey)
+        .get()
+        .then(result => {
+          if (result.exists) {
+            this.practiceData.unitName = result.data().name;
+            this.practiceData.unitOrder = result.data().order;
+
+            // โหลดข้อมูล คำสั่ง
+            this.loadInstrunction();
+          }
+        });
+    },
+    loadInstrunction() {
+      let practiceId = this.$route.params.practiceId;
+
+      db.collection("practice_list")
+        .doc(practiceId)
+        .get()
+        .then(result => {
+          if (result.exists) {
+            this.instrunctionEng = result.data().instrunctionEng;
+            this.instrunctionTh = result.data().instrunctionTh;
+          } else {
+            this.instrunctionEng = "ยังไม่ระบุ";
+            this.instrunctionTh = "ยังไม่ระบุ";
+          }
+
+          this.loadPracticeData();
+        });
+    },
     // โหลดข้อมูลเข้ามาเก็บไว้ทั้งหมด
-    loadDataAll() {
+    loadPracticeData() {
       this.loadingShow();
 
-      let dbData;
+      let practiceId = this.$route.params.practiceId;
 
+      let dbData;
       if (typeof this.syncData == "function") {
         this.syncData();
       }
@@ -317,93 +353,100 @@ export default {
         dbData = db.collection("practice_server");
       }
 
-      this.syncData = dbData.where("practiceId", "==", "m").onSnapshot(doc => {
-        let temp = [];
+      this.syncData = dbData
+        .where("practiceId", "==", practiceId)
+        .onSnapshot(doc => {
+          let temp = [];
 
-        doc.forEach(element => {
-          let getSound = "";
-          let getImage = "";
-          let getChoiceSound = element.data().choices;
+          doc.forEach(element => {
+            let getSound = "";
+            let getImage = "";
+            let getChoiceSound = element.data().choices;
 
-          if (element.data().isImage) {
-            getImage = this.pathFile + "image/" + element.id + ".jpg";
-          }
-          if (element.data().isSound) {
-            getSound = this.pathFile + "audio/" + element.id + ".mp3";
-          }
-          if (element.data().isAnswerSound) {
-            getChoiceSound.map(async (x, index) => {
-              if (x.isSound) {
-                getChoiceSound[index].soundURL =
-                  this.pathFile +
-                  "audio/" +
-                  element.id +
-                  "-" +
-                  (index + 1) +
-                  ".mp3";
-              }
-            });
-          }
+            if (element.data().isImage) {
+              getImage = this.pathFile + "image/" + element.id + ".jpg";
+            }
+            if (element.data().isSound) {
+              getSound = this.pathFile + "audio/" + element.id + ".mp3";
+            }
+            if (element.data().isAnswerSound) {
+              getChoiceSound.map(async (x, index) => {
+                if (x.isSound) {
+                  getChoiceSound[index].soundURL =
+                    this.pathFile +
+                    "audio/" +
+                    element.id +
+                    "-" +
+                    (index + 1) +
+                    ".mp3";
+                }
+              });
+            }
 
-          let dataKey = {
-            key: element.id,
-            imageURL: getImage,
-            audioURL: getSound,
-            choices: getChoiceSound
-          };
+            let dataKey = {
+              key: element.id,
+              imageURL: getImage,
+              audioURL: getSound,
+              choices: getChoiceSound
+            };
 
-          let final = {
-            ...element.data(),
-            ...dataKey
-          };
+            let final = {
+              ...element.data(),
+              ...dataKey
+            };
 
-          temp.push(final);
+            temp.push(final);
+          });
+
+          temp.sort((a, b) => a.order - b.order);
+
+          this.practiceDataList = temp;
+
+          this.loadingHide();
         });
-
-        temp.sort((a, b) => a.order - b.order);
-
-        this.practiceDataList = temp;
-
-        this.loadingHide();
-      });
     },
     // กดไปหน้าเพิ่มข้อมูล
     addQuestion() {
-      this.$router.push("/multipleInputAdd");
+      this.$router.push(
+        "/multipleInputAdd/" +
+          this.$route.params.levelId +
+          "/" +
+          this.$route.params.unitId +
+          "/" +
+          this.$route.params.practiceId
+      );
     },
     // กดไปหน้าแก้ไขข้อมูล
     editQuestion() {
-      this.questionDialog = true;
+      this.isQuestionDialog = true;
     },
     // บันทึกข้อมูลคำสั่ง
     saveBtn() {
       this.$refs.instrunctionTh.validate();
       this.$refs.instrunctionEng.validate();
+
       if (
         this.$refs.instrunctionTh.hasError ||
         this.$refs.instrunctionEng.hasError
       ) {
         return;
       }
-      let practiceType = "";
-      this.instrunction.eng = this.instrunctionEng;
-      this.instrunction.th = this.instrunctionTh;
-      this.instrunction.practiceType = practiceType = "multiplechoice";
-      if (this.questionAdd) {
-        db.collection("practice_list").add(this.instrunction);
-      } else {
-        db.collection("practice_list")
-          .doc(this.questionKey)
-          .set(this.instrunction);
-      }
-      this.instrunctionEng = "";
-      this.instrunctionTh = "";
-      this.text = "บันทึกข้อมูลเรียบร้อย";
-      this.questionDialog = false;
-      this.finishDialog = true;
+
+      this.isQuestionDialog = false;
+
+      let practiceId = this.$route.params.practiceId;
+
+      db.collection("practice_list")
+        .doc(practiceId)
+        .update({
+          instrunctionTh: this.instrunctionTh,
+          instrunctionEng: this.instrunctionEng
+        });
+
+      this.isSaveComplete = true;
+
       setTimeout(() => {
-        this.loadInstrunction();
-        this.finishDialog = false;
+        this.isSaveComplete = false;
       }, 1000);
     },
     // ลบข้อมูล
@@ -416,7 +459,7 @@ export default {
     },
     // กดปุ่ม ICON ลบ เพื่องเก็บ KEY
     deleteData(key, id, index) {
-      this.deleteDialog = true;
+      this.isDeleteDialog = true;
       this.orderId = id;
       this.deleteKey = key;
       this.indexKey = index;
@@ -452,7 +495,7 @@ export default {
     }
   },
   mounted() {
-    this.loadInstrunction();
+    this.loadLevel();
   },
   beforeDestroy() {
     if (typeof this.syncData == "function") {
