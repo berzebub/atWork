@@ -135,6 +135,8 @@ export default {
     },
     showUnit(levelId) {
       // console.log(levelId);
+      this.levelId = levelId;
+      this.unitId = "";
       this.unitListShow = this.unitList.filter(x => x.levelId == levelId);
     }
   },
