@@ -241,7 +241,8 @@ export default {
       userInfo: "",
       isLoadUserInfo: false,
       isKey: false,
-      loginKey: ""
+      loginKey: "",
+      snapUser: ""
     };
   },
   methods: {
@@ -250,11 +251,16 @@ export default {
       let uid = this.$q.localStorage.getItem("uid");
       this.userInfo = await this.getUserInfo(uid);
       this.isLoadUserInfo = true;
-      db.collection("user_admin")
+      this.snapUser = db
+        .collection("user_admin")
         .where("uid", "==", uid)
         .onSnapshot(getUserId => {
           if (getLoginKey != getUserId.docs[0].data().loginKey) {
-            this.logOut();
+            this.snapUser();
+            setTimeout(() => {
+              this.loadingHide();
+              this.logOut();
+            }, 2000);
           }
         });
     }
