@@ -58,7 +58,7 @@
                 round
                 color="blue-grey-10"
                 icon="fas fa-sync-alt"
-                @click="sync(itemPrac.practiceId)"
+                @click="sync(itemPrac.practiceId).then(() => emitData(itemPrac) )"
               />
             </div>
             <div class="col">

@@ -44,53 +44,66 @@ Vue.mixin({
     },
     // ฟังชั่น ซิงโครไนค์
     async sync(practiceId) {
-      db.collection("practice_draft")
-        .where("practiceId", "==", practiceId)
-        .get()
-        .then(async doc => {
-          // let unitId
-          doc.forEach(async element => {
-            console.log("LOOP");
-            // unitId = element.data().unitId
-            if (element.data().status == "notSync") {
-              let data = element.data();
-              delete data.status;
-              await db.collection("practice_server")
-                .doc(element.id)
-                .set(data)
 
-              await db.collection("practice_draft")
-                .doc(element.id)
-                .update({
-                  status: "updated"
-                })
+      return new Promise((a, b) => {
+        db.collection("practice_draft")
+          .where("practiceId", "==", practiceId)
+          .get()
+          .then(doc => {
+            // let unitId
+            this.loadingShow()
+            let unitId
+            for (const element of doc.docs) {
+              unitId = element.data().unitId
+              if (element.data().status == "notSync") {
+                let data = element.data();
+                delete data.status;
+                db.collection("practice_server")
+                  .doc(element.id)
+                  .set(data)
 
-            } else if (element.data().status == "waitForDelete") {
-              await db.collection("practice_server")
-                .doc(element.id)
-                .delete()
+                db.collection("practice_draft")
+                  .doc(element.id)
+                  .update({
+                    status: "updated"
+                  })
 
-              await db.collection("practice_draft")
-                .doc(element.id)
-                .delete()
+              } else if (element.data().status == "waitForDelete") {
+                db.collection("practice_server")
+                  .doc(element.id)
+                  .delete()
+
+                db.collection("practice_draft")
+                  .doc(element.id)
+                  .delete()
+
+              }
 
             }
-          });
 
-          this.loadingShow()
 
-          setTimeout(() => {
-            db.collection("practice_list")
-              .doc(practiceId)
+            db.collection("unit")
+              .doc(unitId)
               .update({
                 timestamp: new Date().getTime()
-              }).then(() => this.loadingHide())
-          }, 2000);
+              }).then(() => {
+                db.collection("practice_list")
+                  .doc(practiceId)
+                  .update({
+                    timestamp: new Date().getTime()
+                  }).then(() => {
+                    this.loadingHide()
+                    console.log("FINISH");
+                    a("finish")
+                  })
+              })
 
 
 
 
-        });
+          });
+      })
+
 
     },
     async getUserInfo(uid) {
