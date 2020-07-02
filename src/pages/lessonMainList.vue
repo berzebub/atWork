@@ -28,8 +28,8 @@
           >
             <q-card style="border-bottom-left-radius: 10px ; border-bottom-right-radius:10px">
               <div class="relative-position cursor-pointer" v-ripple>
-                <div class="row q-px-md">
-                  <div class="col-10">
+                <div class="row items-center q-px-md">
+                  <div class="col-lg-8 col-xs-10">
                     <span class="text-black text-subtitle1">การใช้งาน</span>
 
                     <q-toggle
@@ -39,7 +39,8 @@
                       color="secondary"
                     />
                   </div>
-                  <div class="col self-center" align="right">
+                  <!-- เมนู mobile -->
+                  <div class="col self-center mobile-only" align="right">
                     <q-btn
                       size="13px"
                       icon="fas fa-ellipsis-v"
@@ -63,24 +64,75 @@
                       </q-menu>
                     </q-btn>
                   </div>
+                  <!-- menu desktop -->
+                  <div class="col desktop-only">
+                    <div class="row justify-between text-blue-grey-10">
+                      <div @click="deletePositionBtn(item)">
+                        <u>ลบตำแหน่ง</u>
+                      </div>
+                      <div @click="editPositionBtn(item)">
+                        <u>แก้ไขตำแหน่ง</u>
+                      </div>
+                      <div @click="editLessonBtn(item)">
+                        <u>เพิ่มบทเรียน</u>
+                      </div>
+                    </div>
+                  </div>
                 </div>
                 <q-separator class="bg-blue-grey-10" />
-                <!-- ปุ่มเพิ่มบทเรียน -->
+                <!-- ปุ่มเพิ่มบทเรียน mobile-->
 
-                <div v-show="showLessonList == 0 " align="center" class="q-py-lg">
+                <div v-show="showLessonList == 0 " align="center" class="q-py-lg mobile-only">
                   <div @click="addLesson(item) " class="text-blue-grey-10">
                     <u>เพิ่มบทเรียน</u>
                   </div>
                 </div>
+                <!-- ปุ่มเพิ่มบทเรียน desktop -->
+
+                <div v-show="showLessonList == 0 " align="center" class="q-py-lg desktop-only">
+                  <div class="text-blue-grey-10">กรุณาเพิ่มบทเรียน</div>
+                </div>
+
                 <!-- เนื้อหาบทเรียน  -->
-                <div class="row" v-for="(item2,index2) in showLessonList " :key="index2">
+                <div
+                  class="row items-center"
+                  v-for="(item2,index2) in showLessonList "
+                  :key="index2"
+                >
                   <q-separator />
                   <div
-                    class="text-blue-grey-10 q-pa-md text-subtitle1 col-9"
+                    class="text-blue-grey-10 q-pl-md text-subtitle1 col-9"
                   >{{item2.order}} - {{item2.name}}</div>
-
-                  <div v-show="item2.status != true" class="col q-py-md" align="right">
+                  <!-- mobile -->
+                  <div
+                    v-show="item2.status != true"
+                    class="col mobile-only q-py-md q-pr-lg brx"
+                    align="right"
+                  >
                     <q-icon size="16px" name="fas fa-power-off" dense color="negative" flat></q-icon>
+                  </div>
+                  <!-- desktop -->
+                  <div
+                    v-show="item2.status != true"
+                    class="col desktop-only q-py-md q-pr-lg brx"
+                    align="right"
+                  >
+                    <div>
+                      <q-btn
+                        class="q-px-sm"
+                        dense
+                        outline
+                        color="blue-grey-6"
+                        disable
+                        label="ปิดการใช้การ"
+                      />
+                    </div>
+                    <div>
+                      <q-btn flat round color="blue-grey-10" icon="far fa-trash-alt" />
+                    </div>
+                    <div>
+                      <q-btn flat round color="blue-grey-10" icon="far fa-edit" />
+                    </div>
                   </div>
 
                   <q-separator />
