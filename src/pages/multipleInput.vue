@@ -3,10 +3,10 @@
     <div class="container">
       <div class="text-center text-h6 q-pb-sm">Multiple Choice | U7</div>
       <div class="q-pt-sm">
-        <span
-          >รหัสลำดับ
-          <span class="q-mx-md text-grey-5 ">ตัวเลข 3 หลัก</span></span
-        >
+        <span>
+          รหัสลำดับ
+          <span class="q-mx-md text-grey-5">ตัวเลข 3 หลัก</span>
+        </span>
         <div>
           <q-input
             bg-color="white"
@@ -37,37 +37,34 @@
         <div class="q-py-md col-12">
           <div>
             ไฟล์รูปภาพ
-            <span class="q-mx-md text-grey-5"
-              >ไฟล์ jpg ขนาด 400x300 px เท่านั้น</span
-            >
+            <span class="q-mx-md text-grey-5">ไฟล์ jpg ขนาด 400x300 px เท่านั้น</span>
           </div>
           <q-file
             accept=".jpg"
             bg-color="white"
             class="q-py-sm cursor-pointer"
             outlined
-            square=""
+            square
             v-model="uploadImg"
             style="max-width:360px;width:100%;"
           >
             <template v-slot:append>
-              <div
-                class="text-subtitle1 rounded-borders text-center bg-blue-grey-10 text-white q-px-sm cursor-pointer q-py-xs"
-                @click.stop="uploadImg = null"
-                v-if="!uploadImg"
-              >
-                เลือกไฟล์
+              <div>
+                <div
+                  class="text-subtitle1 rounded-borders text-center bg-blue-grey-10 text-white q-px-sm cursor-pointer q-py-xs"
+                  @click.stop="uploadImg = null"
+                  v-if="!uploadImg"
+                >เลือกไฟล์</div>
+                <q-btn
+                  dense
+                  class="cursor-pointer text-white bg-blue-grey-10"
+                  v-if="uploadImg"
+                  @click="uploadImg = null"
+                  icon="far fa-trash-alt"
+                  size="10px"
+                  style="padding:1.5px"
+                ></q-btn>
               </div>
-              <q-btn
-                dense=""
-                class="cursor-pointer text-white bg-blue-grey-10 "
-                v-if="uploadImg"
-                @click="uploadImg = null"
-                icon="far fa-trash-alt"
-                size="10px"
-                style="padding:1.5px"
-              >
-              </q-btn>
             </template>
 
             <template v-slot:prepend v-if="!uploadImg">
@@ -77,7 +74,11 @@
                   v-if="!uploadImg"
                   @click.stop="uploadImg = null"
                 >
-                  ลากแล้ววาง หรือ
+                  <span v-if="isAddMode">ลากแล้ววาง หรือ</span>
+                  <span v-else class>
+                    <span v-if="data.isImage">{{$route.params.key + ".jpg"}}</span>
+                    <span v-else>ลากแล้ววาง หรือ</span>
+                  </span>
                 </div>
               </div>
             </template>
@@ -94,13 +95,14 @@
         </div>
         <div class="q-py-md col-md-12 col-sm-12 col-xs-12" v-if="data.isSound">
           <div>
-            ไฟล์เสียง <span class="q-mx-md text-grey-5">ไฟล์ mp3 เท่านั้น</span>
+            ไฟล์เสียง
+            <span class="q-mx-md text-grey-5">ไฟล์ mp3 เท่านั้น</span>
           </div>
           <q-file
             accept=".mp3"
             bg-color="white"
             class="q-py-sm cursor-pointer"
-            square=""
+            square
             outlined
             v-model="uploadAudio"
             style="max-width:360px;width:100%;"
@@ -110,19 +112,16 @@
                 class="text-subtitle1 rounded-borders text-center bg-blue-grey-10 text-white q-px-sm cursor-pointer q-py-xs"
                 @click.stop="uploadAudio = null"
                 v-if="!uploadAudio"
-              >
-                เลือกไฟล์
-              </div>
+              >เลือกไฟล์</div>
               <q-btn
-                dense=""
-                class="cursor-pointer text-white bg-blue-grey-10 "
+                dense
+                class="cursor-pointer text-white bg-blue-grey-10"
                 v-if="uploadAudio"
                 @click="uploadAudio = null"
                 icon="far fa-trash-alt"
                 size="10px"
                 style="padding:1.5px"
-              >
-              </q-btn>
+              ></q-btn>
             </template>
 
             <template v-slot:prepend v-if="!uploadAudio">
@@ -132,7 +131,11 @@
                   v-if="!uploadAudio"
                   @click.stop="uploadAudio = null"
                 >
-                  ลากแล้ววาง หรือ
+                  <span v-if="isAddMode">ลากแล้ววาง หรือ</span>
+                  <span v-else class>
+                    <span v-if="data.isSound">{{$route.params.key + ".mp3"}}</span>
+                    <span v-else>ลากแล้ววาง หรือ</span>
+                  </span>
                 </div>
               </div>
             </template>
@@ -140,7 +143,7 @@
         </div>
 
         <div>
-          <div class="row " style="width:360px">
+          <div class="row" style="width:360px">
             <div class="col-6">
               <q-checkbox
                 style="margin-left:-10px;"
@@ -181,42 +184,27 @@
               v-model.trim="data.choices[0].choice"
               min-height="7rem"
             />
-            <div
-              v-if="data.isAnswerSound"
-              class="box-choice-sound bg-white row"
-            >
+            <div v-if="data.isAnswerSound" class="box-choice-sound bg-white row">
               <div
                 :class="dataFiles[0].status ? 'offset-1' : ''"
-                class="col  self-center q-pa-md"
+                class="col self-center q-pa-md"
                 align="center"
               >
                 <span v-if="isAddMode">
-                  <span v-if="!dataFiles[0].status" class="text-grey-6"
-                    >ยังไม่ใส่ไฟล์เสียง</span
-                  >
-                  <span v-if="dataFiles[0].status">
-                    {{ dataFiles[0].file.name }}
-                  </span>
+                  <span v-if="!dataFiles[0].status" class="text-grey-6">ยังไม่ใส่ไฟล์เสียง</span>
+                  <span v-if="dataFiles[0].status">{{ dataFiles[0].file.name }}</span>
                 </span>
 
                 <span v-else>
-                  <span v-if="!dataFiles[0].status" class="text-grey-6"
-                    >ยังไม่ใส่ไฟล์เสียง</span
-                  >
-                  <span v-if="dataFiles[0].status && !dataFiles[0].file">
-                    {{ $route.params.key + "-1.mp3" }}
-                  </span>
-                  <span v-if="dataFiles[0].status && dataFiles[0].file">
-                    {{ dataFiles[0].file.name }}
-                  </span>
+                  <span v-if="!dataFiles[0].status" class="text-grey-6">ยังไม่ใส่ไฟล์เสียง</span>
+                  <span
+                    v-if="dataFiles[0].status && !dataFiles[0].file"
+                  >{{ $route.params.key + "-1.mp3" }}</span>
+                  <span v-if="dataFiles[0].status && dataFiles[0].file">{{ dataFiles[0].file.name }}</span>
                 </span>
               </div>
 
-              <div
-                class="col-1 self-center"
-                align="center"
-                v-if="dataFiles[0].status"
-              >
+              <div class="col-1 self-center" align="center" v-if="dataFiles[0].status">
                 <q-btn
                   @click="
                     (dataFiles[0].status = false), (dataFiles[0].file = null)
@@ -264,37 +252,36 @@
               v-model.trim="data.choices[1].choice"
               min-height="7rem"
             />
-            <div
-              v-if="data.isAnswerSound"
-              class="box-choice-sound bg-white row"
-            >
+            <div v-if="data.isAnswerSound" class="box-choice-sound bg-white row">
               <div
                 :class="dataFiles[1].status ? 'offset-1' : ''"
-                class="col  self-center q-pa-md"
+                class="col self-center q-pa-md"
                 align="center"
               >
-                <span v-if="!dataFiles[1].status" class="text-grey-6"
-                  >ยังไม่ใส่ไฟล์เสียง</span
-                >
-                <span v-if="dataFiles[1].status && isAddMode">
-                  {{ dataFiles[1].file.name }}
+                <span v-if="isAddMode">
+                  <span v-if="!dataFiles[1].status" class="text-grey-6">ยังไม่ใส่ไฟล์เสียง</span>
+                  <span v-if="dataFiles[1].status">{{ dataFiles[1].file.name }}</span>
                 </span>
-                <span v-if="dataFiles[1].status && !isAddMode">
-                  {{ $route.params.key + "-1" }}
+
+                <span v-else>
+                  <span v-if="!dataFiles[1].status" class="text-grey-6">ยังไม่ใส่ไฟล์เสียง</span>
+                  <span
+                    v-if="dataFiles[1].status && !dataFiles[1].file"
+                  >{{ $route.params.key + "-2.mp3" }}</span>
+                  <span v-if="dataFiles[1].status && dataFiles[1].file">{{ dataFiles[1].file.name }}</span>
                 </span>
               </div>
 
-              <div
-                class="col-1 self-center q-px-sm"
-                align="center"
-                v-if="dataFiles[1].status"
-              >
+              <div class="col-1 self-center" align="center" v-if="dataFiles[1].status">
                 <q-btn
-                  @click="dataFiles[1].status = false"
+                  @click="
+                    (dataFiles[1].status = false), (dataFiles[1].file = null)
+                  "
                   dense
                   icon="far fa-trash-alt"
                   color="blue-grey-10"
                   size="13px"
+                  style="padding:1px"
                 />
               </div>
             </div>
@@ -332,37 +319,36 @@
               v-model.trim="data.choices[2].choice"
               min-height="7rem"
             />
-            <div
-              v-if="data.isAnswerSound"
-              class="box-choice-sound bg-white row"
-            >
+            <div v-if="data.isAnswerSound" class="box-choice-sound bg-white row">
               <div
                 :class="dataFiles[2].status ? 'offset-1' : ''"
-                class="col  self-center q-pa-md"
+                class="col self-center q-pa-md"
                 align="center"
               >
-                <span v-if="!dataFiles[2].status" class="text-grey-6"
-                  >ยังไม่ใส่ไฟล์เสียง</span
-                >
-                <span v-if="dataFiles[2].status && isAddMode">
-                  {{ dataFiles[2].file.name }}
+                <span v-if="isAddMode">
+                  <span v-if="!dataFiles[2].status" class="text-grey-6">ยังไม่ใส่ไฟล์เสียง</span>
+                  <span v-if="dataFiles[2].status">{{ dataFiles[2].file.name }}</span>
                 </span>
-                <span v-if="dataFiles[2].status && !isAddMode">
-                  {{ $route.params.key + "-1" }}
+
+                <span v-else>
+                  <span v-if="!dataFiles[2].status" class="text-grey-6">ยังไม่ใส่ไฟล์เสียง</span>
+                  <span
+                    v-if="dataFiles[2].status && !dataFiles[2].file"
+                  >{{ $route.params.key + "-3.mp3" }}</span>
+                  <span v-if="dataFiles[2].status && dataFiles[2].file">{{ dataFiles[2].file.name }}</span>
                 </span>
               </div>
 
-              <div
-                class="col-1 self-center q-px-sm"
-                align="center"
-                v-if="dataFiles[2].status"
-              >
+              <div class="col-1 self-center" align="center" v-if="dataFiles[2].status">
                 <q-btn
-                  @click="dataFiles[2].status = false"
+                  @click="
+                    (dataFiles[2].status = false), (dataFiles[2].file = null)
+                  "
                   dense
                   icon="far fa-trash-alt"
                   color="blue-grey-10"
                   size="13px"
+                  style="padding:1px"
                 />
               </div>
             </div>
@@ -400,37 +386,36 @@
               v-model.trim="data.choices[3].choice"
               min-height="7rem"
             />
-            <div
-              v-if="data.isAnswerSound"
-              class="box-choice-sound bg-white row"
-            >
+            <div v-if="data.isAnswerSound" class="box-choice-sound bg-white row">
               <div
                 :class="dataFiles[3].status ? 'offset-1' : ''"
-                class="col  self-center q-pa-md"
+                class="col self-center q-pa-md"
                 align="center"
               >
-                <span v-if="!dataFiles[3].status" class="text-grey-6"
-                  >ยังไม่ใส่ไฟล์เสียง</span
-                >
-                <span v-if="dataFiles[3].status && isAddMode">
-                  {{ dataFiles[3].file.name }}
+                <span v-if="isAddMode">
+                  <span v-if="!dataFiles[3].status" class="text-grey-6">ยังไม่ใส่ไฟล์เสียง</span>
+                  <span v-if="dataFiles[3].status">{{ dataFiles[3].file.name }}</span>
                 </span>
-                <span v-if="dataFiles[3].status && !isAddMode">
-                  {{ $route.params.key + "-1" }}
+
+                <span v-else>
+                  <span v-if="!dataFiles[3].status" class="text-grey-6">ยังไม่ใส่ไฟล์เสียง</span>
+                  <span
+                    v-if="dataFiles[3].status && !dataFiles[3].file"
+                  >{{ $route.params.key + "-4.mp3" }}</span>
+                  <span v-if="dataFiles[3].status && dataFiles[3].file">{{ dataFiles[3].file.name }}</span>
                 </span>
               </div>
 
-              <div
-                class="col-1 self-center q-px-sm"
-                align="center"
-                v-if="dataFiles[3].status"
-              >
+              <div class="col-1 self-center" align="center" v-if="dataFiles[3].status">
                 <q-btn
-                  @click="dataFiles[3].status = false"
+                  @click="
+                    (dataFiles[3].status = false), (dataFiles[3].file = null)
+                  "
                   dense
                   icon="far fa-trash-alt"
                   color="blue-grey-10"
                   size="13px"
+                  style="padding:1px"
                 />
               </div>
             </div>
@@ -447,7 +432,7 @@
       <div class="q-py-sm">
         <span>ตัวเลือกที่ถูกต้อง</span>
         <div class="row q-pb-sm">
-          <div class="col-xs-6 col-md-3 col-sm-3 ">
+          <div class="col-xs-6 col-md-3 col-sm-3">
             <q-radio
               style="margin-left:-10px"
               color="blue-grey-10"
@@ -457,7 +442,7 @@
               :disable="!data.choices[0].choice"
             />
           </div>
-          <div class="col-xs-6 col-md-3 col-sm-3 ">
+          <div class="col-xs-6 col-md-3 col-sm-3">
             <q-radio
               style="margin-left:-10px"
               color="blue-grey-10"
@@ -467,7 +452,7 @@
               :disable="!data.choices[1].choice"
             />
           </div>
-          <div class="col-xs-6 col-md-3 col-sm-3 ">
+          <div class="col-xs-6 col-md-3 col-sm-3">
             <q-radio
               style="margin-left:-10px"
               color="blue-grey-10"
@@ -481,7 +466,7 @@
               label="3"
             />
           </div>
-          <div class="col-xs-6 col-md-3 col-sm-3 ">
+          <div class="col-xs-6 col-md-3 col-sm-3">
             <q-radio
               style="margin-left:-10px"
               color="blue-grey-10 "
@@ -511,10 +496,7 @@
         </div>
       </div>
       <div align="center">
-        <div
-          class="row reverse-wrap justify-center"
-          style="max-width:340px;width:100%"
-        >
+        <div class="row reverse-wrap justify-center" style="max-width:340px;width:100%">
           <div class="col-6 q-py-sm text-left">
             <q-btn
               to="/multipleMain"
@@ -544,11 +526,7 @@
         <q-card style="max-width:600px;width:100%;height:200px">
           <div class="text-h6 text-center q-pt-md q-pb-sm">
             <div class="q-py-md q-mt-md">
-              <q-icon
-                color="secondary"
-                size="46px"
-                name="far fa-check-circle"
-              />
+              <q-icon color="secondary" size="46px" name="far fa-check-circle" />
             </div>
             <div>บันทึกข้อมูลเรียบร้อย</div>
           </div>
@@ -577,10 +555,10 @@ export default {
         description: "",
         correctAnswer: 0,
         choices: [
-          { choice: "", isImage: false },
-          { choice: "", isImage: false },
-          { choice: "", isImage: false },
-          { choice: "", isImage: false }
+          { choice: "", isSound: false },
+          { choice: "", isSound: false },
+          { choice: "", isSound: false },
+          { choice: "", isSound: false }
         ],
         isAnswerSound: false,
         status: "notSync"
@@ -604,6 +582,7 @@ export default {
           status: false
         }
       ],
+      oldOrder: "",
       //   เช็คช่องคำถามข้อมูล & ตัวเลือก
       isQuestion: true,
       isErrorChoice1: false,
@@ -627,8 +606,10 @@ export default {
         .then(doc => {
           this.data = doc.data();
 
+          this.oldOrder = doc.data().order;
+
           doc.data().choices.map(async (x, index) => {
-            if (x.isImage) {
+            if (x.isSound) {
               let getRefs = await st.child(
                 "/practice/audio/" + doc.id + "-" + (index + 1) + ".mp3"
               );
@@ -653,7 +634,9 @@ export default {
         .where("order", "==", val)
         .get();
 
-      return !getOrder.size || "รหัสลำดับนี้มีการใช้งานแล้ว";
+      if (this.oldOrder != val) {
+        return !getOrder.size || "รหัสลำดับนี้มีการใช้งานแล้ว";
+      }
     },
     // บันทึก
     saveBtn() {
@@ -699,7 +682,9 @@ export default {
 
       this.dataFiles.map((x, index) => {
         if (x.status) {
-          this.data.choices[index].isImage = true;
+          this.data.choices[index].isSound = true;
+        } else {
+          this.data.choices[index].isSound = false;
         }
       });
 
@@ -750,9 +735,7 @@ export default {
           .doc(this.$route.params.key)
           .set(this.data)
           .then(async () => {
-            this.finishDialog = true;
             // เช็คขูอมูลภาพและเสียง
-
             if (this.uploadImg) {
               await st
                 .child("/practice/image/" + this.$route.params.key + ".jpg")
@@ -764,31 +747,40 @@ export default {
                 .put(this.uploadAudio);
             }
 
-            // แบบมีเสียง Edit
-            if (this.data.isAnswerSound == true) {
-              if (this.dataFile1) {
-                await st
-                  .child("/practice/audio/" + this.$route.params.key + "1.mp3")
-                  .put(this.dataFile1);
-              }
-              if (this.dataFile2) {
-                await st
-                  .child("/practice/audio/" + this.$route.params.key + "2.mp3")
-                  .put(this.dataFile2);
-              }
-              if (this.dataFile3) {
-                await st
-                  .child("/practice/audio/" + this.$route.params.key + "3.mp3")
-                  .put(this.dataFile3);
-              }
-              if (this.dataFile4) {
-                await st
-                  .child("/practice/audio/" + this.$route.params.key + "4.mp3")
-                  .put(this.dataFile4);
-              }
+            // แบบมีเสียง เพิ่ม
+            if (this.data.isAnswerSound) {
+              this.dataFiles.map(async (x, index) => {
+                if (x.status) {
+                  if (x.file) {
+                    await st
+                      .child(
+                        "/practice/audio/" +
+                          this.$route.params.key +
+                          "-" +
+                          (index + 1) +
+                          ".mp3"
+                      )
+                      .put(x.file);
+                  }
+                } else {
+                  if (this.data.choices[index].isSound) {
+                    await st
+                      .child(
+                        "/practice/audio/" +
+                          this.$route.params.key +
+                          "-" +
+                          (index + 1) +
+                          ".mp3"
+                      )
+                      .delete();
+                  }
+                }
+              });
             }
+
+            this.isSaveComplete = true;
+
             setTimeout(() => {
-              this.isSaveData = false;
               this.loadingHide();
               this.$router.push("/multipleMain");
             }, 1000);
@@ -854,16 +846,19 @@ export default {
     uploadIt2() {
       var elem = document.querySelector("#soundId2");
       elem.value = "";
+
       elem.click();
     },
     uploadIt3() {
       var elem = document.querySelector("#soundId3");
       elem.value = "";
+
       elem.click();
     },
     uploadIt4() {
       var elem = document.querySelector("#soundId4");
       elem.value = "";
+
       elem.click();
     }
   },
