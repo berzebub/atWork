@@ -1,13 +1,17 @@
 <template>
   <div class="container">
     <!-- box2 แก้ไขชื่อ -->
-    <div v-show="infoData == '1'" align="center" style="margin-top:50%
-    ">
+    <div
+      class
+      v-show="infoData == '1'"
+      align="center"
+      :style="$q.platform.is.desktop?'width:328px;margin-top:50%;margin-left:25%':''"
+    >
       <div class="text-h6">แก้ไข ชื่อ สกุล</div>
       <div class="q-mt-lg">
-        <div style="width:328px" align="left" class="text-body2">ชื่อ นามสกุล</div>
+        <div align="left" class="text-body2">ชื่อ นามสกุล</div>
         <div>
-          <q-input outlined style="width:328px" ref="name" v-model="name" :rules="[val => !!val]" />
+          <q-input outlined ref="name" v-model="name" :rules="[val => !!val]" />
         </div>
       </div>
       <div class="row justify-center">
@@ -15,7 +19,7 @@
           @click="backMainPage()"
           class="q-mx-md"
           label="ยกเลิก"
-          style="width:150px"
+          :style="$q.platform.is.desktop?'width:120px':'width:100px'"
           outline
           color="blue-grey-10"
         />
@@ -23,21 +27,25 @@
           @click="saveChangeName()"
           class="q-mx-md bg-blue-grey-10 text-white"
           label="บันทึก"
-          style="width:150px"
+          :style="$q.platform.is.desktop?'width:120px':'width:100px'"
         />
       </div>
     </div>
     <!-- box3 แก้ไขรหัสผ่าน -->
-    <div v-show="infoData == '2'" align="center" style="margin-top:50%">
+    <div
+      v-show="infoData == '2'"
+      align="center"
+      :style="$q.platform.is.desktop?'width:328px;margin-top:50%;margin-left:25%':''"
+    >
       <div class="text-h6">คุณต้องการรีเซตรหัสผ่าน</div>
       <div class="text-subtitle1">"{{userInfo.email}}"</div>
 
-      <div class="row justify-center q-mt-xl">
+      <div class="row justify-center q-mt-lg">
         <q-btn
           @click="backMainPage()"
           class="q-mx-md"
           label="ยกเลิก"
-          style="width:150px"
+          :style="$q.platform.is.desktop?'width:120px':'width:100px'"
           outline
           color="blue-grey-10"
         />
@@ -45,12 +53,16 @@
           @click="saveChangePassword()"
           class="q-mx-md bg-blue-grey-10 text-white"
           label="ตกลง"
-          style="width:150px"
+          :style="$q.platform.is.desktop?'width:120px':'width:100px'"
         />
       </div>
     </div>
     <!-- box4 ออกจากระบบ -->
-    <div v-show="infoData == '3'" align="center" style="margin-top:50%">
+    <div
+      v-show="infoData == '3'"
+      align="center"
+      :style="$q.platform.is.desktop?'width:328px;margin-top:50%;margin-left:25%':''"
+    >
       <div class="text-h6 q-mb-md">ออกจากระบบ</div>
       <div>
         <q-btn
@@ -131,7 +143,11 @@ export default {
   },
   methods: {
     backMainPage() {
-      this.$emit("backStep", false);
+      if (this.$q.platform.is.desktop) {
+        this.$emit("backStep", false);
+      } else {
+        this.$router.push("/userInfo");
+      }
     },
     saveChangeName() {
       this.$refs.name.validate();
@@ -165,13 +181,16 @@ export default {
     confirmEmail() {
       this.backMainPage();
     },
-    logOutAll() {
+    async logOutAll() {
+      this.loadingShow();
       let genCode = Math.random()
         .toString(36)
         .substring(7);
-      console.log(genCode);
-      // this.collection("user_admin")
-      console.log("object");
+
+      let signOut = await db
+        .collection("user_admin")
+        .doc(this.userInfo.userId)
+        .update({ loginKey: genCode });
     }
     // checkConfrimPassword(val) {
     //   return this.newPassword == val || "รหัสผ่านไม่ตรงกัน";
