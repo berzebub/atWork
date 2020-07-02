@@ -30,15 +30,6 @@
               </div>
             </div>
             <q-separator class="q-m-md"></q-separator>
-
-            <div class="row items-center">
-              <div class="col-6 q-pa-md">
-                <div class="text-subtitle1">อีเมล</div>
-                <div class="text-body2 text-blue-grey-7">{{userInfo.email}}</div>
-              </div>
-            </div>
-            <q-separator class="q-m-md"></q-separator>
-
             <div
               @click="markPassword()"
               class="row items-center cursor-pointer relative-position"

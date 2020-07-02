@@ -1,8 +1,9 @@
 <template>
   <div class="container">
     <!-- box2 แก้ไขชื่อ -->
-    <div v-show="infoData == '1'" align="center">
-      <div class="text-subtitle1">แก้ไข ชื่อ สกุล</div>
+    <div v-show="infoData == '1'" align="center" style="margin-top:50%
+    ">
+      <div class="text-h6">แก้ไข ชื่อ สกุล</div>
       <div class="q-mt-lg">
         <div style="width:328px" align="left" class="text-body2">ชื่อ นามสกุล</div>
         <div>
@@ -27,74 +28,11 @@
       </div>
     </div>
     <!-- box3 แก้ไขรหัสผ่าน -->
-    <div v-show="infoData == '2'" align="center">
-      <div class="text-subtitle1">แก้ไขรหัสผ่าน</div>
-      <div class="q-mt-lg">
-        <div style="width:328px" align="left" class="text-body2">รหัสผ่านปัจจุบัน</div>
-        <div>
-          <q-input
-            style="width:328px"
-            v-model="oldPassword"
-            :type="isPwd1 ? 'password' : 'text'"
-            outlined
-            ref="oldPassword"
-            :rules="[val => !!val]"
-          >
-            <template v-slot:append>
-              <q-icon
-                :name="isPwd1 ? 'visibility_off' : 'visibility'"
-                class="cursor-pointer"
-                @click="isPwd1 = !isPwd1"
-              />
-            </template>
-          </q-input>
-        </div>
-      </div>
-      <div class="q-mt-md">
-        <div style="width:328px" align="left" class="text-body2">รหัสผ่านใหม่</div>
-        <div class="text-blue-grey-7" style="width:328px" align="left">ไม่ต่ำกว่า 6 ตัวอักษร</div>
-        <div>
-          <q-input
-            style="width:328px"
-            v-model="newPassword"
-            ref="newPassword"
-            :rules="[val => !!val]"
-            :type="isPwd2 ? 'password' : 'text'"
-            outlined
-          >
-            <template v-slot:append>
-              <q-icon
-                :name="isPwd2 ? 'visibility_off' : 'visibility'"
-                class="cursor-pointer"
-                @click="isPwd2 = !isPwd2"
-              />
-            </template>
-          </q-input>
-        </div>
-      </div>
-      <div class="q-mt-md">
-        <div style="width:328px" align="left" class="text-body2">ยืนยันรหัสผ่านใหม่</div>
-        <div>
-          <q-input
-            style="width:328px"
-            v-model="confrimPassword"
-            :type="isPwd3 ? 'password' : 'text'"
-            ref="confrimPassword"
-            :rules="[val => !!val,val => val == newPassword || 'รหัสผ่านไม่ตรงกัน']"
-            outlined
-          >
-            <!-- checkConfrimPassword -->
-            <template v-slot:append>
-              <q-icon
-                :name="isPwd3 ? 'visibility_off' : 'visibility'"
-                class="cursor-pointer"
-                @click="isPwd3 = !isPwd3"
-              />
-            </template>
-          </q-input>
-        </div>
-      </div>
-      <div class="row justify-center">
+    <div v-show="infoData == '2'" align="center" style="margin-top:50%">
+      <div class="text-h6">คุณต้องการรีเซตรหัสผ่าน</div>
+      <div class="text-subtitle1">"{{userInfo.email}}"</div>
+
+      <div class="row justify-center q-mt-xl">
         <q-btn
           @click="backMainPage()"
           class="q-mx-md"
@@ -106,7 +44,7 @@
         <q-btn
           @click="saveChangePassword()"
           class="q-mx-md bg-blue-grey-10 text-white"
-          label="บันทึก"
+          label="ตกลง"
           style="width:150px"
         />
       </div>
@@ -123,7 +61,7 @@
         />
       </div>
       <div class="q-mt-md">
-        <q-btn style="width:190px" label="อุปกรณ์ทั้งหมด" outline />
+        <q-btn @click="logOutAll()" style="width:190px" label="อุปกรณ์ทั้งหมด" outline />
       </div>
       <div class="q-mt-md">
         <q-btn @click="backMainPage()" style="width:190px" label="กลับสู่โปรแกรม" outline />
@@ -139,6 +77,22 @@
           </div>
           <div class="q-mt-lg">บันทึกข้อมูลเรียบร้อย</div>
         </q-card-section>
+      </q-card>
+    </q-dialog>
+    <!-- correct Email -->
+    <q-dialog v-model="dialogEmail">
+      <q-card style="width:323px; height:200px">
+        <q-card-section align="center">
+          <div class="q-mt-md">
+            <q-icon color="secondary" size="lg" name="far fa-check-circle" />
+          </div>
+        </q-card-section>
+
+        <q-card-section align="center" class="q-pt-none">กรุณาตรวจสอบ E-mail</q-card-section>
+
+        <q-card-actions align="center">
+          <q-btn @click="confirmEmail()" style="width:190px" label="ตกลง" color="blue-grey-10" />
+        </q-card-actions>
       </q-card>
     </q-dialog>
   </div>
@@ -163,7 +117,8 @@ export default {
       isNamePage: false,
       isPasswordPage: false,
       isLogOutPage: false,
-      isDialogSuccess: false
+      isDialogSuccess: false,
+      dialogEmail: false
     };
   },
   watch: {
@@ -171,11 +126,6 @@ export default {
       console.log(this.infoData);
       if (this.infoData == "1") {
         this.$refs.name.resetValidation();
-      }
-      if (this.infoData == "2") {
-        this.$refs.oldPassword.resetValidation();
-        this.$refs.newPassword.resetValidation();
-        this.$refs.confrimPassword.resetValidation();
       }
     }
   },
@@ -201,29 +151,27 @@ export default {
         });
     },
     saveChangePassword() {
-      this.$refs.oldPassword.validate();
-      this.$refs.newPassword.validate();
-      this.$refs.confrimPassword.validate();
-      if (
-        this.$refs.oldPassword.hasError ||
-        this.$refs.newPassword.hasError ||
-        this.$refs.confrimPassword.hasError
-      ) {
-        return;
-      }
-      auth.currentUser
-        .updatePassword(this.newPassword)
-        .then(() => {
-          console.log(" update สำเร็จ");
+      let _this = this;
+      auth
+        .sendPasswordResetEmail(this.userInfo.email)
+        .then(function() {
+          _this.dialogEmail = true;
         })
-        .catch(error => {
+        .catch(function(error) {
           console.log(error);
         });
-      this.isDialogSuccess = true;
-      setTimeout(() => {
-        this.isDialogSuccess = false;
-      }, 700);
-      this.isPasswordPage = false;
+    },
+    // ตกลง
+    confirmEmail() {
+      this.backMainPage();
+    },
+    logOutAll() {
+      let genCode = Math.random()
+        .toString(36)
+        .substring(7);
+      console.log(genCode);
+      // this.collection("user_admin")
+      console.log("object");
     }
     // checkConfrimPassword(val) {
     //   return this.newPassword == val || "รหัสผ่านไม่ตรงกัน";
