@@ -351,9 +351,14 @@ export default {
             "/" +
             itemPrac.practiceId
         );
-      } else if (itemPrac.practiceType == "multipleChoies") {
+      } else if (itemPrac.practiceType == "multipleChoice") {
         this.$router.push(
-          "/multipleMain/" + itemPrac.levelId + "/" + itemPrac.unitId
+          "/multipleMain/" +
+            itemPrac.levelId +
+            "/" +
+            itemPrac.unitId +
+            "/" +
+            itemPrac.practiceId
         );
       } else if (itemPrac.practiceType == "expression") {
         this.$router.push(
