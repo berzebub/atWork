@@ -68,12 +68,7 @@
         </div>
       </div>
       <!-- box1 หน้าแรก -->
-      <div
-        v-if="mainPage == true"
-        align="center"
-        class="absolute-center desktop-only"
-        style="margin-left:10%"
-      >
+      <div v-if="mainPage == true" align="center" class="desktop-only container">
         <div class="row justify-center items-center">
           <div>
             <q-icon name="fas fa-arrow-left" size="1.7em" />

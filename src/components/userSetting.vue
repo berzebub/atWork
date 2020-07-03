@@ -4,7 +4,6 @@
     <div
       v-show="infoData == '1'"
       align="center"
-      class="brx"
       :style="$q.platform.is.desktop?'margin-left: calc(100% - 73%);margin-right: calc(100% - 74%);margin-top:50%':''"
     >
       <div class="text-h6">แก้ไข ชื่อ สกุล</div>
