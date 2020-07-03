@@ -86,7 +86,23 @@
           />
         </div>
         <div class="text-center">
-          <div v-for="item,index in data" :key="index" class="q-mt-md boxCard text-left">
+          <div
+            v-for="item,index in data"
+            :key="index"
+            class="q-mt-md boxCard text-left relative-position"
+          >
+            <div
+              class="absolute-top-left q-pa-sm"
+              v-if="item.status == 'waitForDelete'"
+              style="z-index:30"
+            >
+              <a
+                class="text-white cursor-pointer"
+                @click="cancelDelete(item.key)"
+                style="text-decoration:underline;"
+              >ยกเลิกการลบ</a>
+            </div>
+            <div v-if="item.status == 'waitForDelete'" class="absolute-center backDrop"></div>
             <div
               style="border-top-left-radius: 6px;border-top-right-radius: 6px "
               class="bg-blue-grey-10 text-white q-py-sm q-pr-xs q-pl-md text-subtitle1 row justify-between"
@@ -335,7 +351,21 @@ export default {
     addBtn() {
       this.$router.push("/vdoInputAdd");
     },
-
+    cancelDelete(key) {
+      this.$q
+        .dialog({
+          title: "ยกเลิกการลบข้อมูล",
+          ok: "ตกลง",
+          cancel: "ยกเลิก"
+        })
+        .onOk(() => {
+          db.collection("practice_draft")
+            .doc(key)
+            .update({
+              status: "notSync"
+            });
+        });
+    },
     // เล่นเสียง
     playAudio(sound) {
       let audio = new Audio(sound);

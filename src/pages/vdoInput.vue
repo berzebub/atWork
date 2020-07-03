@@ -201,6 +201,8 @@ export default {
         customer: 1,
         status: "notSync"
       },
+      orderOld: "",
+      orderNew: "",
       iconTrueDialog: true,
       iconfailDialog: false,
       finishDialog: false,
@@ -216,6 +218,7 @@ export default {
           if (doc.data().isSound) {
             this.isKeyAudio = doc.id + ".mp3";
           }
+          this.orderOld = doc.data().order;
           this.data = doc.data();
         });
     },
@@ -234,8 +237,17 @@ export default {
       if (this.uploadAudio) {
         this.data.isSound = true;
       }
+      if (this.$route.name == "vdoInputAdd") {
+        this.orderNew = this.data.order;
+      } else {
+        if (this.orderOld != this.data.order) {
+          this.orderNew = this.data.order;
+        } else {
+          this.orderNew = "";
+        }
+      }
       db.collection("practice_draft")
-        .where("order", "==", this.data.order)
+        .where("order", "==", this.orderNew)
         .get()
         .then(doc => {
           if (doc.size > 0) {
