@@ -211,6 +211,7 @@ export default {
     },
     async saveLesson() {
       if (this.dataLesson.order == "" || this.dataLesson.name == "") {
+        console.log("เช็ค input ว่าง");
         if (this.dataLesson.order == "") {
           this.errorOrder = true;
         }
@@ -219,41 +220,45 @@ export default {
         }
         return;
       }
-      if (this.editId != "") {
-        if (
-          this.nameOld != this.dataLesson.name ||
-          this.orderOld != this.dataLesson.order
-        ) {
-          console.log(123);
-          let checkName = false;
-          let checkOrder = false;
-          if (this.nameOld != this.dataLesson.name) {
-            checkName = await this.isCheckName(this.dataLesson.name);
-          }
-          if (this.orderOld != this.dataLesson.order) {
-            checkOrder = await this.isCheckOrder(this.dataLesson.order);
-          }
 
-          this.errorOrder = false;
-          this.errorLesson = false;
-          console.log(checkName);
-          console.log(checkOrder);
-          if (checkName || checkOrder) {
-            if (checkName) {
-              this.errorLesson = true;
-            }
-            if (checkOrder) {
-              this.errorOrder = true;
-            }
-          }
+      if (
+        this.nameOld != this.dataLesson.name ||
+        this.orderOld != this.dataLesson.order
+      ) {
+        let checkName = false;
+        let checkOrder = false;
+        if (this.nameOld != this.dataLesson.name) {
+          checkName = await this.isCheckName(this.dataLesson.name);
+          console.log("เช็คชื่อซ้ำ");
+        }
+        if (this.orderOld != this.dataLesson.order) {
+          checkOrder = await this.isCheckOrder(this.dataLesson.order);
+          console.log("เช็คลำดับซ้ำ");
+        }
 
-          return;
+        this.errorOrder = false;
+        this.errorLesson = false;
+        console.log(checkName);
+        console.log(checkOrder);
+        if (checkName || checkOrder) {
+          if (checkOrder) {
+            this.errorOrder = true;
+            console.log("ลำดับซ้ำ");
+            return;
+          }
+          if (checkName) {
+            this.errorLesson = true;
+            console.log("ชื่อซ้ำ");
+            return;
+          }
         }
       }
-      console.log(555);
+
+      console.log("add mode");
 
       this.loadingShow();
       if (this.editId != "") {
+        console.log("save add");
         db.collection("unit")
           .doc(this.editId)
           .update(this.dataLesson)
@@ -264,7 +269,7 @@ export default {
             this.savedDataDialog = false;
           });
       } else {
-        console.log(this.dataLesson.levelId);
+        console.log("save edit");
         db.collection("unit")
           .add(this.dataLesson)
           .then(() => {
