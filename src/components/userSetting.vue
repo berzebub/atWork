@@ -82,7 +82,9 @@
     <!-- -------------------------------------------Diaolog--------------------------------------- -->
     <!-- เพิ่มข้อมูลสำเร็จ -->
     <q-dialog v-model="isDialogSuccess">
-      <q-card style="min-width: 350px; height:170px">
+      <q-card
+        :style="$q.platform.is.desktop?'min-width: 350px; height:200px; margin-left:23%':'min-width: 350px; height:200px'"
+      >
         <q-card-section class="absolute-center" align="center">
           <div>
             <q-icon color="secondary" size="lg" name="far fa-check-circle" />
@@ -93,7 +95,9 @@
     </q-dialog>
     <!-- correct Email -->
     <q-dialog v-model="dialogEmail">
-      <q-card style="width:323px; height:200px">
+      <q-card
+        :style="$q.platform.is.desktop?'min-width: 350px; height:200px; margin-left:23%':'min-width: 350px; height:200px'"
+      >
         <q-card-section align="center">
           <div class="q-mt-md">
             <q-icon color="secondary" size="lg" name="far fa-check-circle" />
@@ -109,13 +113,15 @@
     </q-dialog>
     <!-- dont complete data -->
     <q-dialog v-model="dialogDontChangeData">
-      <q-card style="width:323px; height:150px">
-        <q-card-section align="center" class="q-pt-md">
+      <q-card
+        :style="$q.platform.is.desktop?'min-width: 350px; height:200px; margin-left:23%':'min-width: 350px; height:200px'"
+      >
+        <q-card-section align="center" class="q-pt-xl">
           <div class="text-subtitle1">คุณกำลังออกจากหน้านี้</div>
           <div class="text-subtitle1">ต้องการบันทึกข้อมูลหรือไม่</div>
         </q-card-section>
 
-        <q-card-actions align="center">
+        <q-card-actions align="center" class="q-mt-xs" style="width:350px">
           <q-btn
             @click="dialogChangeData()"
             style="width:90px"
