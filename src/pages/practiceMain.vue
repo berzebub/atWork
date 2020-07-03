@@ -1,5 +1,5 @@
 <template>
-  <q-page class="text-blue-grey-10">
+  <q-page class="text-blue-grey-10 q-pa-md">
     <practice-main></practice-main>
   </q-page>
 </template>

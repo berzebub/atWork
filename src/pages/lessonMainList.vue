@@ -67,13 +67,13 @@
                   <!-- menu desktop -->
                   <div class="col desktop-only">
                     <div class="row justify-between text-blue-grey-10">
-                      <div @click="deletePositionBtn(item)">
+                      <div @click="deletePositionBtnPc(item)">
                         <u>ลบตำแหน่ง</u>
                       </div>
-                      <div @click="editPositionBtn(item)">
+                      <div @click="editPositionBtnPc(item)">
                         <u>แก้ไขตำแหน่ง</u>
                       </div>
-                      <div @click="editLessonBtn(item)">
+                      <div @click="editLessonBtnPc(item)">
                         <u>เพิ่มบทเรียน</u>
                       </div>
                     </div>
@@ -106,7 +106,7 @@
                   <!-- mobile -->
                   <div
                     v-show="item2.status != true"
-                    class="col mobile-only q-py-md q-pr-lg brx"
+                    class="col mobile-only q-py-md q-pr-lg"
                     align="right"
                   >
                     <q-icon size="16px" name="fas fa-power-off" dense color="negative" flat></q-icon>
@@ -114,24 +114,26 @@
                   <!-- desktop -->
                   <div
                     v-show="item2.status != true"
-                    class="col desktop-only q-py-md q-pr-lg brx"
+                    class="col desktop-only q-py-md q-pr-lg"
                     align="right"
                   >
-                    <div>
-                      <q-btn
-                        class="q-px-sm"
-                        dense
-                        outline
-                        color="blue-grey-6"
-                        disable
-                        label="ปิดการใช้การ"
-                      />
-                    </div>
-                    <div>
-                      <q-btn flat round color="blue-grey-10" icon="far fa-trash-alt" />
-                    </div>
-                    <div>
-                      <q-btn flat round color="blue-grey-10" icon="far fa-edit" />
+                    <div class="row justify-between items-center">
+                      <div>
+                        <q-btn
+                          class="q-px-sm"
+                          dense
+                          outline
+                          color="blue-grey-6"
+                          disable
+                          label="ปิดการใช้การ"
+                        />
+                      </div>
+                      <div>
+                        <q-btn size="15px" flat round color="blue-grey-10" icon="far fa-trash-alt" />
+                      </div>
+                      <div>
+                        <q-btn size="15px" flat round color="blue-grey-10" icon="far fa-edit" />
+                      </div>
                     </div>
                   </div>
 
@@ -202,6 +204,59 @@
         </div>
       </div>
     </q-dialog>
+    <!-- dialog เพิ่มบทเรียน -->
+    <q-dialog v-model="dialogLesson" class="desktop-only">
+      <div class="bg-white row q-pb-lg" style="width:330px ;border-radius: 10px">
+        <div
+          align="center"
+          style="width:330px"
+          class="text-h6 bg-blue-grey-10 text-white q-py-md"
+        >เพิ่มบทเรียน</div>
+        <div class="text-subtitle1 col-12 q-px-md q-pt-md" align="letf">
+          <span>รหัสลำดับ</span>
+          <span class="text-grey-5 text-body2 q-pl-sm">ตัวเลข 3 หลัก</span>
+        </div>
+        <div style="width:300px" class="q-mx-md">
+          <q-input
+            ref="order"
+            dense
+            mask="###"
+            outlined
+            v-model.number="dataLesson.order"
+            :error="errorOrder"
+            @keyup="errorOrder=false"
+          ></q-input>
+        </div>
+        <span class="text-subtitle1 q-pt-sm q-mx-md">ชื่อบทเรียน</span>
+        <div style="width:300px" class="q-mx-md">
+          <q-input
+            ref="name"
+            dense
+            outlined
+            v-model="dataLesson.name"
+            :error="errorLesson"
+            @keyup="errorLesson=false"
+          ></q-input>
+        </div>
+        <div class="col-12 q- q-px-md">
+          <span class="text-black text-subtitle1">การใช้งานบทเรียน</span>
+
+          <q-toggle v-model="dataLesson.status" color="secondary" />
+        </div>
+        <div class="col-6 q-pr-sm q-pt-md" align="right">
+          <q-btn @click="cancelAddLessonPc()" dense style="width:120px" outline label="ยกเลิก"></q-btn>
+        </div>
+        <div class="col-6 q-pl-sm q-pt-md">
+          <q-btn
+            @click="saveLessonPc()"
+            dense
+            color="blue-grey-10"
+            style="width:120px"
+            label="ยืนยัน"
+          ></q-btn>
+        </div>
+      </div>
+    </q-dialog>
   </q-page>
 </template>
 
@@ -210,6 +265,7 @@ import { db } from "../router";
 export default {
   data() {
     return {
+      // mobile
       text: "",
       model: 1,
       options: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
@@ -224,26 +280,46 @@ export default {
       isSnap: "",
       namePosition: "",
       dataDelete: "",
-      deleted: false
+      deleted: false,
+      // desktop
+      dialogLesson: false,
+      dataLesson: {
+        order: "",
+        name: "",
+        status: false,
+        levelId: this.$route.params.levelId
+      },
+      errorOrder: false,
+      errorLesson: false,
+      editId: "",
+      nameOld: "",
+      orderOld: "",
+      dataLesson: ""
     };
   },
   methods: {
+    // ********************************** mobile **********************************
+    // ปุ่มเพิ่มตำแหน่ง
     addPosition() {
       this.$router.push("lessonInput");
     },
+    // ปุ่มแก้ไขตำแหน่ง mobile
     editPositionBtn(levelId) {
       this.$router.push("lessonEdit/" + levelId.levelId);
     },
+
+    // ปุ่มเพิ่มบทเรียน mobile
+
     addLesson(levelId) {
       this.$router.push("lessonUnitList/" + levelId.levelId);
-    },
+    }, // ปุ่มแก้ไขบทเรียน mobile
     editLessonBtn(item) {
-      this.$router.push("lessonUnitlist/" + item.levelId);
+      this.$router.push("lessonUnitList/" + item.levelId);
     },
-
+    // ปุ่มลบตำแหน่ง
     deletePositionBtn(data) {
       this.namePosition = data.name;
-      console.log(data);
+      // console.log(data);
 
       db.collection("practice_server")
         .where("levelId", "==", data.levelId)
@@ -259,7 +335,7 @@ export default {
           }
         });
     },
-
+    // โหลดข้อมูลตำแหน่งออกมาโชว์
     loadDataPosition() {
       db.collection("level").onSnapshot(doc => {
         this.dataPosition = [];
@@ -278,6 +354,7 @@ export default {
         this.loadDataLesson();
       });
     },
+    // โหลดข้อมูลบทเรียน
     loadDataLesson() {
       this.isSnap = db
         .collection("unit")
@@ -302,15 +379,20 @@ export default {
           this.lessonList = temp;
         });
     },
+    // ฟังชั่นแยกบทเรียนออกมาโชว์ให้ตรงกับตำแหน่งของตัวเอง
     showLesson(levelId) {
       this.showLessonList = this.lessonList.filter(x => x.levelId == levelId);
     },
+    // ปุ่มตกลง หน้า dialog ลบตำแหน่งที่มีข้อมูลบทเรียนอยู่
     okDelete() {
       this.dialogNoDelete = false;
     },
+    // ปุ่มยกเลิก หน้า dialog ลบตำแหน่งที่มีไม่ข้อมูลบทเรียน
     cancelDelete() {
       this.dialogDelete = false;
     },
+    // ปุ่มตกลง หน้า dialog ลบตำแหน่งที่มีไม่ข้อมูลบทเรียน
+
     deletePosition() {
       console.log(this.dataDelete.levelId);
       db.collection("level")
@@ -324,12 +406,112 @@ export default {
           }, 1000);
         });
     },
+    // ฟังชั่นอัปเดตสถานะของตำแหน่ง
     statusLevel(data) {
       db.collection("level")
         .doc(data.levelId)
         .update({
           status: data.status
         });
+    },
+    // *************************************** desktop ***********************************
+    // ปุ่มยกเลิก dialog เพิ่มบทเรียน ของ pc
+    cancelAddLessonPc() {
+      this.dialogLesson = false;
+      this.editId = "";
+    }, // ปุ่มแก้ไขบทเรียน pc
+    editLessonBtnPc(data) {
+      this.dialogLesson = true;
+    }, // ปุ่มแก้ไขตำแหน่ง pc
+    editPositionBtnPc(data) {},
+    // ปุ่มบันทึก dialog เพิ่มบทเรียน ของ pc
+    async saveLessonPc() {
+      if (this.dataLesson.order == "" || this.dataLesson.name == "") {
+        if (this.dataLesson.order == "") {
+          this.errorOrder = true;
+        }
+        if (this.dataLesson.name == "") {
+          this.errorLesson = true;
+        }
+        return;
+      }
+      if (this.editId != "") {
+        if (
+          this.nameOld != this.dataLesson.name ||
+          this.orderOld != this.dataLesson.order
+        ) {
+          console.log(123);
+          let checkName = false;
+          let checkOrder = false;
+          if (this.nameOld != this.dataLesson.name) {
+            checkName = await this.isCheckName(this.dataLesson.name);
+          }
+          if (this.orderOld != this.dataLesson.order) {
+            checkOrder = await this.isCheckOrder(this.dataLesson.order);
+          }
+
+          this.errorOrder = false;
+          this.errorLesson = false;
+          console.log(checkName);
+          console.log(checkOrder);
+          if (checkName || checkOrder) {
+            if (checkName) {
+              this.errorLesson = true;
+            }
+            if (checkOrder) {
+              this.errorOrder = true;
+            }
+          }
+
+          return;
+        }
+      }
+      console.log(555);
+
+      this.loadingShow();
+      if (this.editId != "") {
+        db.collection("unit")
+          .doc(this.editId)
+          .update(this.dataLesson)
+          .then(() => {
+            this.editId = "";
+            this.loadingHide();
+            this.dialogLesson = false;
+            this.savedDataDialog = false;
+          });
+      } else {
+        console.log(this.dataLesson.levelId);
+        db.collection("unit")
+          .add(this.dataLesson)
+          .then(() => {
+            this.loadingHide();
+            this.savedDataDialog = true;
+            setTimeout(() => {
+              this.dialogLesson = false;
+              this.savedDataDialog = false;
+            }, 1000);
+          });
+      }
+    },
+
+    // เช็คชื่อซ้ำ
+    async isCheckName(val) {
+      let doc = await db
+        .collection("unit")
+        .where("name", "==", val)
+        .where("levelId", "==", this.dataLesson.levelId)
+        .get();
+      return doc.size ? true : false;
+    },
+    // เช็ครหัสลำดับซ้ำ
+    async isCheckOrder(val) {
+      let doc = await db
+        .collection("unit")
+        .where("order", "==", val)
+        .where("levelId", "==", this.dataLesson.levelId)
+        .get();
+
+      return doc.size ? true : false;
     }
   },
   mounted() {

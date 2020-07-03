@@ -76,13 +76,16 @@
 
     <!-- หน้าเพิ่ม -->
     <div class="q-py-md" v-if="!isShowPractice">
-      <div>รหัสลำดับ</div>
+      <div>
+        <span class="text-subtitle1">รหัสลำดับ</span>
+        <span class="text-body2 q-pl-xs" style="color:#BDBDBD">ตัวเลข 3 หลัก</span>
+      </div>
       <div>
         <q-input
+          mask="###"
           color="blue-grey-10"
           outlined
           v-model.number="data.order"
-          type="number"
           :rules="[value => !!value ]"
           ref="order"
         />
@@ -126,11 +129,9 @@
           ></q-radio>
         </div>
       </div>
-      <div v-else class="q-px-md q-py-sm">
-        <span v-if="data.practiceType=='flashcard'">การ์ดคำศัพท์</span>
-        <span v-if="data.practiceType=='multipleChoice'">เลือกคำตอบ</span>
-        <span v-if="data.practiceType=='expression'">ประโยคสนทนา</span>
-        <span v-if="data.practiceType=='vdo'">บทสนทนา</span>
+      <div v-else class="q-py-sm">
+        <q-input outlined :value="convertPracticeTypeToThai(data.practiceType)" readonly></q-input>
+        <!-- <span>{{convertPracticeTypeToThai(data.practiceType)}}</span> -->
       </div>
       <div class="row q-pa-sm">
         <div class="col q-px-sm" align="right">
@@ -151,11 +152,11 @@
     <!-- dialog delete  -->
     <q-dialog v-model="dialogDelete" persistent>
       <q-card class="q-pa-md" style="width: 300px;" align="center">
-        <!-- <q-card-section>
-          <div class="text-h6">Small</div>
-        </q-card-section>-->
-
-        <div class="q-py-lg">ต้องการลบ " {{order}}-{{practiceType}} " หรือไม่</div>
+        <div class="q-py-lg">
+          คุณต้องการลบแบบฝึกหัด
+          <br />
+          " {{order}} - {{convertPracticeTypeToThai(data.practiceType)}} "
+        </div>
 
         <div class="row">
           <div class="col">
@@ -191,6 +192,17 @@
         </q-card-section>
       </q-card>
     </q-dialog>
+    <!-- dialog delete practicelist success -->
+    <q-dialog v-model="dialogDeletePracticeListSuccess">
+      <q-card style="min-width: 350px; height:170px">
+        <q-card-section class="absolute-center" align="center">
+          <div>
+            <q-icon color="secondary" size="lg" name="far fa-check-circle" />
+          </div>
+          <div class="q-mt-lg">ลบแบบฝึกหัดเรียบร้อย</div>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 
@@ -215,7 +227,8 @@ export default {
       isSnap: "",
       order: "",
       practiceId: "",
-      practiceType: ""
+      practiceType: "",
+      dialogDeletePracticeListSuccess: false
     };
   },
   methods: {
@@ -242,23 +255,43 @@ export default {
       this.isEditMode = false;
     },
     deletePractice(itemPrac) {
-      console.log("delete");
       this.order = itemPrac.order;
       this.practiceType = itemPrac.practiceType;
       this.practiceId = itemPrac.practiceId;
       this.dialogDelete = true;
     },
     deletePracticeConfirm() {
-      console.log("กดยืนยัน");
-      //  db.collection("practice_list")
-      //   .doc(this.practiceId)
-      //   .delete()
-      //   .then(() => {
-      //     this.loadDataAll();
-      //     this.text = "ลบข้อมูลเรียบร้อย";
-      //     this.deleteDialog = false;
-      //     this.finishDialog = true;
-      //   });
+      db.collection("practice_draft")
+        .where("practiceId", "==", this.practiceId)
+        .get()
+        .then(doc => {
+          for (const element of doc.docs) {
+            db.collection("practice_draft")
+              .doc(element.id)
+              .delete();
+          }
+
+          db.collection("practice_server")
+            .where("practiceId", "==", this.practiceId)
+            .get()
+            .then(doc => {
+              for (const element of doc.docs) {
+                db.collection("practice_server")
+                  .doc(element.id)
+                  .delete();
+              }
+              db.collection("practice_list")
+                .doc(this.practiceId)
+                .delete()
+                .then(() => {
+                  this.dialogDeletePracticeListSuccess = true;
+                  setTimeout(() => {
+                    this.dialogDeletePracticeListSuccess = false;
+                  }, 1000);
+                  console.log("FINISH");
+                });
+            });
+        });
     },
     saveBtn() {
       //กดปุ่มบันทึกข้อมูล
@@ -313,16 +346,16 @@ export default {
         .collection("practice_list")
         .where("levelId", "==", this.levelId)
         .where("unitId", "==", this.unitId)
-        .onSnapshot(doc => {
+        .onSnapshot(async doc => {
           let temp = [];
-          doc.forEach(async element => {
+
+          for (const element of doc.docs) {
             let practice = await db
               .collection("practice_draft")
               .where("practiceId", "==", element.id)
               .get();
             let syncCheck = false;
             for (const practiceElement of practice.docs) {
-              console.log(practiceElement.data());
               if (
                 practiceElement.data().status == "notSync" ||
                 practiceElement.data().status == "waitForDelete"
@@ -337,8 +370,10 @@ export default {
               practiceId: element.id,
               showSync: syncCheck
             });
+          }
+          temp.sort((a, b) => {
+            return a.order - b.order;
           });
-          temp.sort((a, b) => a.order - b.order);
           this.practiceListShow = temp;
           this.loadingHide();
         });
@@ -364,7 +399,12 @@ export default {
         );
       } else if (itemPrac.practiceType == "expression") {
         this.$router.push(
-          "/expressionMain/" + itemPrac.levelId + "/" + itemPrac.unitId
+          "/expressionMain/" +
+            itemPrac.levelId +
+            "/" +
+            itemPrac.unitId +
+            "/" +
+            itemPrac.practiceId
         );
       } else if (itemPrac.practiceType == "vdo/") {
         this.$router.push(

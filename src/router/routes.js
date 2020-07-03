@@ -1,5 +1,4 @@
-const routes = [
-  {
+const routes = [{
     path: "/",
     component: () => import("pages/login.vue"),
     name: "login"
@@ -64,7 +63,7 @@ const routes = [
       },
       // ------------------- expression -------------------
       {
-        path: "expressionMain/:levelId/:unitId",
+        path: "expressionMain/:levelId/:unitId/:practiceId",
         component: () => import("pages/expressionMain.vue"),
         name: "expressionMain"
       },

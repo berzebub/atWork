@@ -76,11 +76,8 @@ Vue.mixin({
                 db.collection("practice_draft")
                   .doc(element.id)
                   .delete()
-
               }
-
             }
-
 
             db.collection("unit")
               .doc(unitId)
@@ -97,10 +94,6 @@ Vue.mixin({
                     a("finish")
                   })
               })
-
-
-
-
           });
       })
 
@@ -118,6 +111,19 @@ Vue.mixin({
             });
           });
       });
+    },
+    convertPracticeTypeToThai(type) {
+      let res
+      if (type == 'flashcard') {
+        res = "การ์ดคำศัพท์"
+      } else if (type == 'multiplechoice') {
+        res = "เลือกคำตอบ"
+      } else if (type == 'expression') {
+        res = "ประโยคสนธนา"
+      } else if (type == 'vdo') {
+        res = 'บทสนธนา'
+      }
+      return res
     },
     loadingShow() {
       this.$q.loading.show({
