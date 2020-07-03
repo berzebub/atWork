@@ -62,9 +62,17 @@
     </q-dialog>
     <!-- dialog เพิ่มบทเรียน -->
     <q-dialog v-model="dialogLesson">
-      <div class="bg-white row q-pa-md" style="width:330px">
-        <div class="text-subtitle1 col-12" align="letf">รหัสลำดับ</div>
-        <div style="width:300px">
+      <div class="bg-white row q-pb-lg" style="width:330px ;border-radius: 10px">
+        <div
+          align="center"
+          style="width:330px"
+          class="text-h6 bg-blue-grey-10 text-white q-py-md"
+        >เพิ่มบทเรียน</div>
+        <div class="text-subtitle1 col-12 q-px-md q-pt-md" align="letf">
+          <span>รหัสลำดับ</span>
+          <span class="text-grey-5 text-body2 q-pl-sm">ตัวเลข 3 หลัก</span>
+        </div>
+        <div style="width:300px" class="q-mx-md">
           <q-input
             ref="order"
             dense
@@ -75,8 +83,8 @@
             @keyup="errorOrder=false"
           ></q-input>
         </div>
-        <span class="text-subtitle1 q-pt-sm">ชื่อบทเรียน</span>
-        <div style="width:300px">
+        <span class="text-subtitle1 q-pt-sm q-mx-md">ชื่อบทเรียน</span>
+        <div style="width:300px" class="q-mx-md">
           <q-input
             ref="name"
             dense
@@ -86,7 +94,7 @@
             @keyup="errorLesson=false"
           ></q-input>
         </div>
-        <div class="col-12 q-pt-md">
+        <div class="col-12 q- q-px-md">
           <span class="text-black text-subtitle1">การใช้งานบทเรียน</span>
 
           <q-toggle v-model="dataLesson.status" color="secondary" />
@@ -202,33 +210,47 @@ export default {
       this.editId = "";
     },
     async saveLesson() {
-      if (
-        this.nameOld != this.dataLesson.name ||
-        this.orderOld != this.dataLesson.order
-      ) {
-        let checkName = false;
-        let checkOrder = false;
-        if (this.nameOld != this.dataLesson.name) {
-          checkName = await this.isCheckName(this.dataLesson.name);
+      if (this.dataLesson.order == "" || this.dataLesson.name == "") {
+        if (this.dataLesson.order == "") {
+          this.errorOrder = true;
         }
-        if (this.orderOld != this.dataLesson.order) {
-          checkOrder = await this.isCheckOrder(this.dataLesson.order);
+        if (this.dataLesson.name == "") {
+          this.errorLesson = true;
         }
+        return;
+      }
+      if (this.editId != "") {
+        if (
+          this.nameOld != this.dataLesson.name ||
+          this.orderOld != this.dataLesson.order
+        ) {
+          console.log(123);
+          let checkName = false;
+          let checkOrder = false;
+          if (this.nameOld != this.dataLesson.name) {
+            checkName = await this.isCheckName(this.dataLesson.name);
+          }
+          if (this.orderOld != this.dataLesson.order) {
+            checkOrder = await this.isCheckOrder(this.dataLesson.order);
+          }
 
-        this.errorOrder = false;
-        this.errorLesson = false;
-        console.log(checkName);
-        console.log(checkOrder);
-        if (checkName || checkOrder) {
-          if (checkName) {
-            this.errorLesson = true;
+          this.errorOrder = false;
+          this.errorLesson = false;
+          console.log(checkName);
+          console.log(checkOrder);
+          if (checkName || checkOrder) {
+            if (checkName) {
+              this.errorLesson = true;
+            }
+            if (checkOrder) {
+              this.errorOrder = true;
+            }
           }
-          if (checkOrder) {
-            this.errorOrder = true;
-          }
+
           return;
         }
       }
+      console.log(555);
 
       this.loadingShow();
       if (this.editId != "") {
@@ -242,6 +264,7 @@ export default {
             this.savedDataDialog = false;
           });
       } else {
+        console.log(this.dataLesson.levelId);
         db.collection("unit")
           .add(this.dataLesson)
           .then(() => {
@@ -254,6 +277,7 @@ export default {
           });
       }
     },
+
     addLesson() {
       (this.dataLesson = {
         order: "",
@@ -261,20 +285,27 @@ export default {
         status: false,
         levelId: this.$route.params.levelId
       }),
+        (this.errorOrder = false),
+        (this.errorLesson = false),
         (this.dialogLesson = true);
     },
+
     async isCheckName(val) {
       let doc = await db
         .collection("unit")
         .where("name", "==", val)
+        .where("levelId", "==", this.dataLesson.levelId)
         .get();
       return doc.size ? true : false;
     },
+
     async isCheckOrder(val) {
       let doc = await db
         .collection("unit")
         .where("order", "==", val)
+        .where("levelId", "==", this.dataLesson.levelId)
         .get();
+
       return doc.size ? true : false;
     },
     // ลบบทเรียน
