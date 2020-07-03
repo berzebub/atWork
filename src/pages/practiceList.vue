@@ -53,6 +53,9 @@
           :levelName="levelName"
           @finishSync="finishSync"
         ></practice-main>
+        <div v-else class="full-height flex flex-center text-subtitle1">
+          <q-icon name="fas fa-arrow-left" class="q-pr-sm"></q-icon>กรุณาเลือกบทเรียน
+        </div>
       </div>
     </div>
   </q-page>
@@ -83,6 +86,7 @@ export default {
   methods: {
     finishSync(val) {
       this.showUnit(val.levelId);
+      this.isShowPracticeMain = true;
     },
 
     gotoEdit(unitId, levelId, index, unitName, levelName) {
@@ -159,6 +163,7 @@ export default {
       });
     },
     showUnit(levelId) {
+      this.isShowPracticeMain = false;
       this.unitListShow = this.unitList.filter(x => x.levelId == levelId);
     }
   },
