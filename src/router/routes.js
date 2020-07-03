@@ -7,6 +7,10 @@ const routes = [{
     path: "/forgetPassword",
     component: () => import("pages/forgetPassword.vue")
   },
+  {
+    path: "/welcomeBack",
+    component: () => import("pages/welcomeBack.vue")
+  },
   // ------------------- multiple Print-------------------
   {
     path: "/multiplePrint",
