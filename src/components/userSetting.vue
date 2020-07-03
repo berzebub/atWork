@@ -16,7 +16,7 @@
       </div>
       <div class="row justify-center">
         <q-btn
-          @click="backMainPage()"
+          @click="dialogChangeData()"
           class="q-mx-md"
           label="ยกเลิก"
           :style="$q.platform.is.desktop?'width:120px':'width:100px'"
@@ -107,6 +107,27 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+    <!-- dont complete data -->
+    <q-dialog v-model="dialogDontChangeData">
+      <q-card style="width:323px; height:150px">
+        <q-card-section align="center" class="q-pt-md">
+          <div class="text-subtitle1">คุณกำลังออกจากหน้านี้</div>
+          <div class="text-subtitle1">ต้องการบันทึกข้อมูลหรือไม่</div>
+        </q-card-section>
+
+        <q-card-actions align="center">
+          <q-btn
+            @click="dialogChangeData()"
+            style="width:90px"
+            label="ยกเลิก"
+            outline
+            v-close-popup
+          />
+          <q-btn @click="backMainPage()" style="width:90px" label="ไม่บันทึก" outline />
+          <q-btn @click="saveChangeName()" style="width:90px" label="บันทึก" color="blue-grey-10" />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 
@@ -130,7 +151,8 @@ export default {
       isPasswordPage: false,
       isLogOutPage: false,
       isDialogSuccess: false,
-      dialogEmail: false
+      dialogEmail: false,
+      dialogDontChangeData: false
     };
   },
   watch: {
@@ -191,6 +213,9 @@ export default {
         .collection("user_admin")
         .doc(this.userInfo.userId)
         .update({ loginKey: genCode });
+    },
+    dialogChangeData() {
+      this.dialogDontChangeData = true;
     }
     // checkConfrimPassword(val) {
     //   return this.newPassword == val || "รหัสผ่านไม่ตรงกัน";
