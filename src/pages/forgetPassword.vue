@@ -2,10 +2,10 @@
   <div class="bg-login">
     <div class="absolute-center text-subtitle1" align="center">
       <div class="text-h6">ลืมรหัสผ่าน</div>
-      <div class="q-mt-md">กรุณากรอก E-mail</div>
+      <div class="q-mt-md">กรุณากรอกอีเมลในช่องข้างล่างเพื่อเริ่มการตั้งค่ารหัสผ่านใหม่</div>
       <!-- Email -->
       <div class="q-mt-lg" style="width:300px">
-        <div class="q-ml-xs" align="left">E-mail</div>
+        <div class="q-ml-xs" align="left">อีเมล</div>
         <div>
           <q-input outlined v-model="email" />
         </div>
@@ -35,7 +35,10 @@
             </div>
           </q-card-section>
 
-          <q-card-section align="center" class="q-pt-none">กรุณาตรวจสอบ E-mail</q-card-section>
+          <q-card-section align="center" class="q-pt-none">
+            <div>เราทำการส่งอีเมลสำหรับการตั้งค่ารหัสผ่านใหม่</div>
+            <div>ไปยังอีเมลของคุณแล้ว</div>
+          </q-card-section>
 
           <q-card-actions align="center">
             <q-btn @click="confirmEmail()" style="width:190px" label="ตกลง" color="blue-grey-10" />
@@ -51,7 +54,7 @@
             </div>
           </q-card-section>
 
-          <q-card-section align="center" class="q-pt-none">ไม่พบ E-mail ในระบบ</q-card-section>
+          <q-card-section align="center" class="q-pt-none">ไม่พบ อีเมล ในระบบ</q-card-section>
 
           <q-card-actions align="center">
             <q-btn v-close-popup style="width:190px" label="ตกลง" color="blue-grey-10" />

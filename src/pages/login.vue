@@ -1,11 +1,11 @@
 <template>
   <div class="bg-login">
     <div class="absolute-center text-subtitle1" align="center">
-      <div class="text-h6">Winner @Work</div>
-      <div class="q-mt-md">Backend</div>
+      <div :class="$q.platform.is.desktop?'text-h3':'text-h4'">Winner @Work</div>
+      <div class="q-mt-md">Data Entry | User Management</div>
       <!-- Email -->
       <div class="q-ma-md" style="width:300px">
-        <div class="q-ml-xs" align="left">E-mail</div>
+        <div class="q-ml-xs" align="left">อีเมล</div>
         <div>
           <q-input outlined v-model="email" />
         </div>
@@ -49,7 +49,7 @@
             </div>
           </q-card-section>
 
-          <q-card-section align="center" class="q-pt-none">E-mail หรือ รหัสผ่านผิดพลาด</q-card-section>
+          <q-card-section align="center" class="q-pt-none">อีเมล หรือ รหัสผ่านผิดพลาด</q-card-section>
 
           <q-card-actions align="center">
             <q-btn v-close-popup style="width:190px" label="ตกลง" color="blue-grey-10" />
@@ -113,17 +113,15 @@ export default {
     checkUserLogin() {
       this.loadingShow();
       auth.onAuthStateChanged(async user => {
+        console.log("object");
         if (user) {
           this.$q.localStorage.set("uid", user.uid);
           await this.getLoginKey(user.uid);
-          this.$router.push("/practiceList");
+          this.$router.push("/welcomeBack");
 
           this.loadingHide();
         } else {
           this.$q.localStorage.clear();
-          if (this.$route.name != "login") {
-            this.$router.push("/");
-          }
           this.loadingHide();
         }
       });
