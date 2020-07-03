@@ -72,7 +72,7 @@
         </div>
 
         <q-file accept="audio/*" bg-color="white" outlined v-model="uploadAudio">
-          <template v-slot:append>
+          <template class="relative-position" v-slot:append>
             <div
               style="width:100px"
               class="text-subtitle1 rounded-borders text-center bg-blue-grey-10 text-white q-pa-xs cursor-pointer"
@@ -80,7 +80,7 @@
               @click="isTextAudio  = '' "
               v-if="!uploadAudio && !isKeyAudio"
             >เลือกไฟล์</div>
-            <span v-if="uploadAudio || isKeyAudio" class="text-body1 q-pr-md">{{isKeyAudio}}</span>
+            <div v-if="uploadAudio || isKeyAudio" class="text-body1 absolute-center">{{isKeyAudio}}</div>
             <div
               class="cursor-pointer rounded-borders text-white bg-blue-grey-10"
               v-if="uploadAudio || isKeyAudio"
@@ -137,7 +137,7 @@
               />
               <q-icon v-if="iconfailDialog" color="red" size="46px" name="far fa-times-circle" />
             </div>
-            <div>{{text}}</div>
+            <div class="text-subtitle1">{{text}}</div>
           </div>
         </q-card>
       </q-dialog>
@@ -145,7 +145,10 @@
       <q-dialog v-model="cancelDialog">
         <q-card style="max-width:323px;width:100%;height:200px">
           <div class="text-h6 text-center q-pt-md q-pb-sm">
-            <div class="q-py-md q-mt-md">ยังไม่ได้ทำการบันทึกข้อมูล</div>
+            <div class="q-py-md q-mt-md text-subtitle1">
+              <div>คุณกำลังออกจากหน้านี้</div>
+              <div>ต้องการบันทึกข้อมูลหรือไม่</div>
+            </div>
           </div>
           <div class="row justify-center">
             <div class="q-px-xs">

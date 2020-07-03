@@ -102,12 +102,12 @@
               dense
               style="z-index:30;width:190px;"
               class="absolute-center q-pa-sm text-blue-grey-10"
-              v-if="item.mode  == 'waitForDelete'"
+              v-if="item.status  == 'waitForDelete'"
               color="white"
               label="ยกเลิกการลบ"
               @click="cancelDelete(item.key)"
             ></q-btn>
-            <div v-if="item.mode  == 'waitForDelete'" class="absolute-center backDrop"></div>
+            <div v-if="item.status  == 'waitForDelete'" class="absolute-center backDrop"></div>
             <div
               style="border-top-left-radius: 6px;border-top-right-radius: 6px "
               class="bg-blue-grey-10 text-white q-py-sm q-pr-xs q-pl-md text-subtitle1 row justify-between"
@@ -128,7 +128,7 @@
                 </q-btn>
                 <div class="col self-center desktop-only" align="right">
                   <q-btn
-                    v-if="item.mode  != 'waitForDelete' && mode == 'draft'"
+                    v-if="item.status  != 'waitForDelete' && mode == 'draft'"
                     @click="deleteBtn(item.key,item.order)"
                     size="sm"
                     class="q-mr-sm"
@@ -137,7 +137,7 @@
                     icon="far fa-trash-alt"
                   />
                   <q-btn
-                    v-if="item.mode  != 'waitForDelete' && mode == 'draft'"
+                    v-if="item.status  != 'waitForDelete' && mode == 'draft'"
                     @click="editBtn(item.key)"
                     size="sm"
                     flat
@@ -176,10 +176,17 @@
               <div class="text-h6">แก้ไขวิดีโอ</div>
               <div class="text-subtitle1 text-left q-px-md">ลิงก์วิดีโอ</div>
               <div class="q-px-md">
-                <q-input autogrow outlined v-model="dataVdo.linkVdo" dense />
+                <q-input
+                  autogrow
+                  outlined
+                  v-model="dataVdo.linkVdo"
+                  dense
+                  ref="link"
+                  :rules="[ val => !!val || 'กรุณาใส่ลิงก์วิดีโอ']"
+                />
               </div>
             </div>
-            <div align="center" class="q-px-md q-pt-sm">
+            <div align="center" class="q-px-md">
               <div class="row reverse-wrap justify-center" style="max-width:300px;width:100%">
                 <div class="col-6 q-py-sm text-center">
                   <q-btn
@@ -210,7 +217,7 @@
       <!-- delete -->
       <q-dialog v-model="isDeleteDialog" persistent>
         <q-card class="row justify-center" style="max-width:328px;width:100%;height:200px">
-          <div class="text-h6 text-center q-pt-xl q-pb-sm">
+          <div class="text-subtitle1 text-center q-pt-xl q-pb-sm">
             <div>ต้องการลบข้อมูล</div>
             <div>“รหัสลำดับ {{ orderId }}” หรือไม่</div>
           </div>
@@ -361,7 +368,7 @@ export default {
           db.collection("practice_draft")
             .doc(key)
             .update({
-              mode: "notSync"
+              status: "notSync"
             })
             .then(() => {
               this.loadDataAll();
@@ -382,6 +389,10 @@ export default {
       }
     },
     saveVdo() {
+      this.$refs.link.validate();
+      if (this.$refs.link.hasError) {
+        return;
+      }
       this.fileVdo = this.dataVdo.linkVdo;
       if (!this.dataVdo.isVdo) {
         this.dataVdo.isVdo = true;
@@ -399,31 +410,17 @@ export default {
       this.orderId = id;
       this.isDeleteDialog = true;
     },
+    // อัพเดด
     deleteData() {
       db.collection("practice_draft")
         .doc(this.isDeleteKey)
         .update({
-          mode: "waitForDelete"
+          status: "waitForDelete"
         })
         .then(() => {
           this.isDeleteDialog = false;
           this.loadDataAll();
         });
-      // return;
-      // this.loadingShow();
-      // if (key) {
-      //   db.collection("practice_draft")
-      //     .doc(key)
-      //     .delete()
-      //     .then(async () => {
-      //       await st.child("/practice/audio/" + key + ".mp3").delete();
-      //       this.loadDataAll();
-      //       this.loadingHide();
-      //     });
-      // } else {
-      //   this.loadingHide();
-      //   console.log("888");
-      // }
     }
   },
   mounted() {
