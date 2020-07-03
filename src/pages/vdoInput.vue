@@ -263,9 +263,9 @@ export default {
                       .child("/practice/audio/" + doc.id + ".mp3")
                       .put(this.uploadAudio);
                   }
-                  this.finishDialog = true;
                   this.iconfailDialog = false;
                   this.iconTrueDialog = true;
+                  this.finishDialog = true;
                   this.text = "บันทึกข้อมูลเรียบร้อย";
                   setTimeout(() => {
                     this.loadingHide();
@@ -276,8 +276,6 @@ export default {
                 });
             } else {
               this.loadingShow();
-              this.text = "บันทึกข้อมูลเรียบร้อย";
-              this.finishDialog = true;
               this.checkble = true;
               db.collection("practice_draft")
                 .doc(this.$route.params.key)
@@ -288,6 +286,10 @@ export default {
                       "/practice/audio/" + this.$route.params.key + ".mp3"
                     ).put(this.uploadAudio);
                   }
+                  this.iconfailDialog = false;
+                  this.iconTrueDialog = true;
+                  this.finishDialog = true;
+                  this.text = "บันทึกข้อมูลเรียบร้อย";
                   setTimeout(() => {
                     this.loadingHide();
                     this.$router.push("/vdoMain");
