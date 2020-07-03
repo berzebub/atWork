@@ -66,14 +66,12 @@
         </div>
       </div>
       <div>
-        <div class="text-left">ไฟล์เสียง</div>
-        <q-file
-          accept="audio/*"
-          bg-color="white"
-          style="max-width:328px"
-          outlined
-          v-model="uploadAudio"
-        >
+        <div class="text-left">
+          ไฟล์เสียง
+          <span class="q-mx-md text-grey-5">ไฟล์ mp3 เท่านั้น</span>
+        </div>
+
+        <q-file accept="audio/*" bg-color="white" outlined v-model="uploadAudio">
           <template v-slot:append>
             <div
               style="width:100px"
@@ -128,7 +126,7 @@
       </div>
       <!-- finish -->
       <q-dialog v-model="finishDialog">
-        <q-card style="max-width:600px;width:100%;height:200px">
+        <q-card style="max-width:323px;width:100%;height:200px">
           <div class="text-h6 text-center q-pt-md q-pb-sm">
             <div class="q-py-md q-mt-md">
               <q-icon
@@ -145,7 +143,7 @@
       </q-dialog>
       <!-- checkCancel -->
       <q-dialog v-model="cancelDialog">
-        <q-card style="max-width:600px;width:100%;height:200px">
+        <q-card style="max-width:323px;width:100%;height:200px">
           <div class="text-h6 text-center q-pt-md q-pb-sm">
             <div class="q-py-md q-mt-md">ยังไม่ได้ทำการบันทึกข้อมูล</div>
           </div>
