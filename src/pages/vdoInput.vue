@@ -79,6 +79,7 @@
               style="width:100px"
               class="text-subtitle1 rounded-borders text-center bg-blue-grey-10 text-white q-pa-xs cursor-pointer"
               @click.stop="uploadAudio = null"
+              @click="isTextAudio  = '' "
               v-if="!uploadAudio && !isKeyAudio"
             >เลือกไฟล์</div>
             <span v-if="uploadAudio || isKeyAudio" class="text-body1 q-pr-md">{{isKeyAudio}}</span>
@@ -86,7 +87,7 @@
               class="cursor-pointer rounded-borders text-white bg-blue-grey-10"
               v-if="uploadAudio || isKeyAudio"
               @click.stop="uploadAudio  = null"
-              @click="isKeyAudio  = ''"
+              @click="isKeyAudio  = '' "
             >
               <span style class="far fa-trash-alt q-px-xs"></span>
             </div>
@@ -97,17 +98,18 @@
             v-if="!uploadAudio && !isKeyAudio"
           >ลากแล้ววาง หรือ</div>
         </q-file>
+        <div class="q-pt-xs text-red text-body2">{{isTextAudio}}</div>
       </div>
       <div align="center">
         <div class="row reverse-wrap justify-center q-pt-md" style="max-width:340px;width:100%">
           <div class="col-6 q-py-sm text-left">
             <q-btn
-              to="/vdoMain"
               v-close-popup
               dense
               style="width:150px"
               color="white"
               outline
+              @click="checkCancel()"
               text-color="blue-grey-10"
               label="ยกเลิก"
             />
@@ -124,6 +126,56 @@
           </div>
         </div>
       </div>
+      <!-- finish -->
+      <q-dialog v-model="finishDialog">
+        <q-card style="max-width:600px;width:100%;height:200px">
+          <div class="text-h6 text-center q-pt-md q-pb-sm">
+            <div class="q-py-md q-mt-md">
+              <q-icon
+                v-if="iconTrueDialog"
+                color="secondary"
+                size="46px"
+                name="far fa-check-circle"
+              />
+              <q-icon v-if="iconfailDialog" color="red" size="46px" name="far fa-times-circle" />
+            </div>
+            <div>{{text}}</div>
+          </div>
+        </q-card>
+      </q-dialog>
+      <!-- checkCancel -->
+      <q-dialog v-model="cancelDialog">
+        <q-card style="max-width:600px;width:100%;height:200px">
+          <div class="text-h6 text-center q-pt-md q-pb-sm">
+            <div class="q-py-md q-mt-md">ยังไม่ได้ทำการบันทึกข้อมูล</div>
+          </div>
+          <div class="row justify-center">
+            <div class="q-px-xs">
+              <q-btn
+                v-close-popup
+                color="white"
+                outline
+                text-color="blue-grey-10"
+                style="width:90px"
+                label="ยกเลิก"
+              />
+            </div>
+            <div class="q-px-xs">
+              <q-btn
+                to="/vdoMain"
+                color="white"
+                outline
+                text-color="blue-grey-10"
+                style="width:90px"
+                label="ไม่บันทึก"
+              />
+            </div>
+            <div class="q-px-xs">
+              <q-btn style="width:90px" class="bg-blue-grey-10 text-white" label="บันทึก" />
+            </div>
+          </div>
+        </q-card>
+      </q-dialog>
     </div>
   </q-page>
 </template>
@@ -133,7 +185,9 @@ import { db, st } from "../router";
 export default {
   data() {
     return {
+      cancelDialog: false,
       checkble: false,
+      isTextAudio: "",
       uploadAudio: null,
       isKeyAudio: "",
       data: {
@@ -146,7 +200,11 @@ export default {
         isSound: false,
         customer: 1,
         status: "notSync"
-      }
+      },
+      iconTrueDialog: true,
+      iconfailDialog: false,
+      finishDialog: false,
+      text: ""
     };
   },
   methods: {
@@ -161,6 +219,7 @@ export default {
           this.data = doc.data();
         });
     },
+
     saveBtn() {
       this.$refs.orderid.validate();
       this.$refs.eng.validate();
@@ -172,27 +231,79 @@ export default {
       ) {
         return;
       }
-      if (this.uploadAudio == null) {
-        return;
-      }
       if (this.uploadAudio) {
         this.data.isSound = true;
       }
-      if (this.$route.name == "vdoInputAdd") {
-        db.collection("practice_draft")
-          .add(this.data)
-          .then(async doc => {
-            if (this.uploadAudio) {
-              await st
-                .child("/practice/audio/" + doc.id + ".mp3")
-                .put(this.uploadAudio);
-            }
+      db.collection("practice_draft")
+        .where("order", "==", this.data.order)
+        .get()
+        .then(doc => {
+          if (doc.size > 0) {
+            this.finishDialog = true;
+            this.iconTrueDialog = false;
+            this.iconfailDialog = true;
+            this.text = "รหัสลำดับนี้มีผู้ใช้งานแล้ว";
             setTimeout(() => {
-              this.loadingHide();
-              this.$router.push("/vdoMain");
+              this.finishDialog = false;
             }, 1000);
-          });
+            return;
+          } else {
+            if (this.$route.name == "vdoInputAdd") {
+              if (this.uploadAudio == null) {
+                this.isTextAudio = "กรุณาอัปโหลดเสียง";
+                return;
+              }
+              this.loadingShow();
+              this.checkble = true;
+              db.collection("practice_draft")
+                .add(this.data)
+                .then(async doc => {
+                  if (this.uploadAudio) {
+                    await st
+                      .child("/practice/audio/" + doc.id + ".mp3")
+                      .put(this.uploadAudio);
+                  }
+                  this.finishDialog = true;
+                  this.iconfailDialog = false;
+                  this.iconTrueDialog = true;
+                  this.text = "บันทึกข้อมูลเรียบร้อย";
+                  setTimeout(() => {
+                    this.loadingHide();
+                    this.$router.push("/vdoMain");
+                    this.finishDialog = false;
+                    this.checkble = false;
+                  }, 1000);
+                });
+            } else {
+              this.loadingShow();
+              this.text = "บันทึกข้อมูลเรียบร้อย";
+              this.finishDialog = true;
+              this.checkble = true;
+              db.collection("practice_draft")
+                .doc(this.$route.params.key)
+                .set(this.data)
+                .then(() => {
+                  if (this.uploadAudio) {
+                    st.child(
+                      "/practice/audio/" + this.$route.params.key + ".mp3"
+                    ).put(this.uploadAudio);
+                  }
+                  setTimeout(() => {
+                    this.loadingHide();
+                    this.$router.push("/vdoMain");
+                    this.finishDialog = false;
+                    this.checkble = false;
+                  }, 1000);
+                });
+            }
+          }
+        });
+    },
+    checkCancel() {
+      if (this.data.order != "") {
+        this.cancelDialog = true;
       } else {
+        this.$router.push("/vdoMain");
       }
     }
   },
