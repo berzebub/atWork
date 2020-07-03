@@ -204,21 +204,22 @@
           <!-- คำอ่าน -->
           <div>
             <div class="text-h6" align="left">คำอ่าน</div>
-            <div>
+            <div align="left">
               <q-editor
                 @input="checkRead()"
-                :class="this.checkValidate == true?'error-border': null  "
+                :class="this.checkValidate == true?'error-border': null "
                 ref="read"
                 v-model="data.read"
                 min-height="5rem"
                 :toolbar="[
-        ['bold', 'italic', 'underline']
-      ]"
+              ['bold', 'italic', 'underline']
+              ]"
               />
             </div>
             <div
+              align="left"
               :style="this.checkValidate == false?'visibility:hidden': null"
-              class="error-text"
+              class="error-text q-ml-md font"
             >กรุณากรอกข้อมูลให้ถูกต้อง</div>
           </div>
           <!-- คำแปล -->
@@ -239,7 +240,7 @@
         <!-- ยกเลิก -->
         <div class="q-mt-md col">
           <q-btn
-            :to="'/flashcardMain/' + data.levelId + '/'+ data.unitId "
+            :to="'/flashcardMain/' + data.levelId + '/'+ data.unitId + '/'+ data.practiceId "
             label="ยกเลิก"
             dense
             style="width:150px"
@@ -403,4 +404,8 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.font {
+  font-size: 12px;
+}
+</style>

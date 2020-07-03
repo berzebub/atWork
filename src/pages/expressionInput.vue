@@ -158,12 +158,12 @@ import { db } from "../router";
 export default {
   data() {
     return {
-      practiceId: "",
+      practiceId: this.$route.params.practiceId,
       levelId: this.$route.params.levelId,
+      unitId: this.$route.params.unitId,
       successData: false,
       getIndex: "",
       dialogdeleteCard: false,
-      unitId: this.$route.params.unitId,
       boxCount: 1,
       order: "",
       errorSentenceEng1: false,
@@ -297,7 +297,12 @@ export default {
             setTimeout(() => {
               this.successData = false;
               this.$router.push(
-                "/expressionMain/" + this.levelId + "/" + this.unitId
+                "/expressionMain/" +
+                  this.levelId +
+                  "/" +
+                  this.unitId +
+                  "/" +
+                  this.practiceId
               );
             }, 700);
           });

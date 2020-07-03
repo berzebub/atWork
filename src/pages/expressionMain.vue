@@ -30,7 +30,7 @@
           v-if="expressionType == 'draft'"
           style="width:190px; height:36px"
           class="bg-blue-grey-10"
-          :to="'/expressionInput/'+ levelId+'/'+unitId"
+          :to="'/expressionInput/'+ levelId+'/'+unitId +'/'+ practiceId"
           color="white"
           label="เพิ่ม"
         ></q-btn>
@@ -172,6 +172,7 @@ export default {
       showDataExpression: "",
       levelId: this.$route.params.levelId,
       unitId: this.$route.params.unitId,
+      practiceId: this.$route.params.practiceId,
       isSnap: ""
     };
   },
