@@ -29,20 +29,33 @@
         </div>
         <div class="desktop-only">
           <div class="text-right">
-            <q-btn round color="blue-grey-10" icon="fas fa-print" to="/multiplePrint" />
+            <q-btn
+              v-if="mode == 'draft'"
+              round
+              color="blue-grey-10"
+              icon="fas fa-print"
+              to="/multiplePrint"
+            />
           </div>
         </div>
       </div>
       <div class="text-h6">
-        <div class="q-pt-md">{{practiceData.levelName}}</div>
-        <div>{{ practiceData.unitOrder + ". " + practiceData.unitName}}</div>
+        <div class="q-pt-md">{{ practiceData.levelName }}</div>
+        <div>{{ practiceData.unitOrder + ". " + practiceData.unitName }}</div>
       </div>
       <!-- box คำสั่ง -->
       <div class="box text-left q-my-md">
         <div class="bg-blue-grey-10 text-white boxQuestion row q-px-sm">
           <div class="col self-center">คำสั่ง</div>
           <div class="col self-center" align="right">
-            <q-btn @click="editQuestion()" size="sm" round flat icon="far fa-edit" />
+            <q-btn
+              v-if="mode == 'draft'"
+              @click="editQuestion()"
+              size="sm"
+              round
+              flat
+              icon="far fa-edit"
+            />
           </div>
         </div>
         <div class="row q-px-md q-py-sm" style="height:120px;">
@@ -82,17 +95,23 @@
             class="text-white cursor-pointer"
             @click="cancelDelete(item.key)"
             style="text-decoration:underline;"
-          >ยกเลิกการลบ</a>
+            >ยกเลิกการลบ</a
+          >
         </div>
-        <div v-if="item.status == 'waitForDelete'" class="absolute-center backDrop"></div>
+        <div
+          v-if="item.status == 'waitForDelete'"
+          class="absolute-center backDrop"
+        ></div>
 
         <div class="boxQuestion bg-blue-grey-10 text-white q-py-xs q-px-sm row">
           <div class="col self-center">
-            <span v-if="item.status != 'waitForDelete'">รหัสลำดับ {{ item.order }}</span>
+            <span v-if="item.status != 'waitForDelete'"
+              >รหัสลำดับ {{ item.order }}</span
+            >
           </div>
           <div class="col self-center" align="right">
             <q-btn
-              v-if="item.status != 'waitForDelete'"
+              v-if="item.status != 'waitForDelete' && mode == 'draft'"
               @click="deleteData(item.key, item.order, index)"
               size="sm"
               class="q-mr-sm"
@@ -101,7 +120,7 @@
               icon="far fa-trash-alt"
             />
             <q-btn
-              v-if="item.status != 'waitForDelete'"
+              v-if="item.status != 'waitForDelete' && mode == 'draft'"
               @click="editData(item.key)"
               size="sm"
               flat
@@ -125,26 +144,38 @@
           <span class="q-mx-xs q-pr-sm q-pl-xs" v-html="item.question"></span>
         </div>
         <div class="q-px-md q-mt-md">
-          <div v-for="(items,index2) in item.choices" :key="index2">
+          <div v-for="(items, index2) in item.choices" :key="index2">
             <div v-if="item.isAnswerSound && items.choice" class="q-mt-xs">
               <q-btn
                 round
                 flat
                 size="sm"
-                :icon="items.isSound ? 'fas fa-volume-up' : 'fas fa-volume-mute'"
+                :icon="
+                  items.isSound ? 'fas fa-volume-up' : 'fas fa-volume-mute'
+                "
                 :class="!items.isSound ? 'no-pointer-events' : ''"
                 @click="playAudio(items.soundURL)"
               ></q-btn>
               <span
                 class="q-mx-xs q-pr-sm q-pl-xs"
-                :class="item.correctAnswer == (index2 + 1) ? 'bg-secondary text-white ' : ''"
-              >{{ (index2 + 1) + ") " + items.choice}}</span>
+                :class="
+                  item.correctAnswer == index2 + 1
+                    ? 'bg-secondary text-white '
+                    : ''
+                "
+                >{{ index2 + 1 + ") " + items.choice }}</span
+              >
             </div>
             <div v-else>
               <span
                 class="q-mx-xs q-pr-sm q-pl-xs"
-                :class="item.correctAnswer == (index2 + 1) ? 'bg-secondary text-white ' : ''"
-              >{{items.choice}}</span>
+                :class="
+                  item.correctAnswer == index2 + 1
+                    ? 'bg-secondary text-white '
+                    : ''
+                "
+                >{{ items.choice }}</span
+              >
             </div>
           </div>
         </div>
@@ -195,7 +226,13 @@
                 />
               </div>
               <div class="q-px-md q-pb-md">
-                <q-btn @click="saveBtn()" dense style="width:150px" color="black" label="บันทึก" />
+                <q-btn
+                  @click="saveBtn()"
+                  dense
+                  style="width:150px"
+                  color="black"
+                  label="บันทึก"
+                />
               </div>
             </div>
           </div>
@@ -224,7 +261,7 @@
               </div>
               <div class="q-px-md q-pb-md">
                 <q-btn
-                  @click="deleteBtn(),isDeleteDialog = false"
+                  @click="deleteBtn(), (isDeleteDialog = false)"
                   dense
                   style="width:150px"
                   color="black"
@@ -241,7 +278,11 @@
         <q-card style="max-width:600px;width:100%;height:200px">
           <div class="text-h6 text-center q-pt-md q-pb-sm">
             <div class="q-py-md q-mt-md">
-              <q-icon color="secondary" size="46px" name="far fa-check-circle" />
+              <q-icon
+                color="secondary"
+                size="46px"
+                name="far fa-check-circle"
+              />
             </div>
             <div>บันทึกข้อมูลเรียบร้อย</div>
           </div>
