@@ -17,7 +17,7 @@
               ref="order"
               :rules="[val => val || 'กรุณากรอกข้อมูลให้ถูกต้อง']"
               outlined
-              type="number"
+              mask="###"
               v-model.number="data.order"
             />
           </div>
