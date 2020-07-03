@@ -15,7 +15,7 @@
         </div>
         <div
           class="shadow-3 bg-white row"
-          :style=" $q.platform.is.mobile?'height: calc(100vh - 148px)':'height: calc(100vh - 64px)'"
+          :style=" $q.platform.is.mobile?'height: calc(100vh - 128px)':'height: calc(100vh - 64px)'"
         >
           <div class="col-12">
             <div

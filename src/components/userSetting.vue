@@ -2,10 +2,10 @@
   <div class="container">
     <!-- box2 แก้ไขชื่อ -->
     <div
-      class
       v-show="infoData == '1'"
       align="center"
-      :style="$q.platform.is.desktop?'width:328px;margin-top:50%;margin-left:25%':''"
+      class="brx"
+      :style="$q.platform.is.desktop?'margin-left: calc(100% - 73%);margin-right: calc(100% - 74%);margin-top:50%':''"
     >
       <div class="text-h6">แก้ไข ชื่อ สกุล</div>
       <div class="q-mt-lg">
@@ -35,7 +35,7 @@
     <div
       v-show="infoData == '2'"
       align="center"
-      :style="$q.platform.is.desktop?'width:328px;margin-top:50%;margin-left:25%':''"
+      :style="$q.platform.is.desktop?'margin-left: calc(100% - 73%);margin-right: calc(100% - 74%);margin-top:50%':''"
     >
       <div class="text-h6">คุณต้องการรีเซตรหัสผ่าน</div>
       <div class="text-subtitle1">"{{userInfo.email}}"</div>
@@ -61,7 +61,7 @@
     <div
       v-show="infoData == '3'"
       align="center"
-      :style="$q.platform.is.desktop?'width:328px;margin-top:50%;margin-left:25%':''"
+      :style="$q.platform.is.desktop?'margin-left: calc(100% - 73%);margin-right: calc(100% - 74%);margin-top:50%':''"
     >
       <div class="text-h6 q-mb-md">ออกจากระบบ</div>
       <div>
@@ -189,7 +189,7 @@ export default {
           setTimeout(() => {
             this.isDialogSuccess = false;
             this.backMainPage();
-          }, 700);
+          }, 2500);
           this.isNamePage = false;
         });
     },
