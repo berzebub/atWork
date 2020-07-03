@@ -16,7 +16,7 @@
       </div>
       <div class="row justify-center">
         <q-btn
-          @click="backMainPage()"
+          @click="dialogChangeData()"
           class="q-mx-md"
           label="ยกเลิก"
           :style="$q.platform.is.desktop?'width:120px':'width:100px'"
@@ -82,7 +82,9 @@
     <!-- -------------------------------------------Diaolog--------------------------------------- -->
     <!-- เพิ่มข้อมูลสำเร็จ -->
     <q-dialog v-model="isDialogSuccess">
-      <q-card style="min-width: 350px; height:170px">
+      <q-card
+        :style="$q.platform.is.desktop?'min-width: 350px; height:200px; margin-left:23%':'min-width: 350px; height:200px'"
+      >
         <q-card-section class="absolute-center" align="center">
           <div>
             <q-icon color="secondary" size="lg" name="far fa-check-circle" />
@@ -93,7 +95,9 @@
     </q-dialog>
     <!-- correct Email -->
     <q-dialog v-model="dialogEmail">
-      <q-card style="width:323px; height:200px">
+      <q-card
+        :style="$q.platform.is.desktop?'min-width: 350px; height:200px; margin-left:23%':'min-width: 350px; height:200px'"
+      >
         <q-card-section align="center">
           <div class="q-mt-md">
             <q-icon color="secondary" size="lg" name="far fa-check-circle" />
@@ -107,12 +111,34 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+    <!-- dont complete data -->
+    <q-dialog v-model="dialogDontChangeData">
+      <q-card
+        :style="$q.platform.is.desktop?'min-width: 350px; height:200px; margin-left:23%':'min-width: 350px; height:200px'"
+      >
+        <q-card-section align="center" class="q-pt-xl">
+          <div class="text-subtitle1">คุณกำลังออกจากหน้านี้</div>
+          <div class="text-subtitle1">ต้องการบันทึกข้อมูลหรือไม่</div>
+        </q-card-section>
+
+        <q-card-actions align="center" class="q-mt-xs" style="width:350px">
+          <q-btn
+            @click="dialogChangeData()"
+            style="width:90px"
+            label="ยกเลิก"
+            outline
+            v-close-popup
+          />
+          <q-btn @click="backMainPage()" style="width:90px" label="ไม่บันทึก" outline />
+          <q-btn @click="saveChangeName()" style="width:90px" label="บันทึก" color="blue-grey-10" />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 
 <script>
 import { auth, db } from "../router";
-import flashcardMainVue from "../pages/flashcardMain.vue";
 import { uid } from "quasar";
 import userInfoVue from "../pages/userInfo.vue";
 export default {
@@ -130,7 +156,8 @@ export default {
       isPasswordPage: false,
       isLogOutPage: false,
       isDialogSuccess: false,
-      dialogEmail: false
+      dialogEmail: false,
+      dialogDontChangeData: false
     };
   },
   watch: {
@@ -191,6 +218,9 @@ export default {
         .collection("user_admin")
         .doc(this.userInfo.userId)
         .update({ loginKey: genCode });
+    },
+    dialogChangeData() {
+      this.dialogDontChangeData = true;
     }
     // checkConfrimPassword(val) {
     //   return this.newPassword == val || "รหัสผ่านไม่ตรงกัน";

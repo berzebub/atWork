@@ -36,8 +36,103 @@
         <div>อาหารและเครื่องดื่ม</div>
         <div>1. จองโต๊ะ</div>
       </div>
+      <div class="q-my-md boxCard text-left">
+        <div
+          style="border-top-left-radius: 6px;border-top-right-radius: 6px "
+          class="bg-blue-grey-10 text-white q-py-sm q-pr-xs q-pl-md text-subtitle1 row justify-between"
+        >
+          <div class="self-center">วิดีโอสนทนา</div>
+          <div>
+            <q-btn size="13px" icon="fas fa-ellipsis-v" round dense flat>
+              <q-menu>
+                <q-list style="min-width: 120px">
+                  <q-item clickable v-close-popup>
+                    <q-item-section @click="editBtn()">แก้ไขข้อมูล</q-item-section>
+                  </q-item>
+                  <q-item clickable v-close-popup>
+                    <q-item-section @click="deleteBtn()">ลบ</q-item-section>
+                  </q-item>
+                </q-list>
+              </q-menu>
+            </q-btn>
+          </div>
+        </div>
 
+        <div class="q-px-md q-py-sm">
+          <div align="center">
+            <div class="brx q-my-md" style="max-width:500px;height:278px"></div>
+          </div>
+          <div class="text-subtitle1">ลิงก์วิดีโอ</div>
+          <div>
+            <q-input outlined v-model="fileVdo" dense readonly />
+          </div>
+          <div class="text-center q-py-md">
+            <router-link @click.native="remove" to="/remove">
+              <span
+                class="text-blue-grey-10 text-center text-body2"
+              >ขั้นตอนการตั้งค่าอัพโหลดไฟล์บน Youtube</span>
+            </router-link>
+          </div>
+        </div>
+      </div>
+      <q-separator />
       <div class="q-pt-md">
+        <div class="text-center">
+          <q-btn
+            @click="addBtn()"
+            style="max-width :190px;width:100%"
+            class="bg-blue-grey-10 text-white text-subtitle1"
+            label="เพิ่มประโยค"
+          />
+        </div>
+        <div class="text-center">
+          <div v-for="item,index in data" :key="index" class="q-mt-md boxCard text-left">
+            <div
+              style="border-top-left-radius: 6px;border-top-right-radius: 6px "
+              class="bg-blue-grey-10 text-white q-py-sm q-pr-xs q-pl-md text-subtitle1 row justify-between"
+            >
+              <div class="self-center">รหัสลำดับ {{item.order}}</div>
+              <div>
+                <q-btn size="13px" icon="fas fa-ellipsis-v" round dense flat>
+                  <q-menu>
+                    <q-list style="min-width: 120px">
+                      <q-item clickable v-close-popup>
+                        <q-item-section @click="editBtn(item.key)">แก้ไขข้อมูล</q-item-section>
+                      </q-item>
+                      <q-item clickable v-close-popup>
+                        <q-item-section @click="deleteBtn(item.key)">ลบ</q-item-section>
+                      </q-item>
+                    </q-list>
+                  </q-menu>
+                </q-btn>
+              </div>
+            </div>
+
+            <div class="q-px-md q-py-sm">
+              <div class="row">
+                <div
+                  :v-show="item.customer == 1 ? text = 'ลูกค้า:' : text = 'พนักงาน:' "
+                  class="text-subtitle1"
+                >{{text}}</div>
+                <div class="q-px-sm">
+                  <q-btn
+                    size="sm"
+                    @click="playAudio(item.soundURL)"
+                    round
+                    flat
+                    icon="fas fa-volume-up"
+                  />
+                </div>
+                <div class="col">
+                  <span class="text-subtitle1">{{item.sentenceEng}}</span>
+                </div>
+              </div>
+              <div class="text-blue-grey-7 text-subtitle2">{{item.sentenceTh}}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- <div class="q-pt-md">
         <div class="text-right box" style="max-width:700px">
           <q-tabs
             v-model="tab"
@@ -124,67 +219,49 @@
               </div>
             </q-tab-panel>
 
-            <q-tab-panel align="center" name="sentence">
-              <div>
-                <span>
-                  <q-btn
-                    @click="addBtn()"
-                    style="max-width :190px;width:100%"
-                    class="bg-blue-grey-10 text-white text-subtitle1"
-                    label="เพิ่มประโยค"
-                  />
-                </span>
-                <div>
-                  <div v-for="item,index in data" :key="index" class="q-mt-md boxCard text-left">
-                    <div
-                      style="border-top-left-radius: 6px;border-top-right-radius: 6px "
-                      class="bg-blue-grey-10 text-white q-py-sm q-pr-xs q-pl-md text-subtitle1 row justify-between"
-                    >
-                      <div class="self-center">รหัสลำดับ {{item.order}}</div>
-                      <div>
-                        <q-btn size="13px" icon="fas fa-ellipsis-v" round dense flat>
-                          <q-menu>
-                            <q-list style="min-width: 120px">
-                              <q-item clickable v-close-popup>
-                                <q-item-section @click="editBtn(item.key)">แก้ไขข้อมูล</q-item-section>
-                              </q-item>
-                              <q-item clickable v-close-popup>
-                                <q-item-section @click="deleteBtn(item.key)">ลบ</q-item-section>
-                              </q-item>
-                            </q-list>
-                          </q-menu>
-                        </q-btn>
-                      </div>
-                    </div>
-
-                    <div class="q-px-md q-py-sm">
-                      <div class="row">
-                        <div
-                          :v-show="item.customer == 1 ? text = 'ลูกค้า:' : text = 'พนักงาน:' "
-                          class="text-subtitle1"
-                        >{{text}}</div>
-                        <div class="q-px-sm">
-                          <q-btn
-                            size="sm"
-                            @click="playAudio(item.soundURL)"
-                            round
-                            flat
-                            icon="fas fa-volume-up"
-                          />
-                        </div>
-                        <div class="col">
-                          <span class="text-subtitle1">{{item.sentenceEng}}</span>
-                        </div>
-                      </div>
-                      <div class="text-blue-grey-7 text-subtitle2">{{item.sentenceTh}}</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </q-tab-panel>
+            <q-tab-panel align="center" name="sentence"></q-tab-panel>
           </q-tab-panels>
         </div>
-      </div>
+      </div>-->
+      <!-- vdo -->
+      <q-dialog v-model="editVdoDialog">
+        <q-card style="max-width:600px;width:100%;height:200px">
+          <div class="text-h6 text-center q-pt-md q-pb-sm">
+            <div>
+              <div class="text-h6">แก้ไขวิดีโอ</div>
+              <div class="text-subtitle1 text-left q-px-md">ลิงก์วิดีโอ</div>
+              <div class="q-px-md">
+                <q-input autogrow outlined v-model="linkVdo" dense />
+              </div>
+            </div>
+            <div align="center" class="q-px-md q-pt-sm">
+              <div class="row reverse-wrap justify-center" style="max-width:300px;width:100%">
+                <div class="col-6 q-py-sm text-center">
+                  <q-btn
+                    dense
+                    style="width:120px"
+                    color="white"
+                    outline
+                    v-close-popup
+                    text-color="blue-grey-10"
+                    label="ยกเลิก"
+                  />
+                </div>
+                <div class="col-6 q-py-sm text-center">
+                  <q-btn
+                    :disable="checkble"
+                    @click="saveVdo()"
+                    dense
+                    style="width:120px"
+                    color="blue-grey-10"
+                    label="บันทึก"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </q-card>
+      </q-dialog>
     </div>
   </q-page>
 </template>
@@ -194,7 +271,11 @@ import { db, st } from "../router";
 export default {
   data() {
     return {
+      linkVdo: "",
+      checkble: false,
+      editVdoDialog: true,
       text: "",
+      fileVdo: "",
       uploadImg: null,
       uploadVdo: null,
       isKeyVdio: "",
@@ -254,24 +335,37 @@ export default {
     addBtn() {
       this.$router.push("/vdoInputAdd");
     },
+
     // เล่นเสียง
     playAudio(sound) {
       let audio = new Audio(sound);
       audio.play();
     },
     editBtn(key) {
-      this.$router.push("/vdoInputEdit/" + key);
+      if (key) {
+        this.$router.push("/vdoInputEdit/" + key);
+      } else {
+        console.log("5555");
+      }
+    },
+    saveVdo() {
+      console.log("awdawd");
     },
     deleteBtn(key) {
       this.loadingShow();
-      db.collection("practice_draft")
-        .doc(key)
-        .delete()
-        .then(async () => {
-          await st.child("/practice/audio/" + key + ".mp3").delete();
-          this.loadingHide();
-          this.loadDataAll();
-        });
+      if (key) {
+        db.collection("practice_draft")
+          .doc(key)
+          .delete()
+          .then(async () => {
+            await st.child("/practice/audio/" + key + ".mp3").delete();
+            this.loadDataAll();
+            this.loadingHide();
+          });
+      } else {
+        this.loadingHide();
+        console.log("888");
+      }
     }
   },
   mounted() {

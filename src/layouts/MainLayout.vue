@@ -7,7 +7,7 @@
     >
       <q-toolbar>
         <q-toolbar-title class="q-pa-md" v-if="$route.name == 'lessonMainList'">
-          <span class="text-h6">ระดับการเรียน</span>
+          <span class="text-h6">บทเรียน</span>
         </q-toolbar-title>
         <q-toolbar-title
           class="q-pa-md"
@@ -38,6 +38,7 @@
       show-if-above
       content-class="desktop-only bg-grey-1 bg-blue-grey-10 row "
       :width="100"
+      v-if="$q.platform.is.desktop"
     >
       <div
         class="row text-body2 text-blue-grey-4 self-start"
@@ -57,7 +58,7 @@
           @click="$router.push('/practiceList')"
         >
           <div>
-            <q-icon name="book" size="25px" />
+            <q-icon name="fas fa-book" size="25px" />
           </div>
           <div class="q-pt-sm">แบบฝึกหัด</div>
         </div>
@@ -75,19 +76,9 @@
           <div>
             <q-icon name="fas fa-signal" size="25px" />
           </div>
-          <div class="q-pt-sm" style="font-size: 14px">ระดับการเรียน</div>
+          <div class="q-pt-sm" style="font-size: 14px">บทเรียน</div>
         </div>
-        <!-- <div
-          class="full-width q-py-md relative-position cursor-pointer"
-          :class="$route.name=='businessMain'?'active-line active-text':'no-active-line'"
-          v-ripple
-          @click="$router.push('/businessMain')"
-        >
-          <div>
-            <q-icon name="fas fa-building" size="25px" />
-          </div>
-          <div class="q-pt-sm">กิจการ</div>
-        </div>-->
+
         <div
           class="full-width q-py-md relative-position cursor-pointer"
           :class="
@@ -105,7 +96,7 @@
           <div class="q-pt-sm">ผู้ใช้งาน</div>
         </div>
         <div
-          class="full-width q-py-md relative-position curso-r-pointer"
+          class="full-width q-py-md relative-position cursor-pointer"
           :class="
             $route.name == 'userMain'
               ? 'active-line active-text'
@@ -140,7 +131,11 @@
     </q-drawer>
     <!-- เมนูมือถือ -->
     <q-footer elevated>
-      <div class="mobile-only row bg-blue-grey-10 text-blue-grey-4" align="center">
+      <div
+        v-if="$q.platform.is.mobile"
+        class="mobile-only row bg-blue-grey-10 text-blue-grey-4"
+        align="center"
+      >
         <div
           class="col q-pa-xs q-pt-sm relative-position cursor-pointer"
           :class="
@@ -151,7 +146,7 @@
           @click="$router.push('/practiceList')"
           v-ripple
         >
-          <q-icon name="book" size="25px" />
+          <q-icon name="fas fa-book" size="25px" />
           <br />
           <span style="font-size:11px">แบบฝึกหัด</span>
         </div>
@@ -167,7 +162,7 @@
         >
           <q-icon name="fas fa-signal" size="25px" />
           <br />
-          <span style="font-size:11px">ระดับการเรียน</span>
+          <span style="font-size:11px">บทเรียน</span>
         </div>
         <div
           class="col q-pa-xs q-pt-sm relative-position cursor-pointer"
