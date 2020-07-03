@@ -38,6 +38,7 @@
       show-if-above
       content-class="desktop-only bg-grey-1 bg-blue-grey-10 row "
       :width="100"
+      v-if="$q.platform.is.desktop"
     >
       <div
         class="row text-body2 text-blue-grey-4 self-start"
@@ -57,7 +58,7 @@
           @click="$router.push('/practiceList')"
         >
           <div>
-            <q-icon name="book" size="25px" />
+            <q-icon name="fas fa-book" size="25px" />
           </div>
           <div class="q-pt-sm">แบบฝึกหัด</div>
         </div>
@@ -95,7 +96,7 @@
           <div class="q-pt-sm">ผู้ใช้งาน</div>
         </div>
         <div
-          class="full-width q-py-md relative-position curso-r-pointer"
+          class="full-width q-py-md relative-position cursor-pointer"
           :class="
             $route.name == 'userMain'
               ? 'active-line active-text'
@@ -130,7 +131,11 @@
     </q-drawer>
     <!-- เมนูมือถือ -->
     <q-footer elevated>
-      <div class="mobile-only row bg-blue-grey-10 text-blue-grey-4" align="center">
+      <div
+        v-if="$q.platform.is.mobile"
+        class="mobile-only row bg-blue-grey-10 text-blue-grey-4"
+        align="center"
+      >
         <div
           class="col q-pa-xs q-pt-sm relative-position cursor-pointer"
           :class="
@@ -141,7 +146,7 @@
           @click="$router.push('/practiceList')"
           v-ripple
         >
-          <q-icon name="book" size="25px" />
+          <q-icon name="fas fa-book" size="25px" />
           <br />
           <span style="font-size:11px">แบบฝึกหัด</span>
         </div>
