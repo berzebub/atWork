@@ -43,7 +43,7 @@
           </q-list>
         </div>
       </div>
-      <div class="col q-pa-md">
+      <div class="col">
         <practice-main
           v-if="isShowPracticeMain"
           :levelId="levelId"

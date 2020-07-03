@@ -1,5 +1,5 @@
 <template>
-  <div class="container q-pa-md">
+  <div class="container">
     <div class="text-h6" align="center">
       <span>{{levelName}}</span>
       <br />
@@ -54,10 +54,11 @@
           <div class="row" :class="$q.platform.is.desktop ? 'col-2':'col-4'" align="center">
             <div class="col">
               <q-btn
+                v-show="itemPrac.showSync"
                 round
                 color="blue-grey-10"
                 icon="fas fa-sync-alt"
-                @click="sync(itemPrac.practiceId)"
+                @click="sync(itemPrac.practiceId).then(() => emitData(itemPrac) )"
               />
             </div>
             <div class="col">
@@ -231,6 +232,9 @@ export default {
     };
   },
   methods: {
+    emitData(item) {
+      this.$emit("finishSync", item);
+    },
     addPractice() {
       // เพิ่มแบบฝึกหัด
       this.isShowPractice = false;
@@ -337,7 +341,7 @@ export default {
         });
     },
     loadData() {
-      // console.log(this.levelId, this.unitId);
+      this.loadingShow();
       this.isSnap = db
         .collection("practice_list")
         .where("levelId", "==", this.levelId)
@@ -371,16 +375,27 @@ export default {
             return a.order - b.order;
           });
           this.practiceListShow = temp;
+          this.loadingHide();
         });
     },
     gotoPractice(itemPrac) {
       if (itemPrac.practiceType == "flashcard") {
         this.$router.push(
-          "/flashcardMain/" + itemPrac.levelId + "/" + itemPrac.unitId
+          "/flashcardMain/" +
+            itemPrac.levelId +
+            "/" +
+            itemPrac.unitId +
+            "/" +
+            itemPrac.practiceId
         );
-      } else if (itemPrac.practiceType == "multipleChoies") {
+      } else if (itemPrac.practiceType == "multipleChoice") {
         this.$router.push(
-          "/multipleMain/" + itemPrac.levelId + "/" + itemPrac.unitId
+          "/multipleMain/" +
+            itemPrac.levelId +
+            "/" +
+            itemPrac.unitId +
+            "/" +
+            itemPrac.practiceId
         );
       } else if (itemPrac.practiceType == "expression") {
         this.$router.push(
@@ -406,7 +421,11 @@ export default {
   },
   watch: {
     unitId(newValue, oldValue) {
+      this.data.unitId = newValue;
       this.loadData();
+    },
+    levelId(newValue, oldValue) {
+      this.data.levelId = newValue;
     }
   },
   beforeDestroy() {
