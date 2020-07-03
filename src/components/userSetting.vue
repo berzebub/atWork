@@ -139,7 +139,6 @@
 
 <script>
 import { auth, db } from "../router";
-import flashcardMainVue from "../pages/flashcardMain.vue";
 import { uid } from "quasar";
 import userInfoVue from "../pages/userInfo.vue";
 export default {

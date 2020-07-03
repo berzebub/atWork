@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="col q-pa-md">
+    <div class="col q-pa-md" v-if="$route.params.userInfo != undefined">
       <user-setting :infoData="type" :userInfo="userInfo" @backStep="val => getBackPage(val)"></user-setting>
     </div>
   </div>
@@ -33,6 +33,11 @@ export default {
       this.userInfo = await this.getUserInfo(
         this.$q.localStorage.getItem("uid")
       );
+    }
+  },
+  mounted() {
+    if (this.$route.params.userInfo == undefined) {
+      this.$router.push("/userInfo");
     }
   }
 };
