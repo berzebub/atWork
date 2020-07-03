@@ -7,7 +7,7 @@
     >
       <q-toolbar>
         <q-toolbar-title class="q-pa-md" v-if="$route.name == 'lessonMainList'">
-          <span class="text-h6">ระดับการเรียน</span>
+          <span class="text-h6">บทเรียน</span>
         </q-toolbar-title>
         <q-toolbar-title
           class="q-pa-md"
@@ -75,19 +75,9 @@
           <div>
             <q-icon name="fas fa-signal" size="25px" />
           </div>
-          <div class="q-pt-sm" style="font-size: 14px">ระดับการเรียน</div>
+          <div class="q-pt-sm" style="font-size: 14px">บทเรียน</div>
         </div>
-        <!-- <div
-          class="full-width q-py-md relative-position cursor-pointer"
-          :class="$route.name=='businessMain'?'active-line active-text':'no-active-line'"
-          v-ripple
-          @click="$router.push('/businessMain')"
-        >
-          <div>
-            <q-icon name="fas fa-building" size="25px" />
-          </div>
-          <div class="q-pt-sm">กิจการ</div>
-        </div>-->
+
         <div
           class="full-width q-py-md relative-position cursor-pointer"
           :class="
@@ -167,7 +157,7 @@
         >
           <q-icon name="fas fa-signal" size="25px" />
           <br />
-          <span style="font-size:11px">ระดับการเรียน</span>
+          <span style="font-size:11px">บทเรียน</span>
         </div>
         <div
           class="col q-pa-xs q-pt-sm relative-position cursor-pointer"

@@ -1,11 +1,11 @@
 /* app global css */
 @font-face {
-  font-family: promptM;
-  src: url("../statics/fonts/Prompt-Medium.ttf");
+  font-family: promptR;
+  src: url("../statics/fonts/Prompt-Regular.ttf");
 }
 
 body {
-  font-family: promptM;
+  font-family: promptR;
 }
 
 .container {
@@ -27,15 +27,19 @@ body {
 .brg {
   border: 1px solid #263238;
 }
+
 .brg2 {
   border: 1px solid #d4d4d4;
 }
+
 .error-border {
   border: 2px solid #c10015;
 }
+
 .error-text {
   color: #c10015;
 }
+
 .br {
   border-radius: 10px;
 }
