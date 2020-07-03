@@ -1,11 +1,7 @@
 <template>
-  <div class="container">
+  <div class="container full-height flex flex-center" align="center">
     <!-- box2 แก้ไขชื่อ -->
-    <div
-      v-show="infoData == '1'"
-      align="center"
-      :style="$q.platform.is.desktop?'margin-left: calc(100% - 73%);margin-right: calc(100% - 74%);margin-top:50%':''"
-    >
+    <div class v-show="infoData == '1'" align="center" style="width:328px">
       <div class="text-h6">แก้ไข ชื่อ สกุล</div>
       <div class="q-mt-lg">
         <div align="left" class="text-body2">ชื่อ นามสกุล</div>
@@ -31,11 +27,7 @@
       </div>
     </div>
     <!-- box3 แก้ไขรหัสผ่าน -->
-    <div
-      v-show="infoData == '2'"
-      align="center"
-      :style="$q.platform.is.desktop?'margin-left: calc(100% - 73%);margin-right: calc(100% - 74%);margin-top:50%':''"
-    >
+    <div v-show="infoData == '2'" align="center">
       <div class="text-h6">คุณต้องการรีเซตรหัสผ่าน</div>
       <div class="text-subtitle1">"{{userInfo.email}}"</div>
 
@@ -57,11 +49,7 @@
       </div>
     </div>
     <!-- box4 ออกจากระบบ -->
-    <div
-      v-show="infoData == '3'"
-      align="center"
-      :style="$q.platform.is.desktop?'margin-left: calc(100% - 73%);margin-right: calc(100% - 74%);margin-top:50%':''"
-    >
+    <div v-show="infoData == '3'" align="center">
       <div class="text-h6 q-mb-md">ออกจากระบบ</div>
       <div>
         <q-btn

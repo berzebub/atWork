@@ -22,13 +22,7 @@
           <div>
             <div class="text-h6" align="left">รหัสลำดับ</div>
           </div>
-          <q-input
-            ref="order"
-            :rules="[ val => val]"
-            outlined
-            type="number"
-            v-model.number="order"
-          />
+          <q-input ref="order" :rules="[ val => val]" outlined mask="###" v-model.number="order" />
         </div>
       </div>
       <div class="row" v-for="(i) in boxCount+1" :key="i">
@@ -304,7 +298,7 @@ export default {
                   "/" +
                   this.practiceId
               );
-            }, 700);
+            }, 2500);
           });
       } else {
         this.editData();

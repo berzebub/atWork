@@ -181,9 +181,11 @@ export default {
       db.collection("practice_draft")
         .where("levelId", "==", this.levelId)
         .where("unitId", "==", this.unitId)
+        .where("practiceId", "==", this.practiceId)
         .onSnapshot(dataDraft => {
           let temp = [];
           dataDraft.forEach(element => {
+            console.log(element.data());
             temp.push({
               ...element.data(),
               collection: "draft",
@@ -191,9 +193,14 @@ export default {
             });
           });
           db.collection("practice_server")
+            .where("levelId", "==", this.levelId)
+            .where("unitId", "==", this.unitId)
+            .where("practiceId", "==", this.practiceId)
             .get()
             .then(dataServer => {
               dataServer.forEach(element => {
+                console.log(element.data());
+
                 temp.push({
                   ...element.data(),
                   collection: "server",
