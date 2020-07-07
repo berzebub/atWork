@@ -127,7 +127,7 @@
 <script>
 import { auth, db } from "../router";
 import { uid } from "quasar";
-import userInfoVue from "../pages/userInfo.vue";
+import userInfo from "../pages/userInfo.vue";
 export default {
   props: ["infoData", "userInfo"],
   data() {
