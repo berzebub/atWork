@@ -315,7 +315,14 @@ export default {
     editMode() {
       this.isAddMode = false;
       if (this.$route.params.levelId == undefined) {
-        this.$router.push("/flashcardMain");
+        this.$router.push(
+          "/flashcardMain/" +
+            this.data.levelId +
+            "/" +
+            this.data.unitId +
+            "/" +
+            this.data.practiceId
+        );
       }
       this.data = this.$route.params.data;
     },
@@ -392,7 +399,12 @@ export default {
           setTimeout(() => {
             this.successData = false;
             this.$router.push(
-              "/flashcardMain/" + this.data.levelId + "/" + this.data.unitId
+              "/flashcardMain/" +
+                this.data.levelId +
+                "/" +
+                this.data.unitId +
+                "/" +
+                this.data.practiceId
             );
           }, 2500);
         });
