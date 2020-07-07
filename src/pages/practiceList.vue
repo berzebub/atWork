@@ -19,8 +19,10 @@
               :label="itemLv.name"
               @click="showUnit(itemLv.levelId)"
               group="unitgroup"
-              :disable="unitList.filter(x => x.levelId == itemLv.levelId).length == 0"
+              :caption="unitList.filter(x => x.levelId == itemLv.levelId).length == 0 ? 'ปิดการใช้งาน' : ''"
             >
+              <!-- :disable="unitList.filter(x => x.levelId == itemLv.levelId).length == 0" -->
+
               <q-card v-for="(itemUnit,index2) in unitListShow" :key="index2">
                 <div
                   class="row q-px-md q-py-sm relative-position cursor-pointer"
