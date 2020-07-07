@@ -74,11 +74,10 @@
             <q-input outlined v-model="fileVdo" dense readonly />
           </div>
           <div class="text-center q-py-md">
-            <router-link @click.native="remove" to="/remove">
-              <span
-                class="text-blue-grey-10 text-center text-body2"
-              >ขั้นตอนการตั้งค่าอัพโหลดไฟล์บน Youtube</span>
-            </router-link>
+            <u
+              @click="isSettingDialog = true"
+              class="text-blue-grey-10 text-center text-body2 cursor-pointer underline"
+            >ขั้นตอนการตั้งค่าอัพโหลดไฟล์บน Youtube</u>
           </div>
         </div>
       </div>
@@ -86,6 +85,7 @@
       <div class="q-pt-md">
         <div class="text-center">
           <q-btn
+            :disable="mode !='draft'"
             @click="addBtn()"
             style="max-width :190px;width:100%"
             class="bg-blue-grey-10 text-white text-subtitle1"
@@ -98,10 +98,21 @@
             :key="index"
             class="q-mt-md boxCard text-left relative-position"
           >
+            <div
+              class="absolute-top-left q-pa-sm mobile-only"
+              v-if="item.status == 'waitForDelete'"
+              style="z-index:30"
+            >
+              <a
+                class="text-white cursor-pointer"
+                @click="cancelDelete(item.key)"
+                style="text-decoration:underline;"
+              >ยกเลิกการลบ</a>
+            </div>
             <q-btn
               dense
               style="z-index:30;width:190px;"
-              class="absolute-center q-pa-sm text-blue-grey-10"
+              class="absolute-center q-pa-sm text-blue-grey-10 desktop-only"
               v-if="item.status  == 'waitForDelete'"
               color="white"
               label="ยกเลิกการลบ"
@@ -112,7 +123,12 @@
               style="border-top-left-radius: 6px;border-top-right-radius: 6px "
               class="bg-blue-grey-10 text-white q-py-sm q-pr-xs q-pl-md text-subtitle1 row justify-between"
             >
-              <div class="self-center">รหัสลำดับ {{item.order}}</div>
+              <div class="self-center desktop-only">รหัสลำดับ {{item.order}}</div>
+              <div
+                v-if="item.status != 'waitForDelete'"
+                class="self-center mobile-only"
+              >รหัสลำดับ {{item.order}}</div>
+              <div v-if="item.status == 'waitForDelete'"></div>
               <div>
                 <q-btn class="mobile-only" size="13px" icon="fas fa-ellipsis-v" round dense flat>
                   <q-menu>
@@ -128,7 +144,7 @@
                 </q-btn>
                 <div class="col self-center desktop-only" align="right">
                   <q-btn
-                    v-if="item.status  != 'waitForDelete' && mode == 'draft'"
+                    v-if="mode == 'draft'"
                     @click="deleteBtn(item.key,item.order)"
                     size="sm"
                     class="q-mr-sm"
@@ -137,7 +153,7 @@
                     icon="far fa-trash-alt"
                   />
                   <q-btn
-                    v-if="item.status  != 'waitForDelete' && mode == 'draft'"
+                    v-if=" mode == 'draft'"
                     @click="editBtn(item.key)"
                     size="sm"
                     flat
@@ -149,10 +165,12 @@
             </div>
             <div class="q-px-md q-py-sm">
               <div class="row">
-                <div v-if="item.customer == 1 ">ลูกค้า:</div>
-                <div v-if="item.customer == 2 ">พนักงาน:</div>
+                <div class="self-center" v-if="item.customer == 1 ">ลูกค้า:</div>
+                <div class="self-center" v-if="item.customer == 2 ">พนักงาน:</div>
                 <div class="q-px-sm">
+                  <q-btn v-if="!item.isSound" round flat size="sm" icon="fas fa-volume-mute" />
                   <q-btn
+                    v-if="item.isSound"
                     size="sm"
                     @click="playAudio(item.soundURL)"
                     round
@@ -160,7 +178,7 @@
                     icon="fas fa-volume-up"
                   />
                 </div>
-                <div class="col">
+                <div class="col self-center">
                   <span class="text-subtitle1">{{item.sentenceEng}}</span>
                 </div>
               </div>
@@ -241,6 +259,55 @@
           </div>
         </q-card>
       </q-dialog>
+      <q-dialog v-model="isSettingDialog" persistent>
+        <q-card class="q-pa-md" style="max-width:900px;width:100%;">
+          <div class="text-h6 q-px-md">การตั้งค่าการอัปโหลดวิดีโอ</div>
+          <div>
+            <div class="text-subtitle1">
+              <div class="q-py-sm">
+                <q-btn class="boxUpload q-mx-md" flat label="1" />
+                <span>เลือกไฟล์วิดีโอที่ต้องการอัปโหลด</span>
+                <div class="text-center q-py-md">
+                  <q-img style="max-width:90%" src="../statics/upload/upload1.png" />
+                </div>
+              </div>
+              <div class="q-py-sm">
+                <q-btn class="boxUpload q-mx-md" flat label="2" />
+                <span>ใส่ชื่อ และคำอธิบาย</span>
+                <div class="text-center q-py-md">
+                  <q-img style="max-width:90%" src="../statics/upload/upload2.png" />
+                </div>
+              </div>
+              <div class="q-py-sm">
+                <q-btn class="boxUpload q-mx-md" flat label="3" />
+                <span>เลือก “ไม่ วิดีโอนี้ไม่ได้สร้างมาเพื่อเด็ก”</span>
+                <div class="text-center q-py-md">
+                  <q-img style="max-width:90%" src="../statics/upload/upload3.png" />
+                </div>
+              </div>
+              <div class="q-py-sm">
+                <q-btn class="boxUpload q-mx-md" flat label="4" />
+                <span>เลือก “ระดับการแชร์”</span>
+              </div>
+              <div class="q-py-sm">
+                <q-btn class="boxUpload q-mx-md" flat label="5" />
+                <span>เลือก “ไม่เป็นสาธารณะ”</span>
+                <div class="text-center q-py-md">
+                  <q-img style="max-width:90%" src="../statics/upload/upload5.png" />
+                </div>
+              </div>
+              <div class="text-center">
+                <q-btn
+                  v-close-popup
+                  style="max-width:190px;width:100%"
+                  label="ปิด"
+                  class="bg-blue-grey-10 text-white"
+                />
+              </div>
+            </div>
+          </div>
+        </q-card>
+      </q-dialog>
     </div>
   </q-page>
 </template>
@@ -250,6 +317,7 @@ import { db, st } from "../router";
 export default {
   data() {
     return {
+      isSettingDialog: false,
       isDeleteDialog: false,
       orderId: "",
       isDeleteKey: "",
@@ -263,6 +331,7 @@ export default {
       tab: "sentence",
       linkVdo: "",
       dataVdo: {
+        status: "notSync",
         isVdo: false,
         linkVdo: "",
         practiceType: "vdoconverse"
@@ -304,6 +373,7 @@ export default {
           }
         });
     },
+    // โหลดข้อมูลทั้งหมด
     loadDataAll() {
       db.collection("practice_list")
         .where("practiceType", "==", "vdoconverse")
@@ -342,6 +412,10 @@ export default {
               };
               this.dataDraft.push(final);
             });
+            this.dataDraft.sort((a, b) => {
+              return a.order - b.order;
+            });
+
             this.loadDarft();
           });
       } else {
@@ -388,6 +462,7 @@ export default {
         this.editVdoDialog = true;
       }
     },
+    // บันทึกวีดีโอ Youtube
     saveVdo() {
       this.$refs.link.validate();
       if (this.$refs.link.hasError) {
@@ -430,6 +505,14 @@ export default {
 </script>
 
 <style scoped>
+.boxUpload {
+  align-content: center;
+  color: white;
+  background: #263238;
+  height: 35px;
+  width: 35px;
+  border-radius: 100%;
+}
 .boxCard {
   border: 1px solid #263238;
   border-radius: 10px;

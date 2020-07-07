@@ -80,16 +80,19 @@
         <user-setting :infoData="type" :userInfo="userInfo" @backStep="val => getBackPage(val)"></user-setting>
       </div>
     </div>
+    <dialog-setting></dialog-setting>
   </q-page>
 </template>
 
 <script>
 import { db, auth } from "../router";
 import userSetting from "../components/userSetting";
-import userSettingMobileVue from "./userSettingMobile.vue";
+import dialogSetting from "../components/dialogSetting";
+import userSettingMobile from "./userSettingMobile.vue";
 export default {
   components: {
-    userSetting
+    userSetting,
+    dialogSetting
   },
   data() {
     return {

@@ -7,12 +7,13 @@
       </div>
       <div class="q-pt-sm">
         <span>รหัสลำดับ</span>
+        <span class="q-mx-md text-grey-5">ตัวเลข 3 หลัก</span>
         <div>
           <q-input
+            mask="###"
             bg-color="white"
             outlined
             ref="orderid"
-            type="number"
             v-model.number="data.order"
             dense
             :rules="[ val => !!val || 'กรุณาใส่รหัสลำดับ']"
@@ -43,6 +44,7 @@
         <span>ประโยคภาษาอังกฤษ</span>
         <div>
           <q-input
+            autogrow
             bg-color="white"
             outlined
             ref="eng"
@@ -56,6 +58,7 @@
         <span>ประโยคภาษาไทย</span>
         <div>
           <q-input
+            autogrow
             bg-color="white"
             outlined
             ref="th"
@@ -70,7 +73,6 @@
           ไฟล์เสียง
           <span class="q-mx-md text-grey-5">ไฟล์ mp3 เท่านั้น</span>
         </div>
-
         <q-file accept="audio/*" bg-color="white" outlined v-model="uploadAudio">
           <template class="relative-position" v-slot:append>
             <div
@@ -84,8 +86,7 @@
             <div
               class="cursor-pointer rounded-borders text-white bg-blue-grey-10"
               v-if="uploadAudio || isKeyAudio"
-              @click.stop="uploadAudio  = null"
-              @click="isKeyAudio  = '' "
+              @click="uploadAudio  = null ; isKeyAudio = ''"
             >
               <span style class="far fa-trash-alt q-px-xs"></span>
             </div>
@@ -103,11 +104,11 @@
           <div class="col-6 q-py-sm text-left">
             <q-btn
               v-close-popup
+              to="/vdoMain"
               dense
               style="width:150px"
               color="white"
               outline
-              @click="checkCancel()"
               text-color="blue-grey-10"
               label="ยกเลิก"
             />
@@ -141,46 +142,9 @@
           </div>
         </q-card>
       </q-dialog>
-      <!-- checkCancel -->
-      <q-dialog v-model="cancelDialog">
-        <q-card style="max-width:323px;width:100%;height:200px">
-          <div class="text-h6 text-center q-pt-md q-pb-sm">
-            <div class="q-py-md q-mt-md text-subtitle1">
-              <div>คุณกำลังออกจากหน้านี้</div>
-              <div>ต้องการบันทึกข้อมูลหรือไม่</div>
-            </div>
-          </div>
-          <div class="row justify-center">
-            <div class="q-px-xs">
-              <q-btn
-                v-close-popup
-                color="white"
-                outline
-                text-color="blue-grey-10"
-                style="width:90px"
-                label="ยกเลิก"
-              />
-            </div>
-            <div class="q-px-xs">
-              <q-btn
-                to="/vdoMain"
-                color="white"
-                outline
-                text-color="blue-grey-10"
-                style="width:90px"
-                label="ไม่บันทึก"
-              />
-            </div>
-            <div class="q-px-xs">
-              <q-btn style="width:90px" class="bg-blue-grey-10 text-white" label="บันทึก" />
-            </div>
-          </div>
-        </q-card>
-      </q-dialog>
     </div>
   </q-page>
 </template>
-
 <script>
 import { db, st } from "../router";
 export default {
@@ -223,8 +187,8 @@ export default {
           this.data = doc.data();
         });
     },
-
     saveBtn() {
+      // this.cancelDialog = false;
       this.$refs.orderid.validate();
       this.$refs.eng.validate();
       this.$refs.th.validate();
@@ -262,10 +226,6 @@ export default {
             return;
           } else {
             if (this.$route.name == "vdoInputAdd") {
-              if (this.uploadAudio == null) {
-                this.isTextAudio = "กรุณาอัปโหลดเสียง";
-                return;
-              }
               this.loadingShow();
               this.checkble = true;
               db.collection("practice_draft")
@@ -313,13 +273,6 @@ export default {
             }
           }
         });
-    },
-    checkCancel() {
-      if (this.data.order != "") {
-        this.cancelDialog = true;
-      } else {
-        this.$router.push("/vdoMain");
-      }
     }
   },
   mounted() {
