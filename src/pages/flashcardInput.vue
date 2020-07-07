@@ -366,7 +366,7 @@ export default {
                   "/" +
                   this.data.practiceId
               );
-            }, 700);
+            }, 2500);
           });
       } else {
         this.editData();
@@ -394,7 +394,7 @@ export default {
             this.$router.push(
               "/flashcardMain/" + this.data.levelId + "/" + this.data.unitId
             );
-          }, 700);
+          }, 2500);
         });
     }
   },

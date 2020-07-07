@@ -55,14 +55,14 @@
           v-if="item.status == 'waitForDelete'"
           @click="cancelDeleteFlashcard(item.id, item.order)"
           style="width:190px; z-index:2000"
-          class="absolute-center bg-blue-grey-10 text-white"
+          class="absolute-center bg-white"
         >ยกเลิกการลบ</q-btn>
         <q-card-section class="text-white bg-blue-grey-10">
           <div class="text-h6">รหัสลำดับ {{ item.order }}</div>
           <div class="row items-center absolute-right">
             <!-- icon-delete -->
             <q-icon
-              @click="openDialogDelete(item.id, item.order)"
+              @click="openDialogDelete(item.id, item.order , item.vocabulary)"
               v-if="expressionType == 'draft'"
               class="cursor-pointer q-pr-lg desktop-only"
               name="far fa-trash-alt"
@@ -144,27 +144,28 @@
       </q-card>
     </div>
     <!-- ------------------------------------------Dialog------------------------------------ -->
-
+    <!-- ลบ -->
     <q-dialog v-model="dialogDelete" persistent>
-      <q-card style="min-width: 350px; height:170px">
+      <q-card style="min-width: 350px; height:200px">
         <q-card-section>
-          <div class="q-mt-lg text-h6">ต้องการลบ "รหัสลำดับ {{ getOrder }}" หรือไม่</div>
+          <div align="center" class="q-mt-lg text-h6">คุณต้องการลบคำศัพท์์</div>
+          <div align="center" class="q-mb-md text-h6">"{{ getOrder }} - {{getVocabulary}}"</div>
         </q-card-section>
 
         <q-card-actions align="center">
           <q-btn style="width:120px" outline color="blue-grey-10" label="ยกเลิก" v-close-popup />
           <q-btn
-            @click="deleteDataExpression()"
+            @click="deleteDataFlashcard()"
             color="blue-grey-10"
             style="width:120px"
-            label="ยืนยัน"
+            label="ตกลง"
           />
         </q-card-actions>
       </q-card>
     </q-dialog>
-
+    <!-- ยกเลิกกการลบ -->
     <q-dialog v-model="dialogCancelDelete" persistent>
-      <q-card style="min-width: 350px; height:170px">
+      <q-card style="min-width: 350px; height:200px">
         <q-card-section>
           <div class="q-mt-lg text-h6">ต้องการลบ "รหัสลำดับ {{ getOrder }}" หรือไม่</div>
         </q-card-section>
@@ -180,6 +181,17 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+    <!-- เพิ่มข้อมูลสำเร็จ -->
+    <q-dialog v-model="successData">
+      <q-card style="min-width: 323px; height:200px">
+        <q-card-section class="absolute-center" align="center">
+          <div>
+            <q-icon color="secondary" size="lg" name="far fa-check-circle" />
+          </div>
+          <div class="q-mt-lg">บันทึกข้อมูลเรียบร้อย</div>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 
@@ -188,11 +200,13 @@ import { db, auth } from "../router";
 export default {
   data() {
     return {
+      successData: false,
       expressionType: "draft",
       dialogDelete: false,
       dialogCancelDelete: false,
       getId: "",
       getOrder: "",
+      getVocabulary: "",
       showDataFlashcard: "",
       levelId: this.$route.params.levelId,
       unitId: this.$route.params.unitId,
@@ -271,10 +285,11 @@ export default {
             });
         });
     },
-    openDialogDelete(id, order) {
+    openDialogDelete(id, order, vocabulary) {
       this.dialogDelete = true;
       this.getId = id;
       this.getOrder = order;
+      this.getVocabulary = vocabulary;
     },
     cancelDeleteFlashcard(id) {
       db.collection("practice_draft")
@@ -285,13 +300,17 @@ export default {
           this.dialogCancelDelete = false;
         });
     },
-    deleteDataExpression() {
+    deleteDataFlashcard() {
       db.collection("practice_draft")
         .doc(this.getId)
         .update({ status: "waitForDelete" })
         .then(() => {
           this.getId = "";
           this.dialogDelete = false;
+          this.successData = true;
+          setTimeout(() => {
+            this.successData = false;
+          }, 2500);
         });
     },
     editDataFlashcard(item) {
