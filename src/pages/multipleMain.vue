@@ -27,8 +27,27 @@
             </div>
           </div>
         </div>
-        <div class="desktop-only">
-          <div class="text-right">
+        <div>
+          <div class="mobile-only q-ml-md">
+            <q-btn
+              :disable="mode == 'server'"
+              round
+              push
+              color="blue-grey-10"
+              icon="fas fa-sync"
+              @click="sync()"
+            />
+          </div>
+          <div class="text-right desktop-only">
+            <q-btn
+              v-if="mode == 'draft'"
+              round
+              push
+              color="blue-grey-10"
+              class="q-mx-md"
+              icon="fas fa-sync"
+              @click="sync()"
+            />
             <q-btn
               v-if="mode == 'draft'"
               round
@@ -60,11 +79,13 @@
         </div>
         <div class="row q-px-md q-py-sm" style="height:120px;">
           <div class="col-12 self-center q-py-sm">
-            <span class="text-subtitle1">{{ instrunctionEng }}</span>
+            <span class="text-subtitle1" v-if="instrunctionEng">{{ instrunctionEng }}</span>
+            <span v-else>ยังไม่ระบุ</span>
           </div>
           <q-separator class="q-my-xs" />
           <div class="col-12 self-center q-py-sm">
-            <span class="text-subtitle1">{{ instrunctionTh }}</span>
+            <span class="text-subtitle1" v-if="instrunctionTh">{{ instrunctionTh }}</span>
+            <span v-else>ยังไม่ระบุ</span>
           </div>
         </div>
       </div>
@@ -75,6 +96,7 @@
           @click="addQuestion()"
           style="width:190px"
           dense
+          :disable="mode == 'server'"
           color="blue-grey-10"
           label="เพิ่มคำถาม"
         />
@@ -93,18 +115,18 @@
         >
           <a
             class="text-white cursor-pointer"
-            @click="cancelDelete(item.key)"
+            @click="cancelDelete(item.id)"
             style="text-decoration:underline;"
           >ยกเลิกการลบ</a>
         </div>
         <q-btn
           dense
           style="z-index:30;width:190px;"
-          class="absolute-center q-pa-sm text-blue-grey-10 desktop-only"
+          class="absolute-center text-blue-grey-10 desktop-only"
           v-if="item.status  == 'waitForDelete'"
           color="white"
           label="ยกเลิกการลบ"
-          @click="cancelDelete(item.key)"
+          @click="cancelDelete(item.id)"
         ></q-btn>
         <div v-if="item.status == 'waitForDelete'" class="absolute-center backDrop"></div>
 
@@ -119,7 +141,7 @@
           <div class="col self-center desktop-only" align="right">
             <q-btn
               v-if="mode == 'draft'"
-              @click="deleteData(item.key, item.order, index)"
+              @click="deleteData(item.id, item.order, index)"
               size="sm"
               class="q-mr-sm"
               round
@@ -128,7 +150,7 @@
             />
             <q-btn
               v-if="mode == 'draft'"
-              @click="editData(item.key)"
+              @click="editData(item)"
               size="sm"
               flat
               round
@@ -136,59 +158,57 @@
             />
           </div>
           <q-btn class="mobile-only" size="13px" icon="fas fa-ellipsis-v" round dense flat>
-            <q-menu>
+            <q-menu anchor="top right" self="top right" :offset="[7,-37]">
               <q-list style="min-width: 120px">
                 <q-item clickable v-close-popup>
-                  <q-item-section @click="editData(item.key)">แก้ไขข้อมูล</q-item-section>
+                  <q-item-section @click="editData(item)">แก้ไขข้อมูล</q-item-section>
                 </q-item>
                 <q-item clickable v-close-popup>
-                  <q-item-section @click="deleteData(item.key,item.order,index)">ลบ</q-item-section>
+                  <q-item-section @click="deleteData(item.id,item.order,index)">ลบ</q-item-section>
                 </q-item>
               </q-list>
             </q-menu>
           </q-btn>
         </div>
-        <div class="text-center q-pt-md" v-if="item.imageURL">
-          <img style="height:300px;width:400px" :src="item.imageURL" alt />
+        <div class="text-center q-pa-sm q-mt-sm" v-if="item.imageURL">
+          <img style="max-width:400px;width:100%;" :src="item.imageURL" alt />
         </div>
         <div class="q-pa-md">
-          <q-btn
-            v-if="item.audioURL"
-            size="sm"
-            @click="playAudio(item.audioURL)"
-            round
-            flat
-            icon="fas fa-volume-up"
-          />
-          <span class="q-mx-xs q-pr-sm q-pl-xs" v-html="item.question"></span>
+          <div class>
+            <span class>{{index + 1 + "."}}</span>
+            <span
+              v-if="item.audioURL"
+              @click="playAudio(item.audioURL)"
+              class="fas fa-volume-up q-mx-xs"
+            ></span>
+            <span class="q-mx-xs q-pr-sm" v-html="item.question"></span>
+          </div>
         </div>
-        <div class="q-px-md">
+        <div class="q-px-md q-pb-md">
           <div v-for="(items, index2) in item.choices" :key="index2">
-            <div v-if="item.isAnswerSound && items.choice" class="q-mt-xs">
+            <div v-if="item.isAnswerSound && items.choice">
               <span
-                class="q-mx-xs q-pr-sm"
+                class="q-pr-sm q-pl-xs"
                 :class="
                   item.correctAnswer == index2 + 1
                     ? 'bg-secondary text-white '
                     : ''
                 "
               >
-                <q-btn
-                  round
-                  flat
-                  size="sm"
-                  :icon="
-                  items.isSound ? 'fas fa-volume-up' : 'fas fa-volume-mute'
+                <span
+                  class
+                  :class="
+                  items.isSound ? 'fas fa-volume-up cursor-pointer' : 'fas fa-volume-mute no-pointer-events text-grey-6'
                 "
-                  :class="!items.isSound ? 'no-pointer-events' : ''"
                   @click="playAudio(items.soundURL)"
-                ></q-btn>
+                ></span>
                 {{ index2 + 1 + ") " + items.choice }}
               </span>
             </div>
             <div v-if="!item.isAnswerSound">
               <span
-                class="q-mx-xs q-pr-sm q-pl-xs"
+                v-if="items.choice"
+                class="q-pr-sm"
                 :class="
                   item.correctAnswer == index2 + 1
                     ? 'bg-secondary text-white '
@@ -198,7 +218,8 @@
             </div>
           </div>
         </div>
-        <div class="q-pa-sm q-mx-md">
+        <div class="q-px-md q-pb-md" v-if="item.description">
+          <q-separator class="q-mb-sm"></q-separator>
           <span v-html="item.description"></span>
         </div>
       </div>
@@ -208,45 +229,41 @@
         <q-card style="max-width:600px;width:100%">
           <div class="text-h6 text-center q-pt-md q-pb-sm">แก้ไขคำสั่ง</div>
           <div class="q-px-md">
-            <div class="q-py-xs">
+            <div>
+              <span>คำสั่งภาษาอังกฤษ</span>
               <q-input
-                autogrow
                 dense
-                :rules="[val => !!val || 'กรุณาใสคำสั่งภาษาอังกฤษ']"
+                :rules="[val => !!val]"
                 ref="instrunctionEng"
                 outlined
                 v-model="instrunctionEng"
-                label="คำสั่งภาษาอังกฤษ"
               />
             </div>
-            <div class="q-py-xs">
+            <div>
+              <span>คำสั่งภาษาไทย</span>
               <q-input
-                autogrow
                 dense
-                :rules="[val => !!val || 'กรุณาใสคำสั่งภาษาไทย']"
+                :rules="[val => !!val]"
                 ref="instrunctionTh"
                 outlined
                 v-model="instrunctionTh"
-                label="คำสั่งภาษาไทย"
               />
             </div>
           </div>
-          <div>
-            <div class="row reverse-wrap justify-center q-px-md">
-              <div class="q-px-md q-pb-md">
-                <q-btn
-                  v-close-popup
-                  dense
-                  style="width:150px"
-                  color="white"
-                  outline
-                  text-color="black"
-                  label="ยกเลิก"
-                />
-              </div>
-              <div class="q-px-md q-pb-md">
-                <q-btn @click="saveBtn()" dense style="width:150px" color="black" label="บันทึก" />
-              </div>
+          <div class="row q-px-md q-pb-md">
+            <div class="col" align="center">
+              <q-btn
+                v-close-popup
+                dense
+                style="width:120px"
+                color="white"
+                outline
+                text-color="black"
+                label="ยกเลิก"
+              />
+            </div>
+            <div class="col" align="center">
+              <q-btn @click="saveBtn()" dense style="width:120px" color="black" label="บันทึก" />
             </div>
           </div>
         </q-card>
@@ -254,31 +271,33 @@
 
       <!-- delete -->
       <q-dialog v-model="isDeleteDialog" persistent>
-        <q-card style="max-width:600px;width:100%">
-          <div class="text-h6 text-center q-pt-md q-pb-sm">
+        <q-card style="max-width:330px;width:100%">
+          <div class="text-subtitle1 text-center q-pt-xl q-pb-lg">
             <div>ต้องการลบข้อมูล</div>
-            <div>“รหัสลำดับ {{ orderId }}” หรือไม่</div>
+            <div>“รหัสลำดับ {{ orderId }}”</div>
           </div>
           <div>
-            <div class="row reverse-wrap justify-center q-px-md">
-              <div class="q-px-md q-pb-md">
+            <div class="row q-pa-md">
+              <div class="col" align="right">
                 <q-btn
                   v-close-popup
                   dense
-                  style="width:150px"
+                  style="width:120px"
                   color="white"
+                  class="q-mx-sm"
                   outline
                   text-color="black"
                   label="ยกเลิก"
                 />
               </div>
-              <div class="q-px-md q-pb-md">
+              <div class="col" align="left">
                 <q-btn
-                  @click="deleteBtn(), (isDeleteDialog = false)"
+                  @click="deleteBtn()"
                   dense
-                  style="width:150px"
+                  style="width:120px"
+                  class="q-mx-sm"
                   color="black"
-                  label="บันทึก"
+                  label="ตกลง"
                 />
               </div>
             </div>
@@ -370,17 +389,22 @@ export default {
     },
     loadInstrunction() {
       let practiceId = this.$route.params.practiceId;
-      console.log(practiceId);
       db.collection("practice_list")
         .doc(practiceId)
         .get()
         .then(result => {
           if (result.exists) {
-            this.instrunctionEng = result.data().instrunctionEng;
-            this.instrunctionTh = result.data().instrunctionTh;
-          } else {
-            this.instrunctionEng = "ยังไม่ระบุ";
-            this.instrunctionTh = "ยังไม่ระบุ";
+            if (result.data().instrunctionEng) {
+              this.instrunctionEng = result.data().instrunctionEng;
+            } else {
+              this.instrunctionEng = "";
+            }
+
+            if (result.data().instrunctionTh) {
+              this.instrunctionTh = result.data().instrunctionTh;
+            } else {
+              this.instrunctionTh = "";
+            }
           }
 
           this.loadPracticeData();
@@ -434,7 +458,7 @@ export default {
             }
 
             let dataKey = {
-              key: element.id,
+              id: element.id,
               imageURL: getImage,
               audioURL: getSound,
               choices: getChoiceSound
@@ -505,6 +529,9 @@ export default {
         .doc(this.deleteKey)
         .update({
           status: "waitForDelete"
+        })
+        .then(() => {
+          this.isDeleteDialog = false;
         });
     },
     // กดปุ่ม ICON ลบ เพื่องเก็บ KEY
@@ -515,33 +542,20 @@ export default {
       this.indexKey = index;
     },
     cancelDelete(key) {
-      this.$q
-        .dialog({
-          title: "ยกเลิกการลบข้อมูล",
-          ok: "ตกลง",
-          cancel: "ยกเลิก"
-        })
-        .onOk(() => {
-          db.collection("practice_draft")
-            .doc(key)
-            .update({
-              status: "notSync"
-            });
+      db.collection("practice_draft")
+        .doc(key)
+        .update({
+          status: "notSync"
         });
     },
     // กดปุ่ม ICON แก้ไข เพื่องเก็บ KEY ส่งไปหน้า แก้ไขข้อมูล
-    editData(key) {
-      this.$router.push("/multipleInputEdit" + "/" + key);
-    },
-    // เล่นเสียง
-    playAudio(sound) {
-      if (this.playSoundURL != "") {
-        this.playSoundURL.pause();
-      }
-
-      this.playSoundURL = new Audio(sound);
-
-      this.playSoundURL.play();
+    editData(item) {
+      this.$router.push({
+        name: "multipleInputEdit",
+        params: {
+          id: item.id
+        }
+      });
     }
   },
   mounted() {

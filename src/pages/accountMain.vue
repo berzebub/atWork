@@ -2,20 +2,22 @@
   <q-page class="text-blue-grey-10">
     <div class="mobile-only">
       <!-- ชื่อโรงแรม -->
-      <div class="row">
+      <div class="row items-end">
         <div class="col-10">
           <q-select
             dense
             outlined
-            v-model="hotelSelected"
+            v-model="hotelSelectedId"
             :options="hotelList"
             map-options
             emit-value
+            @input="selectDepartment()"
           />
         </div>
         <div class="col-2" align="center">
           <q-btn
-            size="12px"
+            dense
+            size="14px"
             @click="goToAddHotel()"
             flat
             round
@@ -25,11 +27,38 @@
         </div>
       </div>
       <!-- เพิ่มแผนก -->
-      <div align="center" class="q-mt-md text-subtitle1">
+      <div align="center" class="q-py-md text-subtitle1">
         <q-btn @click="addDepartment()" label="เพิ่มแผนก" color="blue-grey-10" style="width:148px"></q-btn>
       </div>
     </div>
     <!-- รายชื่อแผนก -->
+    <q-separator />
+    <div v-for="(item,index) in deparmentSelect " :key="index" @click="filterEmployee(item)">
+      <q-toolbar class="no-padding">
+        <q-toolbar-title class="text-subtitle1">{{item.name}}</q-toolbar-title>
+        <q-btn @click.stop="addEmployee()" icon="fas fa-user-plus" flat size="10px"></q-btn>
+        <q-btn @click.stop="deleteDepartment()" icon="far fa-trash-alt" flat size="10px"></q-btn>
+        <q-btn @click.stop="editDepartment()" icon="fas fa-edit" flat size="10px"></q-btn>
+      </q-toolbar>
+      <q-separator />
+      <!-- ชื่อพนักงาน -->
+      <div
+        v-if="clickedToolbar==item.departmentId"
+        v-for="(item2,index2) in employeeList"
+        :key="index2"
+      >
+        <q-toolbar class="no-padding">
+          <q-toolbar-title class="text-body2 q-pl-lg">
+            <span class="q-pl-md">{{index2+1}}. {{item2.name}}</span>
+          </q-toolbar-title>
+          <q-btn class="invisible" icon="far fa-trash-alt" flat size="10px"></q-btn>
+          <q-btn @click.stop="deleteEmployee()" icon="far fa-trash-alt" flat size="10px"></q-btn>
+          <q-btn @click.stop="editEmployee()" icon="fas fa-edit" flat size="10px"></q-btn>
+        </q-toolbar>
+      </div>
+    </div>
+
+    <!-- Dialod เพิ่มชื่อแผนก -->
     <q-dialog v-model="addDepartmentDialog">
       <div style="width:330px" class="bg-white">
         <div align="center" class="bg-blue-grey-10 text-white q-py-sm text-h6">เพิ่มแผนก</div>
@@ -76,13 +105,17 @@ export default {
   },
   data() {
     return {
-      hotelSelected: "",
+      hotelSelectedId: "",
       hotelList: [],
       departmentAll: [],
       deparmentSelect: [],
       addDepartmentDialog: false,
       departmentName: "",
-      addDialogSucess: false
+      addDialogSucess: false,
+      userList: "",
+      clickedToolbar: "",
+      employeeAll: "",
+      employeeList: ""
     };
   },
   methods: {
@@ -97,8 +130,12 @@ export default {
             };
             this.hotelList.push(temp);
           });
-          this.hotelSelected = this.hotelList[0].value;
+          this.hotelList.sort((a, b) => {
+            return a.name > b.name ? 1 : -1;
+          });
+          this.hotelSelectedId = this.hotelList[0].value;
           this.selectDepartment();
+          this.loadEmployee();
         });
     },
     goToAddHotel() {
@@ -110,19 +147,22 @@ export default {
         .then(doc => {
           doc.forEach(element => {
             let temp = {
-              id: element.id
+              departmentId: element.id
             };
+
             let final = { ...temp, ...element.data() };
 
             this.departmentAll.push(final);
           });
         });
     },
+
     selectDepartment() {
-      console.log(this.hotelSelected);
+      console.log(this.hotelSelectedId);
       this.deparmentSelect = this.departmentAll.filter(
-        x => x.hotelId == this.hotelSelected
+        x => x.hotelId == this.hotelSelectedId
       );
+      this.loadEmployee();
     },
     cancelAddDepartment() {
       this.addDepartmentDialog = false;
@@ -130,7 +170,7 @@ export default {
     saveDepartment() {
       db.collection("department")
         .add({
-          hotelId: this.hotelSelected,
+          hotelId: this.hotelSelectedId,
           name: this.departmentName
         })
         .then(() => {
@@ -143,9 +183,40 @@ export default {
       this.departmentName = "";
     },
     autoCloseDialog(value) {
-      this.addDialogSucess = value;
       console.log(value);
-    }
+      this.addDialogSucess = false;
+    },
+    filterEmployee(data) {
+      console.log(data);
+      if (
+        data.departmentId == this.clickedToolbar &&
+        this.clickedToolbar != ""
+      ) {
+        this.clickedToolbar = "";
+      } else {
+        this.employeeList = this.employeeAll.filter(
+          x => x.departmentId == data.departmentId
+        );
+        this.clickedToolbar = data.departmentId;
+      }
+    },
+    loadEmployee() {
+      db.collection("employee")
+        .where("hotelId", "==", this.hotelSelectedId)
+        .get()
+        .then(doc => {
+          let temp = [];
+          doc.forEach(element => {
+            temp.push({ ...element.data(), employeeId: element.id });
+          });
+          this.employeeAll = temp;
+        });
+    },
+    addEmployee() {},
+    deleteDepartment() {},
+    editDepartment() {},
+    deleteEmployee() {},
+    editEmployee() {}
   },
   mounted() {
     this.loadDepartment();
