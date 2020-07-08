@@ -58,7 +58,7 @@
           :levelName="levelName"
           @finishSync="finishSync"
         ></practice-main>
-        <div v-else class="full-height flex flex-center text-subtitle1">
+        <div v-else class="full-height flex flex-center text-subtitle1 mobile-only">
           <q-icon name="fas fa-arrow-left" class="q-pr-sm"></q-icon>กรุณาเลือกตำแหน่งในเมนูด้านซ้าย
           <br />เพื่อทำการเพิ่ม / แก้ไขแบบฝึกหัด
         </div>
