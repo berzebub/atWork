@@ -899,11 +899,11 @@ export default {
     backBtn() {
       this.$router.push(
         "/multipleMain/" +
-          this.$route.params.levelId +
+          this.data.levelId +
           "/" +
-          this.$route.params.unitId +
+          this.data.unitId +
           "/" +
-          this.$route.params.practiceId
+          this.data.practiceId
       );
     }
   },
