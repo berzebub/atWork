@@ -135,12 +135,20 @@
 <script>
 import userInfo from "../pages/userInfo.vue";
 export default {
+  props: ["type"],
   data() {
     return {
       successData: true,
-      videoConver: "",
-      type: 8
+      videoConver: ""
     };
+  },
+  mounted() {
+    let stoTypeList = [2, 4, 6, 9];
+    if (stoTypeList.includes(this.type)) {
+      setTimeout(() => {
+        this.$emit("autoClose", false);
+      }, 2500);
+    }
   }
 };
 </script>

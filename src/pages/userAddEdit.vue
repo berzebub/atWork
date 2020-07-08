@@ -23,7 +23,7 @@
 
       <div class="q-pt-md">
         <div class="text-subtitle1">รหัสผ่าน</div>
-        <div class="text-subtitle2">ตัวอักษรหรือตัวเลขไม่ต่ำกว่า 4 ตัวอักษร</div>
+        <div class="text-subtitle2">ตัวอักษรหรือตัวเลขไม่ต่ำกว่า 6 ตัวอักษร</div>
 
         <q-input
           ref="password"
