@@ -10,8 +10,12 @@
           </div>
           <!-- รหัสลำดับ -->
           <div>
-            <div>
-              <div class="text-h6" align="left">รหัสลำดับ</div>
+            <div class="row items-center">
+              <div class="text-subtitle1" align="left">รหัสลำดับ</div>
+              <div
+                class="q-ml-md text-body2 text-blue-grey-7"
+                style="margin-top:0.7%          "
+              >ตัวเลข 3 หลัก</div>
             </div>
             <q-input
               ref="order"
@@ -25,11 +29,11 @@
           <div v-if="isAddMode">
             <div>
               <div class="row items-center">
-                <div align="left" class="text-h6">ไฟล์รูปภาพ</div>
+                <div align="left" class="text-subtitle1">ไฟล์รูปภาพ</div>
                 <div
-                  class="q-ml-md text-blue-grey-7"
+                  class="q-ml-md text-blue-grey-7 text-body2"
                   style="margin-top:0.7%"
-                >ไฟล์ jpg ขนาด 400x300 px เท่านั้น</div>
+                >ไฟล์ jpg ขนาด 300x300 px เท่านั้น</div>
               </div>
               <div>
                 <q-file accept="image/*" bg-color="white" outlined v-model="uploadImg">
@@ -37,7 +41,7 @@
                     <!-- ปุ่มเลือกไฟล์ -->
                     <div
                       style="width:100px"
-                      class="text-subtitle1 rounded-borders text-center bg-blue-grey-10 text-white q-pa-xs cursor-pointer"
+                      class="text-body2 rounded-borders text-center bg-blue-grey-10 text-white q-pa-xs cursor-pointer"
                       @click.stop="uploadImg = null"
                       v-if="!uploadImg "
                     >เลือกไฟล์</div>
@@ -52,11 +56,11 @@
                   <div
                     v-if="data.isImage == true"
                     style="width:1000px"
-                    class="text-subtitle1 text-grey-7 self-center"
+                    class="text-body2 text-grey-7 self-center"
                   >{{uploadImg}}</div>
                   <div
                     style="width:1000px"
-                    class="text-subtitle1 text-grey-7 self-center"
+                    class="text-body2 text-grey-7 self-center"
                     v-if="!uploadImg"
                   >ลากแล้ววาง หรือ</div>
                 </q-file>
@@ -66,11 +70,11 @@
           <div v-if="!isAddMode">
             <div>
               <div class="row items-center">
-                <div align="left" class="text-h6">ไฟล์รูปภาพ</div>
+                <div align="left" class="text-subtitle1">ไฟล์รูปภาพ</div>
                 <div
-                  class="q-ml-md text-blue-grey-7"
+                  class="q-ml-md text-blue-grey-7 text-body2"
                   style="margin-top:0.7%"
-                >ไฟล์ jpg ขนาด 400x300 px เท่านั้น</div>
+                >ไฟล์ jpg ขนาด 300x300 px เท่านั้น</div>
               </div>
               <div>
                 <q-file accept="image/*" bg-color="white" outlined v-model="uploadImg">
@@ -78,7 +82,7 @@
                     <!-- ปุ่มเลือกไฟล์ -->
                     <div
                       style="width:100px"
-                      class="text-subtitle1 rounded-borders text-center bg-blue-grey-10 text-white q-pa-xs cursor-pointer"
+                      class="text-body2 rounded-borders text-center bg-blue-grey-10 text-white q-pa-xs cursor-pointer"
                       @click.stop="uploadImg = null"
                       v-if="!data.isImage"
                     >เลือกไฟล์</div>
@@ -93,13 +97,13 @@
                   <div
                     v-if="data.isImage == true"
                     style="width:1000px"
-                    class="text-subtitle1 text-grey-7 self-center"
+                    class="text-body2 text-grey-7 self-center"
                   >
                     <span v-if="uploadImg == null">{{practiceKey + ".jpg"}}</span>
                   </div>
                   <div
                     style="width:1000px"
-                    class="text-subtitle1 text-grey-7 self-center"
+                    class="text-body2 text-grey-7 self-center"
                     v-if="!data.isImage"
                   >ลากแล้ววาง หรือ</div>
                 </q-file>
@@ -111,8 +115,11 @@
           <div v-if="isAddMode">
             <div>
               <div class="row items-center">
-                <div align="left" class="text-h6">ไฟล์เสียง</div>
-                <div class="q-ml-md text-blue-grey-7" style="margin-top:0.7%">ไฟล์ mp3 เท่านั้น</div>
+                <div align="left" class="text-subtitle1">ไฟล์เสียง</div>
+                <div
+                  class="q-ml-md text-blue-grey-7 text-body2"
+                  style="margin-top:0.7%"
+                >ไฟล์ mp3 เท่านั้น</div>
               </div>
               <div>
                 <q-file accept=".mp3" bg-color="white" outlined v-model="uploadSound">
@@ -120,7 +127,7 @@
                     <!-- ปุ่มเลือกไฟล์ -->
                     <div
                       style="width:100px;"
-                      class="text-subtitle1 rounded-borders text-center bg-blue-grey-10 text-white q-pa-xs cursor-pointer"
+                      class="text-body2 rounded-borders text-center bg-blue-grey-10 text-white q-pa-xs cursor-pointer"
                       @click.stop="uploadSound = null"
                       v-if="!uploadSound"
                     >เลือกไฟล์</div>
@@ -136,11 +143,11 @@
                   <div
                     v-if="data.isSound == true"
                     style="width:1000px"
-                    class="text-subtitle1 text-grey-7 self-center"
+                    class="text-body2 text-grey-7 self-center"
                   >{{uploadSound}}</div>
                   <div
                     style="width:1000px"
-                    class="text-subtitle1 text-grey-7 self-center"
+                    class="text-body2 text-grey-7 self-center"
                     v-if="!uploadSound"
                   >ลากแล้ววาง หรือ</div>
                 </q-file>
@@ -150,7 +157,7 @@
           <div v-if="!isAddMode">
             <div>
               <div class="row items-center">
-                <div align="left" class="text-h6">ไฟล์เสียง</div>
+                <div align="left" class="text-subtitle1">ไฟล์เสียง</div>
                 <div class="q-ml-md text-blue-grey-7" style="margin-top:0.7%">ไฟล์ mp3 เท่านั้น</div>
               </div>
               <div>
@@ -159,7 +166,7 @@
                     <!-- ปุ่มเลือกไฟล์ -->
                     <div
                       style="width:100px;"
-                      class="text-subtitle1 rounded-borders text-center bg-blue-grey-10 text-white q-pa-xs cursor-pointer"
+                      class="text-body2 rounded-borders text-center bg-blue-grey-10 text-white q-pa-xs cursor-pointer"
                       @click.stop="uploadSound = null"
                       v-if="!data.isSound"
                     >เลือกไฟล์</div>
@@ -175,13 +182,13 @@
                   <div
                     v-if="data.isSound == true"
                     style="width:1000px"
-                    class="text-subtitle1 text-grey-7 self-center"
+                    class="text-body2 text-grey-7 self-center"
                   >
                     <span v-if="uploadSound == null">{{practiceKey + ".jpg"}}</span>
                   </div>
                   <div
                     style="width:1000px"
-                    class="text-subtitle1 text-grey-7 self-center"
+                    class="text-body2 text-grey-7 self-center"
                     v-if="!data.isSound"
                   >ลากแล้ววาง หรือ</div>
                 </q-file>
@@ -192,7 +199,7 @@
           <!-- คำศัพท์ -->
           <div class="q-mt-md">
             <div>
-              <div class="text-h6" align="left">คำศัพท์</div>
+              <div class="text-subtitle1" align="left">คำศัพท์</div>
             </div>
             <q-input
               ref="vocabulary"
@@ -203,7 +210,7 @@
           </div>
           <!-- คำอ่าน -->
           <div>
-            <div class="text-h6" align="left">คำอ่าน</div>
+            <div class="text-subtitle1" align="left">คำอ่าน</div>
             <div align="left">
               <q-editor
                 @input="checkRead()"
@@ -225,9 +232,10 @@
           <!-- คำแปล -->
           <div class="q-mt-md">
             <div>
-              <div class="text-h6" align="left">คำแปล</div>
+              <div class="text-subtitle1" align="left">คำแปล</div>
             </div>
             <q-input
+              type="textarea"
               ref="meaning"
               v-model="data.meaning"
               outlined
@@ -236,7 +244,7 @@
           </div>
         </div>
       </div>
-      <div class="row" style="width:360px; margin-left:21%">
+      <div class="row" :style="$q.platform.is.desktop?'width:360px; margin-left:21%':null">
         <!-- ยกเลิก -->
         <div class="q-mt-md col">
           <q-btn
@@ -265,7 +273,7 @@
       <!-- --------------------------------------dialog--------------------------------------- -->
       <!-- เพิ่มข้อมูลสำเร็จ -->
       <q-dialog v-model="successData">
-        <q-card style="min-width: 350px; height:170px">
+        <q-card style="min-width: 350px; height:200px">
           <q-card-section class="absolute-center" align="center">
             <div>
               <q-icon color="secondary" size="lg" name="far fa-check-circle" />
