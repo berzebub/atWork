@@ -49,7 +49,7 @@
           class="bg-blue-grey-10 text-white q-py-sm q-pr-xs q-pl-md text-subtitle1 row justify-between"
         >
           <div class="self-center">วิดีโอสนทนา</div>
-          <div>
+          <div style="height:10px">
             <q-btn
               v-if="mode  == 'draft'"
               @click="editBtn()"
@@ -358,6 +358,7 @@ export default {
   },
   methods: {
     loadLevel() {
+      this.loadingShow();
       let levelKey = this.$route.params.levelId;
       db.collection("level")
         .doc(levelKey)
@@ -387,7 +388,6 @@ export default {
     },
     // โหลดข้อมูลทั้งหมด
     loadPracticeData() {
-      this.loadingShow();
       let practiceId = this.$route.params.practiceId;
       let dbData;
       if (typeof this.syncData == "function") {
@@ -398,11 +398,12 @@ export default {
       } else {
         dbData = db.collection("practice_server");
       }
-      let temp = [];
+
       this.syncData = dbData
         .where("practiceId", "==", practiceId)
         .onSnapshot(doc => {
           let getSound = "";
+          let temp = [];
           doc.forEach(element => {
             if (element.data().isSound) {
               getSound = this.pathFile + "audio/" + element.id + ".mp3";
@@ -418,10 +419,12 @@ export default {
             temp.push(final);
           });
           temp.sort((a, b) => a.order - b.order);
+
           this.practiceDataList = temp;
           this.loadingHide();
         });
     },
+    // โหลดวีดีโอยูทู
     loadVdo() {
       let practiceId = this.$route.params.practiceId;
       db.collection("practice_list")
@@ -487,9 +490,9 @@ export default {
       this.loadVdo();
     },
     deleteBtn(key, id, index) {
+      this.isDeleteDialog = true;
       this.isDeleteKey = key;
       this.orderId = id;
-      this.isDeleteDialog = true;
     },
     // อัพเดด
     deleteData() {
