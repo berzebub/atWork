@@ -450,6 +450,38 @@ export default {
           backPath2: "",
           type: "hotelMain"
         },
+        {
+          name: "เพิ่มพนักงาน",
+          back: "",
+          backPath: "/accountMain",
+          back2: "",
+          backPath2: "",
+          type: ""
+        },
+        {
+          name: "แก้ไขพนักงาน",
+          back: "",
+          backPath: "/accountMain",
+          back2: "",
+          backPath2: "",
+          type: ""
+        },
+        {
+          name: "เพิ่มกิจการ",
+          back: "",
+          backPath: "/hotelMain",
+          back2: "",
+          backPath2: "",
+          type: "hotelAdd"
+        },
+        {
+          name: "แก้ไขกิจการ",
+          back: "",
+          backPath: "/hotelMain",
+          back2: "",
+          backPath2: "",
+          type: "hotelEdit"
+        },
 
         // NOTE : Router User
         {
@@ -462,7 +494,7 @@ export default {
         },
         {
           name: "เพิ่มผู้ดูแลระบบ",
-          back: "",
+          back: "ผู้ดูแลระบบ",
           backPath: "/userMain",
           back2: "",
           backPath2: "",
@@ -470,7 +502,7 @@ export default {
         },
         {
           name: "แก้ไขผู้ดูแลระบบ",
-          back: "",
+          back: "ผู้ดูแลระบบ",
           backPath: "/userMain",
           back2: "",
           backPath2: "",
