@@ -87,7 +87,7 @@
         class="box text-left q-my-md relative-position"
       >
         <div
-          class="absolute-top-left q-pa-sm"
+          class="absolute-top-left q-pa-sm mobile-only"
           v-if="item.status == 'waitForDelete'"
           style="z-index:30"
         >
@@ -95,23 +95,30 @@
             class="text-white cursor-pointer"
             @click="cancelDelete(item.key)"
             style="text-decoration:underline;"
-            >ยกเลิกการลบ</a
-          >
+          >ยกเลิกการลบ</a>
         </div>
-        <div
-          v-if="item.status == 'waitForDelete'"
-          class="absolute-center backDrop"
-        ></div>
+        <q-btn
+          dense
+          style="z-index:30;width:190px;"
+          class="absolute-center q-pa-sm text-blue-grey-10 desktop-only"
+          v-if="item.status  == 'waitForDelete'"
+          color="white"
+          label="ยกเลิกการลบ"
+          @click="cancelDelete(item.key)"
+        ></q-btn>
+        <div v-if="item.status == 'waitForDelete'" class="absolute-center backDrop"></div>
 
         <div class="boxQuestion bg-blue-grey-10 text-white q-py-xs q-px-sm row">
           <div class="col self-center">
-            <span v-if="item.status != 'waitForDelete'"
-              >รหัสลำดับ {{ item.order }}</span
-            >
+            <span class="desktop-only">รหัสลำดับ {{ item.order }}</span>
+            <span
+              class="mobile-only"
+              v-if="item.status != 'waitForDelete'"
+            >รหัสลำดับ {{ item.order }}</span>
           </div>
-          <div class="col self-center" align="right">
+          <div class="col self-center desktop-only" align="right">
             <q-btn
-              v-if="item.status != 'waitForDelete' && mode == 'draft'"
+              v-if="mode == 'draft'"
               @click="deleteData(item.key, item.order, index)"
               size="sm"
               class="q-mr-sm"
@@ -120,7 +127,7 @@
               icon="far fa-trash-alt"
             />
             <q-btn
-              v-if="item.status != 'waitForDelete' && mode == 'draft'"
+              v-if="mode == 'draft'"
               @click="editData(item.key)"
               size="sm"
               flat
@@ -128,6 +135,18 @@
               icon="far fa-edit"
             />
           </div>
+          <q-btn class="mobile-only" size="13px" icon="fas fa-ellipsis-v" round dense flat>
+            <q-menu>
+              <q-list style="min-width: 120px">
+                <q-item clickable v-close-popup>
+                  <q-item-section @click="editData(item.key)">แก้ไขข้อมูล</q-item-section>
+                </q-item>
+                <q-item clickable v-close-popup>
+                  <q-item-section @click="deleteData(item.key,item.order,index)">ลบ</q-item-section>
+                </q-item>
+              </q-list>
+            </q-menu>
+          </q-btn>
         </div>
         <div class="text-center q-pt-md" v-if="item.imageURL">
           <img style="height:300px;width:400px" :src="item.imageURL" alt />
@@ -143,30 +162,31 @@
           />
           <span class="q-mx-xs q-pr-sm q-pl-xs" v-html="item.question"></span>
         </div>
-        <div class="q-px-md q-mt-md">
+        <div class="q-px-md">
           <div v-for="(items, index2) in item.choices" :key="index2">
             <div v-if="item.isAnswerSound && items.choice" class="q-mt-xs">
-              <q-btn
-                round
-                flat
-                size="sm"
-                :icon="
+              <span
+                class="q-mx-xs q-pr-sm"
+                :class="
+                  item.correctAnswer == index2 + 1
+                    ? 'bg-secondary text-white '
+                    : ''
+                "
+              >
+                <q-btn
+                  round
+                  flat
+                  size="sm"
+                  :icon="
                   items.isSound ? 'fas fa-volume-up' : 'fas fa-volume-mute'
                 "
-                :class="!items.isSound ? 'no-pointer-events' : ''"
-                @click="playAudio(items.soundURL)"
-              ></q-btn>
-              <span
-                class="q-mx-xs q-pr-sm q-pl-xs"
-                :class="
-                  item.correctAnswer == index2 + 1
-                    ? 'bg-secondary text-white '
-                    : ''
-                "
-                >{{ index2 + 1 + ") " + items.choice }}</span
-              >
+                  :class="!items.isSound ? 'no-pointer-events' : ''"
+                  @click="playAudio(items.soundURL)"
+                ></q-btn>
+                {{ index2 + 1 + ") " + items.choice }}
+              </span>
             </div>
-            <div v-else>
+            <div v-if="!item.isAnswerSound">
               <span
                 class="q-mx-xs q-pr-sm q-pl-xs"
                 :class="
@@ -174,12 +194,11 @@
                     ? 'bg-secondary text-white '
                     : ''
                 "
-                >{{ items.choice }}</span
-              >
+              >{{ index2 + 1 + ") " + items.choice }}</span>
             </div>
           </div>
         </div>
-        <div class="q-pa-md">
+        <div class="q-pa-sm q-mx-md">
           <span v-html="item.description"></span>
         </div>
       </div>
@@ -226,13 +245,7 @@
                 />
               </div>
               <div class="q-px-md q-pb-md">
-                <q-btn
-                  @click="saveBtn()"
-                  dense
-                  style="width:150px"
-                  color="black"
-                  label="บันทึก"
-                />
+                <q-btn @click="saveBtn()" dense style="width:150px" color="black" label="บันทึก" />
               </div>
             </div>
           </div>
@@ -278,11 +291,7 @@
         <q-card style="max-width:600px;width:100%;height:200px">
           <div class="text-h6 text-center q-pt-md q-pb-sm">
             <div class="q-py-md q-mt-md">
-              <q-icon
-                color="secondary"
-                size="46px"
-                name="far fa-check-circle"
-              />
+              <q-icon color="secondary" size="46px" name="far fa-check-circle" />
             </div>
             <div>บันทึกข้อมูลเรียบร้อย</div>
           </div>
@@ -361,7 +370,7 @@ export default {
     },
     loadInstrunction() {
       let practiceId = this.$route.params.practiceId;
-
+      console.log(practiceId);
       db.collection("practice_list")
         .doc(practiceId)
         .get()

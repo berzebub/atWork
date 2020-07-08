@@ -386,9 +386,6 @@ export default {
             let datakey = element.data().linkVdo.split("/");
             this.linkVdo = datakey[3];
           });
-          if (this.dataVdo.isVdo == false) {
-            this.editVdoDialog = true;
-          }
         });
       this.data = [];
       if (this.mode == "draft") {

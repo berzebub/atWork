@@ -7,8 +7,10 @@
           รหัสลำดับ
           <span class="q-mx-md text-grey-5">ตัวเลข 3 หลัก</span>
         </span>
+
         <div>
           <q-input
+            mask="###"
             bg-color="white"
             outlined
             ref="orderid"
@@ -19,6 +21,14 @@
           />
         </div>
       </div>
+      <div class="q-pb-md">
+        <q-checkbox
+          color="black"
+          v-model="data.isSound"
+          style="margin-left:-10px;"
+          label="คำถามเป็นเสียง"
+        />
+      </div>
       <div class="q-pb-sm">
         <span>คำถาม</span>
         <div>
@@ -27,9 +37,63 @@
             outlined
             :content-class="!isQuestion ? 'brx' : null"
             @input="checkEditor('question')"
-            :toolbar="[['bold', 'italic', 'underline']]"
+            :definitions="
+                data.isSound
+                  ? {
+                      upload: {
+                        icon: 'cloud_upload',
+                        label: 'อัปโหลดเสียง',
+                        handler: uploadQuestion
+                      }
+                    }
+                  : null
+              "
+            :toolbar="[
+                ['bold', 'italic', 'underline'],
+                ['upload', 'save']
+              ]"
             v-model="data.question"
             min-height="7rem"
+          />
+          <div v-if="data.isSound" class="box-choice-sound bg-white row">
+            <div
+              :class="dataQuestion.status ? 'offset-1' : ''"
+              class="col self-center q-pa-md"
+              align="center"
+            >
+              <span v-if="isAddMode">
+                <span v-if="!dataQuestion.status" class="text-grey-6">ยังไม่ใส่ไฟล์เสียง</span>
+                <span v-if="dataQuestion.status">{{ dataQuestion.file.name }}</span>
+              </span>
+
+              <span v-else>
+                <span v-if="!dataQuestion.status" class="text-grey-6">ยังไม่ใส่ไฟล์เสียง</span>
+                <span
+                  v-if="dataQuestion.status && !dataQuestion.file"
+                >{{ $route.params.key + "-2.mp3" }}</span>
+                <span v-if="dataQuestion.status && dataQuestion.file">{{ dataQuestion.file.name }}</span>
+              </span>
+            </div>
+
+            <div class="col-1 self-center" align="center" v-if="dataQuestion.status">
+              <q-btn
+                @click="
+                    (dataQuestion.status = false), (dataQuestion.file = null)
+                  "
+                dense
+                icon="far fa-trash-alt"
+                color="blue-grey-10"
+                size="13px"
+                style="padding:1px"
+              />
+            </div>
+          </div>
+          <input
+            @change="fileSound($event.target.files[0], 5)"
+            type="file"
+            :id="'soundQuestion'"
+            accept="audio/*"
+            class="visually-hidden"
           />
         </div>
       </div>
@@ -46,12 +110,12 @@
             outlined
             square
             v-model="uploadImg"
-            style="max-width:360px;width:100%;"
+            style="width:100%;"
           >
             <template v-slot:append>
               <div>
                 <div
-                  class="text-subtitle1 rounded-borders text-center bg-blue-grey-10 text-white q-px-sm cursor-pointer q-py-xs"
+                  class="text-subtitle1 rounded-borders text-center bg-blue-grey-10 text-white q-px-sm cursor-pointer"
                   @click.stop="uploadImg = null"
                   v-if="!uploadImg"
                 >เลือกไฟล์</div>
@@ -61,7 +125,7 @@
                   v-if="uploadImg"
                   @click="uploadImg = null"
                   icon="far fa-trash-alt"
-                  size="10px"
+                  size="12px"
                   style="padding:1.5px"
                 ></q-btn>
               </div>
@@ -84,64 +148,6 @@
             </template>
           </q-file>
         </div>
-        <div class="col-12">
-          <q-checkbox
-            v-model="data.isSound"
-            @input="!data.isSound ? (uploadAudio = null) : null"
-            color="black"
-            style="margin-left:-10px;"
-            label="โจทย์เป็นเสียง"
-          />
-        </div>
-        <div class="q-py-md col-md-12 col-sm-12 col-xs-12" v-if="data.isSound">
-          <div>
-            ไฟล์เสียง
-            <span class="q-mx-md text-grey-5">ไฟล์ mp3 เท่านั้น</span>
-          </div>
-          <q-file
-            accept=".mp3"
-            bg-color="white"
-            class="q-py-sm cursor-pointer"
-            square
-            outlined
-            v-model="uploadAudio"
-            style="max-width:360px;width:100%;"
-          >
-            <template v-slot:append>
-              <div
-                class="text-subtitle1 rounded-borders text-center bg-blue-grey-10 text-white q-px-sm cursor-pointer q-py-xs"
-                @click.stop="uploadAudio = null"
-                v-if="!uploadAudio"
-              >เลือกไฟล์</div>
-              <q-btn
-                dense
-                class="cursor-pointer text-white bg-blue-grey-10"
-                v-if="uploadAudio"
-                @click="uploadAudio = null"
-                icon="far fa-trash-alt"
-                size="10px"
-                style="padding:1.5px"
-              ></q-btn>
-            </template>
-
-            <template v-slot:prepend v-if="!uploadAudio">
-              <div style="width:200px;" align="center">
-                <div
-                  class="text-subtitle1 text-grey-7 self-center"
-                  v-if="!uploadAudio"
-                  @click.stop="uploadAudio = null"
-                >
-                  <span v-if="isAddMode">ลากแล้ววาง หรือ</span>
-                  <span v-else class>
-                    <span v-if="data.isSound">{{$route.params.key + ".mp3"}}</span>
-                    <span v-else>ลากแล้ววาง หรือ</span>
-                  </span>
-                </div>
-              </div>
-            </template>
-          </q-file>
-        </div>
-
         <div>
           <div class="row" style="width:360px">
             <div class="col-6">
@@ -499,9 +505,9 @@
         <div class="row reverse-wrap justify-center" style="max-width:340px;width:100%">
           <div class="col-6 q-py-sm text-left">
             <q-btn
-              to="/multipleMain"
               v-close-popup
               dense
+              @click="backBtn()"
               style="width:150px"
               color="white"
               outline
@@ -543,8 +549,11 @@ export default {
   data() {
     return {
       uploadImg: null,
-      uploadAudio: null,
       // ข้อมูล
+      dataQuestion: {
+        file: null,
+        status: false
+      },
       data: {
         isImage: false,
         isSound: false,
@@ -705,10 +714,10 @@ export default {
                 .put(this.uploadImg);
             }
 
-            if (this.uploadAudio) {
+            if (this.dataQuestion.file) {
               await st
                 .child("/practice/audio/" + doc.id + ".mp3")
-                .put(this.uploadAudio);
+                .put(this.dataQuestion.file);
             }
 
             // แบบมีเสียง เพิ่ม
@@ -750,10 +759,10 @@ export default {
                 .child("/practice/image/" + this.$route.params.key + ".jpg")
                 .put(this.uploadImg);
             }
-            if (this.uploadAudio) {
+            if (this.dataQuestion.file) {
               await st
                 .child("/practice/audio/" + this.$route.params.key + ".mp3")
-                .put(this.uploadAudio);
+                .put(this.dataQuestion.file);
             }
 
             // แบบมีเสียง เพิ่ม
@@ -791,7 +800,14 @@ export default {
 
             setTimeout(() => {
               this.loadingHide();
-              this.$router.push("/multipleMain");
+              this.$router.push(
+                "/multipleMain/" +
+                  this.data.levelId +
+                  "/" +
+                  this.data.unitId +
+                  "/" +
+                  this.data.practiceId
+              );
             }, 1000);
           });
       }
@@ -845,6 +861,16 @@ export default {
         this.dataFiles[3].status = true;
         this.dataFiles[3].file = val;
       }
+      if (type == 5) {
+        this.dataQuestion.status = true;
+        this.dataQuestion.file = val;
+      }
+    },
+    uploadQuestion() {
+      var elem = document.querySelector("#soundQuestion");
+      elem.value = "";
+
+      elem.click();
     },
     uploadIt1() {
       var elem = document.querySelector("#soundId1");
@@ -869,6 +895,16 @@ export default {
       elem.value = "";
 
       elem.click();
+    },
+    backBtn() {
+      this.$router.push(
+        "/multipleMain/" +
+          this.data.levelId +
+          "/" +
+          this.data.unitId +
+          "/" +
+          this.data.practiceId
+      );
     }
   },
   mounted() {
