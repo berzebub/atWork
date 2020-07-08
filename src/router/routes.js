@@ -125,6 +125,11 @@ const routes = [
         component: () => import("pages/accountMain.vue"),
         name: "accountMain"
       },
+      {
+        path: "hotelMain",
+        component: () => import("pages/hotelMain.vue"),
+        name: "hotelMain"
+      },
       // ------------------- userMain ผู้ดูแลระบบ -------------------
       {
         path: "userMain",
