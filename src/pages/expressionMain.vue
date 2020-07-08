@@ -15,24 +15,42 @@
         </div>
         <!-- ปุ่มพิมพ์ -->
         <div class="mobile-hide">
-          <q-btn v-if="expressionType == 'draft'" round color="blue-grey-10" icon="fas fa-print" />
+          <div class="row">
+            <div class="q-mr-md">
+              <q-btn
+                @click="sync(practiceId),openDialogSync()"
+                v-if="expressionType == 'draft'"
+                round
+                color="blue-grey-10"
+                icon="fas fa-sync"
+              />
+            </div>
+            <q-btn v-if="expressionType == 'draft'" round color="blue-grey-10" icon="fas fa-print" />
+          </div>
         </div>
       </div>
       <!-- หัวข้อ -->
       <div class="q-ma-lg text-h6" align="center">
-        <div>พนักงานร้านอาหาร</div>
-        <div>1. รับออเดอร์</div>
+        <div>{{getLevelName}}</div>
+        <div>{{getUnitName}}</div>
       </div>
       <!-- ปุ่มเพิ่ม -->
-      <div v-if="expressionType == 'server'" class style="height:36px"></div>
       <div class align="center">
         <q-btn
           v-if="expressionType == 'draft'"
           style="width:190px; height:36px"
           class="bg-blue-grey-10"
-          :to="'/expressionInput/'+ levelId+'/'+unitId +'/'+ practiceId"
+          @click="addDataExpression()"
+          color="white"
+          label="เพิ่มประโยคสนทนา"
+        ></q-btn>
+        <q-btn
+          v-if="expressionType == 'server'"
+          style="width:190px; height:36px"
+          class="bg-blue-grey-10"
           color="white"
           label="เพิ่ม"
+          disable
         ></q-btn>
       </div>
       <!-- การ์ดข้อความ -->
@@ -156,6 +174,25 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+    <!-- ซิงค์ข้อมูลเรียบร้อย -->
+    <q-dialog v-model="successSync">
+      <q-card style="width: 323px; height:200px">
+        <q-card-section align="center">
+          <div class="q-mt-lg" style="margin-top:45px">
+            <q-btn
+              outline
+              round
+              class="text-teal"
+              size="16px"
+              style="border-style:solid; border-width:3px"
+            >
+              <q-icon color="secondary" name="fas fa-sync" />
+            </q-btn>
+          </div>
+          <div class="q-mt-lg text-subtitle1">ซิงค์ข้อมูลเรียบร้อย</div>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 
@@ -164,11 +201,14 @@ import { db, auth } from "../router";
 export default {
   data() {
     return {
+      successSync: false,
       expressionType: "draft",
       dialogDelete: false,
       dialogCancelDelete: false,
       getId: "",
       getOrder: "",
+      getLevelName: "",
+      getUnitName: "",
       showDataExpression: "",
       levelId: this.$route.params.levelId,
       unitId: this.$route.params.unitId,
@@ -177,6 +217,28 @@ export default {
     };
   },
   methods: {
+    openDialogSync() {
+      this.successSync = true;
+      setTimeout(() => {
+        this.successSync = false;
+      }, 2500);
+    },
+    loadLevelData() {
+      db.collection("level")
+        .doc(this.levelId)
+        .get()
+        .then(data => {
+          this.getLevelName = data.data().name;
+        });
+    },
+    loadUnitData() {
+      db.collection("unit")
+        .doc(this.unitId)
+        .get()
+        .then(data => {
+          this.getUnitName = data.data().name;
+        });
+    },
     loadDataExpression() {
       db.collection("practice_draft")
         .where("levelId", "==", this.levelId)
@@ -242,10 +304,23 @@ export default {
         name: "expressionEdit",
         params: { ...item, levelId: this.levelId, unitId: this.unitId }
       });
+    },
+    addDataExpression() {
+      this.$router.push({
+        name: "expressionInput",
+        params: {
+          getLevelName: this.getLevelName,
+          getUnitName: this.getUnitName,
+          levelId: this.levelId,
+          unitId: this.unitId
+        }
+      });
     }
   },
   mounted() {
     this.loadDataExpression();
+    this.loadLevelData();
+    this.loadUnitData();
 
     // var user = auth.currentUser;
     // console.log(user.email);
