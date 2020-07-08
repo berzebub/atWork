@@ -23,32 +23,17 @@
               color="blue-grey-10"
               icon="fas fa-sync"
             />
-            <q-btn
-              v-if="flashcardType == 'server'"
-              @click="sync(practiceId),openDialogSync()"
-              round
-              color="blue-grey-10"
-              icon="fas fa-sync"
-              disable
-            />
           </div>
           <!-- ปุ่มพิมพ์ -->
           <div class="mobile-hide">
             <q-btn v-if="flashcardType == 'draft'" round color="blue-grey-10" icon="fas fa-print" />
-            <q-btn
-              v-if="flashcardType == 'server'"
-              round
-              color="blue-grey-10"
-              icon="fas fa-print"
-              disable
-            />
           </div>
         </div>
       </div>
       <!-- หัวข้อ -->
       <div class="q-ma-lg text-h6" align="center">
-        <div>{{levelId}}</div>
-        <div>{{unitId}}</div>
+        <div>{{getLevelName}}</div>
+        <div>{{getUnitName}}</div>
       </div>
       <!-- ปุ่มเพิ่ม -->
       <div align="center">
@@ -56,7 +41,7 @@
           v-if="flashcardType == 'draft'"
           style="width:190px; height:36px"
           class="bg-blue-grey-10"
-          :to="'/flashcardInput' + '/' + levelId +'/'+unitId + '/' + practiceId"
+          @click="addDataFlashcard()"
           color="white"
           label="เพิ่มคำศัพท์ "
         ></q-btn>
@@ -64,7 +49,6 @@
           v-if="flashcardType == 'server'"
           style="width:190px; height:36px"
           class="bg-blue-grey-10"
-          :to="'/flashcardInput' + '/' + levelId +'/'+unitId + '/' + practiceId"
           color="white"
           label="เพิ่มคำศัพท์ "
           disable
@@ -161,7 +145,7 @@
               class="col-sm-6 col-xs-12 q-px-md q-pt-md q-pb-sm text-h6"
               align="center"
             >
-              <q-img :src="item.img" :ratio="1/1" style="max-width:400px; width:100%" class></q-img>
+              <q-img :src="item.img" :ratio="1/1" style="width:300px;height:300px" class></q-img>
             </div>
             <!-- คำ -->
             <div class="q-md-6 q-sm-12">
@@ -268,6 +252,8 @@ export default {
       getId: "",
       getOrder: "",
       getVocabulary: "",
+      getLevelName: "",
+      getUnitName: "",
       showDataFlashcard: "",
       levelId: this.$route.params.levelId,
       unitId: this.$route.params.unitId,
@@ -277,6 +263,22 @@ export default {
     };
   },
   methods: {
+    loadLevelData() {
+      db.collection("level")
+        .doc(this.levelId)
+        .get()
+        .then(data => {
+          this.getLevelName = data.data().name;
+        });
+    },
+    loadUnitData() {
+      db.collection("unit")
+        .doc(this.unitId)
+        .get()
+        .then(data => {
+          this.getUnitName = data.data().name;
+        });
+    },
     loadDataFlashcard() {
       db.collection("practice_draft")
         .where("levelId", "==", this.levelId)
@@ -403,6 +405,20 @@ export default {
         }
       });
     },
+    editDataFlashcard(item) {
+      this.$router.push({
+        name: "flashcardInput",
+        params: {
+          data: {
+            levelId: item.levelId,
+            unitId: item.unitId,
+            practiceId: item.practiceId
+          },
+          getLevelName: this.getLevelName,
+          getUnitName: this.getUnitName
+        }
+      });
+    },
     playSound(pathSound) {
       console.log(pathSound);
       let audio = new Audio(pathSound);
@@ -411,6 +427,8 @@ export default {
   },
   mounted() {
     this.loadDataFlashcard();
+    this.loadLevelData();
+    this.loadUnitData();
   }
 };
 </script>

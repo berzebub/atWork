@@ -5,8 +5,8 @@
         <div class="col-sm-11 col-xs-12 relative-position">
           <!-- หัวข้อ -->
           <div class="q-ma-lg text-h6" align="center">
-            <div>พนักงานร้านอาหาร</div>
-            <div>1. รับออเดอร์</div>
+            <div>{{getLevelName}}</div>
+            <div>{{getUintName}}</div>
           </div>
           <!-- รหัสลำดับ -->
           <div>
@@ -297,6 +297,8 @@ export default {
       checkValidate: false,
       isClick: false,
       isAddMode: true,
+      getLevelName: this.$route.params.getLevelName,
+      getUintName: this.$route.params.getUintName,
       data: {
         order: "",
         vocabulary: "",
