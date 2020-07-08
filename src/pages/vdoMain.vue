@@ -8,7 +8,7 @@
             <div class="col">
               <q-radio
                 color="blue-grey-10"
-                @input="loadDarft()"
+                @input="loadPracticeData()"
                 v-model="mode "
                 val="draft"
                 label="แบบร่าง"
@@ -18,7 +18,7 @@
             <div class="col">
               <q-radio
                 color="blue-grey-10"
-                @input="loadServer()"
+                @input="loadPracticeData()"
                 v-model="mode "
                 val="server"
                 label="เซิร์ฟเวอร์"
@@ -27,20 +27,21 @@
           </div>
         </div>
         <div class="desktop-only">
-          <div class="text-right">
-            <q-btn
-              v-if="mode =='draft'"
-              round
-              color="blue-grey-10"
-              icon="fas fa-print"
-              to="/multiplePrint"
-            />
+          <div v-if="mode =='draft'" class="text-right">
+            <q-btn class="q-mx-md" round color="blue-grey-10" icon="fas fa-sync-alt" />
+            <q-btn round color="blue-grey-10" icon="fas fa-print" to="/multiplePrint" />
+          </div>
+        </div>
+
+        <div class="mobile-only">
+          <div class="text-right q-pl-md">
+            <q-btn :disable="mode !='draft'" round color="blue-grey-10" icon="fas fa-sync-alt" />
           </div>
         </div>
       </div>
       <div class="text-h6 text-center q-pt-md">
-        <div>อาหารและเครื่องดื่ม</div>
-        <div>1. จองโต๊ะ</div>
+        <div>{{practiceData.levelName}}</div>
+        <div>{{ practiceData.unitOrder + ". " + practiceData.unitName}}</div>
       </div>
       <div class="q-my-md boxCard text-left">
         <div
@@ -70,8 +71,9 @@
             </div>
           </div>
           <div class="text-subtitle1">ลิงก์วิดีโอ</div>
-          <div>
-            <q-input outlined v-model="fileVdo" dense readonly />
+          <div class="relative-position">
+            <div class="absolute-center">{{fileVdo}}</div>
+            <q-input outlined dense readonly />
           </div>
           <div class="text-center q-py-md">
             <u
@@ -94,7 +96,7 @@
         </div>
         <div class="text-center">
           <div
-            v-for="item,index in data"
+            v-for="item,index in practiceDataList"
             :key="index"
             class="q-mt-md boxCard text-left relative-position"
           >
@@ -132,12 +134,12 @@
               <div>
                 <q-btn class="mobile-only" size="13px" icon="fas fa-ellipsis-v" round dense flat>
                   <q-menu>
-                    <q-list style="min-width: 120px">
+                    <q-list style="min-width: 130px">
                       <q-item clickable v-close-popup>
-                        <q-item-section @click="editBtn(item.key)">แก้ไขข้อมูล</q-item-section>
+                        <q-item-section @click="editBtn(item.key)">แก้ไขบทสนทนา</q-item-section>
                       </q-item>
                       <q-item clickable v-close-popup>
-                        <q-item-section @click="deleteBtn(item.key,item.order)">ลบ</q-item-section>
+                        <q-item-section @click="deleteBtn(item.key,item.order)">ลบบทสนทนา</q-item-section>
                       </q-item>
                     </q-list>
                   </q-menu>
@@ -164,10 +166,10 @@
               </div>
             </div>
             <div class="q-px-md q-py-sm">
+              <div class="self-center" v-if="item.customer == 1 ">ลูกค้า:</div>
+              <div class="self-center" v-if="item.customer == 2 ">พนักงาน:</div>
               <div class="row">
-                <div class="self-center" v-if="item.customer == 1 ">ลูกค้า:</div>
-                <div class="self-center" v-if="item.customer == 2 ">พนักงาน:</div>
-                <div class="q-px-sm">
+                <div class="q-pr-sm">
                   <q-btn v-if="!item.isSound" round flat size="sm" icon="fas fa-volume-mute" />
                   <q-btn
                     v-if="item.isSound"
@@ -180,9 +182,9 @@
                 </div>
                 <div class="col self-center">
                   <span class="text-subtitle1">{{item.sentenceEng}}</span>
+                  <div class="text-blue-grey-7 text-subtitle2">{{item.sentenceTh}}</div>
                 </div>
               </div>
-              <div class="text-blue-grey-7 text-subtitle2">{{item.sentenceTh}}</div>
             </div>
           </div>
         </div>
@@ -253,12 +255,19 @@
                 />
               </div>
               <div class="q-px-sm q-pb-md">
-                <q-btn @click="deleteData()" dense style="width:120px" color="black" label="ตกลง" />
+                <q-btn
+                  @click="deleteData(), (isDeleteDialog = false)"
+                  dense
+                  style="width:120px"
+                  color="black"
+                  label="ตกลง"
+                />
               </div>
             </div>
           </div>
         </q-card>
       </q-dialog>
+      <!-- ดูตั่งค่าวีดีโอ -->
       <q-dialog v-model="isSettingDialog" persistent>
         <q-card class="q-pa-md" style="max-width:900px;width:100%;">
           <div class="text-h6 q-px-md">การตั้งค่าการอัปโหลดวิดีโอ</div>
@@ -330,23 +339,25 @@ export default {
       isKeyImage: "",
       tab: "sentence",
       linkVdo: "",
-      dataVdo: {
-        status: "notSync",
-        isVdo: false,
-        linkVdo: "",
-        practiceType: "vdoconverse"
+      practiceData: {
+        levelName: "",
+        unitName: "",
+        unitOrder: ""
       },
-      data: [],
-      dataDraft: [],
-      dataServer: [],
+      practiceDataList: [],
+      dataVdo: {
+        isVdo: false,
+        linkVdo: ""
+      },
       idVdo: "",
+      playSoundURL: "",
       pathFile:
-        "https://storage.cloud.google.com/atwork-dee11.appspot.com/practice/"
+        "https://storage.cloud.google.com/atwork-dee11.appspot.com/practice/",
+      syncData: ""
     };
   },
   methods: {
     loadLevel() {
-      this.loadingShow();
       let levelKey = this.$route.params.levelId;
       db.collection("level")
         .doc(levelKey)
@@ -369,87 +380,81 @@ export default {
             this.practiceData.unitName = result.data().name;
             this.practiceData.unitOrder = result.data().order;
             // โหลดข้อมูล คำสั่ง
-            this.loadInstrunction();
+            this.loadPracticeData();
+            this.loadVdo();
           }
         });
     },
     // โหลดข้อมูลทั้งหมด
-    loadDataAll() {
+    loadPracticeData() {
+      this.loadingShow();
+      let practiceId = this.$route.params.practiceId;
+      let dbData;
+      if (typeof this.syncData == "function") {
+        this.syncData();
+      }
+      if (this.mode == "draft") {
+        dbData = db.collection("practice_draft");
+      } else {
+        dbData = db.collection("practice_server");
+      }
+      let temp = [];
+      this.syncData = dbData
+        .where("practiceId", "==", practiceId)
+        .onSnapshot(doc => {
+          let getSound = "";
+          doc.forEach(element => {
+            if (element.data().isSound) {
+              getSound = this.pathFile + "audio/" + element.id + ".mp3";
+            }
+            let dataKey = {
+              key: element.id,
+              soundURL: getSound
+            };
+            let final = {
+              ...dataKey,
+              ...element.data()
+            };
+            temp.push(final);
+          });
+          temp.sort((a, b) => a.order - b.order);
+          this.practiceDataList = temp;
+          this.loadingHide();
+        });
+    },
+    loadVdo() {
+      let practiceId = this.$route.params.practiceId;
       db.collection("practice_list")
-        .where("practiceType", "==", "vdoconverse")
+        .doc(practiceId)
         .get()
         .then(doc => {
-          doc.forEach(element => {
-            this.idVdo = element.id;
-            this.dataVdo.isVdo = element.data().isVdo;
-            this.fileVdo = element.data().linkVdo;
-            let datakey = element.data().linkVdo.split("/");
-            this.linkVdo = datakey[3];
-          });
+          this.idVdo = doc.id;
+          this.dataVdo.isVdo = doc.data().isVdo;
+          this.fileVdo = doc.data().linkVdo;
+          let datakey = doc.data().linkVdo.split("/");
+          this.linkVdo = datakey[3];
         });
-      this.data = [];
-      if (this.mode == "draft") {
-        this.dataDraft = [];
-        db.collection("practice_draft")
-          .where("practiceId", "==", "vdo")
-          .get()
-          .then(doc => {
-            let getSound = "";
-            doc.forEach(element => {
-              if (element.data().isSound) {
-                getSound = this.pathFile + "audio/" + element.id + ".mp3";
-              }
-              let dataKey = {
-                key: element.id,
-                soundURL: getSound
-              };
-              let final = {
-                ...dataKey,
-                ...element.data()
-              };
-              this.dataDraft.push(final);
-            });
-            this.dataDraft.sort((a, b) => {
-              return a.order - b.order;
-            });
-
-            this.loadDarft();
-          });
-      } else {
-        this.dataServer = [];
-      }
-    },
-    loadDarft() {
-      this.data = this.dataDraft;
-    },
-    loadServer() {
-      this.data = this.dataServer;
     },
     addBtn() {
-      this.$router.push("/vdoInputAdd");
+      this.$router.push(
+        "/vdoInputAdd/" +
+          this.$route.params.levelId +
+          "/" +
+          this.$route.params.unitId +
+          "/" +
+          this.$route.params.practiceId
+      );
     },
-    cancelDelete(key) {
-      this.$q
-        .dialog({
-          title: "ยกเลิกการลบข้อมูล",
-          ok: "ตกลง",
-          cancel: "ยกเลิก"
-        })
-        .onOk(() => {
-          db.collection("practice_draft")
-            .doc(key)
-            .update({
-              status: "notSync"
-            })
-            .then(() => {
-              this.loadDataAll();
-            });
-        });
-    },
+
     // เล่นเสียง
     playAudio(sound) {
-      let audio = new Audio(sound);
-      audio.play();
+      if (this.playSoundURL != "") {
+        this.playSoundURL.pause();
+      }
+
+      this.playSoundURL = new Audio(sound);
+
+      this.playSoundURL.play();
     },
     editBtn(key) {
       if (key) {
@@ -465,17 +470,21 @@ export default {
       if (this.$refs.link.hasError) {
         return;
       }
+
       this.fileVdo = this.dataVdo.linkVdo;
       if (!this.dataVdo.isVdo) {
         this.dataVdo.isVdo = true;
-        db.collection("practice_list").add(this.dataVdo);
+
+        db.collection("practice_list")
+          .doc(this.$route.params.practiceId)
+          .update(this.dataVdo);
       } else {
         db.collection("practice_list")
           .doc(this.idVdo)
           .update(this.dataVdo);
       }
       this.editVdoDialog = false;
-      this.loadDataAll();
+      this.loadVdo();
     },
     deleteBtn(key, id, index) {
       this.isDeleteKey = key;
@@ -488,15 +497,23 @@ export default {
         .doc(this.isDeleteKey)
         .update({
           status: "waitForDelete"
-        })
-        .then(() => {
-          this.isDeleteDialog = false;
-          this.loadDataAll();
+        });
+    },
+    cancelDelete(key) {
+      db.collection("practice_draft")
+        .doc(key)
+        .update({
+          status: "notSync"
         });
     }
   },
   mounted() {
-    this.loadDataAll();
+    this.loadLevel();
+  },
+  beforeDestroy() {
+    if (typeof this.syncData == "function") {
+      this.syncData();
+    }
   }
 };
 </script>

@@ -16,7 +16,7 @@
             ref="orderid"
             v-model.number="data.order"
             dense
-            :rules="[ val => !!val || 'กรุณาใส่รหัสลำดับ']"
+            :rules="[ val => !!val || 'กรุณาใส่รหัสลำดับ',checkOrderId]"
           />
         </div>
       </div>
@@ -104,7 +104,7 @@
           <div class="col-6 q-py-sm text-left">
             <q-btn
               v-close-popup
-              to="/vdoMain"
+              @click="backBtn()"
               dense
               style="width:150px"
               color="white"
@@ -150,16 +150,15 @@ import { db, st } from "../router";
 export default {
   data() {
     return {
-      cancelDialog: false,
       checkble: false,
       isTextAudio: "",
       uploadAudio: null,
       isKeyAudio: "",
       data: {
         order: "",
-        practiceId: "vdo",
-        levelId: "aa",
-        unitId: "bb",
+        practiceId: this.$route.params.practiceId,
+        levelId: this.$route.params.levelId,
+        unitId: this.$route.params.unitId,
         sentenceEng: "",
         sentenceTh: "",
         isSound: false,
@@ -187,8 +186,18 @@ export default {
           this.data = doc.data();
         });
     },
+    async checkOrderId(val) {
+      let getOrder = await db
+        .collection("practice_draft")
+        .where("order", "==", val)
+        .where("practiceId", "==", this.data.practiceId)
+        .get();
+
+      if (this.orderOld != val) {
+        return !getOrder.size || "รหัสลำดับนี้มีการใช้งานแล้ว";
+      }
+    },
     saveBtn() {
-      // this.cancelDialog = false;
       this.$refs.orderid.validate();
       this.$refs.eng.validate();
       this.$refs.th.validate();
@@ -202,77 +211,73 @@ export default {
       if (this.uploadAudio) {
         this.data.isSound = true;
       }
+
       if (this.$route.name == "vdoInputAdd") {
-        this.orderNew = this.data.order;
-      } else {
-        if (this.orderOld != this.data.order) {
-          this.orderNew = this.data.order;
-        } else {
-          this.orderNew = "";
-        }
-      }
-      db.collection("practice_draft")
-        .where("order", "==", this.orderNew)
-        .get()
-        .then(doc => {
-          if (doc.size > 0) {
-            this.finishDialog = true;
-            this.iconTrueDialog = false;
-            this.iconfailDialog = true;
-            this.text = "รหัสลำดับนี้มีผู้ใช้งานแล้ว";
-            setTimeout(() => {
-              this.finishDialog = false;
-            }, 1000);
-            return;
-          } else {
-            if (this.$route.name == "vdoInputAdd") {
-              this.loadingShow();
-              this.checkble = true;
-              db.collection("practice_draft")
-                .add(this.data)
-                .then(async doc => {
-                  if (this.uploadAudio) {
-                    await st
-                      .child("/practice/audio/" + doc.id + ".mp3")
-                      .put(this.uploadAudio);
-                  }
-                  this.iconfailDialog = false;
-                  this.iconTrueDialog = true;
-                  this.finishDialog = true;
-                  this.text = "บันทึกข้อมูลเรียบร้อย";
-                  setTimeout(() => {
-                    this.loadingHide();
-                    this.$router.push("/vdoMain");
-                    this.finishDialog = false;
-                    this.checkble = false;
-                  }, 1000);
-                });
-            } else {
-              this.loadingShow();
-              this.checkble = true;
-              db.collection("practice_draft")
-                .doc(this.$route.params.key)
-                .set(this.data)
-                .then(() => {
-                  if (this.uploadAudio) {
-                    st.child(
-                      "/practice/audio/" + this.$route.params.key + ".mp3"
-                    ).put(this.uploadAudio);
-                  }
-                  this.iconfailDialog = false;
-                  this.iconTrueDialog = true;
-                  this.finishDialog = true;
-                  this.text = "บันทึกข้อมูลเรียบร้อย";
-                  setTimeout(() => {
-                    this.loadingHide();
-                    this.$router.push("/vdoMain");
-                    this.finishDialog = false;
-                    this.checkble = false;
-                  }, 1000);
-                });
+        this.loadingShow();
+        this.checkble = true;
+        db.collection("practice_draft")
+          .add(this.data)
+          .then(async doc => {
+            if (this.uploadAudio) {
+              await st
+                .child("/practice/audio/" + doc.id + ".mp3")
+                .put(this.uploadAudio);
             }
-          }
-        });
+            this.iconfailDialog = false;
+            this.iconTrueDialog = true;
+            this.finishDialog = true;
+            this.text = "บันทึกข้อมูลเรียบร้อย";
+            setTimeout(() => {
+              this.loadingHide();
+              this.$router.push(
+                "/vdoMain/" +
+                  this.data.levelId +
+                  "/" +
+                  this.data.unitId +
+                  "/" +
+                  this.data.practiceId
+              );
+            }, 1000);
+          });
+      } else {
+        this.loadingShow();
+        this.checkble = true;
+        db.collection("practice_draft")
+          .doc(this.$route.params.key)
+          .set(this.data)
+          .then(() => {
+            if (this.uploadAudio) {
+              st.child(
+                "/practice/audio/" + this.$route.params.key + ".mp3"
+              ).put(this.uploadAudio);
+            }
+            this.iconfailDialog = false;
+            this.iconTrueDialog = true;
+            this.finishDialog = true;
+            this.text = "บันทึกข้อมูลเรียบร้อย";
+            setTimeout(() => {
+              this.loadingHide();
+              this.$router.push(
+                "/vdoMain/" +
+                  this.data.levelId +
+                  "/" +
+                  this.data.unitId +
+                  "/" +
+                  this.data.practiceId
+              );
+            }, 1000);
+          });
+      }
+    },
+    backBtn() {
+      this.$router.push(
+        "/vdoMain/" +
+          this.data.levelId +
+          "/" +
+          this.data.unitId +
+          "/" +
+          this.data.practiceId
+      );
     }
   },
   mounted() {
