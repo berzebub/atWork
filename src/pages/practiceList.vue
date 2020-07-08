@@ -19,10 +19,13 @@
               :label="itemLv.name"
               @click="showUnit(itemLv.levelId)"
               group="unitgroup"
-              :caption="unitList.filter(x => x.levelId == itemLv.levelId).length == 0 ? 'ปิดการใช้งาน' : ''"
+              :caption="itemLv.status ? '' : 'ปิดการใช้งาน'"
             >
-              <!-- :disable="unitList.filter(x => x.levelId == itemLv.levelId).length == 0" -->
-
+              <q-card v-show="unitListShow==0">
+                <div align="center" class="q-py-md">
+                  <u class="cursor-pointer" @click="gotoAddLesson()">เพิ่มบทเรียน</u>
+                </div>
+              </q-card>
               <q-card v-for="(itemUnit,index2) in unitListShow" :key="index2">
                 <div
                   class="row q-px-md q-py-sm relative-position cursor-pointer"
@@ -56,7 +59,8 @@
           @finishSync="finishSync"
         ></practice-main>
         <div v-else class="full-height flex flex-center text-subtitle1">
-          <q-icon name="fas fa-arrow-left" class="q-pr-sm"></q-icon>กรุณาเลือกบทเรียน
+          <q-icon name="fas fa-arrow-left" class="q-pr-sm"></q-icon>กรุณาเลือกตำแหน่งในเมนูด้านซ้าย
+          <br />เพื่อทำการเพิ่ม / แก้ไขแบบฝึกหัด
         </div>
       </div>
     </div>
@@ -86,11 +90,13 @@ export default {
     };
   },
   methods: {
+    gotoAddLesson() {
+      this.$router.push("/lessonMainList");
+    },
     finishSync(val) {
       this.showUnit(val.levelId);
       this.isShowPracticeMain = true;
     },
-
     gotoEdit(unitId, levelId, index, unitName, levelName) {
       this.isShowPracticeMain = false;
       this.activeKey = unitId;
@@ -114,7 +120,8 @@ export default {
           doc.forEach(element => {
             let showData = {
               levelId: element.id,
-              name: element.data().name
+              name: element.data().name,
+              status: element.data().status
             };
             this.levelList.push(showData);
             this.levelList.sort((a, b) => {
