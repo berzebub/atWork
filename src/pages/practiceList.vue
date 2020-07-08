@@ -6,7 +6,7 @@
       <div
         class
         :class="$q.platform.is.desktop?'col-3':'col-12'"
-        :style="$q.platform.is.desktop? 'width: 300px;': 'width: 100%'"
+        :style="$q.platform.is.desktop? 'width: 360px;': 'width: 100%'"
       >
         <div class="q-pa-md bg-blue-grey-10 shadow-5">
           <div>
