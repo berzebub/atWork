@@ -6,8 +6,9 @@
       v-if="$route.name != 'practiceList' && $route.name != 'userInfo'"
     >
       <q-toolbar>
-        <q-toolbar-title class="q-pa-md" style="font-weight:400">
-          <div class="text-h6">
+        <q-toolbar-title class="q-py-md" style="font-weight:normal">
+          <!-- NOTE : เมนูสำหรับ pc  -->
+          <div class="text-h6" v-if="$q.platform.is.desktop">
             <span class v-if="routeName.back">
               <router-link class="text-white" :to="routeName.backPath">{{routeName.back}}</router-link>
               <span class="fas fa-chevron-right q-mx-sm"></span>
@@ -19,9 +20,13 @@
             <span class="text-h6 q-ml-xs">{{routeName.name}}</span>
           </div>
 
-          <!-- <span v-if="$route.name == 'lessonMainList'" class="text-h6 q-ml-xs">บทเรียน</span>
-          <span v-if="$route.name == 'accountMain'" class="text-h6 q-ml-xs">ผู้ใช้งาน</span>
-          <span v-if="$route.name == 'userMain'" class="text-h6 q-ml-xs">ผู้ดูแลระบบ</span>-->
+          <!-- NOTE : เมนูสำหรับมือถือ -->
+          <div v-if="$q.platform.is.mobile">
+            <router-link :to="routeName.backPath" class="text-white" v-if="routeName.backPath">
+              <span class="fas fa-arrow-left q-ml-sm q-mr-md"></span>
+            </router-link>
+            <span class="text-h6 q-ml-xs">{{routeName.name}}</span>
+          </div>
         </q-toolbar-title>
       </q-toolbar>
     </q-header>
@@ -59,7 +64,7 @@
         <div
           class="full-width q-py-md relative-position cursor-pointer"
           :class="
-            $route.name == 'lessonMainList'
+            $route.name == 'lessonMainList' 
               ? 'active-line active-text'
               : 'no-active-line'
           "
@@ -125,12 +130,8 @@
     </q-drawer>
 
     <!-- เมนูมือถือ -->
-    <q-footer elevated>
-      <div
-        v-if="$q.platform.is.mobile"
-        class="mobile-only row bg-blue-grey-10 text-blue-grey-4"
-        align="center"
-      >
+    <q-footer elevated v-if="$q.platform.is.mobile">
+      <div class="mobile-only row bg-blue-grey-10 text-blue-grey-4" align="center">
         <div
           class="col q-pa-xs q-pt-sm relative-position cursor-pointer"
           :class="
@@ -148,11 +149,11 @@
         <div
           class="col q-pa-xs q-pt-sm relative-position cursor-pointer"
           :class="
-            $route.name == 'lessonMainList'
+            $route.name == 'lessonMainList' || $route.name == 'lessonInput' || $route.name == 'lessonEdit' || $route.name == 'lessonUnitlist'
               ? 'active-line-bottom active-text'
               : 'no-active-line-bottom'
           "
-          @click="$router.push('/lessonMainList')"
+          @click="$route.name != 'lessonMainList' ? $router.push('/lessonMainList') : null"
           v-ripple
         >
           <q-icon name="fas fa-signal" size="25px" />
@@ -176,7 +177,7 @@
         <div
           class="col q-pa-xs q-pt-sm relative-position cursor-pointer"
           :class="
-            $route.name == 'userMain'
+            $route.name == 'userMain' || $route.name == 'userAdd' || $route.name == 'userEdit'
               ? 'active-line-bottom active-text'
               : 'no-active-line-bottom'
           "
@@ -190,7 +191,7 @@
         <div
           class="col q-pa-xs q-pt-sm relative-position cursor-pointer"
           :class="
-            $route.name == 'userInfo'
+            $route.name == 'userInfo' || $route.name == 'userSettingMobile'
               ? 'active-line-bottom active-text'
               : 'no-active-line-bottom'
           "
@@ -290,6 +291,15 @@ export default {
 
       // Link Router List
       let routeList = [
+        // NOTE : Router Practice
+        {
+          name: "แบบฝึกหัด",
+          back: "",
+          backPath: "/practiceList",
+          back2: "",
+          backPath2: "",
+          type: "practiceMain"
+        },
         // NOTE : Router Flashcard
         {
           name: "การ์ดคำศัพท์",
@@ -399,6 +409,30 @@ export default {
           backPath2: "",
           type: "lessonMainList"
         },
+        {
+          name: "เพิ่มตำแหน่ง",
+          back: "",
+          backPath: "/lessonMainList",
+          back2: "",
+          backPath2: "",
+          type: "lessonInput"
+        },
+        {
+          name: "แก้ไขตำแหน่ง",
+          back: "",
+          backPath: "/lessonMainList",
+          back2: "",
+          backPath2: "",
+          type: "lessonEdit"
+        },
+        {
+          name: "บทเรียน",
+          back: "",
+          backPath: "/lessonMainList",
+          back2: "",
+          backPath2: "",
+          type: "lessonUnitlist"
+        },
         // NOTE : Router Account
         {
           name: "ผู้ใช้งาน",
@@ -408,6 +442,15 @@ export default {
           backPath2: "",
           type: "accountMain"
         },
+        {
+          name: "กิจการ",
+          back: "",
+          backPath: "/accountMain",
+          back2: "",
+          backPath2: "",
+          type: "hotelMain"
+        },
+
         // NOTE : Router User
         {
           name: "ผู้ดูแลระบบ",
@@ -416,6 +459,47 @@ export default {
           back2: "",
           backPath2: "",
           type: "userMain"
+        },
+        {
+          name: "เพิ่มผู้ดูแลระบบ",
+          back: "",
+          backPath: "/userMain",
+          back2: "",
+          backPath2: "",
+          type: "userAdd"
+        },
+        {
+          name: "แก้ไขผู้ดูแลระบบ",
+          back: "",
+          backPath: "/userMain",
+          back2: "",
+          backPath2: "",
+          type: "userEdit"
+        },
+        // NOTE : Router User Setting
+        {
+          name: "ตั้งค่า",
+          back: "",
+          backPath: "",
+          back2: "",
+          backPath2: "",
+          type: "userInfo"
+        },
+        {
+          name: "แก้ไข ชื่อ นามสกุล",
+          back: "",
+          backPath: "/userInfo",
+          back2: "",
+          backPath2: "",
+          type: "userSettingMobile"
+        },
+        {
+          name: "แก้ไขผู้ดูแลระบบ",
+          back: "",
+          backPath: "/userMain",
+          back2: "",
+          backPath2: "",
+          type: "userEdit"
         }
       ];
 
