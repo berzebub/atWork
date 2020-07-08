@@ -95,19 +95,13 @@
             class="text-white cursor-pointer"
             @click="cancelDelete(item.key)"
             style="text-decoration:underline;"
-            >ยกเลิกการลบ</a
-          >
+          >ยกเลิกการลบ</a>
         </div>
-        <div
-          v-if="item.status == 'waitForDelete'"
-          class="absolute-center backDrop"
-        ></div>
+        <div v-if="item.status == 'waitForDelete'" class="absolute-center backDrop"></div>
 
         <div class="boxQuestion bg-blue-grey-10 text-white q-py-xs q-px-sm row">
           <div class="col self-center">
-            <span v-if="item.status != 'waitForDelete'"
-              >รหัสลำดับ {{ item.order }}</span
-            >
+            <span v-if="item.status != 'waitForDelete'">รหัสลำดับ {{ item.order }}</span>
           </div>
           <div class="col self-center" align="right">
             <q-btn
@@ -163,8 +157,7 @@
                     ? 'bg-secondary text-white '
                     : ''
                 "
-                >{{ index2 + 1 + ") " + items.choice }}</span
-              >
+              >{{ index2 + 1 + ") " + items.choice }}</span>
             </div>
             <div v-else>
               <span
@@ -174,8 +167,7 @@
                     ? 'bg-secondary text-white '
                     : ''
                 "
-                >{{ items.choice }}</span
-              >
+              >{{ items.choice }}</span>
             </div>
           </div>
         </div>
@@ -226,13 +218,7 @@
                 />
               </div>
               <div class="q-px-md q-pb-md">
-                <q-btn
-                  @click="saveBtn()"
-                  dense
-                  style="width:150px"
-                  color="black"
-                  label="บันทึก"
-                />
+                <q-btn @click="saveBtn()" dense style="width:150px" color="black" label="บันทึก" />
               </div>
             </div>
           </div>
@@ -278,11 +264,7 @@
         <q-card style="max-width:600px;width:100%;height:200px">
           <div class="text-h6 text-center q-pt-md q-pb-sm">
             <div class="q-py-md q-mt-md">
-              <q-icon
-                color="secondary"
-                size="46px"
-                name="far fa-check-circle"
-              />
+              <q-icon color="secondary" size="46px" name="far fa-check-circle" />
             </div>
             <div>บันทึกข้อมูลเรียบร้อย</div>
           </div>
@@ -361,7 +343,7 @@ export default {
     },
     loadInstrunction() {
       let practiceId = this.$route.params.practiceId;
-
+console.log(practiceId);
       db.collection("practice_list")
         .doc(practiceId)
         .get()
