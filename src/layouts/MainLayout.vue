@@ -288,7 +288,9 @@ export default {
         "/" +
         this.$route.params.practiceId;
 
+      // Link Router List
       let routeList = [
+        // NOTE : Router Flashcard
         {
           name: "การ์ดคำศัพท์",
           back: "แบบฝึกหัด",
@@ -313,6 +315,7 @@ export default {
           backPath2: "/flashcardMain/" + practicePath,
           type: "flashcardEdit"
         },
+        // NOTE : Router Multiple
         {
           name: "เลือกคำตอบ",
           back: "แบบฝึกหัด",
@@ -337,6 +340,7 @@ export default {
           backPath2: "/multipleMain/" + practicePath,
           type: "multipleInputEdit"
         },
+        // NOTE : Router Expression
         {
           name: "ประโยคสนทนา",
           back: "แบบฝึกหัด",
@@ -361,6 +365,7 @@ export default {
           backPath2: "/expressionMain/" + practicePath,
           type: "expressionEdit"
         },
+        // NOTE : Router Video
         {
           name: "บทสนทนา",
           back: "แบบฝึกหัด",
@@ -384,10 +389,35 @@ export default {
           back2: "บทสนทนา",
           backPath2: "/expressionMain/" + practicePath,
           type: "vdoInputEdit"
+        },
+        // NOTE : Router Lesson
+        {
+          name: "บทเรียน",
+          back: "",
+          backPath: "",
+          back2: "",
+          backPath2: "",
+          type: "lessonMainList"
+        },
+        // NOTE : Router Account
+        {
+          name: "ผู้ใช้งาน",
+          back: "",
+          backPath: "",
+          back2: "",
+          backPath2: "",
+          type: "accountMain"
+        },
+        // NOTE : Router User
+        {
+          name: "ผู้ดูแลระบบ",
+          back: "",
+          backPath: "",
+          back2: "",
+          backPath2: "",
+          type: "userMain"
         }
       ];
-
-      // expressionMain
 
       result = routeList.filter(x => x.type == this.$route.name)[0];
 
