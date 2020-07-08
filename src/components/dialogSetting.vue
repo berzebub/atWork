@@ -166,18 +166,17 @@ export default {
       videoConver: ""
     };
   },
-<<<<<<< Updated upstream
   methods: {
     emitValue() {
       this.$emit("amm", false);
-=======
+    }
+  },
   mounted() {
     let stoTypeList = [2, 4, 6, 9];
     if (stoTypeList.includes(this.type)) {
       setTimeout(() => {
         this.$emit("autoClose");
       }, 2500);
->>>>>>> Stashed changes
     }
   }
 };
