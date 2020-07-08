@@ -158,12 +158,8 @@ export default {
   data() {
     return {
       successData: true,
-<<<<<<< Updated upstream
-      videoConver: ""
-=======
       videoConver: "",
       type: 9
->>>>>>> Stashed changes
     };
   },
   mounted() {
