@@ -406,9 +406,14 @@ export default {
             "/" +
             itemPrac.practiceId
         );
-      } else if (itemPrac.practiceType == "vdo/") {
+      } else if (itemPrac.practiceType == "vdo") {
         this.$router.push(
-          "/vdoMain/" + itemPrac.levelId + "/" + itemPrac.unitId
+          "/vdoMain/" +
+            itemPrac.levelId +
+            "/" +
+            itemPrac.unitId +
+            "/" +
+            itemPrac.practiceId
         );
       } else {
         // ไม่อยู่ type ไหนเลยให้แก้ มีแจ้งเตือน

@@ -6,28 +6,22 @@
       v-if="$route.name != 'practiceList' && $route.name != 'userInfo'"
     >
       <q-toolbar>
-        <q-toolbar-title class="q-pa-md" v-if="$route.name == 'lessonMainList'">
-          <span class="text-h6">บทเรียน</span>
-        </q-toolbar-title>
-        <q-toolbar-title
-          class="q-pa-md"
-          v-if="$route.name == 'practiceList' || $route.name == 'practiceMain'"
-        >
-          <q-btn dense round flat size="12px" icon="fas fa-arrow-left" to="/practiceList"></q-btn>
+        <q-toolbar-title class="q-pa-md" style="font-weight:400">
+          <div class="text-h6">
+            <span class v-if="routeName.back">
+              <router-link class="text-white" :to="routeName.backPath">{{routeName.back}}</router-link>
+              <span class="fas fa-chevron-right q-mx-sm"></span>
+            </span>
+            <span class v-if="routeName.back2">
+              <router-link class="text-white" :to="routeName.backPath2">{{routeName.back2}}</router-link>
+              <span class="fas fa-chevron-right q-mx-sm"></span>
+            </span>
+            <span class="text-h6 q-ml-xs">{{routeName.name}}</span>
+          </div>
 
-          <span class="text-h6 q-ml-sm">แบบฝึกหัด</span>
-        </q-toolbar-title>
-        <q-toolbar-title class="q-pa-md" v-if="$route.name == 'flashcardMain'">
-          <span class="text-h6">การ์ดคำศัพท์</span>
-        </q-toolbar-title>
-        <q-toolbar-title class="q-pa-md" v-if="$route.name == 'multipleMain'">
-          <span class="text-h6">เลือกคำตอบ</span>
-        </q-toolbar-title>
-        <q-toolbar-title class="q-pa-md" v-if="$route.name == 'expressionMain'">
-          <span class="text-h6">ประโยคสนทนา</span>
-        </q-toolbar-title>
-        <q-toolbar-title class="q-pa-md" v-if="$route.name == 'vdoMain'">
-          <span class="text-h6">บทสนทนา</span>
+          <!-- <span v-if="$route.name == 'lessonMainList'" class="text-h6 q-ml-xs">บทเรียน</span>
+          <span v-if="$route.name == 'accountMain'" class="text-h6 q-ml-xs">ผู้ใช้งาน</span>
+          <span v-if="$route.name == 'userMain'" class="text-h6 q-ml-xs">ผู้ดูแลระบบ</span>-->
         </q-toolbar-title>
       </q-toolbar>
     </q-header>
@@ -50,12 +44,12 @@
           v-if="userInfo.userGroup.includes('practice')"
           class="full-width q-py-md relative-position cursor-pointer"
           :class="
-            $route.name == 'practiceList'
+            $route.name == 'practiceList' || $route.name == 'flashcardMain' || $route.name == 'flashcardInput' || $route.name == 'multipleMain' || $route.name == 'multipleInputAdd'
               ? 'active-line active-text'
               : 'no-active-line'
           "
           v-ripple
-          @click="$router.push('/practiceList')"
+          @click="$route.name != 'practiceList' ? $router.push('/practiceList') : null"
         >
           <div>
             <q-icon name="fas fa-book" size="25px" />
@@ -70,7 +64,7 @@
               : 'no-active-line'
           "
           v-ripple
-          @click="$router.push('/lessonMainList')"
+          @click="$route.name != 'lessonMainList' ? $router.push('/lessonMainList') : null"
           v-if="userInfo.userGroup.includes('level')"
         >
           <div>
@@ -87,7 +81,7 @@
               : 'no-active-line'
           "
           v-ripple
-          @click="$router.push('/accountMain')"
+          @click="$route.name != 'accountMain' ? $router.push('/accountMain') : null"
           v-if="userInfo.userGroup.includes('personel')"
         >
           <div>
@@ -103,7 +97,7 @@
               : 'no-active-line'
           "
           v-ripple
-          @click="$router.push('/userMain')"
+          @click="$route.name != 'userMain' ? $router.push('/userMain') : null"
           v-if="userInfo.userGroup.includes('admin')"
         >
           <div>
@@ -119,7 +113,7 @@
               : 'no-active-line'
           "
           v-ripple
-          @click="$router.push('/userInfo')"
+          @click="$route.name != 'userInfo' ? $router.push('/userInfo') : null"
         >
           <div>
             <q-icon name="fas fa-cog" size="25px" />
@@ -129,6 +123,7 @@
       </div>
       <div class="self-end"></div>
     </q-drawer>
+
     <!-- เมนูมือถือ -->
     <q-footer elevated>
       <div
@@ -237,6 +232,28 @@ export default {
       isLoadUserInfo: false,
       isKey: false,
       loginKey: "",
+      headerBarList: [
+        {
+          name: "บทเรียน",
+          type: "lessonMainList"
+        },
+        {
+          name: "แบบฝึกหัด",
+          type: "practiceList"
+        },
+        {
+          name: "ผู้ใช้งาน",
+          type: "accountMain"
+        },
+        {
+          name: "ผู้ดูแลระบบ",
+          type: "userMain"
+        },
+        {
+          name: "ตั้งค่า",
+          type: "userInfo"
+        }
+      ],
       snapUser: ""
     };
   },
@@ -260,6 +277,123 @@ export default {
         });
     }
   },
+  computed: {
+    routeName() {
+      let result;
+
+      let practicePath =
+        this.$route.params.levelId +
+        "/" +
+        this.$route.params.unitId +
+        "/" +
+        this.$route.params.practiceId;
+
+      let routeList = [
+        {
+          name: "การ์ดคำศัพท์",
+          back: "แบบฝึกหัด",
+          backPath: "/practiceList",
+          back2: "",
+          backPath2: "",
+          type: "flashcardMain"
+        },
+        {
+          name: "เพิ่มคำศัพท์",
+          back: "แบบฝึกหัด",
+          backPath: "/practiceList",
+          back2: "การ์ดคำศัพท์",
+          backPath2: "/flashcardMain/" + practicePath,
+          type: "flashcardInput"
+        },
+        {
+          name: "แก้ไขคำศัพท์",
+          back: "แบบฝึกหัด",
+          backPath: "/practiceList",
+          back2: "การ์ดคำศัพท์",
+          backPath2: "/flashcardMain/" + practicePath,
+          type: "flashcardEdit"
+        },
+        {
+          name: "เลือกคำตอบ",
+          back: "แบบฝึกหัด",
+          backPath: "/practiceList",
+          back2: "",
+          backPath2: "",
+          type: "multipleMain"
+        },
+        {
+          name: "เพิ่มคำศัพท์",
+          back: "แบบฝึกหัด",
+          backPath: "/practiceList",
+          back2: "เลือกคำตอบ",
+          backPath2: "/multipleMain/" + practicePath,
+          type: "multipleInputAdd"
+        },
+        {
+          name: "แก้ไขเลือกคำตอบ",
+          back: "แบบฝึกหัด",
+          backPath: "/practiceList",
+          back2: "เลือกคำตอบ",
+          backPath2: "/multipleMain/" + practicePath,
+          type: "multipleInputEdit"
+        },
+        {
+          name: "ประโยคสนทนา",
+          back: "แบบฝึกหัด",
+          backPath: "/practiceList",
+          back2: "",
+          backPath2: "",
+          type: "expressionMain"
+        },
+        {
+          name: "เพิ่มประโยคสนทนา",
+          back: "แบบฝึกหัด",
+          backPath: "/practiceList",
+          back2: "ประโยคสนทนา",
+          backPath2: "/expressionMain/" + practicePath,
+          type: "expressionInput"
+        },
+        {
+          name: "แก้ไขประโยคสนทนา",
+          back: "แบบฝึกหัด",
+          backPath: "/practiceList",
+          back2: "ประโยคสนทนา",
+          backPath2: "/expressionMain/" + practicePath,
+          type: "expressionEdit"
+        },
+        {
+          name: "บทสนทนา",
+          back: "แบบฝึกหัด",
+          backPath: "/practiceList",
+          back2: "",
+          backPath2: "",
+          type: "vdoMain"
+        },
+        {
+          name: "เพิ่มบทสนทนา",
+          back: "แบบฝึกหัด",
+          backPath: "/practiceList",
+          back2: "บทสนทนา",
+          backPath2: "/expressionMain/" + practicePath,
+          type: "vdoInputAdd"
+        },
+        {
+          name: "แก้ไขบทสนทนา",
+          back: "แบบฝึกหัด",
+          backPath: "/practiceList",
+          back2: "บทสนทนา",
+          backPath2: "/expressionMain/" + practicePath,
+          type: "vdoInputEdit"
+        }
+      ];
+
+      // expressionMain
+
+      result = routeList.filter(x => x.type == this.$route.name)[0];
+
+      return result;
+    }
+  },
   mounted() {
     this.loadUserInfo();
   }
@@ -280,5 +414,9 @@ export default {
 }
 .no-active-line-bottom {
   border-bottom: 5px solid #263238;
+}
+
+.text-underline {
+  text-decoration: underline;
 }
 </style>

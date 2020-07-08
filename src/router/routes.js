@@ -62,7 +62,7 @@ const routes = [
         name: "multipleInputAdd"
       },
       {
-        path: "multipleInputEdit/:key",
+        path: "multipleInputEdit/:levelId/:unitId/:practiceId",
         component: () => import("pages/multipleInput.vue"),
         name: "multipleInputEdit"
       },
@@ -84,12 +84,12 @@ const routes = [
       },
       // ------------------- vdo -------------------
       {
-        path: "vdoMain",
+        path: "vdoMain/:levelId/:unitId/:practiceId",
         component: () => import("pages/vdoMain.vue"),
         name: "vdoMain"
       },
       {
-        path: "vdoInputAdd",
+        path: "vdoInputAdd/:levelId/:unitId/:practiceId",
         component: () => import("pages/vdoInput.vue"),
         name: "vdoInputAdd"
       },

@@ -33,49 +33,53 @@ export const auth = firebase.auth();
 export const axios = require("axios").default;
 Vue.mixin({
   data() {
-    return {};
+    return {
+      data() {
+        return {
+          playSoundURL: null
+        };
+      }
+    };
   },
   methods: {
     logOut() {
       auth
         .signOut()
         .then(() => this.$router.push("/"))
-        .catch(function (error) {});
+        .catch(function(error) {});
     },
     // ฟังชั่น ซิงโครไนค์
     async sync(practiceId) {
-
       return new Promise((a, b) => {
         db.collection("practice_draft")
           .where("practiceId", "==", practiceId)
           .get()
           .then(doc => {
             // let unitId
-            this.loadingShow()
-            let unitId
+            this.loadingShow();
+            let unitId;
             for (const element of doc.docs) {
-              unitId = element.data().unitId
+              unitId = element.data().unitId;
               if (element.data().status == "notSync") {
                 let data = element.data();
                 delete data.status;
                 db.collection("practice_server")
                   .doc(element.id)
-                  .set(data)
+                  .set(data);
 
                 db.collection("practice_draft")
                   .doc(element.id)
                   .update({
                     status: "updated"
-                  })
-
+                  });
               } else if (element.data().status == "waitForDelete") {
                 db.collection("practice_server")
                   .doc(element.id)
-                  .delete()
+                  .delete();
 
                 db.collection("practice_draft")
                   .doc(element.id)
-                  .delete()
+                  .delete();
               }
             }
 
@@ -83,21 +87,21 @@ Vue.mixin({
               .doc(unitId)
               .update({
                 timestamp: new Date().getTime()
-              }).then(() => {
+              })
+              .then(() => {
                 db.collection("practice_list")
                   .doc(practiceId)
                   .update({
                     timestamp: new Date().getTime()
-                  }).then(() => {
-                    this.loadingHide()
-                    console.log("FINISH");
-                    a("finish")
                   })
-              })
+                  .then(() => {
+                    this.loadingHide();
+                    console.log("FINISH");
+                    a("finish");
+                  });
+              });
           });
-      })
-
-
+      });
     },
     async getUserInfo(uid) {
       return new Promise((a, b) => {
@@ -113,17 +117,17 @@ Vue.mixin({
       });
     },
     convertPracticeTypeToThai(type) {
-      let res
-      if (type == 'flashcard') {
-        res = "การ์ดคำศัพท์"
-      } else if (type == 'multiplechoice') {
-        res = "เลือกคำตอบ"
-      } else if (type == 'expression') {
-        res = "ประโยคสนธนา"
-      } else if (type == 'vdo') {
-        res = 'บทสนธนา'
+      let res;
+      if (type == "flashcard") {
+        res = "การ์ดคำศัพท์";
+      } else if (type == "multiplechoice") {
+        res = "เลือกคำตอบ";
+      } else if (type == "expression") {
+        res = "ประโยคสนธนา";
+      } else if (type == "vdo") {
+        res = "บทสนธนา";
       }
-      return res
+      return res;
     },
     loadingShow() {
       this.$q.loading.show({
@@ -132,11 +136,21 @@ Vue.mixin({
     },
     loadingHide() {
       this.$q.loading.hide();
+    },
+    // เล่นเสียง
+    playAudio(url) {
+      if (this.playSoundURL != "") {
+        this.playSoundURL.pause();
+      }
+
+      this.playSoundURL = new Audio(url);
+
+      this.playSoundURL.play();
     }
   }
 });
 
-export default function ( /* { store, ssrContext } */ ) {
+export default function(/* { store, ssrContext } */) {
   const Router = new VueRouter({
     scrollBehavior: () => ({
       x: 0,
