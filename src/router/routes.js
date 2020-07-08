@@ -1,5 +1,4 @@
-const routes = [
-  {
+const routes = [{
     path: "/",
     component: () => import("pages/login.vue"),
     name: "login"
@@ -129,6 +128,14 @@ const routes = [
         path: "hotelMain",
         component: () => import("pages/hotelMain.vue"),
         name: "hotelMain"
+      }, {
+        path: "hotelAdd",
+        component: () => import("pages/hotelInput.vue"),
+        name: "hotelAdd"
+      }, {
+        path: "hotelEdit",
+        component: () => import("pages/hotelInput.vue"),
+        name: "hotelEdit"
       },
       // ------------------- userMain ผู้ดูแลระบบ -------------------
       {

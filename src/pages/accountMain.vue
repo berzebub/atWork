@@ -209,6 +209,9 @@ export default {
           doc.forEach(element => {
             temp.push({ ...element.data(), employeeId: element.id });
           });
+          temp.sort((a, b) => {
+            return a.name > b.name ? 1 : -1;
+          });
           this.employeeAll = temp;
         });
     },
