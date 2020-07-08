@@ -11,11 +11,11 @@
             <div class="q-mt-lg text-subtitle1">อีเมลหรือรหัสผ่านไม่ถูกต้อง</div>
           </div>
         </q-card-section>
-        <q-card-action align="center">
+        <q-card-actions align="center">
           <div class="q-mt-xs">
             <q-btn label="ตกลง" class="bg-blue-grey-10 text-white" style="width:190px"></q-btn>
           </div>
-        </q-card-action>
+        </q-card-actions>
       </q-card>
     </q-dialog>
     <!-- ใส่อีเมลเพื่อกำหนดรหัสผ่านใหม่เรียบร้อย -->
@@ -34,19 +34,24 @@
     <q-dialog v-if="type == 3" v-model="successData" persistent>
       <q-card style="width: 323px; height:200px">
         <q-card-section align="center">
-          <div class="q-mt-lg text-subtitle1">คุณต้องการลบตำแหน่ง</div>
-          <div class="text-subtitle1">"อาหารและเครื่องดื่ม"</div>
+          <div class="q-mt-lg text-subtitle1">คุณต้องการลบ{{practice}}</div>
+          <div class="text-subtitle1">"{{name}}"</div>
         </q-card-section>
-        <q-card-action>
+        <q-card-actions>
           <div class="row justify-center" style="margin-top:25px">
             <div>
               <q-btn label="ยกเลิก" color="blue-grey-10" style="width:120px" outline v-close-popup></q-btn>
             </div>
             <div>
-              <q-btn label="ตกลง" class="bg-blue-grey-10 text-white q-ml-md" style="width:120px"></q-btn>
+              <q-btn
+                label="ตกลง"
+                class="bg-blue-grey-10 text-white q-ml-md"
+                style="width:120px"
+                @click="emitValue()"
+              ></q-btn>
             </div>
           </div>
-        </q-card-action>
+        </q-card-actions>
       </q-card>
     </q-dialog>
     <!-- ลบข้อมูลตำแหน่งเรียบร้อย -->
@@ -69,14 +74,14 @@
             <div class="text-subtitle1">"จองโต๊ะ"</div>
           </div>
         </q-card-section>
-        <q-card-action align="center">
+        <q-card-actions align="center">
           <div class="q-mt-md">
             <q-btn label="ตกลง" class="bg-blue-grey-10 text-white" style="width:190px"></q-btn>
           </div>
-        </q-card-action>
+        </q-card-actions>
       </q-card>
     </q-dialog>
-    <!-- บันทึกข้อมูลgเรียบร้อย -->
+    <!-- บันทึกข้อมูลเรียบร้อย -->
     <q-dialog v-if="type == 6" v-model="successData">
       <q-card style="width: 323px; height:200px">
         <q-card-section align="center">
@@ -135,12 +140,17 @@
 <script>
 import userInfo from "../pages/userInfo.vue";
 export default {
+  props: ["type", "practice", "name", "practiceId"],
   data() {
     return {
       successData: true,
-      videoConver: "",
-      type: 8
+      videoConver: ""
     };
+  },
+  methods: {
+    emitValue() {
+      this.$emit("amm", false);
+    }
   }
 };
 </script>

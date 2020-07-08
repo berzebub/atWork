@@ -150,7 +150,14 @@
     </div>
 
     <!-- dialog delete  -->
-    <q-dialog v-model="dialogDelete" persistent>
+    <dialog-setting
+      :type="3"
+      :name="name"
+      :practice="practice"
+      v-if="dialogDelete"
+      @amm="deletePracticeConfirm()"
+    ></dialog-setting>
+    <!-- <q-dialog v-model="dialogDelete" persistent>
       <q-card class="q-pa-md" style="width: 300px;" align="center">
         <div class="q-py-lg">
           คุณต้องการลบแบบฝึกหัด
@@ -179,10 +186,11 @@
           </div>
         </div>
       </q-card>
-    </q-dialog>
+    </q-dialog>-->
 
     <!-- dialog success -->
-    <q-dialog v-model="dialogSuccess">
+    <dialog-setting :type="6" v-if="dialogSuccess"></dialog-setting>
+    <!-- <q-dialog v-model="dialogSuccess">
       <q-card style="min-width: 350px; height:170px">
         <q-card-section class="absolute-center" align="center">
           <div>
@@ -191,7 +199,7 @@
           <div class="q-mt-lg">บันทึกข้อมูลเรียบร้อย</div>
         </q-card-section>
       </q-card>
-    </q-dialog>
+    </q-dialog>-->
     <!-- dialog delete practicelist success -->
     <q-dialog v-model="dialogDeletePracticeListSuccess">
       <q-card style="min-width: 350px; height:170px">
@@ -209,7 +217,11 @@
 <script>
 import { db } from "../router";
 import flashcardMainVue from "../pages/flashcardMain.vue";
+import dialogSetting from "../components/dialogSetting.vue";
 export default {
+  components: {
+    dialogSetting
+  },
   props: ["levelId", "unitId", "num", "levelName", "unitName"],
   data() {
     return {
@@ -228,7 +240,9 @@ export default {
       order: "",
       practiceId: "",
       practiceType: "",
-      dialogDeletePracticeListSuccess: false
+      dialogDeletePracticeListSuccess: false,
+      name: "",
+      practice: "แบบฝึกหัด"
     };
   },
   methods: {
@@ -255,12 +269,16 @@ export default {
       this.isEditMode = false;
     },
     deletePractice(itemPrac) {
-      this.order = itemPrac.order;
-      this.practiceType = itemPrac.practiceType;
+      // this.order = itemPrac.order;
+      // this.practiceType = itemPrac.practiceType;
       this.practiceId = itemPrac.practiceId;
+      this.name = itemPrac.order + " - " + itemPrac.practiceType;
       this.dialogDelete = true;
     },
     deletePracticeConfirm() {
+      console.log(this.practiceId);
+
+      return;
       db.collection("practice_draft")
         .where("practiceId", "==", this.practiceId)
         .get()
