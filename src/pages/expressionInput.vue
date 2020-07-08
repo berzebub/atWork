@@ -5,8 +5,8 @@
         <div class="col-sm-11 col-xs-12 relative-position">
           <!-- หัวข้อ -->
           <div class="q-ma-lg text-h6" align="center">
-            <div>พนักงานร้านอาหาร</div>
-            <div>1. รับออเดอร์</div>
+            <div>{{getLevelName}}</div>
+            <div>{{getUnitName}}</div>
           </div>
           <!-- ปุ่มเพิ่ม -->
           <div align="center">
@@ -152,6 +152,8 @@ import { db } from "../router";
 export default {
   data() {
     return {
+      getUnitName: this.$route.params.getUnitName,
+      getLevelName: this.$route.params.getLevelName,
       practiceId: this.$route.params.practiceId,
       levelId: this.$route.params.levelId,
       unitId: this.$route.params.unitId,

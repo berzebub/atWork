@@ -3,44 +3,62 @@
     <div>
       <div class="row justify-between">
         <!-- กล่อง radio -->
-        <div class="brg row" style="width:330px">
+        <div class="brg row" :style="$q.platform.is.desktop?'width:330px':'width:250px'">
           <q-radio
             class="q-ml-md col-6"
             color="blue-grey-10"
-            v-model="expressionType"
+            v-model="flashcardType"
             val="draft"
             label="แบบร่าง"
           />
-          <q-radio color="blue-grey-10" v-model="expressionType" val="server" label="เซิร์ฟเวอร์" />
+          <q-radio color="blue-grey-10" v-model="flashcardType" val="server" label="เซิร์ฟเวอร์" />
         </div>
-        <!-- ปุ่มพิมพ์ -->
-        <div class="mobile-hide">
-          <q-btn v-if="expressionType == 'draft'" round color="blue-grey-10" icon="fas fa-print" />
+        <!-- ปุ่มซิงค์ -->
+        <div class="row">
+          <div class="q-mr-md">
+            <q-btn
+              @click="sync(practiceId),openDialogSync()"
+              v-if="flashcardType == 'draft'"
+              round
+              color="blue-grey-10"
+              icon="fas fa-sync"
+            />
+          </div>
+          <!-- ปุ่มพิมพ์ -->
+          <div class="mobile-hide">
+            <q-btn v-if="flashcardType == 'draft'" round color="blue-grey-10" icon="fas fa-print" />
+          </div>
         </div>
       </div>
       <!-- หัวข้อ -->
       <div class="q-ma-lg text-h6" align="center">
-        <div>พนักงานร้านอาหาร</div>
-        <div>1. รับออเดอร์</div>
+        <div>{{getLevelName}}</div>
+        <div>{{getUnitName}}</div>
       </div>
       <!-- ปุ่มเพิ่ม -->
-      <div v-if="expressionType == 'server'" class style="height:36px"></div>
-      <div class align="center">
+      <div align="center">
         <q-btn
-          expression
-          v-if="expressionType == 'draft'"
+          v-if="flashcardType == 'draft'"
           style="width:190px; height:36px"
           class="bg-blue-grey-10"
-          :to="'/flashcardInput' + '/' + levelId +'/'+unitId + '/' + practiceId"
+          @click="addDataFlashcard()"
           color="white"
           label="เพิ่มคำศัพท์ "
+        ></q-btn>
+        <q-btn
+          v-if="flashcardType == 'server'"
+          style="width:190px; height:36px"
+          class="bg-blue-grey-10"
+          color="white"
+          label="เพิ่มคำศัพท์ "
+          disable
         ></q-btn>
       </div>
       <!-- การ์ดข้อความ -->
 
       <q-card
         v-for="(item, index) in showDataFlashcard"
-        v-show="item.collection == expressionType"
+        v-show="item.collection == flashcardType"
         :key="index"
         class="q-mt-md"
         style="width:100%"
@@ -48,22 +66,33 @@
         <div
           v-if="item.status == 'waitForDelete'"
           class="absolute-center fit row items-center justify-center"
-          style="background-color:black;opacity:0.6; z-index:1000"
+          style="background-color:black;opacity:0.6; z-index:2500;"
         ></div>
         <!-- cancel-delete -->
         <q-btn
-          v-if="item.status == 'waitForDelete'"
+          v-if="item.status == 'waitForDelete' && $q.platform.is.desktop"
           @click="cancelDeleteFlashcard(item.id, item.order)"
-          style="width:190px; z-index:2000"
+          style="width:190px; z-index:2600; "
           class="absolute-center bg-white"
         >ยกเลิกการลบ</q-btn>
         <q-card-section class="text-white bg-blue-grey-10">
-          <div class="text-h6">รหัสลำดับ {{ item.order }}</div>
+          <div
+            v-if="item.status != 'waitForDelete'"
+            class="text-subtitle1"
+          >รหัสลำดับ {{ item.order }}</div>
+          <div
+            @click="cancelDeleteFlashcard(item.id, item.order)"
+            v-if="$q.platform.is.mobile && item.status == 'waitForDelete'"
+            class="brx text-subtitle1 cursor-pointer"
+            style="z-index:2600 ; position : relative; width: fit-content"
+          >
+            <u>ยกเลิกการลบ</u>
+          </div>
           <div class="row items-center absolute-right">
             <!-- icon-delete -->
             <q-icon
               @click="openDialogDelete(item.id, item.order , item.vocabulary)"
-              v-if="expressionType == 'draft'"
+              v-if="flashcardType == 'draft'"
               class="cursor-pointer q-pr-lg desktop-only"
               name="far fa-trash-alt"
               style="color:white; font-size: 1.4em;"
@@ -71,14 +100,14 @@
             <!-- icon-edit -->
             <q-icon
               @click="editDataFlashcard(item)"
-              v-if="expressionType == 'draft'"
+              v-if="flashcardType == 'draft'"
               class="cursor-pointer q-pr-md desktop-only"
               name="fas fa-edit"
               style="color:white; font-size: 1.4em;"
             />
             <!-- icon-menu -->
             <q-icon
-              v-if="expressionType == 'draft'"
+              v-if="flashcardType == 'draft'"
               class="cursor-pointer q-pr-md mobile-only"
               name="fas fa-ellipsis-v"
               style="color:white; font-size: 1.4em;"
@@ -98,7 +127,7 @@
                   clickable
                   v-close-popup
                   v-if="item.status != 'waitForDelete'"
-                  @click="openDialogDelete(item.id, item.order)"
+                  @click="openDialogDelete(item.id, item.order , item.vocabulary)"
                   class="cursor-pointer mobile-only"
                 >
                   <q-item-section>ลบ</q-item-section>
@@ -116,11 +145,11 @@
               class="col-sm-6 col-xs-12 q-px-md q-pt-md q-pb-sm text-h6"
               align="center"
             >
-              <q-img :src="item.img" :ratio="4/3" style="max-width:400px; width:100%" class></q-img>
+              <q-img :src="item.img" :ratio="1/1" style="width:300px;height:300px" class></q-img>
             </div>
             <!-- คำ -->
-            <div class="col-6">
-              <div class="row items-center q-ml-md">
+            <div class="q-md-6 q-sm-12">
+              <div class="row items-center q-ml-md q-mt-md">
                 <div>
                   <q-btn
                     v-if="item.isSound == true"
@@ -133,8 +162,12 @@
                 </div>
                 <div class="q-px-md q-pt-md q-pb-sm text-h6 text-blue-grey-10">{{item.vocabulary}}</div>
               </div>
-              <div class="q-ml-md q-px-md q-pt-md q-pb-sm text-h6 text-blue-grey-10">{{item.read}}</div>
-              <div class="q-ml-md q-px-md q-p-md q-pb-sm text-h6 text-blue-grey-10">{{item.meaning}}</div>
+              <div
+                class="q-ml-md q-px-md q-pt-md q-pb-sm text-subtitle1 text-blue-grey-10"
+              >{{item.read}}</div>
+              <div
+                class="q-ml-md q-px-md q-p-md q-pb-sm text-subtitle1 text-blue-grey-10"
+              >{{item.meaning}}</div>
             </div>
           </div>
           <q-separator />
@@ -148,7 +181,7 @@
     <q-dialog v-model="dialogDelete" persistent>
       <q-card style="min-width: 350px; height:200px">
         <q-card-section>
-          <div align="center" class="q-mt-lg text-h6">คุณต้องการลบคำศัพท์์</div>
+          <div align="center" class="q-mt-lg text-h6">คุณต้องการลบคำศัพท์</div>
           <div align="center" class="q-mb-md text-h6">"{{ getOrder }} - {{getVocabulary}}"</div>
         </q-card-section>
 
@@ -163,32 +196,43 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
-    <!-- ยกเลิกกการลบ -->
-    <q-dialog v-model="dialogCancelDelete" persistent>
-      <q-card style="min-width: 350px; height:200px">
-        <q-card-section>
-          <div class="q-mt-lg text-h6">ต้องการลบ "รหัสลำดับ {{ getOrder }}" หรือไม่</div>
-        </q-card-section>
-
-        <q-card-actions align="center">
-          <q-btn style="width:120px" outline color="blue-grey-10" label="ยกเลิก" v-close-popup />
-          <q-btn
-            @click="cancelDeleteFlashcard()"
-            color="blue-grey-10"
-            style="width:120px"
-            label="ยืนยัน"
-          />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
-    <!-- เพิ่มข้อมูลสำเร็จ -->
-    <q-dialog v-model="successData">
+    <q-dialog v-model="successDelete">
       <q-card style="min-width: 323px; height:200px">
         <q-card-section class="absolute-center" align="center">
           <div>
             <q-icon color="secondary" size="lg" name="far fa-check-circle" />
           </div>
           <div class="q-mt-lg">บันทึกข้อมูลเรียบร้อย</div>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
+    <!-- เพิ่มข้อมูลสำเร็จ -->
+    <q-dialog v-model="successDelete">
+      <q-card style="min-width: 323px; height:200px">
+        <q-card-section class="absolute-center" align="center">
+          <div>
+            <q-icon color="secondary" size="lg" name="far fa-check-circle" />
+          </div>
+          <div class="q-mt-lg">ลบคำศัพท์เรียบร้อย</div>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
+    <!-- ซิงค์ข้อมูลเรียบร้อย -->
+    <q-dialog v-model="successSync">
+      <q-card style="width: 323px; height:200px">
+        <q-card-section align="center">
+          <div class="q-mt-lg" style="margin-top:45px">
+            <q-btn
+              outline
+              round
+              class="text-teal"
+              size="16px"
+              style="border-style:solid; border-width:3px"
+            >
+              <q-icon color="secondary" name="fas fa-sync" />
+            </q-btn>
+          </div>
+          <div class="q-mt-lg text-subtitle1">ซิงค์ข้อมูลเรียบร้อย</div>
         </q-card-section>
       </q-card>
     </q-dialog>
@@ -200,21 +244,41 @@ import { db, auth } from "../router";
 export default {
   data() {
     return {
+      successSync: false,
       successData: false,
-      expressionType: "draft",
+      successDelete: false,
+      flashcardType: "draft",
       dialogDelete: false,
-      dialogCancelDelete: false,
       getId: "",
       getOrder: "",
       getVocabulary: "",
+      getLevelName: "",
+      getUnitName: "",
       showDataFlashcard: "",
       levelId: this.$route.params.levelId,
       unitId: this.$route.params.unitId,
       isSnap: "",
+      isDelete: true,
       practiceId: this.$route.params.practiceId
     };
   },
   methods: {
+    loadLevelData() {
+      db.collection("level")
+        .doc(this.levelId)
+        .get()
+        .then(data => {
+          this.getLevelName = data.data().name;
+        });
+    },
+    loadUnitData() {
+      db.collection("unit")
+        .doc(this.unitId)
+        .get()
+        .then(data => {
+          this.getUnitName = data.data().name;
+        });
+    },
     loadDataFlashcard() {
       db.collection("practice_draft")
         .where("levelId", "==", this.levelId)
@@ -285,6 +349,12 @@ export default {
             });
         });
     },
+    openDialogSync() {
+      this.successSync = true;
+      setTimeout(() => {
+        this.successSync = false;
+      }, 2500);
+    },
     openDialogDelete(id, order, vocabulary) {
       this.dialogDelete = true;
       this.getId = id;
@@ -296,6 +366,7 @@ export default {
         .doc(id)
         .update({ status: "notSync" })
         .then(() => {
+          this.isDelete = false;
           this.getId = "";
           this.dialogCancelDelete = false;
         });
@@ -307,9 +378,10 @@ export default {
         .then(() => {
           this.getId = "";
           this.dialogDelete = false;
-          this.successData = true;
+          this.successDelete = true;
           setTimeout(() => {
-            this.successData = false;
+            this.successDelete = false;
+            this.isDelete = true;
           }, 2500);
         });
     },
@@ -333,6 +405,20 @@ export default {
         }
       });
     },
+    editDataFlashcard(item) {
+      this.$router.push({
+        name: "flashcardInput",
+        params: {
+          data: {
+            levelId: item.levelId,
+            unitId: item.unitId,
+            practiceId: item.practiceId
+          },
+          getLevelName: this.getLevelName,
+          getUnitName: this.getUnitName
+        }
+      });
+    },
     playSound(pathSound) {
       console.log(pathSound);
       let audio = new Audio(pathSound);
@@ -341,6 +427,8 @@ export default {
   },
   mounted() {
     this.loadDataFlashcard();
+    this.loadLevelData();
+    this.loadUnitData();
   }
 };
 </script>
