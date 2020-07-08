@@ -5,7 +5,7 @@
       <q-card style="width: 323px; height:200px">
         <q-card-section align="center">
           <div class="q-mt-md">
-            <q-icon color="red" size="40px" name="far fa-times-circle" />
+            <q-icon class="error-text" size="40px" name="far fa-times-circle" />
           </div>
           <div>
             <div class="q-mt-lg text-subtitle1">อีเมลหรือรหัสผ่านไม่ถูกต้อง</div>
@@ -129,21 +129,49 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+    <!-- บันทึกข้อมูลgเรียบร้อย -->
+    <q-dialog v-if="type == 9" v-model="successData">
+      <q-card style="width: 323px; height:200px">
+        <q-card-section align="center">
+          <div class="q-mt-lg" style="margin-top:45px">
+            <q-btn
+              outline
+              round
+              class="text-teal"
+              size="16px"
+              style="border-style:solid; border-width:3px"
+            >
+              <q-icon color="secondary" name="fas fa-sync" />
+            </q-btn>
+          </div>
+          <div class="q-mt-lg text-subtitle1">ซิงค์ข้อมูลเรียบร้อย</div>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 
 <script>
 import userInfo from "../pages/userInfo.vue";
 export default {
+  props: ["type"],
   data() {
     return {
       successData: true,
       videoConver: "",
-      type: 8
+      type: 9
     };
+  },
+  mounted() {
+    let stoTypeList = [2, 4, 6, 9];
+    if (stoTypeList.includes(this.type)) {
+      setTimeout(() => {
+        this.$emit("autoClose", false);
+      }, 2500);
+    }
   }
 };
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 </style>

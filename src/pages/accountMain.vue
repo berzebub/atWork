@@ -4,7 +4,14 @@
       <!-- ชื่อโรงแรม -->
       <div class="row">
         <div class="col-10">
-          <q-select dense outlined v-model="hotelName" :options="hotelList" map-options emit-value />
+          <q-select
+            dense
+            outlined
+            v-model="hotelSelected"
+            :options="hotelList"
+            map-options
+            emit-value
+          />
         </div>
         <div class="col-2" align="center">
           <q-btn
@@ -18,15 +25,43 @@
         </div>
       </div>
       <!-- เพิ่มแผนก -->
-      <div align="center" class="q-mt-md">
-        <q-btn label="เพิ่มแผนก" color="blue-grey-10" style="width:148px"></q-btn>
-      </div>
-      <!-- รายชื่อแผนก -->
-      <div>
-        <q-separator class="q-mt-md" />
-        <div>ชื่อxxx</div>
+      <div align="center" class="q-mt-md text-subtitle1">
+        <q-btn @click="addDepartment()" label="เพิ่มแผนก" color="blue-grey-10" style="width:148px"></q-btn>
       </div>
     </div>
+    <!-- รายชื่อแผนก -->
+    <q-dialog v-model="addDepartmentDialog">
+      <div style="width:330px" class="bg-white">
+        <div align="center" class="bg-blue-grey-10 text-white q-py-sm text-h6">เพิ่มแผนก</div>
+        <div class="q-ma-md">
+          <div class="text-subtitle1">ชื่อแผนก</div>
+          <div>
+            <q-input dense outlined v-model="departmentName"></q-input>
+          </div>
+          <div class="row">
+            <div class="col-6 q-pr-sm q-py-md" align="right">
+              <q-btn
+                @click="cancelAddDepartment()"
+                dense
+                style="width:120px"
+                outline
+                label="ยกเลิก"
+              ></q-btn>
+            </div>
+            <div class="col-6 q-pl-sm q-py-md">
+              <q-btn
+                @click="saveDepartment()"
+                dense
+                color="blue-grey-10"
+                style="width:120px"
+                label="ยืนยัน"
+              ></q-btn>
+            </div>
+          </div>
+        </div>
+      </div>
+    </q-dialog>
+    <dialog-center :type="6" v-if="addDialogSucess" @autoClose="autoCloseDialog"></dialog-center>
     <div class="desktop-only"></div>
     <span></span>
   </q-page>
@@ -34,13 +69,20 @@
 
 <script>
 import { db } from "../router";
+import dialogCenter from "../components/dialogSetting";
 export default {
+  components: {
+    dialogCenter
+  },
   data() {
     return {
-      hotelName: "",
+      hotelSelected: "",
       hotelList: [],
       departmentAll: [],
-      deparmentSelect: []
+      deparmentSelect: [],
+      addDepartmentDialog: false,
+      departmentName: "",
+      addDialogSucess: false
     };
   },
   methods: {
@@ -55,7 +97,7 @@ export default {
             };
             this.hotelList.push(temp);
           });
-          this.hotelName = this.hotelList[0].value;
+          this.hotelSelected = this.hotelList[0].value;
           this.selectDepartment();
         });
     },
@@ -77,10 +119,32 @@ export default {
         });
     },
     selectDepartment() {
-      console.log(this.hotelName);
+      console.log(this.hotelSelected);
       this.deparmentSelect = this.departmentAll.filter(
-        x => x.hotelId == this.hotelName
+        x => x.hotelId == this.hotelSelected
       );
+    },
+    cancelAddDepartment() {
+      this.addDepartmentDialog = false;
+    },
+    saveDepartment() {
+      db.collection("department")
+        .add({
+          hotelId: this.hotelSelected,
+          name: this.departmentName
+        })
+        .then(() => {
+          this.addDepartmentDialog = false;
+          this.addDialogSucess = true;
+        });
+    },
+    addDepartment() {
+      this.addDepartmentDialog = true;
+      this.departmentName = "";
+    },
+    autoCloseDialog(value) {
+      this.addDialogSucess = value;
+      console.log(value);
     }
   },
   mounted() {

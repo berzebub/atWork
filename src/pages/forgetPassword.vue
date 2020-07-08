@@ -7,7 +7,7 @@
       <div class="q-mt-lg" style="width:300px">
         <div class="q-ml-xs" align="left">อีเมล</div>
         <div>
-          <q-input outlined v-model="email" />
+          <q-input @keyup.enter="sendEmail()" outlined v-model="email" />
         </div>
       </div>
 
@@ -50,14 +50,14 @@
         <q-card style="width:323px; height:200px">
           <q-card-section align="center">
             <div class="q-mt-md">
-              <q-icon color="red" size="lg" name="far fa-times-circle" />
+              <q-icon class="error-text" size="40px" name="far fa-times-circle" />
             </div>
           </q-card-section>
 
-          <q-card-section align="center" class="q-pt-none">ไม่พบ อีเมล ในระบบ</q-card-section>
+          <q-card-section align="center" class="q-pt-none">ไม่พบอีเมลผู้ใช้ในระบบ</q-card-section>
 
           <q-card-actions align="center">
-            <q-btn v-close-popup style="width:190px" label="ตกลง" color="blue-grey-10" />
+            <q-btn v-close-popup style="width:190px" label="ลองใส่อีกครั้ง" color="blue-grey-10" />
           </q-card-actions>
         </q-card>
       </q-dialog>
