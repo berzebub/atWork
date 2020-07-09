@@ -77,7 +77,11 @@
           </div>
           <div class="text-center q-py-md">
             <u
-              @click="$q.platform.is.desktop ?  isShowUpload = true : $router.push('/vdohowtoupload') "
+              @click="$q.platform.is.desktop ?  isShowUpload = true : $router.push('/vdohowtoupload/' +  $route.params.levelId +
+                  '/' +
+                  $route.params.unitId +
+                  '/' +
+                  $route.params.practiceId) "
               class="text-blue-grey-10 text-center text-body2 cursor-pointer underline"
             >ขั้นตอนการตั้งค่าอัพโหลดไฟล์บน Youtube</u>
           </div>
@@ -166,11 +170,18 @@
               </div>
             </div>
             <div class="q-px-md q-py-sm">
-              <div class="self-center" v-if="item.customer == 1 ">ลูกค้า:</div>
-              <div class="self-center" v-if="item.customer == 2 ">พนักงาน:</div>
+              <div class="self-center" v-if="item.speaker == 'customer' ">ลูกค้า</div>
+              <div class="self-center" v-if="item.speaker == 'employee' ">พนักงาน:</div>
               <div class="row">
                 <div class="q-pr-sm">
-                  <q-btn v-if="!item.isSound" round flat size="sm" icon="fas fa-volume-mute" />
+                  <q-btn
+                    v-if="!item.isSound"
+                    color="blue-grey-4"
+                    round
+                    flat
+                    size="sm"
+                    icon="fas fa-volume-mute"
+                  />
                   <q-btn
                     v-if="item.isSound"
                     size="sm"

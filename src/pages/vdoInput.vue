@@ -25,8 +25,8 @@
           <q-radio
             style="margin:-10px"
             color="blue-grey-10"
-            v-model.number="data.customer"
-            :val="1"
+            v-model="data.speaker"
+            :val="'customer'"
             label="ลูกค้า"
           />
         </div>
@@ -34,8 +34,8 @@
           <q-radio
             style="margin:-10px"
             color="blue-grey-10"
-            v-model.number="data.customer"
-            :val="2"
+            v-model="data.speaker"
+            :val="'employee'"
             label="พนักงาน"
           />
         </div>
@@ -162,7 +162,7 @@ export default {
         sentenceEng: "",
         sentenceTh: "",
         isSound: false,
-        customer: 1,
+        speaker: "customer",
         status: "notSync"
       },
 
@@ -211,10 +211,11 @@ export default {
       }
       if (this.uploadAudio) {
         this.data.isSound = true;
+      } else {
+        this.data.isSound = false;
       }
-
-      if (this.$route.name == "vdoInputAdd") {
-        this.loadingShow();
+      this.loadingShow();
+      if (this.$route.name == "vdoAdd") {
         this.checkble = true;
         db.collection("practice_draft")
           .add(this.data)
@@ -241,16 +242,15 @@ export default {
             }, 1000);
           });
       } else {
-        this.loadingShow();
         this.checkble = true;
         db.collection("practice_draft")
-          .doc(this.$route.params.key)
+          .doc(this.$route.params.id)
           .set(this.data)
           .then(() => {
             if (this.uploadAudio) {
-              st.child(
-                "/practice/audio/" + this.$route.params.key + ".mp3"
-              ).put(this.uploadAudio);
+              st.child("/practice/audio/" + this.$route.params.id + ".mp3").put(
+                this.uploadAudio
+              );
             }
             this.iconfailDialog = false;
             this.iconTrueDialog = true;
