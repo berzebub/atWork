@@ -15,13 +15,19 @@
         </div>
         <div class="shadow-3 bg-white" style=" height: calc(100vh - 64px)">
           <q-list class="rounded-borders" v-for="(itemLv,index) in levelList" :key="index">
-            <q-expansion-item
-              :label="itemLv.name"
-              @click="showUnit(itemLv.levelId)"
-              group="unitgroup"
-              :caption="itemLv.status ? '' : 'ปิดการใช้งาน'"
-            >
-              <q-card v-show="unitListShow==0">
+            <q-expansion-item @click="showUnit(itemLv.levelId)" group="unitgroup">
+              <template v-slot:header>
+                <q-item-section>
+                  {{ itemLv.name }}
+                  <br v-if="!itemLv.status" />
+                  <div
+                    v-if="!itemLv.status"
+                    class="brx q-px-xs"
+                    style="width:fit-content;border:1px solid"
+                  >ปิดการใช้งาน</div>
+                </q-item-section>
+              </template>
+              <q-card v-show="unitListShow.length==0">
                 <div align="center" class="q-py-md">
                   <u class="cursor-pointer" @click="gotoAddLesson()">เพิ่มบทเรียน</u>
                 </div>
@@ -58,7 +64,7 @@
           :levelName="levelName"
           @finishSync="finishSync"
         ></practice-main>
-        <div v-else class="full-height flex flex-center text-subtitle1 mobile-only">
+        <div v-else class="full-height flex flex-center text-subtitle1 desktop-only">
           <q-icon name="fas fa-arrow-left" class="q-pr-sm"></q-icon>กรุณาเลือกตำแหน่งในเมนูด้านซ้าย
           <br />เพื่อทำการเพิ่ม / แก้ไขแบบฝึกหัด
         </div>
@@ -108,7 +114,7 @@ export default {
       if (this.$q.platform.is.desktop) {
         this.isShowPracticeMain = true;
       } else {
-        this.$router.push("/practiceMain"); //ต้องใส่ key เพื่อไปยัง L/U นั้น
+        this.$router.push("/practiceMain/" + levelId + "/" + unitId); //ต้องใส่ key เพื่อไปยัง L/U นั้น
       }
     },
 
@@ -140,35 +146,36 @@ export default {
             unitId: element.id,
             levelId: element.data().levelId,
             label: element.data().name,
-            order: element.data().order
+            order: element.data().order,
+            isShowSyncBtn: element.data().isShowSyncBtn
           };
           temp.push(showData);
         });
         temp.sort((a, b) => {
           return a.order - b.order;
         });
-        this.unitList = [];
+        this.unitList = temp;
 
-        for (const item of temp) {
-          db.collection("practice_draft")
-            .where("levelId", "==", item.levelId)
-            .where("unitId", "==", item.unitId)
-            .get()
-            .then(doc => {
-              let isShowSyncBtn = false;
-              for (const docElement of doc.docs) {
-                if (
-                  docElement.data().status == "notSync" ||
-                  docElement.data().status == "waitForDelete"
-                ) {
-                  isShowSyncBtn = true;
-                  break;
-                }
-              }
-              item.isShowSyncBtn = isShowSyncBtn;
-              this.unitList = temp;
-            });
-        }
+        // for (const item of temp) {
+        //   db.collection("practice_draft")
+        //     .where("levelId", "==", item.levelId)
+        //     .where("unitId", "==", item.unitId)
+        //     .get()
+        //     .then(doc => {
+        //       let isShowSyncBtn = false;
+        //       for (const docElement of doc.docs) {
+        //         if (
+        //           docElement.data().status == "notSync" ||
+        //           docElement.data().status == "waitForDelete"
+        //         ) {
+        //           isShowSyncBtn = true;
+        //           break;
+        //         }
+        //       }
+        //       item.isShowSyncBtn = isShowSyncBtn;
+        //       this.unitList = temp;
+        //     });
+        // }
       });
     },
     showUnit(levelId) {

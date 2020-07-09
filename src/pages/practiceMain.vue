@@ -1,6 +1,6 @@
 <template>
   <q-page class="text-blue-grey-10 q-pa-md">
-    <practice-main></practice-main>
+    <practice-main :levelId="$route.params.levelId" :unitId="$route.params.unitId"></practice-main>
   </q-page>
 </template>
 

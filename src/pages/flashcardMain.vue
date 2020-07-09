@@ -361,7 +361,8 @@ export default {
       this.getOrder = order;
       this.getVocabulary = vocabulary;
     },
-    cancelDeleteFlashcard(id) {
+    async cancelDeleteFlashcard(id) {
+      await this.updateSyncStatus(this.practiceId, this.unitId);
       db.collection("practice_draft")
         .doc(id)
         .update({ status: "notSync" })
@@ -371,7 +372,8 @@ export default {
           this.dialogCancelDelete = false;
         });
     },
-    deleteDataFlashcard() {
+    async deleteDataFlashcard() {
+      await this.updateSyncStatus(this.practiceId, this.unitId);
       db.collection("practice_draft")
         .doc(this.getId)
         .update({ status: "waitForDelete" })
@@ -405,19 +407,27 @@ export default {
         }
       });
     },
-    editDataFlashcard(item) {
-      this.$router.push({
-        name: "flashcardInput",
-        params: {
-          data: {
-            levelId: item.levelId,
-            unitId: item.unitId,
-            practiceId: item.practiceId
-          },
-          getLevelName: this.getLevelName,
-          getUnitName: this.getUnitName
-        }
-      });
+    addDataFlashcard() {
+      this.$router.push(
+        "/flashcardInput/" +
+          this.levelId +
+          "/" +
+          this.unitId +
+          "/" +
+          this.practiceId
+      );
+      // this.$router.push({
+      //   name: "flashcardInput",
+      //   params: {
+      //     data: {
+      //       levelId: item.levelId,
+      //       unitId: item.unitId,
+      //       practiceId: item.practiceId
+      //     },
+      //     getLevelName: this.getLevelName,
+      //     getUnitName: this.getUnitName
+      //   }
+      // });
     },
     playSound(pathSound) {
       console.log(pathSound);

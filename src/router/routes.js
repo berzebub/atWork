@@ -29,7 +29,7 @@ const routes = [{
         name: "practiceList"
       },
       {
-        path: "practiceMain",
+        path: "practiceMain/:levelId/:unitId",
         component: () => import("pages/practiceMain.vue"),
         name: "practiceMain"
       },

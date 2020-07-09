@@ -99,7 +99,7 @@
                     style="width:1000px"
                     class="text-body2 text-grey-7 self-center"
                   >
-                    <span v-if="uploadImg == null">{{practiceKey + ".jpg"}}</span>
+                    <span v-if="uploadImg == null">{{data.practiceId + ".jpg"}}</span>
                   </div>
                   <div
                     style="width:1000px"
@@ -184,7 +184,7 @@
                     style="width:1000px"
                     class="text-body2 text-grey-7 self-center"
                   >
-                    <span v-if="uploadSound == null">{{practiceKey + ".jpg"}}</span>
+                    <span v-if="uploadSound == null">{{data.practiceId + ".jpg"}}</span>
                   </div>
                   <div
                     style="width:1000px"
@@ -310,8 +310,7 @@ export default {
         practiceId: this.$route.params.practiceId,
         isImage: false,
         isSound: false
-      },
-      practiceKey: this.$route.params.id
+      }
     };
   },
   methods: {
@@ -336,7 +335,7 @@ export default {
       }
       this.data = this.$route.params.data;
     },
-    saveData() {
+    async saveData() {
       this.$refs.order.validate();
       this.$refs.vocabulary.validate();
       this.$refs.meaning.validate();
@@ -352,6 +351,7 @@ export default {
         return;
       }
       this.isClick = true;
+      await this.updateSyncStatus(this.data.practiceId, this.data.unitId);
       if (this.$route.name == "flashcardInput") {
         if (this.uploadImg != null) {
           this.data.isImage = true;
@@ -396,12 +396,12 @@ export default {
         .update(this.data)
         .then(() => {
           if (this.uploadImg) {
-            st.child("practice/image/" + this.practiceKey + ".jpg").put(
+            st.child("practice/image/" + this.data.practiceId + ".jpg").put(
               this.uploadImg
             );
           }
           if (this.uploadSound) {
-            st.child("practice/audio/" + this.practiceKey + ".mp3").put(
+            st.child("practice/audio/" + this.data.practiceId + ".mp3").put(
               this.uploadSound
             );
           }

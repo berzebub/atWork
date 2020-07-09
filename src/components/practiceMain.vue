@@ -54,7 +54,7 @@
           <div class="row" :class="$q.platform.is.desktop ? 'col-2':'col-4'" align="center">
             <div class="col">
               <q-btn
-                v-show="itemPrac.showSync"
+                v-show="itemPrac.isShowSyncBtn"
                 round
                 color="blue-grey-10"
                 icon="fas fa-sync-alt"
@@ -359,36 +359,41 @@ export default {
         });
     },
     loadData() {
-      this.loadingShow();
       this.isSnap = db
         .collection("practice_list")
         .where("levelId", "==", this.levelId)
         .where("unitId", "==", this.unitId)
-        .onSnapshot(async doc => {
+        .onSnapshot(doc => {
+          this.loadingShow();
           let temp = [];
 
-          for (const element of doc.docs) {
-            let practice = await db
-              .collection("practice_draft")
-              .where("practiceId", "==", element.id)
-              .get();
-            let syncCheck = false;
-            for (const practiceElement of practice.docs) {
-              if (
-                practiceElement.data().status == "notSync" ||
-                practiceElement.data().status == "waitForDelete"
-              ) {
-                syncCheck = true;
-                break;
-              }
-            }
+          // for (const element of doc.docs) {
+          //   let practice = await db
+          //     .collection("practice_draft")
+          //     .where("practiceId", "==", element.id)
+          //     .get();
+          //   let syncCheck = false;
 
-            temp.push({
-              ...element.data(),
-              practiceId: element.id,
-              showSync: syncCheck
-            });
-          }
+          //   practice.forEach(practiceElement => {
+          //     if (
+          //       practiceElement.data().status == "notSync" ||
+          //       practiceElement.data().status == "waitForDelete"
+          //     ) {
+          //       syncCheck = true;
+          //     }
+          //   });
+
+          //   temp.push({
+          //     ...element.data(),
+          //     practiceId: element.id,
+          //     isShowSyncBtn: syncCheck
+          //   });
+          // }
+
+          doc.forEach(element => {
+            temp.push({ ...element.data(), practiceId: element.id });
+          });
+
           temp.sort((a, b) => {
             return a.order - b.order;
           });
