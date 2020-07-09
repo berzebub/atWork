@@ -61,7 +61,7 @@
           <div class="q-mt-lg" style="margin-top:45px">
             <q-icon color="secondary" size="40px" name="far fa-check-circle" />
           </div>
-          <div class="q-mt-lg text-subtitle1">ลบข้อมูลตำแหน่งเรียบร้อย</div>
+          <div class="q-mt-lg text-subtitle1">ลบข้อมูลเรียบร้อย</div>
         </q-card-section>
       </q-card>
     </q-dialog>

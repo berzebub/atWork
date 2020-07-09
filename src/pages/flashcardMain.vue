@@ -23,6 +23,14 @@
               color="blue-grey-10"
               icon="fas fa-sync"
             />
+            <q-btn
+              @click="sync(practiceId),openDialogSync()"
+              v-if="flashcardType == 'server'"
+              round
+              color="blue-grey-10"
+              icon="fas fa-sync"
+              disable
+            />
           </div>
           <!-- ปุ่มพิมพ์ -->
           <div class="mobile-hide">
@@ -77,13 +85,13 @@
         >ยกเลิกการลบ</q-btn>
         <q-card-section class="text-white bg-blue-grey-10">
           <div
-            v-if="item.status != 'waitForDelete'"
+            v-if="item.status != 'waitForDelete' || $q.platform.is.desktop"
             class="text-subtitle1"
           >รหัสลำดับ {{ item.order }}</div>
           <div
             @click="cancelDeleteFlashcard(item.id, item.order)"
             v-if="$q.platform.is.mobile && item.status == 'waitForDelete'"
-            class="brx text-subtitle1 cursor-pointer"
+            class="text-subtitle1 cursor-pointer"
             style="z-index:2600 ; position : relative; width: fit-content"
           >
             <u>ยกเลิกการลบ</u>
@@ -121,7 +129,7 @@
                   @click="editDataFlashcard(item)"
                   class="cursor-pointer mobile-only"
                 >
-                  <q-item-section>แก้ไข</q-item-section>
+                  <q-item-section>แก้ไขคำศัพท์</q-item-section>
                 </q-item>
                 <q-item
                   clickable
@@ -130,7 +138,7 @@
                   @click="openDialogDelete(item.id, item.order , item.vocabulary)"
                   class="cursor-pointer mobile-only"
                 >
-                  <q-item-section>ลบ</q-item-section>
+                  <q-item-section>ลบคำศัพท์</q-item-section>
                 </q-item>
               </q-list>
             </q-menu>
@@ -403,7 +411,9 @@ export default {
             status: item.status,
             practiceId: item.practiceId
           },
-          id: item.id
+          id: item.id,
+          getLevelName: this.getLevelName,
+          getUnitName: this.getUnitName
         }
       });
     },

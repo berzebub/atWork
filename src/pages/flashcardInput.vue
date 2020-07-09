@@ -6,7 +6,7 @@
           <!-- หัวข้อ -->
           <div class="q-ma-lg text-h6" align="center">
             <div>{{getLevelName}}</div>
-            <div>{{getUintName}}</div>
+            <div>{{getUnitName}}</div>
           </div>
           <!-- รหัสลำดับ -->
           <div>
@@ -298,7 +298,7 @@ export default {
       isClick: false,
       isAddMode: true,
       getLevelName: this.$route.params.getLevelName,
-      getUintName: this.$route.params.getUintName,
+      getUnitName: this.$route.params.getUnitName,
       data: {
         order: "",
         vocabulary: "",

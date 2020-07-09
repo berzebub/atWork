@@ -20,7 +20,7 @@
           </div>
           <!-- รหัสลำดับ -->
           <div>
-            <div class="text-h6" align="left">รหัสลำดับ</div>
+            <div class="text-subtitle1" align="left">รหัสลำดับ</div>
           </div>
           <q-input ref="order" :rules="[ val => val]" outlined mask="###" v-model.number="order" />
         </div>
@@ -73,6 +73,22 @@
                 />
               </div>
               <div class="q-pl-md" align="left">ประโยคภาษาไทย</div>
+              <div class="q-pa-md">
+                <q-input
+                  :error="sentence[i-1].errorTh"
+                  :ref="'sentenceTh'+i"
+                  outlined
+                  v-model="sentence[i-1].sentenceTh"
+                />
+              </div>
+              <div class="row">
+                <div class="q-pl-md" align="left">ไฟล์เสียง</div>
+                <div
+                  class="q-pl-md text-grey-7"
+                  style="margin-top:0.7px"
+                  align="left"
+                >ไฟล์ mp3 เท่านั้น</div>
+              </div>
               <div class="q-pa-md">
                 <q-input
                   :error="sentence[i-1].errorTh"
