@@ -234,7 +234,7 @@
             outlined
             v-model.number="dataLesson.order"
             :error="errorOrder  "
-            error-message="รหัสลำดับนี้ถูกใช้งานแล้ว"
+            :error-message="errorOrderMsg"
             @keyup="errorOrder=false"
           ></q-input>
         </div>
@@ -246,7 +246,7 @@
             outlined
             v-model="dataLesson.name"
             :error="errorLesson"
-            error-message="ชื่อบทเรียนนี้อยู่ใช้งานแล้ว"
+            :error-message="errorNameMsg"
             @keyup="errorLesson=false"
           ></q-input>
         </div>
@@ -399,9 +399,7 @@ export default {
       errorOrder: false,
       errorLesson: false,
       editId: "",
-      nameOld: "",
       orderOld: "",
-
       savedDataDialog: false,
       dialogAddPosition: false,
       dataPositionPc: { name: "", status: false },
@@ -412,7 +410,9 @@ export default {
       dialogNoDeleteLesson: false,
       deleteLesson: false,
       dataDeleteLessson: "",
-      editLessonMode: false
+      editLessonMode: false,
+      errorOrderMsg: "",
+      errorNameMsg: ""
     };
   },
   methods: {
@@ -586,32 +586,25 @@ export default {
         let checkOrder = false;
         if (this.nameOld != this.dataLesson.name) {
           checkName = await this.isCheckName(this.dataLesson.name);
-          console.log("เช็คชื่อซ้ำ");
         }
         if (this.orderOld != this.dataLesson.order) {
           checkOrder = await this.isCheckOrder(this.dataLesson.order);
-          console.log("เช็คลำดับซ้ำ");
         }
 
         this.errorOrder = false;
         this.errorLesson = false;
-        console.log(checkName);
-        console.log(checkOrder);
         if (checkName || checkOrder) {
           if (checkOrder) {
+            this.errorOrderMsg = "รหัสลำดับนี้มีผู้ใช้งานแล้ว";
             this.errorOrder = true;
-            console.log("ลำดับซ้ำ");
-            return;
           }
           if (checkName) {
             this.errorLesson = true;
-            console.log("ชื่อซ้ำ");
-            return;
+            this.errorNameMsg = "ชื่อนี้มีผู้ใช้งานแล้ว";
           }
+          return;
         }
       }
-
-      console.log("add mode");
 
       this.loadingShow();
       if (this.editId != "") {
@@ -645,6 +638,7 @@ export default {
 
     // เช็คชื่อซ้ำ
     async isCheckName(val) {
+      console.log(val);
       let doc = await db
         .collection("unit")
         .where("name", "==", val)
@@ -720,7 +714,7 @@ export default {
     },
     async isCheckName(val) {
       let doc = await db
-        .collection("level")
+        .collection("unit")
         .where("name", "==", val)
         .get();
       return doc.size ? true : false;

@@ -80,6 +80,7 @@
             outlined
             v-model.number="dataLesson.order"
             :error="errorOrder"
+            :error-message="errorOrderMessage"
             @keyup="errorOrder=false"
           ></q-input>
         </div>
@@ -92,6 +93,7 @@
             v-model="dataLesson.name"
             :error="errorLesson"
             @keyup="errorLesson=false"
+            :error-message="errorLessonMessage"
           ></q-input>
         </div>
         <div class="col-12 q- q-px-md">
@@ -180,6 +182,8 @@ import { colors } from "quasar";
 export default {
   data() {
     return {
+      errorLessonMessage: "",
+      errorOrderMessage: "",
       dataLesson: {
         order: "",
         name: "",
@@ -242,15 +246,16 @@ export default {
         console.log(checkOrder);
         if (checkName || checkOrder) {
           if (checkOrder) {
+            this.errorOrderMessage = "รหัสลำดับนี้มีผู้ใช้งานแล้ว";
             this.errorOrder = true;
             console.log("ลำดับซ้ำ");
-            return;
           }
           if (checkName) {
             this.errorLesson = true;
+            this.errorLessonMessage = "ชื่อนี้มีผู้ใช้งานแล้ว";
             console.log("ชื่อซ้ำ");
-            return;
           }
+          return;
         }
       }
 

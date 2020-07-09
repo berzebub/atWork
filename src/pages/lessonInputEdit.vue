@@ -8,6 +8,7 @@
         outlined
         v-model="dataPosition.name"
         :error="errorNamePosition"
+        :error-message="errorNamePositionMessage"
         @keyup="errorNamePosition=false"
       ></q-input>
       <div class="row q-pt-lg">
@@ -50,7 +51,8 @@ export default {
       dataPosition: { name: "", status: false },
       savedDataDialog: false,
       errorNamePosition: false,
-      nameOld: ""
+      nameOld: "",
+      errorNamePositionMessage: ""
     };
   },
   methods: {
@@ -58,10 +60,15 @@ export default {
       this.$router.push("/lessonMainList");
     },
     async saveNamePosition() {
+      if (this.dataPosition.name == "") {
+        this.errorNamePosition = true;
+        return;
+      }
       if (this.nameOld != this.dataPosition.name) {
         let checkName = false;
         checkName = await this.isCheckName(this.dataPosition.name);
         this.errorNamePosition = false;
+        this.errorNamePositionMessage = "ชื่อนี้มีตำแหน่งแล้ว";
 
         if (checkName) {
           this.errorNamePosition = true;
