@@ -102,6 +102,7 @@
         </div>
       </div>
       <div class="row">
+        <!-- SECTION : ใช้ในกรณีอัพโหลดไพล์ -->
         <div class="q-py-md col-12">
           <div>
             ไฟล์รูปภาพ
@@ -110,57 +111,55 @@
           <q-file
             accept=".jpg"
             bg-color="white"
-            class="q-py-sm cursor-pointer"
+            class="q-py-sm cursor-pointer text-grey-7"
             outlined
             square
             v-model="uploadImg"
             style="width:100%;"
           >
             <template v-slot:append>
+              <!-- NOTE : ปุ่มเลือกไพล์ สำหรับ Add Mode -->
               <div v-if="isAddMode">
                 <div
                   class="text-subtitle1 rounded-borders text-center bg-blue-grey-10 text-white q-px-sm cursor-pointer"
                   @click.stop="uploadImg = null"
                   v-if="!uploadImg"
                 >เลือกไฟล์</div>
-                <q-btn
-                  dense
-                  class="cursor-pointer text-white bg-blue-grey-10"
+                <div
+                  class="cursor-pointer rounded-borders text-white bg-blue-grey-10"
                   v-if="uploadImg"
                   @click="uploadImg = null"
-                  icon="far fa-trash-alt"
-                  size="12px"
-                  style="padding:1.5px"
-                ></q-btn>
+                >
+                  <span style="font-size:13px;" class="far fa-trash-alt q-px-xs"></span>
+                </div>
               </div>
 
+              <!-- NOTE : ปุ่มเลือกไพล์ สำหรับ Edit Mode -->
               <div v-if="!isAddMode">
                 <div
                   class="text-subtitle1 rounded-borders text-center bg-blue-grey-10 text-white q-px-sm cursor-pointer"
                   @click.stop="uploadImg = null"
-                  v-if="!uploadImg"
+                  v-if="!data.isImage && !uploadImg"
                 >เลือกไฟล์</div>
-                <q-btn
-                  dense
-                  class="cursor-pointer text-white bg-blue-grey-10"
-                  v-if="uploadImg"
-                  @click="uploadImg = null"
-                  icon="far fa-trash-alt"
-                  size="12px"
-                  style="padding:1.5px"
-                ></q-btn>
+                <div
+                  class="cursor-pointer rounded-borders text-white bg-blue-grey-10"
+                  v-if="data.isImage || uploadImg"
+                  @click="uploadImg = null,data.isImage = false"
+                >
+                  <span class="far fa-trash-alt q-px-xs"></span>
+                </div>
               </div>
             </template>
 
             <template v-slot:prepend v-if="!uploadImg">
-              <div style="width:200px;" align="center" class="text-hidden">
+              <div align="center" class="text-hidden">
                 <div
                   class="text-subtitle1 text-grey-7 self-center"
                   v-if="!uploadImg"
                   @click.stop="uploadImg = null"
                 >
                   <span v-if="isAddMode">ลากแล้ววาง หรือ</span>
-                  <span v-else class>
+                  <span v-else>
                     <span v-if="data.isImage">{{$route.params.id}}</span>
                     <span v-else>ลากแล้ววาง หรือ</span>
                   </span>
@@ -169,22 +168,23 @@
             </template>
           </q-file>
         </div>
-        <div>
-          <div class="row" style="width:360px">
-            <div class="col-6">
-              <q-checkbox
-                style="margin-left:-10px;"
-                v-model="data.isAnswerSound"
-                val="teal"
-                label="คำตอบเป็นเสียง"
-                color="blue-grey-10"
-              />
-            </div>
-          </div>
-        </div>
       </div>
 
       <div>
+        <!-- SECTION : ใช้ในกรณีคำตอบเป็นเสียง -->
+        <div class="row" style="width:360px">
+          <div class="col-6">
+            <q-checkbox
+              style="margin-left:-10px;"
+              v-model="data.isAnswerSound"
+              val="teal"
+              label="คำตอบเป็นเสียง"
+              color="blue-grey-10"
+            />
+          </div>
+        </div>
+
+        <!-- SECTION : ตัวเลือกที่ 1 -->
         <div class="q-py-sm">
           <span>ตัวเลือก #1</span>
           <div>
@@ -226,7 +226,7 @@
                   <span v-if="!dataFiles[0].status" class="text-grey-6">ยังไม่ใส่ไฟล์เสียง</span>
                   <span
                     v-if="dataFiles[0].status && !dataFiles[0].file"
-                  >{{ $route.params.id + "-2.mp3" }}</span>
+                  >{{ $route.params.id + "-1.mp3" }}</span>
                   <span v-if="dataFiles[0].status && dataFiles[0].file">{{ dataFiles[0].file.name }}</span>
                 </span>
               </div>
@@ -258,6 +258,8 @@
             class="visually-hidden"
           />
         </div>
+
+        <!-- SECTION : ตัวเลือกที่ 2 -->
         <div class="q-py-sm">
           <span>ตัวเลือก #2</span>
           <div>
@@ -331,6 +333,8 @@
             class="visually-hidden"
           />
         </div>
+
+        <!-- SECTION : ตัวเลือกที่ 3 -->
         <div class="q-py-sm">
           <span>ตัวเลือก #3</span>
           <div>
@@ -403,6 +407,8 @@
             class="visually-hidden"
           />
         </div>
+
+        <!-- SECTION : ตัวเลือกที่ 4 -->
         <div class="q-py-sm">
           <span>ตัวเลือก #4</span>
           <div>
