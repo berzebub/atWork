@@ -1,7 +1,10 @@
 <template>
   <q-page>
     <div class="container">
-      <div class="text-center text-h6 q-pb-sm">Multiple Choice | U7</div>
+      <div class="text-h6 text-center">
+        <div class="q-pt-md">{{ practiceData.levelName }}</div>
+        <div>{{ practiceData.unitOrder + ". " + practiceData.unitName }}</div>
+      </div>
       <div class="q-pt-sm">
         <span>
           รหัสลำดับ
@@ -604,6 +607,11 @@ export default {
         file: null,
         status: false
       },
+      practiceData: {
+        levelName: "",
+        unitName: "",
+        unitOrder: ""
+      },
       data: {
         isImage: false,
         isSound: false,
@@ -659,6 +667,37 @@ export default {
   },
   methods: {
     // โหลด ข้อมูล หน้าแก้ไข
+    loadLevel() {
+      this.loadingShow();
+
+      let levelKey = this.$route.params.levelId;
+
+      db.collection("level")
+        .doc(levelKey)
+        .get()
+        .then(result => {
+          if (result.exists) {
+            this.practiceData.levelName = result.data().name;
+            // โหลดข้อมูล Unit
+            this.loadUnit();
+          }
+        });
+    },
+    loadUnit() {
+      let unitKey = this.$route.params.unitId;
+      db.collection("unit")
+        .doc(unitKey)
+        .get()
+        .then(result => {
+          if (result.exists) {
+            this.practiceData.unitName = result.data().name;
+            this.practiceData.unitOrder = result.data().order;
+
+            // โหลดข้อมูล คำสั่ง
+            this.loadingHide();
+          }
+        });
+    },
     loadDataEdit() {
       this.loadingShow();
 
@@ -694,7 +733,7 @@ export default {
       }
     },
     // บันทึก
-    saveBtn() {
+   async saveBtn() {
       // เช็คช่องกรอกข้อมูล ก่อนบันทึก ว่ากรอกข้อมูลรึยัง ข้อมูลที่จำเป็นต้องกรอก
       let hasChoice = this.data.choices.filter(x => x.choice != "");
 
@@ -749,6 +788,8 @@ export default {
       this.isSaveData = true;
 
       //  หน้า เพิ่มข้อมูล
+
+     await this.updateSyncStatus(this.$route.params.practiceId,this.$route.params.unitId)
       if (this.isAddMode) {
         db.collection("practice_draft")
           .add(this.data)
@@ -971,6 +1012,7 @@ export default {
     }
   },
   mounted() {
+    this.loadLevel();
     if (this.$route.name == "multipleEdit") {
       if (this.$route.params.id == undefined) {
         this.$router.go(-1);

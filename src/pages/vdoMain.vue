@@ -417,14 +417,14 @@ export default {
         });
     },
     addBtn() {
-      this.$router.push({
-        name: "vdoAdd",
-        params: {
-          levelName: this.practiceData.levelName,
-          unitName: this.practiceData.unitName,
-          unitOrder: this.practiceData.unitOrder
-        }
-      });
+      this.$router.push(
+        "/vdoAdd/" +
+          this.$route.params.levelId +
+          "/" +
+          this.$route.params.unitId +
+          "/" +
+          this.$route.params.practiceId
+      );
     },
 
     // เล่นเสียง
@@ -442,10 +442,7 @@ export default {
         this.$router.push({
           name: "vdoEdit",
           params: {
-            id: key,
-            levelName: this.practiceData.levelName,
-            unitName: this.practiceData.unitName,
-            unitOrder: this.practiceData.unitOrder
+            id: key
           }
         });
       } else {

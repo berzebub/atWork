@@ -2,8 +2,8 @@
   <q-page>
     <div class="container">
       <div class="text-h6 text-center">
-        <div>{{ this.$route.params.levelName}}</div>
-        <div>{{ this.$route.params.unitOrder + ". " + this.$route.params.unitName}}</div>
+        <div>{{practiceData.levelName}}</div>
+        <div>{{ practiceData.unitOrder + ". " + practiceData.unitName}}</div>
       </div>
       <div class="q-pt-sm">
         <span>รหัสลำดับ</span>
@@ -165,6 +165,11 @@ export default {
         speaker: "customer",
         status: "notSync"
       },
+      practiceData: {
+        levelName: "",
+        unitName: "",
+        unitOrder: ""
+      },
 
       orderOld: "",
       orderNew: "",
@@ -175,6 +180,32 @@ export default {
     };
   },
   methods: {
+    loadLevel() {
+      let levelKey = this.$route.params.levelId;
+      db.collection("level")
+        .doc(levelKey)
+        .get()
+        .then(result => {
+          if (result.exists) {
+            this.practiceData.levelName = result.data().name;
+            // โหลดข้อมูล Unit
+            this.loadUnit();
+          }
+        });
+    },
+    loadUnit() {
+      let unitKey = this.$route.params.unitId;
+      db.collection("unit")
+        .doc(unitKey)
+        .get()
+        .then(result => {
+          if (result.exists) {
+            this.practiceData.unitName = result.data().name;
+            this.practiceData.unitOrder = result.data().order;
+            // โหลดข้อมูล คำสั่ง
+          }
+        });
+    },
     loadEdit() {
       db.collection("practice_draft")
         .doc(this.$route.params.id)
@@ -198,7 +229,7 @@ export default {
         return !getOrder.size || "รหัสลำดับนี้มีการใช้งานแล้ว";
       }
     },
-    saveBtn() {
+    async saveBtn() {
       this.$refs.orderid.validate();
       this.$refs.eng.validate();
       this.$refs.th.validate();
@@ -215,6 +246,10 @@ export default {
         this.data.isSound = false;
       }
       this.loadingShow();
+      await this.updateSyncStatus(
+        this.$route.params.practiceId,
+        this.$route.params.unitId
+      );
       if (this.$route.name == "vdoAdd") {
         this.checkble = true;
         db.collection("practice_draft")
@@ -282,17 +317,13 @@ export default {
     }
   },
   mounted() {
+    this.loadLevel();
     if (this.$route.name == "vdoEdit") {
       if (this.$route.params.id == undefined) {
         this.$router.go(-1);
         return;
       }
       this.loadEdit();
-    } else {
-      if (this.$route.params.levelName == undefined) {
-        this.$router.go(-1);
-        return;
-      }
     }
   }
 };
