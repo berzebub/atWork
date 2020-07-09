@@ -144,7 +144,7 @@
                   dense
                   class="cursor-pointer text-white bg-blue-grey-10"
                   v-if="uploadImg"
-                  @click.stop="uploadImg = null"
+                  @click="uploadImg = null"
                   icon="far fa-trash-alt"
                   size="12px"
                   style="padding:1.5px"
@@ -943,7 +943,7 @@ export default {
     }
   },
   mounted() {
-    if (this.$route.name == "multipleInputEdit") {
+    if (this.$route.name == "multipleEdit") {
       if (this.$route.params.id == undefined) {
         this.$router.go(-1);
         return;

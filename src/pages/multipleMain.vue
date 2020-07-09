@@ -304,8 +304,8 @@
           </div>
         </q-card>
       </q-dialog>
-      <!-- finish -->
 
+      <!-- finish -->
       <q-dialog v-model="isSaveComplete">
         <q-card style="max-width:600px;width:100%;height:200px">
           <div class="text-h6 text-center q-pt-md q-pb-sm">
@@ -316,13 +316,23 @@
           </div>
         </q-card>
       </q-dialog>
+
+      <dialog-setting
+        :type="4"
+        v-if="isDeleteDialogSuccess"
+        @autoClose="isDeleteDialogSuccess = false"
+      ></dialog-setting>
     </div>
   </q-page>
 </template>
 
 <script>
 import { db, st } from "../router";
+import dialogSetting from "../components/dialogSetting";
 export default {
+  components: {
+    dialogSetting
+  },
   data() {
     return {
       mode: "draft",
@@ -349,6 +359,8 @@ export default {
       isSaveComplete: false,
       isQuestionDialog: false,
       isDeleteDialog: false,
+
+      isDeleteDialogSuccess: false,
 
       syncData: ""
     };
@@ -482,7 +494,7 @@ export default {
     // กดไปหน้าเพิ่มข้อมูล
     addQuestion() {
       this.$router.push(
-        "/multipleInputAdd/" +
+        "/multipleAdd/" +
           this.$route.params.levelId +
           "/" +
           this.$route.params.unitId +
@@ -525,13 +537,15 @@ export default {
     },
     // ลบข้อมูล
     deleteBtn() {
+      this.isDeleteDialog = false;
+
       db.collection("practice_draft")
         .doc(this.deleteKey)
         .update({
           status: "waitForDelete"
         })
         .then(() => {
-          this.isDeleteDialog = false;
+          this.isDeleteDialogSuccess = true;
         });
     },
     // กดปุ่ม ICON ลบ เพื่องเก็บ KEY
@@ -551,7 +565,7 @@ export default {
     // กดปุ่ม ICON แก้ไข เพื่องเก็บ KEY ส่งไปหน้า แก้ไขข้อมูล
     editData(item) {
       this.$router.push({
-        name: "multipleInputEdit",
+        name: "multipleEdit",
         params: {
           id: item.id
         }

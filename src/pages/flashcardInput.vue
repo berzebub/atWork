@@ -43,15 +43,25 @@
                       style="width:100px"
                       class="text-body2 rounded-borders text-center bg-blue-grey-10 text-white q-pa-xs cursor-pointer"
                       @click.stop="uploadImg = null"
-                      v-if="!uploadImg "
+                      v-if="!uploadImg"
                     >เลือกไฟล์</div>
-                    <div
+
+                    <q-btn
+                      dense
+                      class="cursor-pointer text-white bg-blue-grey-10"
+                      v-if="uploadImg"
+                      @click="uploadImg = null"
+                      icon="far fa-trash-alt"
+                      size="12px"
+                      style="padding:1.5px"
+                    ></q-btn>
+                    <!-- <div
                       class="cursor-pointer rounded-borders text-white bg-blue-grey-10"
-                      v-if="uploadImg "
-                      @click.stop="uploadImg  = null"
+                      v-if="uploadImg"
+                      @click="uploadImg  = null"
                     >
                       <span style class="far fa-trash-alt q-px-xs"></span>
-                    </div>
+                    </div>-->
                   </template>
                   <div
                     v-if="data.isImage == true"
