@@ -35,7 +35,7 @@
               push
               color="blue-grey-10"
               icon="fas fa-sync"
-              @click="sync()"
+              @click="sync($route.params.practiceId)"
             />
           </div>
           <div class="text-right desktop-only">
@@ -46,7 +46,7 @@
               color="blue-grey-10"
               class="q-mx-md"
               icon="fas fa-sync"
-              @click="sync()"
+              @click="sync($route.params.practiceId)"
             />
             <q-btn
               v-if="mode == 'draft'"
@@ -179,7 +179,7 @@
             <span
               v-if="item.audioURL"
               @click="playAudio(item.audioURL)"
-              class="fas fa-volume-up q-mx-xs"
+              class="fas fa-volume-up q-mx-xs cursor-pointer"
             ></span>
             <span class="q-mx-xs q-pr-sm" v-html="item.question"></span>
           </div>

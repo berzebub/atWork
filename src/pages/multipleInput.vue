@@ -114,7 +114,7 @@
             class="q-py-sm cursor-pointer text-grey-7"
             outlined
             square
-            v-model="uploadImg"
+            v-model="uploadImg.file"
             style="width:100%;"
           >
             <template v-slot:append>
@@ -122,13 +122,13 @@
               <div v-if="isAddMode">
                 <div
                   class="text-subtitle1 rounded-borders text-center bg-blue-grey-10 text-white q-px-sm cursor-pointer"
-                  @click.stop="uploadImg = null"
-                  v-if="!uploadImg"
+                  @click.stop="uploadImg.file = null"
+                  v-if="!uploadImg.file"
                 >เลือกไฟล์</div>
                 <div
                   class="cursor-pointer rounded-borders text-white bg-blue-grey-10"
-                  v-if="uploadImg"
-                  @click="uploadImg = null"
+                  v-if="uploadImg.file"
+                  @click="uploadImg.file = null"
                 >
                   <span style="font-size:13px;" class="far fa-trash-alt q-px-xs"></span>
                 </div>
@@ -138,25 +138,25 @@
               <div v-if="!isAddMode">
                 <div
                   class="text-subtitle1 rounded-borders text-center bg-blue-grey-10 text-white q-px-sm cursor-pointer"
-                  @click.stop="uploadImg = null"
-                  v-if="!data.isImage && !uploadImg"
+                  @click.stop="uploadImg.file = null"
+                  v-if="!data.isImage && !uploadImg.file"
                 >เลือกไฟล์</div>
                 <div
                   class="cursor-pointer rounded-borders text-white bg-blue-grey-10"
-                  v-if="data.isImage || uploadImg"
-                  @click="uploadImg = null,data.isImage = false"
+                  v-if="data.isImage || uploadImg.file"
+                  @click="uploadImg.file = null,data.isImage = false"
                 >
                   <span class="far fa-trash-alt q-px-xs"></span>
                 </div>
               </div>
             </template>
 
-            <template v-slot:prepend v-if="!uploadImg">
+            <template v-slot:prepend v-if="!uploadImg.file">
               <div align="center" class="text-hidden">
                 <div
                   class="text-subtitle1 text-grey-7 self-center"
-                  v-if="!uploadImg"
-                  @click.stop="uploadImg = null"
+                  v-if="!uploadImg.file"
+                  @click.stop="uploadImg.file = null"
                 >
                   <span v-if="isAddMode">ลากแล้ววาง หรือ</span>
                   <span v-else>
@@ -595,7 +595,10 @@ import { db, st } from "../router";
 export default {
   data() {
     return {
-      uploadImg: null,
+      uploadImg: {
+        file: null,
+        status: false
+      },
       // ข้อมูล
       dataQuestion: {
         file: null,
@@ -667,7 +670,8 @@ export default {
 
           this.oldOrder = doc.data().order;
 
-          this.dataQuestion.status = doc.data().isImage;
+          this.dataQuestion.status = doc.data().isSound;
+          this.uploadImg.status = doc.data().isImage;
 
           doc.data().choices.map(async (x, index) => {
             if (x.isSound) {
@@ -728,8 +732,9 @@ export default {
         }
       });
 
-      if (this.uploadImg) {
+      if (this.uploadImg.file) {
         this.data.isImage = true;
+        this.uploadImg.status = true;
       }
 
       this.dataFiles.map((x, index) => {
@@ -749,10 +754,10 @@ export default {
           .add(this.data)
           .then(async doc => {
             // เช็คขูอมูลภาพและเสียง
-            if (this.uploadImg) {
+            if (this.uploadImg.status) {
               await st
                 .child("/practice/image/" + doc.id + ".jpg")
-                .put(this.uploadImg);
+                .put(this.uploadImg.file);
             }
 
             if (this.dataQuestion.file) {
@@ -795,15 +800,32 @@ export default {
           .set(this.data)
           .then(async () => {
             // เช็คขูอมูลภาพและเสียง
-            if (this.uploadImg) {
-              await st
-                .child("/practice/image/" + this.$route.params.id + ".jpg")
-                .put(this.uploadImg);
+            if (this.data.isImage) {
+              if (this.uploadImg.file) {
+                await st
+                  .child("/practice/image/" + this.$route.params.id + ".jpg")
+                  .put(this.uploadImg.file);
+              }
+            } else {
+              if (this.uploadImg.status) {
+                await st
+                  .child("/practice/image/" + this.$route.params.id + ".jpg")
+                  .delete();
+              }
             }
-            if (this.dataQuestion.file) {
-              await st
-                .child("/practice/audio/" + this.$route.params.id + ".mp3")
-                .put(this.dataQuestion.file);
+
+            if (this.dataQuestion.status) {
+              if (this.dataQuestion.file) {
+                await st
+                  .child("/practice/audio/" + this.$route.params.id + ".mp3")
+                  .put(this.dataQuestion.file);
+              }
+            } else {
+              if (this.data.isSound) {
+                await st
+                  .child("/practice/audio/" + this.$route.params.id + ".jpg")
+                  .delete();
+              }
             }
 
             // แบบมีเสียง เพิ่ม
