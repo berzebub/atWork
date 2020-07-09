@@ -389,7 +389,7 @@ export default {
           back: "แบบฝึกหัด",
           backPath: "/practiceList",
           back2: "บทสนทนา",
-          backPath2: "/expressionMain/" + practicePath,
+          backPath2: "/vdoMain/" + practicePath,
           type: "vdoAdd"
         },
         {
@@ -397,7 +397,7 @@ export default {
           back: "แบบฝึกหัด",
           backPath: "/practiceList",
           back2: "บทสนทนา",
-          backPath2: "/expressionMain/" + practicePath,
+          backPath2: "/vdoMain/" + practicePath,
           type: "vdoEdit"
         },
         // NOTE : Router Lesson
