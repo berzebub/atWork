@@ -176,6 +176,9 @@ export default {
     console.log(this.type);
     if (stoTypeList.includes(this.type)) {
       setTimeout(() => {
+        this.successData = false;
+      }, 2300);
+      setTimeout(() => {
         this.$emit("autoClose");
       }, 2500);
     }

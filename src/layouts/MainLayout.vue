@@ -340,7 +340,7 @@ export default {
           backPath: "/practiceList",
           back2: "เลือกคำตอบ",
           backPath2: "/multipleMain/" + practicePath,
-          type: "multipleInputAdd"
+          type: "multipleAdd"
         },
         {
           name: "แก้ไขเลือกคำตอบ",
@@ -348,7 +348,7 @@ export default {
           backPath: "/practiceList",
           back2: "เลือกคำตอบ",
           backPath2: "/multipleMain/" + practicePath,
-          type: "multipleInputEdit"
+          type: "multipleEdit"
         },
         // NOTE : Router Expression
         {
@@ -390,7 +390,7 @@ export default {
           backPath: "/practiceList",
           back2: "บทสนทนา",
           backPath2: "/expressionMain/" + practicePath,
-          type: "vdoInputAdd"
+          type: "vdoAdd"
         },
         {
           name: "แก้ไขบทสนทนา",
@@ -398,7 +398,7 @@ export default {
           backPath: "/practiceList",
           back2: "บทสนทนา",
           backPath2: "/expressionMain/" + practicePath,
-          type: "vdoInputEdit"
+          type: "vdoEdit"
         },
         // NOTE : Router Lesson
         {
