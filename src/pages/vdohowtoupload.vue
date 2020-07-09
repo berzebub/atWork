@@ -3,7 +3,7 @@
     <howtouploadfile />
     <div class="text-center">
       <q-btn
-        v-close-popup
+        @click="$router.go(-1);"
         style="max-width:190px;width:100%"
         label="ปิด"
         class="bg-blue-grey-10 text-white q-mb-sm"
