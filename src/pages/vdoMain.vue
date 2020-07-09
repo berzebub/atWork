@@ -28,8 +28,14 @@
         </div>
         <div class="desktop-only">
           <div v-if="mode =='draft'" class="text-right">
-            <q-btn class="q-mx-md" round color="blue-grey-10" icon="fas fa-sync-alt" />
-            <q-btn round color="blue-grey-10" icon="fas fa-print" to="/multiplePrint" />
+            <q-btn
+              @click="sync($route.params.practiceId),openDialogSync()"
+              class="q-mx-md"
+              round
+              color="blue-grey-10"
+              icon="fas fa-sync-alt"
+            />
+            <q-btn round color="blue-grey-10" icon="fas fa-print" />
           </div>
         </div>
 
@@ -135,7 +141,7 @@
                 class="self-center mobile-only"
               >รหัสลำดับ {{item.order}}</div>
               <div v-if="item.status == 'waitForDelete'"></div>
-              <div>
+              <div style="height:10px">
                 <q-btn class="mobile-only" size="13px" icon="fas fa-ellipsis-v" round dense flat>
                   <q-menu>
                     <q-list style="min-width: 130px">

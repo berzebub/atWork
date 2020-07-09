@@ -733,7 +733,7 @@ export default {
       }
     },
     // บันทึก
-   async saveBtn() {
+    async saveBtn() {
       // เช็คช่องกรอกข้อมูล ก่อนบันทึก ว่ากรอกข้อมูลรึยัง ข้อมูลที่จำเป็นต้องกรอก
       let hasChoice = this.data.choices.filter(x => x.choice != "");
 
@@ -789,7 +789,10 @@ export default {
 
       //  หน้า เพิ่มข้อมูล
 
-     await this.updateSyncStatus(this.$route.params.practiceId,this.$route.params.unitId)
+      await this.updateSyncStatus(
+        this.$route.params.practiceId,
+        this.$route.params.unitId
+      );
       if (this.isAddMode) {
         db.collection("practice_draft")
           .add(this.data)
