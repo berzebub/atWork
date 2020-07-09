@@ -155,7 +155,7 @@
       :name="name"
       :practice="practice"
       v-if="dialogDelete"
-      @amm="deletePracticeConfirm()"
+      @emitConfirmDelete="deletePracticeConfirm"
     ></dialog-setting>
     <!-- <q-dialog v-model="dialogDelete" persistent>
       <q-card class="q-pa-md" style="width: 300px;" align="center">
@@ -189,7 +189,7 @@
     </q-dialog>-->
 
     <!-- dialog success -->
-    <dialog-setting :type="6" v-if="dialogSuccess"></dialog-setting>
+    <dialog-setting :type="6" v-if="dialogSuccess" @autoClose="dialogSuccess = false"></dialog-setting>
     <!-- <q-dialog v-model="dialogSuccess">
       <q-card style="min-width: 350px; height:170px">
         <q-card-section class="absolute-center" align="center">
@@ -275,10 +275,10 @@ export default {
       this.name = itemPrac.order + " - " + itemPrac.practiceType;
       this.dialogDelete = true;
     },
-    deletePracticeConfirm() {
-      console.log(this.practiceId);
-
-      return;
+    deletePracticeConfirm(val) {
+      // console.log(this.practiceId);
+      this.dialogDelete = false;
+      this.loadingShow();
       db.collection("practice_draft")
         .where("practiceId", "==", this.practiceId)
         .get()
@@ -302,11 +302,13 @@ export default {
                 .doc(this.practiceId)
                 .delete()
                 .then(() => {
-                  this.dialogDeletePracticeListSuccess = true;
-                  setTimeout(() => {
-                    this.dialogDeletePracticeListSuccess = false;
-                  }, 1000);
-                  console.log("FINISH");
+                  this.loadingHide();
+                  this.dialogSuccess = true;
+
+                  // this.dialogDeletePracticeListSuccess = true;
+                  // setTimeout(() => {
+                  //   this.dialogDeletePracticeListSuccess = false;
+                  // }, 1000);
                 });
             });
         });

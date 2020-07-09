@@ -168,11 +168,12 @@ export default {
   },
   methods: {
     emitValue() {
-      this.$emit("amm", false);
+      this.$emit("emitConfirmDelete", false);
     }
   },
   mounted() {
     let stoTypeList = [2, 4, 6, 9];
+    console.log(this.type);
     if (stoTypeList.includes(this.type)) {
       setTimeout(() => {
         this.$emit("autoClose");
