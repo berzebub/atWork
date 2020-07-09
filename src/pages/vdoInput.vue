@@ -3,7 +3,7 @@
     <div class="container">
       <div class="text-h6 text-center">
         <div>{{this.$route.params.levelName}}</div>
-        <div>{{ this.$route.params.unitOrder + ". " + this.$route.params.unitName}}</div>
+        <div>{{this.$route.params.unitOrder + ". " + this.$route.params.unitName}}</div>
       </div>
       <div class="q-pt-sm">
         <span>รหัสลำดับ</span>
@@ -80,12 +80,12 @@
               class="text-subtitle1 rounded-borders text-center bg-blue-grey-10 text-white q-pa-xs cursor-pointer"
               @click.stop="uploadAudio = null"
               @click="isTextAudio  = '' "
-              v-if="!uploadAudio && !isKeyAudio"
+              v-if="!uploadAudio "
             >เลือกไฟล์</div>
-            <div v-if="uploadAudio || isKeyAudio" class="text-body1 absolute-center">{{isKeyAudio}}</div>
+            <div v-if="uploadAudio" class="text-body1 absolute-center">{{isKeyAudio}}</div>
             <div
               class="cursor-pointer rounded-borders text-white bg-blue-grey-10"
-              v-if="uploadAudio || isKeyAudio"
+              v-if="uploadAudio "
               @click="uploadAudio  = null ; isKeyAudio = ''"
             >
               <span style class="far fa-trash-alt q-px-xs"></span>
@@ -94,7 +94,7 @@
           <div
             style="width:1000px"
             class="text-subtitle1 text-grey-7 self-center"
-            v-if="!uploadAudio && !isKeyAudio"
+            v-if="!uploadAudio "
           >ลากแล้ววาง หรือ</div>
         </q-file>
         <div class="q-pt-xs text-red text-body2">{{isTextAudio}}</div>
@@ -281,12 +281,13 @@ export default {
     }
   },
   mounted() {
-    if (this.$route.name == "vdoInputEdit") {
+    if (this.$route.name == "vdoEdit") {
       if (this.$route.params.id == undefined) {
         this.$router.go(-1);
         return;
       }
       this.loadEdit();
+    } else {
     }
   }
 };
