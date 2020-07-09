@@ -536,7 +536,11 @@ export default {
       }, 1000);
     },
     // ลบข้อมูล
-    deleteBtn() {
+   async deleteBtn() {
+       await this.updateSyncStatus(
+        this.$route.params.practiceId,
+        this.$route.params.unitId
+      );
       this.isDeleteDialog = false;
 
       db.collection("practice_draft")
@@ -555,7 +559,11 @@ export default {
       this.deleteKey = key;
       this.indexKey = index;
     },
-    cancelDelete(key) {
+  async cancelDelete(key) {
+       await this.updateSyncStatus(
+        this.$route.params.practiceId,
+        this.$route.params.unitId
+      );
       db.collection("practice_draft")
         .doc(key)
         .update({

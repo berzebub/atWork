@@ -41,7 +41,13 @@
 
         <div class="mobile-only">
           <div class="text-right q-pl-md">
-            <q-btn :disable="mode !='draft'" round color="blue-grey-10" icon="fas fa-sync-alt" />
+            <q-btn
+              @click="sync($route.params.practiceId),openDialogSync()"
+              :disable="mode !='draft'"
+              round
+              color="blue-grey-10"
+              icon="fas fa-sync-alt"
+            />
           </div>
         </div>
       </div>
@@ -484,14 +490,22 @@ export default {
       this.orderId = id;
     },
     // อัพเดด
-    deleteData() {
+    async deleteData() {
+      await this.updateSyncStatus(
+        this.$route.params.practiceId,
+        this.$route.params.unitId
+      );
       db.collection("practice_draft")
         .doc(this.isDeleteKey)
         .update({
           status: "waitForDelete"
         });
     },
-    cancelDelete(key) {
+    async cancelDelete(key) {
+      await this.updateSyncStatus(
+        this.$route.params.practiceId,
+        this.$route.params.unitId
+      );
       db.collection("practice_draft")
         .doc(key)
         .update({
