@@ -440,7 +440,7 @@ export default {
     },
     addBtn() {
       this.$router.push(
-        "/vdoInputAdd/" +
+        "/vdoAdd/" +
           this.$route.params.levelId +
           "/" +
           this.$route.params.unitId +
@@ -462,7 +462,7 @@ export default {
     editBtn(key) {
       if (key) {
         this.$router.push({
-          name: "vdoInputEdit",
+          name: "vdoEdit",
           params: {
             id: key,
             levelName: this.practiceData.levelName,

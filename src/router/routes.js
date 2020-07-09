@@ -56,14 +56,14 @@ const routes = [{
       name: "multipleMain"
     },
     {
-      path: "multipleInputAdd/:levelId/:unitId/:practiceId",
+      path: "multipleAdd/:levelId/:unitId/:practiceId",
       component: () => import("pages/multipleInput.vue"),
-      name: "multipleInputAdd"
+      name: "multipleAdd"
     },
     {
-      path: "multipleInputEdit/:levelId/:unitId/:practiceId",
+      path: "multipleEdit/:levelId/:unitId/:practiceId",
       component: () => import("pages/multipleInput.vue"),
-      name: "multipleInputEdit"
+      name: "multipleEdit"
     },
     // ------------------- expression -------------------
     {
@@ -88,14 +88,14 @@ const routes = [{
       name: "vdoMain"
     },
     {
-      path: "vdoInputAdd/:levelId/:unitId/:practiceId",
+      path: "vdoAdd/:levelId/:unitId/:practiceId",
       component: () => import("pages/vdoInput.vue"),
-      name: "vdoInputAdd"
+      name: "vdoAdd"
     },
     {
-      path: "vdoInputEdit/:levelId/:unitId/:practiceId",
+      path: "vdoEdit/:levelId/:unitId/:practiceId",
       component: () => import("pages/vdoInput.vue"),
-      name: "vdoInputEdit"
+      name: "vdoEdit"
     },
     // ------------------- lessonMain ระดับการเรียน -------------------
     {
