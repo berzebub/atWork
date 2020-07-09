@@ -22,7 +22,14 @@
 
           <!-- NOTE : เมนูสำหรับมือถือ -->
           <div v-if="$q.platform.is.mobile">
-            <router-link :to="routeName.backPath" class="text-white" v-if="routeName.backPath">
+            <router-link
+              :to="routeName.backPath"
+              class="text-white"
+              v-if="routeName.backPath && !routeName.backPath2"
+            >
+              <span class="fas fa-arrow-left q-ml-sm q-mr-md"></span>
+            </router-link>
+            <router-link :to="routeName.backPath2" class="text-white" v-if="routeName.backPath2">
               <span class="fas fa-arrow-left q-ml-sm q-mr-md"></span>
             </router-link>
             <span class="text-h6 q-ml-xs">{{routeName.name}}</span>
@@ -49,7 +56,7 @@
           v-if="userInfo.userGroup.includes('practice')"
           class="full-width q-py-md relative-position cursor-pointer"
           :class="
-            $route.name == 'practiceList' || $route.name == 'flashcardMain' || $route.name == 'flashcardInput' || $route.name == 'flashcardEdit' ||  $route.name == 'multipleMain' || $route.name == 'multipleAdd' || $route.name == 'multipleEdit' || $route.name == 'vdoMain' || $route.name == 'vdoAdd' || $route.name == 'vdoEdit'
+            $route.name == 'practiceList' || $route.name == 'flashcardMain' || $route.name == 'flashcardInput' || $route.name == 'flashcardEdit' ||  $route.name == 'multipleMain' || $route.name == 'multipleAdd' || $route.name == 'multipleEdit' || $route.name == 'vdoMain' || $route.name == 'vdoAdd' || $route.name == 'vdoEdit' || $route.name == 'vdohowtoupload' || $route.name == 'expressionMain' || $route.name == 'expressionInput' || $route.name == 'expressionEdit'
               ? 'active-line active-text'
               : 'no-active-line'
           "
@@ -64,7 +71,7 @@
         <div
           class="full-width q-py-md relative-position cursor-pointer"
           :class="
-            $route.name == 'lessonMainList' 
+            $route.name == 'lessonMainList'
               ? 'active-line active-text'
               : 'no-active-line'
           "
@@ -279,6 +286,10 @@ export default {
     }
   },
   computed: {
+    checkActiveRouteName() {
+      // if($route.name =! ''){
+      // }
+    },
     routeName() {
       let result;
 
@@ -309,6 +320,7 @@ export default {
           backPath2: "",
           type: "flashcardMain"
         },
+        // NOTE : Router Flashcard Add
         {
           name: "เพิ่มคำศัพท์",
           back: "แบบฝึกหัด",
@@ -317,6 +329,7 @@ export default {
           backPath2: "/flashcardMain/" + practicePath,
           type: "flashcardInput"
         },
+        // NOTE : Router Flashcard Edit
         {
           name: "แก้ไขคำศัพท์",
           back: "แบบฝึกหัด",
@@ -334,6 +347,7 @@ export default {
           backPath2: "",
           type: "multipleMain"
         },
+        // NOTE : Router Multiple Add
         {
           name: "เพิ่มคำศัพท์",
           back: "แบบฝึกหัด",
@@ -342,6 +356,7 @@ export default {
           backPath2: "/multipleMain/" + practicePath,
           type: "multipleAdd"
         },
+        // NOTE : Router Multiple Edit
         {
           name: "แก้ไขเลือกคำตอบ",
           back: "แบบฝึกหัด",
@@ -359,6 +374,7 @@ export default {
           backPath2: "",
           type: "expressionMain"
         },
+        // NOTE : Router Expression Add
         {
           name: "เพิ่มประโยคสนทนา",
           back: "แบบฝึกหัด",
@@ -403,7 +419,7 @@ export default {
         {
           name: "การตั้งค่าการอัปโหลดวีดีโอ",
           back: "",
-          backPath: "/vdoMain",
+          backPath: "/vdoMain/" + practicePath,
           back2: "",
           backPath2: "",
           type: "vdohowtoupload"
@@ -548,6 +564,7 @@ export default {
       return result;
     }
   },
+
   mounted() {
     this.loadUserInfo();
   }
