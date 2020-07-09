@@ -34,27 +34,41 @@
     <!-- รายชื่อแผนก -->
     <q-separator />
     <div v-for="(item,index) in deparmentSelect " :key="index" @click="filterEmployee(item)">
+      <!-- show ชื่อแผนก -->
       <q-toolbar class="no-padding">
-        <q-toolbar-title class="text-subtitle1">{{item.name}}</q-toolbar-title>
+        <q-toolbar-title class="text-subtitle1">
+          <q-icon v-if="clickedToolbar!=item.departmentId" name="fas fa-chevron-down"></q-icon>
+          <q-icon v-else name="fas fa-chevron-up"></q-icon>
+          {{item.name}}
+        </q-toolbar-title>
         <q-btn @click.stop="addEmployee()" icon="fas fa-user-plus" flat size="10px"></q-btn>
         <q-btn @click.stop="deleteDepartment()" icon="far fa-trash-alt" flat size="10px"></q-btn>
         <q-btn @click.stop="editDepartment()" icon="fas fa-edit" flat size="10px"></q-btn>
       </q-toolbar>
-      <q-separator />
+      <q-separator v-if="clickedToolbar!=item.departmentId" />
       <!-- ชื่อพนักงาน -->
-      <div
-        v-if="clickedToolbar==item.departmentId"
-        v-for="(item2,index2) in employeeList"
-        :key="index2"
-      >
-        <q-toolbar class="no-padding">
-          <q-toolbar-title class="text-body2 q-pl-lg">
-            <span class="q-pl-md">{{index2+1}}. {{item2.name}}</span>
-          </q-toolbar-title>
-          <q-btn class="invisible" icon="far fa-trash-alt" flat size="10px"></q-btn>
-          <q-btn @click.stop="deleteEmployee()" icon="far fa-trash-alt" flat size="10px"></q-btn>
-          <q-btn @click.stop="editEmployee()" icon="fas fa-edit" flat size="10px"></q-btn>
-        </q-toolbar>
+
+      <div v-if="clickedToolbar==item.departmentId">
+        <div v-if="employeeList.length == 0">
+          <!-- กรณีไม่มีพนักงานในแผนก -->
+          <div
+            v-if="employeeList.length==0"
+            class="text-body2 q-py-md"
+            align="center"
+          >กรุณาเพิ่มพนักงาน</div>
+        </div>
+        <div v-for="(item2,index2) in employeeList" :key="index2">
+          <!-- กรณีมีพนักงาน -->
+          <q-toolbar class="no-padding">
+            <q-toolbar-title class="text-body2 q-pl-lg">
+              <span class="q-pl-md">{{index2+1}}. {{item2.name}}</span>
+            </q-toolbar-title>
+            <q-btn class="invisible" icon="far fa-trash-alt" flat size="10px"></q-btn>
+            <q-btn @click.stop="deleteEmployee()" icon="far fa-trash-alt" flat size="10px"></q-btn>
+            <q-btn @click.stop="editEmployee()" icon="fas fa-edit" flat size="10px"></q-btn>
+          </q-toolbar>
+        </div>
+        <q-separator />
       </div>
     </div>
 

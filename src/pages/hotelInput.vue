@@ -4,8 +4,8 @@
       <div>
         <div>ชื่อกิจการ</div>
         <q-input
-          v-model="datahotel.hotelName"
-          ref="HotelName"
+          v-model.trim="datahotel.name"
+          ref="name"
           outlined
           dense
           :rules="[value => !!value ]"
@@ -14,7 +14,7 @@
       <div>
         <div>ชื่อ นามสกุลผู้ดูแลระบบ</div>
         <q-input
-          v-model="datahotel.adminName"
+          v-model.trim="datahotel.adminName"
           ref="adminName"
           outlined
           dense
@@ -24,21 +24,27 @@
       <div>
         <div>เบอร์ติดต่อผู้ดูแลระบบ</div>
         <q-input
-          v-model="datahotel.adminTel"
-          ref="adminTel"
+          v-model.trim="datahotel.adminPhone"
+          ref="adminPhone"
           outlined
           dense
           :rules="[value => !!value ]"
         ></q-input>
       </div>
       <div>
-        <div>อีเมลผุ้ดูแลระบบ</div>
-        <q-input v-model="datahotel.email" ref="email" outlined dense :rules="[value => !!value ]"></q-input>
+        <div>อีเมลผู้ดูแลระบบ</div>
+        <q-input
+          v-model.trim="datahotel.email"
+          ref="email"
+          outlined
+          dense
+          :rules="[value => !!value ]"
+        ></q-input>
       </div>
       <div>
         <div>รหัสผ่านผู้ดูแลระบบ</div>
         <q-input
-          v-model="datahotel.password"
+          v-model.trim="datahotel.password"
           ref="password"
           outlined
           dense
@@ -53,26 +59,65 @@
           <q-btn @click="saveHotel()" dense color="blue-grey-10" style="width:150px" label="บันทึก"></q-btn>
         </div>
       </div>
+      <dialog-center :type="6" v-if="isAddDialogSucess" @autoClose="addDialogSucess"></dialog-center>
     </div>
   </q-page>
 </template>
 
 <script>
+import { db } from "../router";
+import dialogCenter from "../components/dialogSetting";
 export default {
+  components: {
+    dialogCenter
+  },
   data() {
     return {
       datahotel: {
-        hotelName: "",
+        name: "",
         adminName: "",
-        adminTel: "",
+        adminPhone: "",
         email: "",
         password: ""
-      }
+      },
+      isAddDialogSucess: false
     };
   },
   methods: {
-    cancelAddHotel() {},
-    saveHotel() {}
+    cancelAddHotel() {
+      this.$router.push("hotelMain");
+    },
+    saveHotel() {
+      // check validate
+      this.$refs.name.validate();
+      this.$refs.adminName.validate();
+      this.$refs.adminPhone.validate();
+      this.$refs.email.validate();
+      this.$refs.password.validate();
+      if (
+        this.$refs.name.hasError ||
+        this.$refs.adminName.hasError ||
+        this.$refs.adminPhone.hasError ||
+        this.$refs.password.hasError ||
+        this.$refs.email.hasError
+      ) {
+        return console.log("กรอก input ไม่ครบ");
+      }
+      this.loadingShow();
+      // บันทึก add
+      db.collection("hotel")
+        .add(this.datahotel)
+        .then(() => {
+          this.isAddDialogSucess = true;
+          this.loadingHide();
+        });
+    },
+    addDialogSucess() {
+      this.isAddDialogSucess = false;
+      setTimeout(() => {
+        this.$router.push("hotelMain");
+      }, 500);
+    }
   }
 };
 </script>

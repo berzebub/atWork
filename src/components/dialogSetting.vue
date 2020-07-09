@@ -32,15 +32,22 @@
     </q-dialog>
     <!-- ต้องการลบตำแหน่งหรือไม่ -->
     <q-dialog v-if="type == 3" v-model="successData" persistent>
-      <q-card style="width: 323px; height:200px">
+      <q-card style="width: 323px; min-height:200px">
         <q-card-section align="center">
           <div class="q-mt-lg text-subtitle1">คุณต้องการลบ{{practice}}</div>
           <div class="text-subtitle1">"{{name}}"</div>
         </q-card-section>
-        <q-card-actions>
-          <div class="row justify-center" style="margin-top:25px">
+        <q-card-actions align="center">
+          <div class="row justify-center">
             <div>
-              <q-btn label="ยกเลิก" color="blue-grey-10" style="width:120px" outline v-close-popup></q-btn>
+              <q-btn
+                @click="emitCancel()"
+                label="ยกเลิก"
+                color="blue-grey-10"
+                style="width:120px"
+                outline
+                v-close-popup
+              ></q-btn>
             </div>
             <div>
               <q-btn
@@ -70,13 +77,18 @@
       <q-card style="width: 323px; height:200px">
         <q-card-section align="center">
           <div>
-            <div class="q-mt-lg text-subtitle1">ต้องลบแบบฝึกหัดทั้งหมดภายในบทเรียน</div>
-            <div class="text-subtitle1">"จองโต๊ะ"</div>
+            <div class="q-mt-lg text-subtitle1">ต้องลบ{{practice}}</div>
+            <div class="text-subtitle1">“{{name}}”</div>
           </div>
         </q-card-section>
         <q-card-actions align="center">
           <div class="q-mt-md">
-            <q-btn label="ตกลง" class="bg-blue-grey-10 text-white" style="width:190px"></q-btn>
+            <q-btn
+              @click="emitValue()"
+              label="ตกลง"
+              class="bg-blue-grey-10 text-white"
+              style="width:190px"
+            ></q-btn>
           </div>
         </q-card-actions>
       </q-card>
@@ -169,6 +181,9 @@ export default {
   methods: {
     emitValue() {
       this.$emit("emitConfirmDelete", false);
+    },
+    emitCancel() {
+      this.$emit("emitCancelDelete", false);
     }
   },
   mounted() {

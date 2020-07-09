@@ -1,9 +1,15 @@
 <template>
   <div>
-    <div class="brx q-pa-md" @click="testClick(index)" v-for="(item,index)  in test">
+    <!-- <div class="brx q-pa-md" @click="testClick(index)" v-for="(item,index)  in test">
       <q-btn label="a" @click.stop="testClick1()"></q-btn>
       <div v-show="indexClick==index" v-for="item1 in test1">{{item1}}</div>
-    </div>
+    </div>-->
+    <q-expansion-item
+      expand-separator
+      icon="perm_identity"
+      label="Account settings"
+      caption="John Doe"
+    ></q-expansion-item>
   </div>
 </template>
 
