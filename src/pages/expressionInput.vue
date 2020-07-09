@@ -1,12 +1,20 @@
 <template>
   <q-page align="center">
-    <div class="container">
+    <div class="container" align="center">
       <div class="row">
-        <div class="col-sm-11 col-xs-12 relative-position">
+        <div class="col-sm-12 col-xs-12 relative-position">
           <!-- หัวข้อ -->
           <div class="q-ma-lg text-h6" align="center">
             <div>{{getLevelName}}</div>
             <div>{{getUnitName}}</div>
+          </div>
+          <!-- รหัสลำดับ -->
+          <div>
+            <div class="row">
+              <div class="text-subtitle1" align="left">รหัสลำดับ</div>
+              <div class="text-subtitle1 q-ml-md text-grey-7" style="margin-top:0.7px">ตัวเลข 3 หลัก</div>
+            </div>
+            <q-input ref="order" :rules="[ val => val]" outlined mask="###" v-model.number="order" />
           </div>
           <!-- ปุ่มเพิ่ม -->
           <div align="center">
@@ -18,16 +26,10 @@
               color="white"
             >เพิ่มประโยคที่ {{boxCount+2}}</q-btn>
           </div>
-          <!-- รหัสลำดับ -->
-          <div class="row">
-            <div class="text-subtitle1" align="left">รหัสลำดับ</div>
-            <div class="text-subtitle1 q-ml-md text-grey-7" style="margin-top:0.7px">ตัวเลข 3 หลัก</div>
-          </div>
-          <q-input ref="order" :rules="[ val => val]" outlined mask="###" v-model.number="order" />
         </div>
       </div>
       <div class="row" v-for="(i) in boxCount+1" :key="i">
-        <div class="col-sm-11 col-xs-12 relative-position">
+        <div class="col-sm-12 col-xs-12 relative-position">
           <q-card class="q-my-lg text-black">
             <q-card-section class="row items-center justify-between bg-blue-grey-10 text-white">
               <div align="left" class="q-ml-sm text-h6">ประโยคที่ {{i}}</div>
@@ -178,9 +180,9 @@
           </q-card>
         </div>
       </div>
-      <div class="row" style="width:360px; margin:auto">
+      <div class="row justify-center" style="width:100%; margin:auto">
         <!-- ยกเลิก -->
-        <div class="q-ma-md col">
+        <div class="q-px-md">
           <q-btn
             :to="'/expressionMain/'+ levelId+'/'+unitId+'/'+practiceId"
             label="ยกเลิก"
@@ -191,41 +193,37 @@
           />
         </div>
         <!-- บันทึกข้อมูล -->
-        <div class="q-ma-md col">
+        <div class="q-px-md">
           <q-btn
             @click="saveData()"
             label="บันทึก"
             dense
             style="width:150px"
-            outline
             color="white"
             class="bg-blue-grey-10"
           />
         </div>
       </div>
-      <!-- --------------------------------------dialog--------------------------------------- -->
-      <!-- ยืนยันการลบ -->
-      <q-dialog v-model="dialogdeleteCard" persistent>
-        <q-card style="min-width: 350px; height:200px">
-          <q-card-section></q-card-section>
-
-          <q-card-section
-            align="center"
-            class="q-pt-md text-h6"
-          >คุณต้องการลบ "ประโยคที่ {{getIndex}}"</q-card-section>
-
-          <q-card-actions align="center" class="q-mt-md">
-            <q-btn style="width:120px" outline label="ยกเลิก" color="blue-grey-10" v-close-popup />
-            <q-btn
-              @click="confirmDeleteCard()"
-              style="width:120px"
-              label="ตกลง"
-              color="blue-grey-10"
-            />
-          </q-card-actions>
-        </q-card>
-      </q-dialog>
     </div>
+    <!-- --------------------------------------dialog--------------------------------------- -->
+    <!-- ยืนยันการลบ -->
+    <q-dialog v-model="dialogdeleteCard" persistent>
+      <q-card style="min-width: 350px; height:200px">
+        <q-card-section></q-card-section>
+
+        <q-card-section align="center" class="q-pt-md text-h6">คุณต้องการลบ "ประโยคที่ {{getIndex}}"</q-card-section>
+
+        <q-card-actions align="center" class="q-mt-md">
+          <q-btn style="width:120px" outline label="ยกเลิก" color="blue-grey-10" v-close-popup />
+          <q-btn
+            @click="confirmDeleteCard()"
+            style="width:120px"
+            label="ตกลง"
+            color="blue-grey-10"
+          />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
     <dialog-setting :type="4" v-if="isShowDailogDeleteFinish == true"></dialog-setting>
     <dialog-setting
       :type="6"

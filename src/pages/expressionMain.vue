@@ -13,6 +13,15 @@
           />
           <q-radio color="blue-grey-10" v-model="expressionType" val="server" label="เซิร์ฟเวอร์" />
         </div>
+        <div class="q-mr-md mobile-only">
+          <q-btn
+            @click="sync(practiceId).then(()=>{openDialogSync()})"
+            v-if="expressionType == 'draft'"
+            round
+            color="blue-grey-10"
+            icon="fas fa-sync"
+          />
+        </div>
         <!-- ปุ่มซิ้งค์ -->
         <div class="mobile-hide">
           <div class="row">
