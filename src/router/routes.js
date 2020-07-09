@@ -97,6 +97,12 @@ const routes = [{
       component: () => import("pages/vdoInput.vue"),
       name: "vdoEdit"
     },
+    {
+      path: "vdohowtoupload",
+      component: () => import("pages/vdohowtoupload.vue"),
+      name: "vdohowtoupload"
+    },
+
     // ------------------- lessonMain ระดับการเรียน -------------------
     {
       path: "lessonMainList",

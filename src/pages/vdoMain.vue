@@ -77,7 +77,7 @@
           </div>
           <div class="text-center q-py-md">
             <u
-              @click="isSettingDialog = true"
+              @click="$q.platform.is.desktop ?  isShowUpload = true : $router.push('/vdohowtoupload') "
               class="text-blue-grey-10 text-center text-body2 cursor-pointer underline"
             >ขั้นตอนการตั้งค่าอัพโหลดไฟล์บน Youtube</u>
           </div>
@@ -267,16 +267,33 @@
           </div>
         </q-card>
       </q-dialog>
+      <q-dialog v-model="isShowUpload">
+        <q-card style="max-width:610px;width:100%">
+          <howtouploadfile />
+          <div class="text-center">
+            <q-btn
+              v-close-popup
+              style="max-width:190px;width:100%"
+              label="ปิด"
+              class="bg-blue-grey-10 text-white q-mb-md"
+            />
+          </div>
+        </q-card>
+      </q-dialog>
     </div>
   </q-page>
 </template>
 
 <script>
 import { db, st } from "../router";
+import howtouploadfile from "../components/howtouploadfile.vue";
 export default {
+  components: {
+    howtouploadfile
+  },
   data() {
     return {
-      isSettingDialog: false,
+      isShowUpload: false,
       isDeleteDialog: false,
       orderId: "",
       isDeleteKey: "",
@@ -480,14 +497,6 @@ export default {
 </script>
 
 <style scoped>
-.boxUpload {
-  align-content: center;
-  color: white;
-  background: #263238;
-  height: 35px;
-  width: 35px;
-  border-radius: 100%;
-}
 .boxCard {
   border: 1px solid #263238;
   border-radius: 10px;

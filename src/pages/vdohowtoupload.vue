@@ -1,0 +1,25 @@
+<template>
+  <div>
+    <howtouploadfile />
+    <div class="text-center">
+      <q-btn
+        v-close-popup
+        style="max-width:190px;width:100%"
+        label="ปิด"
+        class="bg-blue-grey-10 text-white q-mb-sm"
+      />
+    </div>
+  </div>
+</template>
+
+<script>
+import howtouploadfile from "../components/howtouploadfile.vue";
+export default {
+  components: {
+    howtouploadfile
+  }
+};
+</script>
+
+<style  scoped>
+</style>
