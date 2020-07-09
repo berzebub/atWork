@@ -408,26 +408,13 @@ export default {
       });
     },
     addDataFlashcard() {
-      this.$router.push(
-        "/flashcardInput/" +
-          this.levelId +
-          "/" +
-          this.unitId +
-          "/" +
-          this.practiceId
-      );
-      // this.$router.push({
-      //   name: "flashcardInput",
-      //   params: {
-      //     data: {
-      //       levelId: item.levelId,
-      //       unitId: item.unitId,
-      //       practiceId: item.practiceId
-      //     },
-      //     getLevelName: this.getLevelName,
-      //     getUnitName: this.getUnitName
-      //   }
-      // });
+      this.$router.push({
+        name: "flashcardInput",
+        params: {
+          getLevelName: this.getLevelName,
+          getUnitName: this.getUnitName
+        }
+      });
     },
     playSound(pathSound) {
       console.log(pathSound);
