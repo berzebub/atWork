@@ -20,11 +20,6 @@
                 <q-item-section>
                   {{ itemLv.name }}
                   <br v-if="!itemLv.status" />
-                  <!-- <div
-                    v-if="!itemLv.status"
-                    class="brx q-px-xs"
-                    style="width:fit-content;border:1px solid; font-size: 11px;"
-                  >ปิดการใช้งาน</div>-->
 
                   <q-badge
                     v-if="!itemLv.status"
@@ -46,7 +41,7 @@
                   class="row q-px-md q-py-sm relative-position cursor-pointer"
                   :class="activeKey==itemUnit.unitId?'bg-blue-grey-4':''"
                   v-ripple
-                  @click="gotoEdit(itemUnit.unitId,itemUnit.levelId,index2,itemUnit.label,itemLv.name)"
+                  @click="gotoEdit(itemUnit, index2,itemLv.name)"
                 >
                   <div class="col">
                     {{itemUnit.order}} -
@@ -112,18 +107,22 @@ export default {
       this.showUnit(val.levelId);
       this.isShowPracticeMain = true;
     },
-    gotoEdit(unitId, levelId, index, unitName, levelName) {
+    gotoEdit(itemUnit, num, levelName) {
+      console.log(num);
       this.isShowPracticeMain = false;
-      this.activeKey = unitId;
-      this.levelId = levelId;
-      this.unitId = unitId;
-      this.num = index + 1;
-      this.unitName = unitName;
+      this.activeKey = itemUnit.unitId;
+      this.levelId = itemUnit.levelId;
+      this.unitId = itemUnit.unitId;
+      this.num = num + 1; // ทำไมไม่เป็น order ไปเลย
+      this.unitName = itemUnit.label;
       this.levelName = levelName;
+
       if (this.$q.platform.is.desktop) {
         this.isShowPracticeMain = true;
       } else {
-        this.$router.push("/practiceMain/" + levelId + "/" + unitId); //ต้องใส่ key เพื่อไปยัง L/U นั้น
+        this.$router.push(
+          "/practiceMain/" + itemUnit.levelId + "/" + itemUnit.unitId + "/"
+        ); //ต้องใส่ key เพื่อไปยัง L/U นั้น
       }
     },
 
