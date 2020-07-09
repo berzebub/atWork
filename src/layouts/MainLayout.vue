@@ -400,6 +400,14 @@ export default {
           backPath2: "/vdoMain/" + practicePath,
           type: "vdoEdit"
         },
+        {
+          name: "การตั้งค่าการอัปโหลดวีดีโอ",
+          back: "",
+          backPath: "/vdoMain",
+          back2: "",
+          backPath2: "",
+          type: "vdohowtoupload"
+        },
         // NOTE : Router Lesson
         {
           name: "บทเรียน",
