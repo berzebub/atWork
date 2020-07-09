@@ -461,7 +461,15 @@ export default {
     },
     editBtn(key) {
       if (key) {
-        this.$router.push("/vdoInputEdit/" + key);
+        this.$router.push({
+          name: "vdoInputEdit",
+          params: {
+            id: key,
+            levelName: this.practiceData.levelName,
+            unitName: this.practiceData.unitName,
+            unitOrder: this.practiceData.unitOrder
+          }
+        });
       } else {
         this.dataVdo.linkVdo = "";
         this.editVdoDialog = true;

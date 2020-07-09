@@ -2,8 +2,8 @@
   <q-page>
     <div class="container">
       <div class="text-h6 text-center">
-        <div>อาหารและเครื่องดื่ม</div>
-        <div>1. จองโต๊ะ</div>
+        <div>{{this.$route.params.levelName}}</div>
+        <div>{{ this.$route.params.unitOrder + ". " + this.$route.params.unitName}}</div>
       </div>
       <div class="q-pt-sm">
         <span>รหัสลำดับ</span>
@@ -176,7 +176,7 @@ export default {
   methods: {
     loadEdit() {
       db.collection("practice_draft")
-        .doc(this.$route.params.key)
+        .doc(this.$route.params.id)
         .get()
         .then(doc => {
           if (doc.data().isSound) {
@@ -282,6 +282,10 @@ export default {
   },
   mounted() {
     if (this.$route.name == "vdoInputEdit") {
+      if (this.$route.params.id == undefined) {
+        this.$router.go(-1);
+        return;
+      }
       this.loadEdit();
     }
   }
