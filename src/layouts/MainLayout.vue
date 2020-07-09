@@ -49,7 +49,7 @@
           v-if="userInfo.userGroup.includes('practice')"
           class="full-width q-py-md relative-position cursor-pointer"
           :class="
-            $route.name == 'practiceList' || $route.name == 'flashcardMain' || $route.name == 'flashcardInput' || $route.name == 'multipleMain' || $route.name == 'multipleInputAdd'
+            $route.name == 'practiceList' || $route.name == 'flashcardMain' || $route.name == 'flashcardInput' || $route.name == 'flashcardEdit' ||  $route.name == 'multipleMain' || $route.name == 'multipleAdd' || $route.name == 'multipleEdit' || $route.name == 'vdoMain' || $route.name == 'vdoAdd' || $route.name == 'vdoEdit'
               ? 'active-line active-text'
               : 'no-active-line'
           "
