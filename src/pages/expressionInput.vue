@@ -19,8 +19,9 @@
             >เพิ่มประโยคที่ {{boxCount+2}}</q-btn>
           </div>
           <!-- รหัสลำดับ -->
-          <div>
+          <div class="row">
             <div class="text-subtitle1" align="left">รหัสลำดับ</div>
+            <div class="text-subtitle1 q-ml-md text-grey-7" style="margin-top:0.7px">ตัวเลข 3 หลัก</div>
           </div>
           <q-input ref="order" :rules="[ val => val]" outlined mask="###" v-model.number="order" />
         </div>
@@ -81,21 +82,97 @@
                   v-model="sentence[i-1].sentenceTh"
                 />
               </div>
-              <div class="row">
-                <div class="q-pl-md" align="left">ไฟล์เสียง</div>
-                <div
-                  class="q-pl-md text-grey-7"
-                  style="margin-top:0.7px"
-                  align="left"
-                >ไฟล์ mp3 เท่านั้น</div>
+              <!-- ไฟล์เสียง -->
+              <div v-if="isAddMode">
+                <div class="q-px-md">
+                  <div class="row items-center">
+                    <div align="left" class="text-subtitle1">ไฟล์เสียง</div>
+                    <div
+                      class="q-ml-md text-blue-grey-7 text-body2"
+                      style="margin-top:0.7%"
+                    >ไฟล์ mp3 เท่านั้น</div>
+                  </div>
+                  <div>
+                    <q-file
+                      accept=".mp3"
+                      bg-color="white"
+                      outlined
+                      v-model="sentence[i-1].uploadSound"
+                    >
+                      <template v-slot:append>
+                        <!-- ปุ่มเลือกไฟล์ -->
+                        <div
+                          style="width:100px;"
+                          class="text-body2 rounded-borders text-center bg-blue-grey-10 text-white q-pa-xs cursor-pointer"
+                          @click.stop="sentence[i-1].uploadSound = null"
+                          v-if="!sentence[i-1].uploadSound"
+                        >เลือกไฟล์</div>
+                        <!-- ปุ่มลบไฟล์ -->
+                        <div
+                          class="cursor-pointer rounded-borders text-white bg-blue-grey-10"
+                          v-if="sentence[i-1].uploadSound"
+                          @click.stop="sentence[i-1].uploadSound = null"
+                        >
+                          <span style class="far fa-trash-alt q-px-xs"></span>
+                        </div>
+                      </template>
+                      <div
+                        v-if="sentence[i-1].isSound == true"
+                        style="width:1000px"
+                        class="text-body2 text-grey-7 self-center"
+                      >{{sentence[i-1].uploadSound}}</div>
+                      <div
+                        style="width:1000px"
+                        class="text-body2 text-grey-7 self-center"
+                        align="right"
+                        v-if="!sentence[i-1].uploadSound"
+                      >ลากแล้ววาง หรือ</div>
+                    </q-file>
+                  </div>
+                </div>
               </div>
-              <div class="q-pa-md">
-                <q-input
-                  :error="sentence[i-1].errorTh"
-                  :ref="'sentenceTh'+i"
-                  outlined
-                  v-model="sentence[i-1].sentenceTh"
-                />
+              <div v-if="!isAddMode">
+                <div class="q-px-md">
+                  <div class="row items-center">
+                    <div align="left" class="text-subtitle1">ไฟล์เสียง</div>
+                    <div class="q-ml-md text-blue-grey-7" style="margin-top:0.7%">ไฟล์ mp3 เท่านั้น</div>
+                  </div>
+                  <div>
+                    <q-file accept=".mp3" bg-color="white" outlined v-model="uploadSound[i-1].file">
+                      <template v-slot:append>
+                        <!-- ปุ่มเลือกไฟล์ -->
+                        <div
+                          style="width:100px;"
+                          class="text-body2 rounded-borders text-center bg-blue-grey-10 text-white q-pa-xs cursor-pointer"
+                          @click.stop="uploadSound[i-1].file = null"
+                          v-if="!sentence[i-1].isSound && uploadSound[i-1].file == null"
+                        >เลือกไฟล์</div>
+                        <!-- ปุ่มลบไฟล์ -->
+                        <div
+                          class="cursor-pointer rounded-borders text-white bg-blue-grey-10"
+                          v-if="sentence[i-1].isSound || uploadSound[i-1].file "
+                          @click="sentence[i-1].isSound = false ,uploadSound[i-1].file = null "
+                        >
+                          <span style class="far fa-trash-alt q-px-xs"></span>
+                        </div>
+                      </template>
+                      <div
+                        v-if="sentence[i-1].isSound"
+                        style="width:1000px"
+                        class="text-body2 text-grey-7 self-center"
+                        align="right"
+                      >
+                        <span>{{$route.params.id +"-"+(i) + ".mp3"}}</span>
+                      </div>
+
+                      <div
+                        style="width:1000px"
+                        class="text-body2 text-grey-7 self-center"
+                        v-if="uploadSound[i-1].file == null && sentence[i-1].isSound == false"
+                      >ลากแล้ววาง หรือ</div>
+                    </q-file>
+                  </div>
+                </div>
               </div>
             </q-card-section>
           </q-card>
@@ -105,7 +182,7 @@
         <!-- ยกเลิก -->
         <div class="q-ma-md col">
           <q-btn
-            :to="'/expressionMain/'+ levelId+'/'+unitId"
+            :to="'/expressionMain/'+ levelId+'/'+unitId+'/'+practiceId"
             label="ยกเลิก"
             dense
             style="width:150px"
@@ -129,7 +206,7 @@
       <!-- --------------------------------------dialog--------------------------------------- -->
       <!-- ยืนยันการลบ -->
       <q-dialog v-model="dialogdeleteCard" persistent>
-        <q-card style="min-width: 350px; height:170px">
+        <q-card style="min-width: 350px; height:200px">
           <q-card-section></q-card-section>
 
           <q-card-section
@@ -137,7 +214,7 @@
             class="q-pt-md text-h6"
           >คุณต้องการลบ "ประโยคที่ {{getIndex}}"</q-card-section>
 
-          <q-card-actions align="center">
+          <q-card-actions align="center" class="q-mt-md">
             <q-btn style="width:120px" outline label="ยกเลิก" color="blue-grey-10" v-close-popup />
             <q-btn
               @click="confirmDeleteCard()"
@@ -148,24 +225,30 @@
           </q-card-actions>
         </q-card>
       </q-dialog>
-      <!-- เพิ่มข้อมูลสำเร็จ -->
-      <q-dialog v-model="successData">
-        <q-card style="min-width: 350px; height:170px">
-          <q-card-section class="absolute-center" align="center">
-            <div>
-              <q-icon color="secondary" size="lg" name="far fa-check-circle" />
-            </div>
-            <div class="q-mt-lg">บันทึกข้อมูลเรียบร้อย</div>
-          </q-card-section>
-        </q-card>
-      </q-dialog>
     </div>
+    <dialog-setting :type="4" v-if="isShowDailogDeleteFinish == true"></dialog-setting>
+    <dialog-setting
+      :type="6"
+      @autoClose="$router.push(
+              '/expressionMain/' +
+                levelId +
+                '/' +
+                unitId +
+                '/' +
+                practiceId
+            )"
+      v-if="isShowDialogSaveFinish == true"
+    ></dialog-setting>
   </q-page>
 </template>
 
 <script>
-import { db } from "../router";
+import { db, st } from "../router";
+import dialogSetting from "../components/dialogSetting";
 export default {
+  components: {
+    dialogSetting
+  },
   data() {
     return {
       getUnitName: this.$route.params.getUnitName,
@@ -174,45 +257,76 @@ export default {
       levelId: this.$route.params.levelId,
       unitId: this.$route.params.unitId,
       successData: false,
+      isAddMode: true,
       getIndex: "",
       dialogdeleteCard: false,
+      isShowDailogDeleteFinish: false,
+      isShowDialogSaveFinish: false,
       boxCount: 1,
+      type: "",
       order: "",
       errorSentenceEng1: false,
+      uploadSound: [
+        {
+          file: null,
+          status: false
+        },
+        {
+          file: null,
+          status: false
+        },
+        {
+          file: null,
+          status: false
+        },
+        {
+          file: null,
+          status: false
+        }
+      ],
       sentence: [
         {
           sentenceEng: "",
           sentenceTh: "",
           speaker: "customer",
           errorEng: false,
-          errorTh: false
+          errorTh: false,
+          isSound: false,
+          uploadSound: null
         },
         {
           sentenceEng: "",
           sentenceTh: "",
           speaker: "customer",
           errorEng: false,
-          errorTh: false
+          errorTh: false,
+          isSound: false,
+          uploadSound: null
         },
         {
           sentenceEng: "",
           sentenceTh: "",
           speaker: "customer",
           errorEng: false,
-          errorTh: false
+          errorTh: false,
+          isSound: false,
+          uploadSound: null
         },
         {
           sentenceEng: "",
           sentenceTh: "",
           speaker: "customer",
           errorEng: false,
-          errorTh: false
+          errorTh: false,
+          isSound: false,
+          uploadSound: null
         }
       ]
     };
   },
   methods: {
     editMode() {
+      this.isAddMode = false;
       if (this.$route.params.levelId == undefined) {
         this.$router.push("/expressionMain");
       }
@@ -269,54 +383,66 @@ export default {
         let filterData = this.sentence.filter(
           x => x.sentenceEng != "" && x.sentenceTh != ""
         );
+
+        let newFilterData = [];
         filterData.forEach(element => {
-          delete element.errorEng;
-          delete element.errorTh;
+          let data = {
+            sentenceEng: element.sentenceEng,
+            sentenceTh: element.sentenceTh,
+            speaker: element.speaker,
+            isSound: element.uploadSound != null ? true : false
+          };
+          newFilterData.push(data);
         });
+
         db.collection("practice_draft")
           .add({
             unitId: this.unitId,
             levelId: this.levelId,
             practiceId: this.practiceId,
-            expression: filterData,
+            expression: newFilterData,
             order: this.order,
             status: "notSync"
           })
-          .then(() => {
+          .then(getId => {
+            filterData.forEach((element, index) => {
+              console.log(element);
+              if (element.uploadSound != null) {
+                let soundId = getId.id + "-" + (index + 1);
+                console.log(soundId);
+                st.child("practice/audio/" + soundId + ".mp3").put(
+                  element.uploadSound
+                );
+              }
+            });
+
             this.sentence = [
               {
                 sentenceEng: "",
                 sentenceTh: "",
-                speaker: "customer"
+                speaker: "customer",
+                uploadSound: null
               },
               {
                 sentenceEng: "",
                 sentenceTh: "",
-                speaker: "customer"
+                speaker: "customer",
+                uploadSound: null
               },
               {
                 sentenceEng: "",
                 sentenceTh: "",
-                speaker: "customer"
+                speaker: "customer",
+                uploadSound: null
               },
               {
                 sentenceEng: "",
                 sentenceTh: "",
-                speaker: "customer"
+                speaker: "customer",
+                uploadSound: null
               }
             ];
-            this.successData = true;
-            setTimeout(() => {
-              this.successData = false;
-              this.$router.push(
-                "/expressionMain/" +
-                  this.levelId +
-                  "/" +
-                  this.unitId +
-                  "/" +
-                  this.practiceId
-              );
-            }, 2500);
+            this.isShowDialogSaveFinish = true;
           });
       } else {
         this.editData();
@@ -327,6 +453,12 @@ export default {
       let filterData = this.sentence.filter(
         x => x.sentenceEng != "" && x.sentenceTh != ""
       );
+
+      filterData.map((x, index) => {
+        if (this.uploadSound[index].file) {
+          x.isSound = true;
+        }
+      });
       db.collection("practice_draft")
         .doc(this.$route.params.id)
         .update({
@@ -337,10 +469,24 @@ export default {
           expression: filterData
         })
         .then(() => {
-          this.$router.push("expressionMain");
+          filterData.map((x, index) => {
+            if (x.isSound == true) {
+              if (this.uploadSound[index].file) {
+                st.child(
+                  "practice/audio/" +
+                    this.$route.params.id +
+                    "-" +
+                    (index + 1) +
+                    ".mp3"
+                ).put(this.uploadSound[index].file);
+              }
+            }
+          });
+          this.isShowDialogSaveFinish = true;
         });
     },
     opendialogDeleteCard(index) {
+      this.isShowDailogDeleteFinish = false;
       this.getIndex = index + 1;
       if (
         this.sentence[index].sentenceEng.length > 0 ||
@@ -358,6 +504,7 @@ export default {
     },
     confirmDeleteCard() {
       this.dialogdeleteCard = false;
+      this.isShowDailogDeleteFinish = true;
       this.moveData();
     }
   },

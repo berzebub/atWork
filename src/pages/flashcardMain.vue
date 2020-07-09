@@ -204,6 +204,7 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+    <!-- ลบข้อมูลสำเร็จ -->
     <q-dialog v-model="successDelete">
       <q-card style="min-width: 323px; height:200px">
         <q-card-section class="absolute-center" align="center">
