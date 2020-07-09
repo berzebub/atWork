@@ -19,7 +19,7 @@
       </q-card>
     </q-dialog>
     <!-- ใส่อีเมลเพื่อกำหนดรหัสผ่านใหม่เรียบร้อย -->
-    <q-dialog v-if="type == 2" v-model="successData">
+    <q-dialog v-if="type == 2" v-model="successData" persistent>
       <q-card style="width: 323px; height:200px">
         <q-card-section align="center">
           <div class="q-mt-lg">
@@ -55,7 +55,7 @@
       </q-card>
     </q-dialog>
     <!-- ลบข้อมูลตำแหน่งเรียบร้อย -->
-    <q-dialog v-if="type == 4" v-model="successData">
+    <q-dialog v-if="type == 4" v-model="successData" persistent>
       <q-card style="width: 323px; height:200px">
         <q-card-section align="center">
           <div class="q-mt-lg" style="margin-top:45px">
@@ -82,7 +82,7 @@
       </q-card>
     </q-dialog>
     <!-- บันทึกข้อมูลเรียบร้อย -->
-    <q-dialog v-if="type == 6" v-model="successData">
+    <q-dialog v-if="type == 6" v-model="successData" persistent>
       <q-card style="width: 323px; height:200px">
         <q-card-section align="center">
           <div class="q-mt-lg" style="margin-top:45px">
@@ -135,7 +135,7 @@
       </q-card>
     </q-dialog>
     <!-- บันทึกข้อมูลgเรียบร้อย -->
-    <q-dialog v-if="type == 9" v-model="successData">
+    <q-dialog v-if="type == 9" v-model="successData" persistent>
       <q-card style="width: 323px; height:200px">
         <q-card-section align="center">
           <div class="q-mt-lg" style="margin-top:45px">
