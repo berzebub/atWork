@@ -20,11 +20,20 @@
                 <q-item-section>
                   {{ itemLv.name }}
                   <br v-if="!itemLv.status" />
-                  <div
+                  <!-- <div
                     v-if="!itemLv.status"
                     class="brx q-px-xs"
-                    style="width:fit-content;border:1px solid"
-                  >ปิดการใช้งาน</div>
+                    style="width:fit-content;border:1px solid; font-size: 11px;"
+                  >ปิดการใช้งาน</div>-->
+
+                  <q-badge
+                    v-if="!itemLv.status"
+                    label="ปิดการใช้งาน"
+                    color="blue-grey-7"
+                    outline
+                    class="q-px-xs"
+                    style="width:fit-content"
+                  ></q-badge>
                 </q-item-section>
               </template>
               <q-card v-show="unitListShow.length==0">
