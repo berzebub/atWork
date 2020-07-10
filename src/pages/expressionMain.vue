@@ -3,39 +3,46 @@
     <div class="container">
       <div class="row justify-between">
         <!-- กล่อง radio -->
-        <div class="brg row" :style="$q.platform.is.desktop?'width:330px':'width:250px'">
-          <q-radio
-            class="q-ml-md col-6"
-            color="blue-grey-10"
-            v-model="expressionType"
-            val="draft"
-            label="แบบร่าง"
-          />
-          <q-radio color="blue-grey-10" v-model="expressionType" val="server" label="เซิร์ฟเวอร์" />
+        <div class="col text-left">
+          <div class="row brg" style="max-width:330px ; width:100%">
+            <div class="col">
+              <q-radio
+                @input="changeRadio(false)"
+                color="blue-grey-10"
+                v-model="expressionType"
+                val="draft"
+                label="แบบร่าง"
+              />
+            </div>
+            <div class="col">
+              <q-radio
+                @input="changeRadio(true)"
+                color="blue-grey-10"
+                v-model="expressionType"
+                val="server"
+                label="เซิร์ฟเวอร์"
+              />
+            </div>
+          </div>
         </div>
-        <div class="q-mr-md mobile-only">
-          <q-btn
-            @click="sync(practiceId).then(()=>{openDialogSync()})"
-            v-if="expressionType == 'draft'"
-            round
-            color="blue-grey-10"
-            icon="fas fa-sync"
-          />
-        </div>
-        <!-- ปุ่มซิ้งค์ -->
-        <div class="mobile-hide">
-          <div class="row">
-            <div class="q-mr-md">
+        <div>
+          <!-- ปุ่มซิงค์ -->
+          <div class="q-ml-md" v-if="$q.platform.is.mobile">
+            <sync-btn :practiceId="practiceId" :isServer="isDisable"></sync-btn>
+          </div>
+          <div class="row desktop-only" v-if="expressionType == 'draft'">
+            <div class="q-mx-md">
+              <sync-btn :practiceId="practiceId"></sync-btn>
+            </div>
+            <!-- ปุ่มพิมพ์ -->
+            <div class="mobile-hide">
               <q-btn
-                @click="sync(practiceId).then(()=>{openDialogSync()})"
                 v-if="expressionType == 'draft'"
                 round
                 color="blue-grey-10"
-                icon="fas fa-sync"
+                icon="fas fa-print"
               />
             </div>
-            <!-- ปุ่มพิมพ์ -->
-            <q-btn v-if="expressionType == 'draft'" round color="blue-grey-10" icon="fas fa-print" />
           </div>
         </div>
       </div>
@@ -74,18 +81,29 @@
       >
         <div
           v-if="item.status == 'waitForDelete'"
-          class="brx absolute-center fit row items-center justify-center"
-          style="background-color:black;opacity:0.6; z-index:1000"
+          class="absolute-center fit row items-center justify-center"
+          style="background-color:black;opacity:0.6; z-index:2500"
         ></div>
         <!-- cancel-delete -->
         <q-btn
-          v-if="item.status == 'waitForDelete'"
-          @click="confirmDeleteExpression(item.id,item.order)"
-          style="width:190px; z-index:2000"
+          v-if="item.status == 'waitForDelete' && $q.platform.is.desktop"
+          @click="cancelDeleteExpression(item.id, item.order)"
+          style="width:190px; z-index:2600; "
           class="absolute-center bg-white"
         >ยกเลิกการลบ</q-btn>
         <q-card-section class="text-white bg-blue-grey-10">
-          <div class="text-h6">รหัสลำดับ {{item.order}}</div>
+          <div
+            v-if="item.status != 'waitForDelete' || $q.platform.is.desktop"
+            class="text-h6"
+          >รหัสลำดับ {{item.order}}</div>
+          <div
+            @click="cancelDeleteExpression(item.id, item.order)"
+            v-if="$q.platform.is.mobile && item.status == 'waitForDelete'"
+            class="text-subtitle1 cursor-pointer"
+            style="z-index:2600 ; position : relative; width: fit-content"
+          >
+            <u>ยกเลิกการลบ</u>
+          </div>
           <div class="row items-center absolute-right">
             <!-- icon-delete -->
             <q-icon
@@ -104,34 +122,38 @@
               style="color:white; font-size: 1.4em;"
             />
             <!-- icon-menu -->
-            <q-icon
+            <q-btn
+              dense
+              flat
+              round
+              size="13px"
               v-if="expressionType == 'draft'"
-              class="cursor-pointer q-pr-md mobile-only"
-              name="fas fa-ellipsis-v"
-              style="color:white; font-size: 1.4em;"
-            />
-            <!-- เมนูแก้ไข-ลบ -->
-            <q-menu no-refocus class="mobile-only">
-              <q-list style="min-width:180px">
-                <q-item
-                  clickable
-                  v-close-popup
-                  @click="editDataExpression(item)"
-                  class="cursor-pointer text-subtitle1"
-                >
-                  <q-item-section>แก้ไขประโยคสนทนา</q-item-section>
-                </q-item>
-                <q-item
-                  clickable
-                  v-close-popup
-                  v-if="item.status != 'waitForDelete'"
-                  @click="openDialogDelete(item.id,item.order)"
-                  class="cursor-pointer text-subtitle1"
-                >
-                  <q-item-section>ลบประโยคสนทนา</q-item-section>
-                </q-item>
-              </q-list>
-            </q-menu>
+              class="cursor-pointer mobile-only"
+              icon="fas fa-ellipsis-v"
+            >
+              <!-- เมนูแก้ไข-ลบ -->
+              <q-menu anchor="top right" self="top right" :offset="[0,-37]" class="mobile-only">
+                <q-list style="min-width:180px">
+                  <q-item
+                    clickable
+                    v-close-popup
+                    @click="editDataExpression(item)"
+                    class="cursor-pointer text-subtitle1"
+                  >
+                    <q-item-section>แก้ไขประโยคสนทนา</q-item-section>
+                  </q-item>
+                  <q-item
+                    clickable
+                    v-close-popup
+                    v-if="item.status != 'waitForDelete'"
+                    @click="openDialogDelete(item.id,item.order)"
+                    class="cursor-pointer text-subtitle1"
+                  >
+                    <q-item-section>ลบประโยคสนทนา</q-item-section>
+                  </q-item>
+                </q-list>
+              </q-menu>
+            </q-btn>
           </div>
         </q-card-section>
         <!-- ประโยคข้อความ -->
@@ -171,9 +193,10 @@
     <dialog-setting :type="9" v-if="isShowDialogSync == true"></dialog-setting>
 
     <q-dialog v-model="dialogDelete" persistent>
-      <q-card style="min-width: 350px; height:170px">
-        <q-card-section>
-          <div class="q-mt-lg text-h6">ต้องการลบ "รหัสลำดับ {{getOrder}}" หรือไม่</div>
+      <q-card style="min-width: 350px; height:200px">
+        <q-card-section align="center">
+          <div class="q-mt-lg text-subtitle1">ต้องการลบประโยคสนทนา</div>
+          <div class="q-mb-md text-subtitle1">"รหัสลำดับ {{getOrder}}"</div>
         </q-card-section>
 
         <q-card-actions align="center">
@@ -201,9 +224,11 @@
 <script>
 import { db, auth } from "../router";
 import dialogSetting from "../components/dialogSetting";
+import syncBtn from "../components/syncBtn.vue";
 export default {
   components: {
-    dialogSetting
+    dialogSetting,
+    syncBtn
   },
   data() {
     return {
@@ -220,10 +245,14 @@ export default {
       levelId: this.$route.params.levelId,
       unitId: this.$route.params.unitId,
       practiceId: this.$route.params.practiceId,
-      isSnap: ""
+      isSnap: "",
+      isDisable: false
     };
   },
   methods: {
+    changeRadio(val) {
+      this.isDisable = val;
+    },
     openDialogSync() {
       this.isShowDialogSync = true;
     },
@@ -283,7 +312,7 @@ export default {
       this.getId = id;
       this.getOrder = order;
     },
-    async confirmDeleteExpression(id) {
+    async cancelDeleteExpression(id) {
       await this.updateSyncStatus(this.practiceId, this.unitId);
       db.collection("practice_draft")
         .doc(id)

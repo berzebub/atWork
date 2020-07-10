@@ -281,7 +281,6 @@ export default {
       isSnap: "",
       isDelete: true,
       practiceId: this.$route.params.practiceId,
-
       isDisable: false
     };
   },
