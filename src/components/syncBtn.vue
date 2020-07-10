@@ -3,17 +3,26 @@
     <!-- @click="sync(practiceId),openDialogSync()" -->
     <q-btn
       :disable="isDisableSyncBtn"
-      @click="sync(practiceId)"
+      @click="sync(practiceId).then(() => { isShowFinishSyncDialog = true })"
       round
       color="blue-grey-10"
       icon="fas fa-sync"
     />
+    <dialog-setting
+      @autoClose="isShowFinishSyncDialog = false"
+      v-if="isShowFinishSyncDialog"
+      :type="9"
+    ></dialog-setting>
   </div>
 </template>
 
 <script>
 import { db } from "../router";
+import dialogSetting from "../components/dialogSetting";
 export default {
+  components: {
+    dialogSetting
+  },
   props: {
     practiceId: {
       type: String,
@@ -23,7 +32,8 @@ export default {
   data() {
     return {
       isDisableSyncBtn: true,
-      isSnapPracticeList: ""
+      isSnapPracticeList: "",
+      isShowFinishSyncDialog: false
     };
   },
   methods: {
