@@ -123,29 +123,17 @@
           </div>
         </div>
       </div>
-      <!-- finish -->
-      <q-dialog v-model="finishDialog">
-        <q-card style="max-width:323px;width:100%;height:200px">
-          <div class="text-h6 text-center q-pt-md q-pb-sm">
-            <div class="q-py-md q-mt-md">
-              <q-icon
-                v-if="iconTrueDialog"
-                color="secondary"
-                size="46px"
-                name="far fa-check-circle"
-              />
-              <q-icon v-if="iconfailDialog" color="red" size="46px" name="far fa-times-circle" />
-            </div>
-            <div class="text-subtitle1">{{text}}</div>
-          </div>
-        </q-card>
-      </q-dialog>
+      <dialog-setting :type="6" v-if="isSaveDialogSuccess" @autoClose="isSaveDialogSuccess = false"></dialog-setting>
     </div>
   </q-page>
 </template>
 <script>
 import { db, st } from "../router";
+import dialogSetting from "../components/dialogSetting";
 export default {
+  components: {
+    dialogSetting
+  },
   data() {
     return {
       checkble: false,
@@ -170,10 +158,7 @@ export default {
 
       orderOld: "",
       orderNew: "",
-      iconTrueDialog: true,
-      iconfailDialog: false,
-      finishDialog: false,
-      text: ""
+      isSaveDialogSuccess: false
     };
   },
   methods: {
@@ -256,10 +241,8 @@ export default {
                 .child("/practice/audio/" + doc.id + ".mp3")
                 .put(this.uploadAudio);
             }
-            this.iconfailDialog = false;
-            this.iconTrueDialog = true;
-            this.finishDialog = true;
-            this.text = "บันทึกข้อมูลเรียบร้อย";
+
+            this.isSaveDialogSuccess = true;
             setTimeout(() => {
               this.loadingHide();
               this.$router.push(
@@ -275,6 +258,8 @@ export default {
       } else {
         if (this.uploadAudio || this.isKeyAudio) {
           this.data.isSound = true;
+        } else {
+          this.data.isSound = false;
         }
         db.collection("practice_draft")
           .doc(this.$route.params.id)
@@ -285,10 +270,7 @@ export default {
                 this.uploadAudio
               );
             }
-            this.iconfailDialog = false;
-            this.iconTrueDialog = true;
-            this.finishDialog = true;
-            this.text = "บันทึกข้อมูลเรียบร้อย";
+            this.isSaveDialogSuccess = true;
             setTimeout(() => {
               this.loadingHide();
               this.$router.push(

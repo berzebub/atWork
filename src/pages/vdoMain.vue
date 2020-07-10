@@ -304,6 +304,16 @@
           </div>
         </q-card>
       </q-dialog>
+      <dialog-setting
+        :type="4"
+        v-if="isDeleteDialogSuccess"
+        @autoClose="isDeleteDialogSuccess = false"
+      ></dialog-setting>
+      <dialog-setting
+        :type="6"
+        v-if="isSaveVdoDialogSuccess"
+        @autoClose="isSaveVdoDialogSuccess = false"
+      ></dialog-setting>
     </div>
   </q-page>
 </template>
@@ -311,12 +321,16 @@
 <script>
 import { db, st } from "../router";
 import howtouploadfile from "../components/howtouploadfile.vue";
+import dialogSetting from "../components/dialogSetting";
 export default {
   components: {
-    howtouploadfile
+    howtouploadfile,
+    dialogSetting
   },
   data() {
     return {
+      isSaveVdoDialogSuccess: false,
+      isDeleteDialogSuccess: false,
       isShowUpload: false,
       isDeleteDialog: false,
       orderId: "",
@@ -482,6 +496,7 @@ export default {
           .doc(this.idVdo)
           .update(this.dataVdo);
       }
+      this.isSaveVdoDialogSuccess = true;
       this.editVdoDialog = false;
       this.loadVdo();
     },
@@ -501,6 +516,7 @@ export default {
         .update({
           status: "waitForDelete"
         });
+      this.isDeleteDialogSuccess = true;
     },
     async cancelDelete(key) {
       await this.updateSyncStatus(
