@@ -80,12 +80,13 @@ export default {
         email: "",
         password: ""
       },
-      isAddDialogSucess: false
+      isAddDialogSucess: false,
+      hotelList: ""
     };
   },
   methods: {
     cancelAddHotel() {
-      this.$router.push("hotelMain");
+      this.$router.push("/hotelMain");
     },
     saveHotel() {
       // check validate
@@ -105,18 +106,41 @@ export default {
       }
       this.loadingShow();
       // บันทึก add
-      db.collection("hotel")
-        .add(this.datahotel)
-        .then(() => {
-          this.isAddDialogSucess = true;
-          this.loadingHide();
-        });
+      if (this.$route.name == "hotelAdd") {
+        console.log("666");
+        // db.collection("hotel")
+        //   .add(this.datahotel)
+        //   .then(() => {
+        //     this.isAddDialogSucess = true;
+        //     this.loadingHide();
+        //   });
+      } else {
+        console.log("55");
+      }
     },
     addDialogSucess() {
       this.isAddDialogSucess = false;
       setTimeout(() => {
         this.$router.push("hotelMain");
       }, 500);
+    },
+    loadHotelEdit() {
+      db.collection("hotel")
+        .doc(this.$route.params.hotelId)
+        .get()
+        .then(doc => {
+          console.log(doc.data());
+          this.datahotel.name = doc.data().name;
+          this.datahotel.adminName = doc.data().adminName;
+          this.datahotel.adminPhone = doc.data().adminPhone;
+          this.datahotel.email = doc.data().email;
+          this.datahotel.password = doc.data().password;
+        });
+    }
+  },
+  mounted() {
+    if (this.$route.name == "hotelEdit") {
+      this.loadHotelEdit();
     }
   }
 };
