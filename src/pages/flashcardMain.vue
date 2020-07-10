@@ -16,7 +16,8 @@
         <!-- ปุ่มซิงค์ -->
         <div class="row">
           <div class="q-mr-md">
-            <q-btn
+            <sync-btn :practiceId="practiceId"></sync-btn>
+            <!-- <q-btn
               @click="sync(practiceId),openDialogSync()"
               v-if="flashcardType == 'draft'"
               round
@@ -30,7 +31,7 @@
               color="blue-grey-10"
               icon="fas fa-sync"
               disable
-            />
+            />-->
           </div>
           <!-- ปุ่มพิมพ์ -->
           <div class="mobile-hide">
@@ -250,7 +251,11 @@
 
 <script>
 import { db, auth } from "../router";
+import syncBtn from "../components/syncBtn.vue";
 export default {
+  components: {
+    syncBtn
+  },
   data() {
     return {
       successSync: false,
