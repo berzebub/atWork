@@ -18,6 +18,7 @@
               >ตัวเลข 3 หลัก</div>
             </div>
             <q-input
+              dense
               ref="order"
               :rules="[val => val || 'กรุณากรอกข้อมูลให้ถูกต้อง']"
               outlined
@@ -212,6 +213,7 @@
               <div class="text-subtitle1" align="left">คำศัพท์</div>
             </div>
             <q-input
+              dense
               ref="vocabulary"
               v-model="data.vocabulary"
               outlined
@@ -223,6 +225,7 @@
             <div class="text-subtitle1" align="left">คำอ่าน</div>
             <div align="left">
               <q-editor
+                dense
                 @input="checkRead()"
                 :class="this.checkValidate == true?'error-border': null "
                 ref="read"
@@ -245,6 +248,7 @@
               <div class="text-subtitle1" align="left">คำแปล</div>
             </div>
             <q-input
+              dense
               type="textarea"
               ref="meaning"
               v-model="data.meaning"
