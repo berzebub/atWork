@@ -91,8 +91,7 @@
             </div>
           </template>
           <div
-            style="width:1000px"
-            class="text-subtitle1 text-grey-7 self-center"
+            class="text-subtitle1 absolute-center text-grey-7"
             v-if="!uploadAudio && !isKeyAudio"
           >ลากแล้ววาง หรือ</div>
         </q-file>

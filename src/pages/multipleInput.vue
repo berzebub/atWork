@@ -155,7 +155,7 @@
             </template>
 
             <template v-slot:prepend v-if="!uploadImg.file">
-              <div align="center" class="text-hidden">
+              <div class="text-hidden absolute-center">
                 <div
                   class="text-subtitle1 text-grey-7 self-center"
                   v-if="!uploadImg.file"
