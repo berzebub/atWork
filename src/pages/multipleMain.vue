@@ -195,10 +195,15 @@
                     : ''
                 "
               >
+                <span v-if="!items.isSound && item.correctAnswer != index2 + 1">
+                  <q-icon class="text-grey-6 no-pointer-events" name="fas fa-volume-mute "></q-icon>
+                </span>
+                <span v-if="!items.isSound && item.correctAnswer == index2 + 1">
+                  <q-icon class="text-white no-pointer-events" name="fas fa-volume-mute  "></q-icon>
+                </span>
                 <span
-                  class
                   :class="
-                  items.isSound ? 'fas fa-volume-up cursor-pointer' : 'fas fa-volume-mute no-pointer-events text-grey-6'
+                  items.isSound ? 'fas fa-volume-up cursor-pointer' : ' '
                 "
                   @click="playAudio(items.soundURL)"
                 ></span>
@@ -507,8 +512,8 @@ export default {
     },
     // กดไปหน้าแก้ไขข้อมูล
     editQuestion() {
-      this.instrunctionTh =""
-      this.instrunctionEng =""
+      this.instrunctionTh = "";
+      this.instrunctionEng = "";
       this.isQuestionDialog = true;
     },
     // บันทึกข้อมูลคำสั่ง
