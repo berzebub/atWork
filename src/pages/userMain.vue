@@ -1,28 +1,13 @@
 <template>
   <q-page>
-    <div class="container">
+    <div>
       <div align="center">
-        <q-btn
-          style="width:190px"
-          color="blue-grey-10"
-          label="เพิ่ม"
-          @click="addUser()"
-        ></q-btn>
+        <q-btn style="width:190px" color="blue-grey-10" label="เพิ่ม" @click="addUser()"></q-btn>
       </div>
       <div>
-        <q-card
-          class="rounded-borders q-py-md q-mt-lg br"
-          v-for="item in nameArr"
-          :key="item.id"
-        >
+        <q-card class="rounded-borders q-py-md q-mt-lg br" v-for="item in nameArr" :key="item.id">
           <q-card-section class="no-padding">
-            <q-btn
-              class="q-mb-md q-ml-md"
-              dense
-              color="blue-grey-10"
-              round
-              :label="item"
-            ></q-btn>
+            <q-btn class="q-mb-md q-ml-md" dense color="blue-grey-10" round :label="item"></q-btn>
           </q-card-section>
           <q-card-section
             class="no-padding"
@@ -34,16 +19,9 @@
             <div class="row q-px-md">
               <div class="col-11">
                 <div class="text-subtitle1">{{ item2.name }}</div>
-                <div class="text-subtitle2 text-blue-grey-7">
-                  {{ item2.email }}
-                </div>
+                <div class="text-subtitle2 text-blue-grey-7">{{ item2.email }}</div>
                 <span v-for="(item3, index2) in item2.userGroup" :key="index2">
-                  <q-badge
-                    :label="item3"
-                    color="blue-grey-7"
-                    outline
-                    class="q-mr-sm q-mt-sm"
-                  ></q-badge>
+                  <q-badge :label="item3" color="blue-grey-7" outline class="q-mr-sm q-mt-sm"></q-badge>
                 </span>
               </div>
               <div class="col" align="right">
@@ -51,14 +29,10 @@
                   <q-menu :offset="[-15, 0]" self="top right">
                     <q-list style="min-width: 120px">
                       <q-item clickable v-close-popup>
-                        <q-item-section @click="editBtn(item2)"
-                          >แก้ไขข้อมูล</q-item-section
-                        >
+                        <q-item-section @click="editBtn(item2)">แก้ไขข้อมูล</q-item-section>
                       </q-item>
                       <q-item clickable v-close-popup>
-                        <q-item-section @click="deleteBtn(item2)"
-                          >ลบ</q-item-section
-                        >
+                        <q-item-section @click="deleteBtn(item2)">ลบ</q-item-section>
                       </q-item>
                     </q-list>
                   </q-menu>
@@ -84,18 +58,10 @@
           align="center"
         >
           <div>
-            <div class="text-subtitle1 q-pb-md">
-              คุณต้องการลบ "{{ nameDialog }}" หรือไม่
-            </div>
+            <div class="text-subtitle1 q-pb-md">คุณต้องการลบ "{{ nameDialog }}" หรือไม่</div>
             <div class="row q-pt-md">
               <div class="col-6 q-pr-sm">
-                <q-btn
-                  dense
-                  style="width:120px"
-                  outline
-                  label="ยกเลิก"
-                  @click="cencel()"
-                ></q-btn>
+                <q-btn dense style="width:120px" outline label="ยกเลิก" @click="cencel()"></q-btn>
               </div>
               <div class="col-6 q-pl-sm" align="right">
                 <q-btn

@@ -189,6 +189,7 @@ export default {
   mounted() {
     let stoTypeList = [2, 4, 6, 9];
     console.log(this.type);
+
     if (stoTypeList.includes(this.type)) {
       setTimeout(() => {
         this.successData = false;

@@ -146,7 +146,7 @@ const routes = [
         name: "hotelAdd"
       },
       {
-        path: "hotelEdit",
+        path: "hotelEdit/:hotelId",
         component: () => import("pages/hotelInput.vue"),
         name: "hotelEdit"
       },
