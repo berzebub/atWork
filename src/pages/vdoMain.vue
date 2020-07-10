@@ -117,7 +117,7 @@
             class="q-mt-md boxCard text-left relative-position"
           >
             <div
-              class="absolute-top-left q-pa-sm mobile-only"
+              class="absolute-top-left q-pt-sm q-px-md mobile-only"
               v-if="item.status == 'waitForDelete'"
               style="z-index:30"
             >
@@ -146,7 +146,7 @@
                 v-if="item.status != 'waitForDelete'"
                 class="self-center mobile-only"
               >รหัสลำดับ {{item.order}}</div>
-              <div v-if="item.status == 'waitForDelete'"></div>
+              <div style="height:28px" v-if="item.status == 'waitForDelete'"></div>
               <div style="height:10px">
                 <q-btn class="mobile-only" size="13px" icon="fas fa-ellipsis-v" round dense flat>
                   <q-menu>
