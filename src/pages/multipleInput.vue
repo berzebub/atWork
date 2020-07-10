@@ -1,8 +1,8 @@
 <template>
   <q-page>
     <div class="container">
-      <div class="text-h6 text-center">
-        <div class="q-pt-md">{{ practiceData.levelName }}</div>
+      <div class="text-h6 text-center q-pb-md">
+        <div>{{ practiceData.levelName }}</div>
         <div>{{ practiceData.unitOrder + ". " + practiceData.unitName }}</div>
       </div>
       <div class="q-pt-sm">

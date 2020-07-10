@@ -161,10 +161,10 @@
             <q-menu anchor="top right" self="top right" :offset="[7,-37]">
               <q-list style="min-width: 120px">
                 <q-item clickable v-close-popup>
-                  <q-item-section @click="editData(item)">แก้ไขข้อมูล</q-item-section>
+                  <q-item-section @click="editData(item)">แก้ไขคำถาม</q-item-section>
                 </q-item>
                 <q-item clickable v-close-popup>
-                  <q-item-section @click="deleteData(item.id,item.order,index)">ลบ</q-item-section>
+                  <q-item-section @click="deleteData(item.id,item.order,index)">ลบคำถาม</q-item-section>
                 </q-item>
               </q-list>
             </q-menu>
@@ -536,8 +536,8 @@ export default {
       }, 1000);
     },
     // ลบข้อมูล
-   async deleteBtn() {
-       await this.updateSyncStatus(
+    async deleteBtn() {
+      await this.updateSyncStatus(
         this.$route.params.practiceId,
         this.$route.params.unitId
       );
@@ -559,8 +559,8 @@ export default {
       this.deleteKey = key;
       this.indexKey = index;
     },
-  async cancelDelete(key) {
-       await this.updateSyncStatus(
+    async cancelDelete(key) {
+      await this.updateSyncStatus(
         this.$route.params.practiceId,
         this.$route.params.unitId
       );
