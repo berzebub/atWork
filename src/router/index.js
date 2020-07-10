@@ -99,13 +99,15 @@ Vue.mixin({
             db.collection("unit")
               .doc(unitId)
               .update({
-                timestamp: new Date().getTime()
+                timestamp: new Date().getTime(),
+                isShowSyncBtn: false
               })
               .then(() => {
                 db.collection("practice_list")
                   .doc(practiceId)
                   .update({
-                    timestamp: new Date().getTime()
+                    timestamp: new Date().getTime(),
+                    isShowSyncBtn: false
                   })
                   .then(() => {
                     this.loadingHide();

@@ -283,7 +283,8 @@ export default {
       this.getId = id;
       this.getOrder = order;
     },
-    confirmDeleteExpression(id) {
+    async confirmDeleteExpression(id) {
+      await this.updateSyncStatus(this.practiceId, this.unitId);
       db.collection("practice_draft")
         .doc(id)
         .update({ status: "notSync" })
@@ -296,7 +297,8 @@ export default {
           }, 2500);
         });
     },
-    deleteExpression() {
+    async deleteExpression() {
+      await this.updateSyncStatus(this.practiceId, this.unitId);
       db.collection("practice_draft")
         .doc(this.getId)
         .update({ status: "waitForDelete" })

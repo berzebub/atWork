@@ -344,7 +344,7 @@ export default {
       }
       this.sentence = getSentence;
     },
-    saveData() {
+    async saveData() {
       for (let i = 0; i < this.boxCount + 1; i++) {
         this.sentence[i].errorEng = false;
         this.sentence[i].errorTh = false;
@@ -377,6 +377,7 @@ export default {
         });
         return;
       }
+      await this.updateSyncStatus(this.practiceId, this.unitId);
       if (this.$route.name == "expressionInput") {
         let filterData = this.sentence.filter(
           x => x.sentenceEng != "" && x.sentenceTh != ""
