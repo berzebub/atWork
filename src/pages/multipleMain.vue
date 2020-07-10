@@ -79,12 +79,12 @@
         </div>
         <div class="row q-px-md q-py-sm" style="height:120px;">
           <div class="col-12 self-center q-py-sm">
-            <span class="text-subtitle1" v-if="instrunctionEng">{{ instrunctionEng }}</span>
+            <span class="text-subtitle1" v-if="instrunction.eng">{{ instrunction.eng }}</span>
             <span v-else>ยังไม่ระบุ</span>
           </div>
           <q-separator class="q-my-xs" />
           <div class="col-12 self-center q-py-sm">
-            <span class="text-subtitle1" v-if="instrunctionTh">{{ instrunctionTh }}</span>
+            <span class="text-subtitle1" v-if="instrunction.th ">{{ instrunction.th }}</span>
             <span v-else>ยังไม่ระบุ</span>
           </div>
         </div>
@@ -312,19 +312,7 @@
           </div>
         </q-card>
       </q-dialog>
-
-      <!-- finish -->
-      <q-dialog v-model="isSaveComplete">
-        <q-card style="max-width:600px;width:100%;height:200px">
-          <div class="text-h6 text-center q-pt-md q-pb-sm">
-            <div class="q-py-md q-mt-md">
-              <q-icon color="secondary" size="46px" name="far fa-check-circle" />
-            </div>
-            <div>บันทึกข้อมูลเรียบร้อย</div>
-          </div>
-        </q-card>
-      </q-dialog>
-
+      <dialog-setting :type="6" v-if="isSaveDialogSuccess" @autoClose="isSaveDialogSuccess = false"></dialog-setting>
       <dialog-setting
         :type="4"
         v-if="isDeleteDialogSuccess"
@@ -350,7 +338,10 @@ export default {
         unitName: "",
         unitOrder: ""
       },
-
+      instrunction: {
+        eng: "",
+        th: ""
+      },
       practiceDataList: [],
       orderId: "",
       instrunctionTh: "",
@@ -364,7 +355,7 @@ export default {
         "https://storage.cloud.google.com/atwork-dee11.appspot.com/practice/",
       playSoundURL: "",
 
-      isSaveComplete: false,
+      isSaveDialogSuccess: false,
       isQuestionDialog: false,
       isDeleteDialog: false,
 
@@ -415,15 +406,19 @@ export default {
         .then(result => {
           if (result.exists) {
             if (result.data().instrunctionEng) {
-              this.instrunctionEng = result.data().instrunctionEng;
+              this.instrunction.eng = result.data().instrunctionEng;
+              // this.instrunctionEng = result.data().instrunctionEng;
             } else {
-              this.instrunctionEng = "";
+              // this.instrunctionEng = "";
+              this.instrunction.eng = "";
             }
 
             if (result.data().instrunctionTh) {
-              this.instrunctionTh = result.data().instrunctionTh;
+              this.instrunction.th = result.data().instrunctionTh;
+              // this.instrunctionTh = result.data().instrunctionTh;
             } else {
-              this.instrunctionTh = "";
+              // this.instrunctionTh = "";
+              this.instrunction.th = "";
             }
           }
 
@@ -512,6 +507,8 @@ export default {
     },
     // กดไปหน้าแก้ไขข้อมูล
     editQuestion() {
+      this.instrunctionTh =""
+      this.instrunctionEng =""
       this.isQuestionDialog = true;
     },
     // บันทึกข้อมูลคำสั่ง
@@ -525,7 +522,10 @@ export default {
       ) {
         return;
       }
-
+      this.instrunction = {
+        th: this.instrunctionTh,
+        eng: this.instrunctionEng
+      };
       this.isQuestionDialog = false;
 
       let practiceId = this.$route.params.practiceId;
@@ -533,15 +533,11 @@ export default {
       db.collection("practice_list")
         .doc(practiceId)
         .update({
-          instrunctionTh: this.instrunctionTh,
-          instrunctionEng: this.instrunctionEng
+          instrunctionTh: this.instrunction.th,
+          instrunctionEng: this.instrunction.eng
         });
 
-      this.isSaveComplete = true;
-
-      setTimeout(() => {
-        this.isSaveComplete = false;
-      }, 1000);
+      this.isSaveDialogSuccess = true;
     },
     // ลบข้อมูล
     async deleteBtn() {
