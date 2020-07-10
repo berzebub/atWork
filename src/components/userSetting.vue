@@ -2,49 +2,49 @@
   <div class="container full-height flex flex-center" align="center">
     <!-- box2 แก้ไขชื่อ -->
     <div class v-show="infoData == '1'" align="center" style="width:328px">
-      <div class="text-h6">แก้ไข ชื่อ สกุล</div>
+      <div class="text-h6">แก้ไข ชื่อ นามสกุล</div>
       <div class="q-mt-lg">
-        <div align="left" class="text-body2">ชื่อ นามสกุล</div>
+        <div align="left" class="text-subtitle1">ชื่อ นามสกุล</div>
         <div>
-          <q-input outlined ref="name" v-model="name" :rules="[val => !!val]" />
+          <q-input dense outlined ref="name" v-model="name" :rules="[val => !!val]" />
         </div>
       </div>
       <div class="row justify-center">
         <q-btn
-          @click="dialogChangeData()"
-          class="q-mx-md"
+          @click="backMainPage()"
+          class="q-mx-md text-subtitle1"
           label="ยกเลิก"
-          :style="$q.platform.is.desktop?'width:120px':'width:100px'"
+          style="width:120px"
           outline
           color="blue-grey-10"
         />
         <q-btn
           @click="saveChangeName()"
-          class="q-mx-md bg-blue-grey-10 text-white"
+          class="q-mx-md bg-blue-grey-10 text-white text-subtitle1"
           label="บันทึก"
-          :style="$q.platform.is.desktop?'width:120px':'width:100px'"
+          style="width:120px"
         />
       </div>
     </div>
     <!-- box3 แก้ไขรหัสผ่าน -->
     <div v-show="infoData == '2'" align="center">
-      <div class="text-h6">คุณต้องการรีเซตรหัสผ่าน</div>
+      <div class="text-subtitle1">คุณต้องการรีเซตรหัสผ่าน</div>
       <div class="text-subtitle1">"{{userInfo.email}}"</div>
 
-      <div class="row justify-center q-mt-lg">
+      <div class="row justify-center q-mt-xl">
         <q-btn
           @click="backMainPage()"
-          class="q-mx-md"
+          class="q-mx-md text-subtitle1"
           label="ยกเลิก"
-          :style="$q.platform.is.desktop?'width:120px':'width:100px'"
+          style="width:120px"
           outline
           color="blue-grey-10"
         />
         <q-btn
           @click="saveChangePassword()"
-          class="q-mx-md bg-blue-grey-10 text-white"
+          class="q-mx-md bg-blue-grey-10 text-white text-subtitle1"
           label="ตกลง"
-          :style="$q.platform.is.desktop?'width:120px':'width:100px'"
+          style="width:120px"
         />
       </div>
     </div>
@@ -54,47 +54,46 @@
       <div>
         <q-btn
           @click="logOut()"
-          class="bg-blue-grey-10 text-white"
+          class="bg-blue-grey-10 text-white text-subtitle1"
           style="width:190px;"
           label="เฉพาะอุปกรณ์ปัจจุบัน"
         />
       </div>
       <div class="q-mt-md">
-        <q-btn @click="logOutAll()" style="width:190px" label="อุปกรณ์ทั้งหมด" outline />
+        <q-btn
+          @click="logOutAll()"
+          class="text-subtitle1"
+          style="width:190px"
+          label="อุปกรณ์ทั้งหมด"
+          outline
+        />
       </div>
       <div class="q-mt-md">
-        <q-btn @click="backMainPage()" style="width:190px" label="กลับสู่โปรแกรม" outline />
+        <q-btn
+          @click="backMainPage()"
+          class="text-subtitle1"
+          style="width:190px"
+          label="กลับสู่โปรแกรม"
+          outline
+        />
       </div>
     </div>
     <!-- -------------------------------------------Diaolog--------------------------------------- -->
-    <!-- เพิ่มข้อมูลสำเร็จ -->
-    <q-dialog v-model="isDialogSuccess">
-      <q-card
-        :style="$q.platform.is.desktop?'min-width: 350px; height:200px; margin-left:23%':'min-width: 350px; height:200px'"
-      >
-        <q-card-section class="absolute-center" align="center">
-          <div>
-            <q-icon color="secondary" size="lg" name="far fa-check-circle" />
-          </div>
-          <div class="q-mt-lg">บันทึกข้อมูลเรียบร้อย</div>
-        </q-card-section>
-      </q-card>
-    </q-dialog>
+    <dialog-setting :type="6" v-if="isDialogSuccess == true" @autoClose="backMainPage()"></dialog-setting>
     <!-- correct Email -->
     <q-dialog v-model="dialogEmail">
-      <q-card
-        :style="$q.platform.is.desktop?'min-width: 350px; height:200px; margin-left:23%':'min-width: 350px; height:200px'"
-      >
-        <q-card-section align="center">
-          <div class="q-mt-md">
-            <q-icon color="secondary" size="lg" name="far fa-check-circle" />
-          </div>
-        </q-card-section>
-
-        <q-card-section align="center" class="q-pt-none">กรุณาตรวจสอบ E-mail</q-card-section>
-
+      <q-card style="min-width: 350px; height:200px">
+        <q-card-section align="center"></q-card-section>
+        <q-card-section align="center" class="q-pt-none text-subtitle1">การรีเซตรหัสส่งไปยัง</q-card-section>
+        <q-card-section align="center" class="q-pt-none text-subtitle1">{{userInfo.email}}</q-card-section>
         <q-card-actions align="center">
-          <q-btn @click="confirmEmail()" style="width:190px" label="ตกลง" color="blue-grey-10" />
+          <q-btn
+            @click="confirmEmail()"
+            style="width:190px"
+            label="ตกลง"
+            color="blue-grey-10"
+            class="text-subtitle1"
+          />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -109,13 +108,7 @@
         </q-card-section>
 
         <q-card-actions align="center" class="q-mt-xs" style="width:350px">
-          <q-btn
-            @click="dialogChangeData()"
-            style="width:90px"
-            label="ยกเลิก"
-            outline
-            v-close-popup
-          />
+          <q-btn style="width:90px" label="ยกเลิก" outline v-close-popup />
           <q-btn @click="backMainPage()" style="width:90px" label="ไม่บันทึก" outline />
           <q-btn @click="saveChangeName()" style="width:90px" label="บันทึก" color="blue-grey-10" />
         </q-card-actions>
@@ -128,7 +121,11 @@
 import { auth, db } from "../router";
 import { uid } from "quasar";
 import userInfo from "../pages/userInfo.vue";
+import dialogSetting from "../components/dialogSetting.vue";
 export default {
+  components: {
+    dialogSetting
+  },
   props: ["infoData", "userInfo"],
   data() {
     return {
@@ -139,7 +136,7 @@ export default {
       isPwd1: true,
       isPwd2: true,
       isPwd3: true,
-      isNamePage: false,
+
       isPasswordPage: false,
       isLogOutPage: false,
       isDialogSuccess: false,
@@ -173,11 +170,6 @@ export default {
         .update({ name: this.name })
         .then(() => {
           this.isDialogSuccess = true;
-          setTimeout(() => {
-            this.isDialogSuccess = false;
-            this.backMainPage();
-          }, 2500);
-          this.isNamePage = false;
         });
     },
     saveChangePassword() {
@@ -205,10 +197,8 @@ export default {
         .collection("user_admin")
         .doc(this.userInfo.userId)
         .update({ loginKey: genCode });
-    },
-    dialogChangeData() {
-      this.dialogDontChangeData = true;
     }
+
     // checkConfrimPassword(val) {
     //   return this.newPassword == val || "รหัสผ่านไม่ตรงกัน";
     // }

@@ -409,12 +409,12 @@ export default {
         .update(this.data)
         .then(() => {
           if (this.uploadImg) {
-            st.child("practice/image/" + this.data.practiceId + ".jpg").put(
+            st.child("practice/image/" + this.$route.params.id + ".jpg").put(
               this.uploadImg
             );
           }
           if (this.uploadSound) {
-            st.child("practice/audio/" + this.data.practiceId + ".mp3").put(
+            st.child("practice/audio/" + this.$route.params.id + ".mp3").put(
               this.uploadSound
             );
           }
