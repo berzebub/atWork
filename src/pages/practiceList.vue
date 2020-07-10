@@ -13,7 +13,7 @@
             <span class="text-white text-h6">แบบฝึกหัด</span>
           </div>
         </div>
-        <div class="shadow-3 bg-white" style=" height: calc(100vh - 64px)">
+        <div class="shadow-3 bg-white" style=" height: calc(100vh - 64px);overflow-y:auto">
           <q-list class="rounded-borders" v-for="(itemLv,index) in levelList" :key="index">
             <q-expansion-item @click="showUnit(itemLv.levelId)" group="unitgroup">
               <template v-slot:header>
