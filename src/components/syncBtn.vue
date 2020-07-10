@@ -2,7 +2,7 @@
   <div>
     <!-- @click="sync(practiceId),openDialogSync()" -->
     <q-btn
-      :disable="isDisableSyncBtn"
+      :disable="isServer || isDisableSyncBtn"
       @click="sync(practiceId).then(() => { isShowFinishSyncDialog = true })"
       round
       color="blue-grey-10"
@@ -27,8 +27,13 @@ export default {
     practiceId: {
       type: String,
       default: null
+    },
+    isServer: {
+      type: Boolean,
+      default: false
     }
   },
+
   data() {
     return {
       isDisableSyncBtn: true,
@@ -46,6 +51,7 @@ export default {
   },
   mounted() {
     this.checkSyncStatus();
+    console.log(this.isServer);
   },
   beforeDestroy() {
     this.isSnapPracticeList();

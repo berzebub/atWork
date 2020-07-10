@@ -14,7 +14,14 @@
               <div class="text-subtitle1" align="left">รหัสลำดับ</div>
               <div class="text-subtitle1 q-ml-md text-grey-7" style="margin-top:0.7px">ตัวเลข 3 หลัก</div>
             </div>
-            <q-input ref="order" :rules="[ val => val]" outlined mask="###" v-model.number="order" />
+            <q-input
+              dense
+              ref="order"
+              :rules="[ val => val]"
+              outlined
+              mask="###"
+              v-model.number="order"
+            />
           </div>
           <!-- ปุ่มเพิ่ม -->
           <div align="center">
@@ -69,6 +76,7 @@
               <div class="q-pl-md" align="left">ประโยคภาษาอังกฤษ</div>
               <div class="q-pa-md">
                 <q-input
+                  dense
                   :ref="'sentenceEng'+i"
                   :error="sentence[i-1].errorEng"
                   outlined
@@ -78,6 +86,7 @@
               <div class="q-pl-md" align="left">ประโยคภาษาไทย</div>
               <div class="q-pa-md">
                 <q-input
+                  dense
                   :error="sentence[i-1].errorTh"
                   :ref="'sentenceTh'+i"
                   outlined
@@ -96,6 +105,7 @@
                   </div>
                   <div>
                     <q-file
+                      dense
                       accept=".mp3"
                       bg-color="white"
                       outlined
@@ -113,7 +123,7 @@
                         <div
                           class="cursor-pointer rounded-borders text-white bg-blue-grey-10"
                           v-if="sentence[i-1].uploadSound"
-                          @click.stop="sentence[i-1].uploadSound = null"
+                          @click="sentence[i-1].uploadSound = null"
                         >
                           <span style class="far fa-trash-alt q-px-xs"></span>
                         </div>
@@ -187,7 +197,7 @@
             :to="'/expressionMain/'+ levelId+'/'+unitId+'/'+practiceId"
             label="ยกเลิก"
             dense
-            style="width:150px"
+            :style="$q.platform.is.desktop?'width:150px':'width:120px'"
             outline
             color="blue-grey-10"
           />
@@ -198,7 +208,7 @@
             @click="saveData()"
             label="บันทึก"
             dense
-            style="width:150px"
+            :style="$q.platform.is.desktop?'width:150px':'width:120px'"
             color="white"
             class="bg-blue-grey-10"
           />

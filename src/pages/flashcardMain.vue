@@ -3,39 +3,46 @@
     <div>
       <div class="row justify-between">
         <!-- กล่อง radio -->
-        <div class="brg row" :style="$q.platform.is.desktop?'width:330px':'width:250px'">
-          <q-radio
-            class="q-ml-md col-6"
-            color="blue-grey-10"
-            v-model="flashcardType"
-            val="draft"
-            label="แบบร่าง"
-          />
-          <q-radio color="blue-grey-10" v-model="flashcardType" val="server" label="เซิร์ฟเวอร์" />
-        </div>
-        <!-- ปุ่มซิงค์ -->
-        <div class="row">
-          <div class="q-mr-md">
-            <sync-btn :practiceId="practiceId"></sync-btn>
-            <!-- <q-btn
-              @click="sync(practiceId),openDialogSync()"
-              v-if="flashcardType == 'draft'"
-              round
-              color="blue-grey-10"
-              icon="fas fa-sync"
-            />
-            <q-btn
-              @click="sync(practiceId),openDialogSync()"
-              v-if="flashcardType == 'server'"
-              round
-              color="blue-grey-10"
-              icon="fas fa-sync"
-              disable
-            />-->
+        <div class="col text-left">
+          <div class="row brg" style="max-width:330px ; width:100%">
+            <div class="col">
+              <q-radio
+                @input="changeRadio(false)"
+                color="blue-grey-10"
+                v-model="flashcardType"
+                val="draft"
+                label="แบบร่าง"
+              />
+            </div>
+            <div class="col">
+              <q-radio
+                @input="changeRadio(true)"
+                color="blue-grey-10"
+                v-model="flashcardType"
+                val="server"
+                label="เซิร์ฟเวอร์"
+              />
+            </div>
           </div>
-          <!-- ปุ่มพิมพ์ -->
-          <div class="mobile-hide">
-            <q-btn v-if="flashcardType == 'draft'" round color="blue-grey-10" icon="fas fa-print" />
+        </div>
+        <div>
+          <!-- ปุ่มซิงค์ -->
+          <div class="q-ml-md" v-if="$q.platform.is.mobile">
+            <sync-btn :practiceId="practiceId" :isServer="isDisable"></sync-btn>
+          </div>
+          <div class="row desktop-only" v-if="flashcardType == 'draft'">
+            <div class="q-mx-md">
+              <sync-btn :practiceId="practiceId"></sync-btn>
+            </div>
+            <!-- ปุ่มพิมพ์ -->
+            <div class="mobile-hide">
+              <q-btn
+                v-if="flashcardType == 'draft'"
+                round
+                color="blue-grey-10"
+                icon="fas fa-print"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -273,10 +280,15 @@ export default {
       unitId: this.$route.params.unitId,
       isSnap: "",
       isDelete: true,
-      practiceId: this.$route.params.practiceId
+      practiceId: this.$route.params.practiceId,
+
+      isDisable: false
     };
   },
   methods: {
+    changeRadio(val) {
+      this.isDisable = val;
+    },
     loadLevelData() {
       db.collection("level")
         .doc(this.levelId)
