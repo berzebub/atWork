@@ -13,10 +13,7 @@
             <span class="text-white text-h6">ตั้งค่า</span>
           </div>
         </div>
-        <div
-          class="shadow-3 bg-white row"
-          :style=" $q.platform.is.mobile?'height: calc(100vh - 128px)':'height: calc(100vh - 64px)'"
-        >
+        <div class="bg-white row" :style=" $q.platform.is.mobile?null:'height: calc(100vh - 64px)'">
           <div class="col-12">
             <div
               @click="markName()"
@@ -50,20 +47,33 @@
           </div>
 
           <div class="col-12 self-end">
-            <q-separator></q-separator>
             <div
               @click="markLogOut()"
               v-ripple
-              class="q-pa-md row items-center justify-center relative-position cursor-pointer"
+              class="desktop-only q-pa-md row items-center justify-center relative-position cursor-pointer"
               :class="isLogOutClick == true? 'bg-blue-grey-4' : 'bg-white'"
             >
               <div class="q-mr-md">
                 <q-icon size="1.7em" name="fas fa-sign-out-alt" />
               </div>
-              <div>
+              <div class>
                 <div class="text-subtitle1 q-my-xs">ออกจากระบบ</div>
               </div>
             </div>
+            <!-- mobile -->
+            <div
+              @click="markLogOut()"
+              v-ripple
+              class="q-pl-md q-pt-md q-pb-md row items-center justify-between relative-position cursor-pointer"
+            >
+              <div>
+                <div class="text-subtitle1 q-my-xs">ออกจากระบบ</div>
+              </div>
+              <div class="q-pr-sm" align="right">
+                <q-icon name="fas fa-angle-right" />
+              </div>
+            </div>
+            <q-separator></q-separator>
           </div>
         </div>
       </div>
