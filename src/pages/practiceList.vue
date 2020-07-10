@@ -113,7 +113,7 @@ export default {
       this.activeKey = itemUnit.unitId;
       this.levelId = itemUnit.levelId;
       this.unitId = itemUnit.unitId;
-      this.num = num + 1; // ทำไมไม่เป็น order ไปเลย
+      this.num = num + 1;
       this.unitName = itemUnit.label;
       this.levelName = levelName;
 
@@ -122,7 +122,7 @@ export default {
       } else {
         this.$router.push(
           "/practiceMain/" + itemUnit.levelId + "/" + itemUnit.unitId + "/"
-        ); //ต้องใส่ key เพื่อไปยัง L/U นั้น
+        );
       }
     },
 
@@ -163,31 +163,11 @@ export default {
           return a.order - b.order;
         });
         this.unitList = temp;
-
-        // for (const item of temp) {
-        //   db.collection("practice_draft")
-        //     .where("levelId", "==", item.levelId)
-        //     .where("unitId", "==", item.unitId)
-        //     .get()
-        //     .then(doc => {
-        //       let isShowSyncBtn = false;
-        //       for (const docElement of doc.docs) {
-        //         if (
-        //           docElement.data().status == "notSync" ||
-        //           docElement.data().status == "waitForDelete"
-        //         ) {
-        //           isShowSyncBtn = true;
-        //           break;
-        //         }
-        //       }
-        //       item.isShowSyncBtn = isShowSyncBtn;
-        //       this.unitList = temp;
-        //     });
-        // }
       });
     },
     showUnit(levelId) {
       this.isShowPracticeMain = false;
+      this.activeKey = "";
       this.unitListShow = this.unitList.filter(x => x.levelId == levelId);
     }
   },
