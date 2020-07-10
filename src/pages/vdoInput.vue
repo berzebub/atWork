@@ -79,7 +79,6 @@
               style="width:100px"
               class="text-subtitle1 rounded-borders text-center bg-blue-grey-10 text-white q-pa-xs cursor-pointer"
               @click.stop="uploadAudio = null"
-              @click="isTextAudio  = '' "
               v-if="!uploadAudio && !isKeyAudio"
             >เลือกไฟล์</div>
             <div v-if="uploadAudio || isKeyAudio" class="text-body1 absolute-center">{{isKeyAudio}}</div>
@@ -97,7 +96,6 @@
             v-if="!uploadAudio && !isKeyAudio"
           >ลากแล้ววาง หรือ</div>
         </q-file>
-        <div class="q-pt-xs text-red text-body2">{{isTextAudio}}</div>
       </div>
       <div align="center">
         <div class="row reverse-wrap justify-center q-pt-md" style="max-width:340px;width:100%">
@@ -151,7 +149,6 @@ export default {
   data() {
     return {
       checkble: false,
-      isTextAudio: "",
       uploadAudio: null,
       isKeyAudio: "",
       data: {
@@ -240,18 +237,17 @@ export default {
       ) {
         return;
       }
-      if (this.uploadAudio) {
-        this.data.isSound = true;
-      } else {
-        this.data.isSound = false;
-      }
+
       this.loadingShow();
       await this.updateSyncStatus(
         this.$route.params.practiceId,
         this.$route.params.unitId
       );
+      this.checkble = true;
       if (this.$route.name == "vdoAdd") {
-        this.checkble = true;
+        if (this.uploadAudio) {
+          this.data.isSound = true;
+        }
         db.collection("practice_draft")
           .add(this.data)
           .then(async doc => {
@@ -277,7 +273,9 @@ export default {
             }, 1000);
           });
       } else {
-        this.checkble = true;
+        if (this.uploadAudio || this.isKeyAudio) {
+          this.data.isSound = true;
+        }
         db.collection("practice_draft")
           .doc(this.$route.params.id)
           .set(this.data)

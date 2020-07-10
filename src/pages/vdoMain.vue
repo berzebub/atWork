@@ -105,9 +105,9 @@
           <q-btn
             :disable="mode !='draft'"
             @click="addBtn()"
-            style="max-width :190px;width:100%"
+            style="max-width:190px;width:100%"
             class="bg-blue-grey-10 text-white text-subtitle1"
-            label="เพิ่มประโยค"
+            label="เพิ่มบทสนทนา"
           />
         </div>
         <div class="text-center">
@@ -182,13 +182,14 @@
               </div>
             </div>
             <div class="q-px-md q-py-sm">
-              <div class="self-center" v-if="item.speaker == 'customer' ">ลูกค้า</div>
+              <div class="self-center" v-if="item.speaker == 'customer' ">ลูกค้า:</div>
               <div class="self-center" v-if="item.speaker == 'employee' ">พนักงาน:</div>
               <div class="row">
-                <div class="q-pr-sm">
+                <div class="q-pr-xs">
                   <q-btn
+                    class="no-pointer-events"
                     v-if="!item.isSound"
-                    color="blue-grey-4"
+                    color="grey-6"
                     round
                     flat
                     size="sm"
