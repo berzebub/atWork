@@ -238,7 +238,7 @@
               <span>คำสั่งภาษาอังกฤษ</span>
               <q-input
                 dense
-                :rules="[val => !!val]"
+                :rules="[ val => val && val.length > 0 || 'กรุณาใส่คำสั่งภาษาอังกฤษ']"
                 ref="instrunctionEng"
                 outlined
                 v-model="instrunctionEng"
@@ -248,7 +248,7 @@
               <span>คำสั่งภาษาไทย</span>
               <q-input
                 dense
-                :rules="[val => !!val]"
+                :rules="[ val => val && val.length > 0 || 'กรุณาใส่คำสั่งภาษาไทย']"
                 ref="instrunctionTh"
                 outlined
                 v-model="instrunctionTh"
@@ -412,17 +412,13 @@ export default {
           if (result.exists) {
             if (result.data().instrunctionEng) {
               this.instrunction.eng = result.data().instrunctionEng;
-              // this.instrunctionEng = result.data().instrunctionEng;
             } else {
-              // this.instrunctionEng = "";
               this.instrunction.eng = "";
             }
 
             if (result.data().instrunctionTh) {
               this.instrunction.th = result.data().instrunctionTh;
-              // this.instrunctionTh = result.data().instrunctionTh;
             } else {
-              // this.instrunctionTh = "";
               this.instrunction.th = "";
             }
           }
