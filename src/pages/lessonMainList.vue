@@ -300,6 +300,7 @@
               outlined
               v-model="dataPositionPc.name"
               :error="errorNamePosition"
+              :error-message="errorNamePositionMessage"
               @keyup="errorNamePosition=false"
             ></q-input>
           </div>
@@ -412,7 +413,8 @@ export default {
       dataDeleteLessson: "",
       editLessonMode: false,
       errorOrderMsg: "",
-      errorNameMsg: ""
+      errorNameMsg: "",
+      errorNamePositionMessage: ""
     };
   },
   methods: {
@@ -599,8 +601,8 @@ export default {
             this.errorOrder = true;
           }
           if (checkName) {
-            this.errorLesson = true;
             this.errorNameMsg = "ชื่อนี้มีผู้ใช้งานแล้ว";
+            this.errorLesson = true;
           }
           return;
         }
@@ -677,10 +679,13 @@ export default {
       if (this.nameOld != this.dataPositionPc.name) {
         let checkName = false;
         checkName = await this.isCheckName(this.dataPositionPc.name);
+
         this.errorNamePosition = false;
 
         if (checkName) {
-          this.errorNamePosition = true;
+          this.errorNamePositio;
+          this.errorNamePositionMessage = "ชื่อนี้มีตำแหน่งแล้ว";
+          n = true;
           return;
         }
       }

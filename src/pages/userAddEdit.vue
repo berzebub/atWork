@@ -1,6 +1,6 @@
 <template>
   <q-page>
-    <div class="container-input">
+    <div class="container">
       <div>
         <div class="text-subtitle1">ชื่อ นามสกุล</div>
         <q-input ref="name" outlined dense v-model="dataUser.name" :rules="[val => !!val ]"></q-input>
@@ -23,7 +23,7 @@
 
       <div class="q-pt-md">
         <div class="text-subtitle1">รหัสผ่าน</div>
-        <div class="text-subtitle2">ตัวอักษรหรือตัวเลขไม่ต่ำกว่า 6 ตัวอักษร</div>
+        <div class="text-subtitle2">ไม่ต่ำกว่า 6 ตัวอักษร</div>
 
         <q-input
           ref="password"
@@ -47,11 +47,19 @@
       <div class="row q-pt-md">
         <div class="text-subtitle1 row items-center">สิทธิ์การใช้การ</div>
         <div class="text-subtitle1">
-          <q-checkbox @input="checkboxAll()" v-model="all" label="ทั้งหมด" />
+          <q-checkbox
+            :color="!isEroorCheckbox?'blue-grey-10':'negative'"
+            keep-color
+            @input="checkboxAll()"
+            v-model="all"
+            label="ทั้งหมด"
+          />
         </div>
       </div>
       <div class="text-subtitle1">
         <q-option-group
+          keep-color
+          :color="!isEroorCheckbox?'blue-grey-10':'negative'"
           @input="checkbox()"
           :options="userOptions"
           label="Notifications"
@@ -59,12 +67,16 @@
           v-model="dataUser.userGroup"
         />
       </div>
+      <div v-show="isEroorCheckbox" class="q-py-md" align="center">
+        <q-icon size="22px" name="fas fa-exclamation-circle" dense color="negative" flat></q-icon>
+        <span class="text-body2 text-negative q-pl-sm">กรุณาเลือกสิทธิ์อย่างน้อยหนึ่งสิทธิ๋</span>
+      </div>
       <!-- ปุ่ม -->
       <div class="row q-pt-md">
-        <div class="col-6">
+        <div class="col-6 q-pr-sm" align="right">
           <q-btn dense style="width:150px" outline label="ยกเลิก" @click="cencel()"></q-btn>
         </div>
-        <div class="col-6" align="right">
+        <div class="col-6 q-pl-sm" align="left">
           <q-btn dense color="blue-grey-10" style="width:150px" label="บันทึก" @click="saveData()"></q-btn>
         </div>
       </div>
@@ -100,12 +112,13 @@ export default {
           label: "แบบฝึกหัด",
           value: "practice"
         },
-        { label: "ระดับการเรียน", value: "level" },
-        { label: "กิจการ", value: "organization" },
-        { label: "พนักงาน", value: "personel" },
+        { label: "บทเรียน", value: "level" },
+
+        { label: "ผู้ใช้งาน", value: "personel" },
         { label: "ผู้ดูแลระบบ", value: "admin" }
       ],
-      all: false
+      all: false,
+      isEroorCheckbox: false
     };
   },
   methods: {
@@ -131,6 +144,7 @@ export default {
 
       if (this.dataUser.userGroup == "") {
         console.log("ไม่ได้เลือกเช็คบ็อค");
+        this.isEroorCheckbox = true;
         return;
       }
       this.loadingShow();
@@ -183,6 +197,7 @@ export default {
       }
     },
     checkboxAll() {
+      this.isEroorCheckbox = false;
       if (this.all) {
         let test = this.userOptions.map(x => {
           return x.value;
@@ -193,6 +208,7 @@ export default {
       }
     },
     checkbox() {
+      this.isEroorCheckbox = false;
       if (this.dataUser.userGroup.length == this.userOptions.length) {
         this.all = true;
       } else {
