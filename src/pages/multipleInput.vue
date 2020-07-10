@@ -577,25 +577,18 @@
           </div>
         </div>
       </div>
-
-      <!-- finish -->
-      <q-dialog v-model="isSaveComplete">
-        <q-card style="max-width:600px;width:100%;height:200px">
-          <div class="text-h6 text-center q-pt-md q-pb-sm">
-            <div class="q-py-md q-mt-md">
-              <q-icon color="secondary" size="46px" name="far fa-check-circle" />
-            </div>
-            <div>บันทึกข้อมูลเรียบร้อย</div>
-          </div>
-        </q-card>
-      </q-dialog>
+      <dialog-setting :type="6" v-if="isSaveDialogSuccess" @autoClose="isSaveDialogSuccess = false"></dialog-setting>
     </div>
   </q-page>
 </template>
 
 <script>
 import { db, st } from "../router";
+import dialogSetting from "../components/dialogSetting";
 export default {
+  components: {
+    dialogSetting
+  },
   data() {
     return {
       uploadImg: {
@@ -660,7 +653,7 @@ export default {
       isAddMode: true,
 
       isSaveData: false,
-      isSaveComplete: false,
+      isSaveDialogSuccess: false,
 
       isCorrectAnswer: false
     };
@@ -821,7 +814,7 @@ export default {
               });
             }
 
-            this.isSaveComplete = true;
+            this.isSaveDialogSuccess = true;
 
             setTimeout(() => {
               this.loadingHide();
@@ -903,7 +896,7 @@ export default {
               });
             }
 
-            this.isSaveComplete = true;
+            this.isSaveDialogSuccess = true;
 
             setTimeout(() => {
               this.loadingHide();
