@@ -88,7 +88,7 @@
         <div
           class="full-width q-py-md relative-position cursor-pointer"
           :class="
-            $route.name == 'accountMain'
+            $route.name == 'accountMain' || $route.name == 'accountAdd' || $route.name == 'accountEdit' || $route.name == 'hotelMain' || $route.name == 'hotelAdd' || $route.name == 'hotelEdit' 
               ? 'active-line active-text'
               : 'no-active-line'
           "
@@ -104,7 +104,7 @@
         <div
           class="full-width q-py-md relative-position cursor-pointer"
           :class="
-            $route.name == 'userMain'
+             $route.name == 'userMain' || $route.name == 'userAdd' || $route.name == 'userEdit' 
               ? 'active-line active-text'
               : 'no-active-line'
           "
@@ -170,7 +170,7 @@
         <div
           class="col q-pa-xs q-pt-sm relative-position cursor-pointer"
           :class="
-            $route.name == 'accountMain'
+            $route.name == 'accountMain' || $route.name == 'accountAdd' || $route.name == 'accountEdit' || $route.name == 'hotelMain' || $route.name == 'hotelAdd' || $route.name == 'hotelEdit' 
               ? 'active-line-bottom active-text'
               : 'no-active-line-bottom'
           "
@@ -184,7 +184,7 @@
         <div
           class="col q-pa-xs q-pt-sm relative-position cursor-pointer"
           :class="
-            $route.name == 'userMain' || $route.name == 'userAdd' || $route.name == 'userEdit'
+            $route.name == 'userMain' || $route.name == 'userAdd' || $route.name == 'userEdit' 
               ? 'active-line-bottom active-text'
               : 'no-active-line-bottom'
           "
@@ -468,43 +468,43 @@ export default {
         },
         {
           name: "กิจการ",
-          back: "",
+          back: "ผู้ใช้งาน",
           backPath: "/accountMain",
           back2: "",
           backPath2: "",
           type: "hotelMain"
         },
         {
-          name: "เพิ่มพนักงาน",
-          back: "",
-          backPath: "/accountMain",
-          back2: "",
-          backPath2: "",
-          type: ""
-        },
-        {
-          name: "แก้ไขพนักงาน",
-          back: "",
-          backPath: "/accountMain",
-          back2: "",
-          backPath2: "",
-          type: ""
-        },
-        {
           name: "เพิ่มกิจการ",
-          back: "",
-          backPath: "/hotelMain",
-          back2: "",
-          backPath2: "",
+          back: "ผู้ใช้งาน",
+          backPath: "/accountMain",
+          back2: "กิจการ",
+          backPath2: "/hotelMain",
           type: "hotelAdd"
         },
         {
           name: "แก้ไขกิจการ",
-          back: "",
-          backPath: "/hotelMain",
+          back: "ผู้ใช้งาน",
+          backPath: "/accountMain",
+          back2: "กิจการ",
+          backPath2: "/hotelMain",
+          type: "hotelEdit"
+        },
+        {
+          name: "เพิ่มพนักงาน",
+          back: "ผู้ใช้งาน",
+          backPath: "/accountMain",
           back2: "",
           backPath2: "",
-          type: "hotelEdit"
+          type: "accountAdd"
+        },
+        {
+          name: "แก้ไขพนักงาน",
+          back: "ผู้ใช้งาน",
+          backPath: "/accountMain",
+          back2: "",
+          backPath2: "",
+          type: "accountEdit"
         },
 
         // NOTE : Router User
