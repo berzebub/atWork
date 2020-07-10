@@ -142,7 +142,7 @@
         <div
           class="col q-pa-xs q-pt-sm relative-position cursor-pointer"
           :class="
-            $route.name == 'practiceMain' || $route.name == 'practiceList'
+            $route.name == 'practiceList' || $route.name == 'practiceMain' || $route.name == 'flashcardMain' || $route.name == 'flashcardInput' || $route.name == 'flashcardEdit' ||  $route.name == 'multipleMain' || $route.name == 'multipleAdd' || $route.name == 'multipleEdit' || $route.name == 'vdoMain' || $route.name == 'vdoAdd' || $route.name == 'vdoEdit' || $route.name == 'vdohowtoupload' || $route.name == 'expressionMain' || $route.name == 'expressionInput' || $route.name == 'expressionEdit'
               ? 'active-line-bottom active-text'
               : 'no-active-line-bottom'
           "
