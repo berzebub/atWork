@@ -142,7 +142,7 @@
         <div
           class="col q-pa-xs q-pt-sm relative-position cursor-pointer"
           :class="
-            $route.name == 'practiceMain' || $route.name == 'practiceList'
+            $route.name == 'practiceList' || $route.name == 'practiceMain' || $route.name == 'flashcardMain' || $route.name == 'flashcardInput' || $route.name == 'flashcardEdit' ||  $route.name == 'multipleMain' || $route.name == 'multipleAdd' || $route.name == 'multipleEdit' || $route.name == 'vdoMain' || $route.name == 'vdoAdd' || $route.name == 'vdoEdit' || $route.name == 'vdohowtoupload' || $route.name == 'expressionMain' || $route.name == 'expressionInput' || $route.name == 'expressionEdit'
               ? 'active-line-bottom active-text'
               : 'no-active-line-bottom'
           "
@@ -349,7 +349,7 @@ export default {
         },
         // NOTE : Router Multiple Add
         {
-          name: "เพิ่มคำศัพท์",
+          name: "เพิ่มเลือกคำตอบ",
           back: "แบบฝึกหัด",
           backPath: "/practiceList",
           back2: "เลือกคำตอบ",

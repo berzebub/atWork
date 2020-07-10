@@ -87,13 +87,16 @@
               v-if="uploadAudio || isKeyAudio"
               @click="uploadAudio  = null ; isKeyAudio = ''"
             >
-              <span style class="far fa-trash-alt q-px-xs"></span>
+              <span class="far fa-trash-alt q-px-xs"></span>
             </div>
           </template>
           <div
-            class="text-subtitle1 absolute-center text-grey-7"
+            style="width:100%"
+            class="text-subtitle1 row absolute-center text-grey-7"
             v-if="!uploadAudio && !isKeyAudio"
-          >ลากแล้ววาง หรือ</div>
+          >
+            <span class="col text-center">ลากแล้ววาง หรือ</span>
+          </div>
         </q-file>
       </div>
       <div align="center">
