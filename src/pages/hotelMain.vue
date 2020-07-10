@@ -1,12 +1,7 @@
 <template>
   <q-page>
     <div align="center">
-      <q-btn
-        @click="goToAddHotel()"
-        label="เพิ่มกิจการ"
-        color="blue-grey-10"
-        style="width:190px"
-      ></q-btn>
+      <q-btn @click="goToAddHotel()" label="เพิ่มกิจการ" color="blue-grey-10" style="width:190px"></q-btn>
     </div>
     <q-separator class="q-mt-md" />
     <div v-for="(item, index) in hotelList" :key="index">
@@ -15,18 +10,8 @@
           <span>{{ item.name }}</span>
         </div>
         <q-space></q-space>
-        <q-btn
-          @click.stop="deleteHotel(item)"
-          icon="far fa-trash-alt"
-          flat
-          size="10px"
-        ></q-btn>
-        <q-btn
-          @click.stop="editHotel()"
-          icon="fas fa-edit"
-          flat
-          size="10px"
-        ></q-btn>
+        <q-btn @click.stop="deleteHotel(item)" icon="far fa-trash-alt" flat size="10px"></q-btn>
+        <q-btn @click.stop="editHotel(item)" icon="fas fa-edit" flat size="10px"></q-btn>
       </q-toolbar>
       <q-separator />
     </div>
@@ -47,6 +32,8 @@
       @emitCancelDelete="isShowDeleteDialog = false"
       @emitConfirmDelete="confirmDelete"
     ></dialog-center>
+    <!-- dialog ลบ สำเร็จ -->
+    <dialog-center :type="4" v-if="isDeleteDialogSucess" @autoClose="isDeleteDialogSucess = false"></dialog-center>
   </q-page>
 </template>
 
@@ -63,7 +50,8 @@ export default {
       isShowNoDeleteDialog: false,
       hotelData: "",
       isShowDeleteDialog: false,
-      isSnapLoadHotel: ""
+      isSnapLoadHotel: "",
+      isDeleteDialogSucess: false
     };
   },
   methods: {
@@ -81,7 +69,10 @@ export default {
           }
         });
     },
-    editHotel() {},
+    editHotel(data) {
+      
+      this.$router.push("/hotelEdit/" + data.hotelId);
+    },
     loadHotel() {
       this.isSnapLoadHotel = db.collection("hotel").onSnapshot(doc => {
         let temp = [];
@@ -101,12 +92,14 @@ export default {
     },
     dialogNoDelete() {},
     confirmDelete() {
-      this;
+      this.loadingShow();
+      this.isShowDeleteDialog = false;
       db.collection("hotel")
         .doc(this.hotelData.hotelId)
         .delete()
         .then(() => {
-          this.isShowDeleteDialog = false;
+          this.loadingHide();
+          this.isDeleteDialogSucess = true;
         });
     }
   },
