@@ -122,7 +122,7 @@
               style="z-index:30"
             >
               <a
-                class="text-white cursor-pointer"
+                class="text-white cursor-pointer text-subtitle1"
                 @click="cancelDelete(item.key)"
                 style="text-decoration:underline;"
               >ยกเลิกการลบ</a>
