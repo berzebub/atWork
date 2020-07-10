@@ -278,7 +278,6 @@
             label="บันทึก"
             dense
             style="width:150px"
-            outline
             color="white"
             class="bg-blue-grey-10"
           />
