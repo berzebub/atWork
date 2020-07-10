@@ -349,7 +349,7 @@ export default {
         },
         // NOTE : Router Multiple Add
         {
-          name: "เพิ่มคำศัพท์",
+          name: "เพิ่มเลือกคำตอบ",
           back: "แบบฝึกหัด",
           backPath: "/practiceList",
           back2: "เลือกคำตอบ",
