@@ -250,20 +250,28 @@
               />
             </div>
           </div>
-          <div class="row q-px-md q-pb-md">
-            <div class="col" align="center">
-              <q-btn
-                v-close-popup
-                dense
-                style="width:120px"
-                color="white"
-                outline
-                text-color="black"
-                label="ยกเลิก"
-              />
-            </div>
-            <div class="col" align="center">
-              <q-btn @click="saveBtn()" dense style="width:120px" color="black" label="บันทึก" />
+          <div align="center">
+            <div class="row q-mb-md q-px-lg" style="max-width:400px;width:100%">
+              <div class="col q-px-sm">
+                <q-btn
+                  v-close-popup
+                  dense
+                  style="max-width:150px;width:100%"
+                  color="white"
+                  outline
+                  text-color="black"
+                  label="ยกเลิก"
+                />
+              </div>
+              <div class="col q-px-sm">
+                <q-btn
+                  @click="saveBtn()"
+                  dense
+                  style="max-width:150px;width:100%"
+                  color="black"
+                  label="บันทึก"
+                />
+              </div>
             </div>
           </div>
         </q-card>
