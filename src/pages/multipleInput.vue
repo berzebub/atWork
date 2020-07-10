@@ -133,7 +133,7 @@
                   v-if="uploadImg.file"
                   @click="uploadImg.file = null"
                 >
-                  <span style="font-size:13px;" class="far fa-trash-alt q-px-xs"></span>
+                  <span class="far fa-trash-alt q-px-xs"></span>
                 </div>
               </div>
 
@@ -154,10 +154,10 @@
               </div>
             </template>
 
-            <template v-slot:prepend v-if="!uploadImg.file">
-              <div class="text-hidden absolute-center">
+            <div v-if="!uploadImg.file">
+              <div style="width:100%" class="text-subtitle1 row absolute-center text-grey-7">
                 <div
-                  class="text-subtitle1 text-grey-7 self-center"
+                  class="col text-center"
                   v-if="!uploadImg.file"
                   @click.stop="uploadImg.file = null"
                 >
@@ -168,7 +168,7 @@
                   </span>
                 </div>
               </div>
-            </template>
+            </div>
           </q-file>
         </div>
       </div>
