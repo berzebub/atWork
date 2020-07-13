@@ -126,7 +126,7 @@
           <div class="col self-center desktop-only" align="right">
             <q-btn
               v-if="mode == 'draft'"
-              @click="deleteData(item.id, item.order, index)"
+              @click="deleteBtn(item.id, item.order, index)"
               size="sm"
               class="q-mr-sm"
               round
@@ -157,7 +157,7 @@
                   <q-item-section @click="editData(item)">แก้ไขคำถาม</q-item-section>
                 </q-item>
                 <q-item clickable v-close-popup>
-                  <q-item-section @click="deleteData(item.id,item.order,index)">ลบคำถาม</q-item-section>
+                  <q-item-section @click="deleteBtn(item.id,item.order,index)">ลบคำถาม</q-item-section>
                 </q-item>
               </q-list>
             </q-menu>
@@ -287,14 +287,16 @@
         :name="name"
         :practice="'คำถาม'"
         v-if="isDeleteDataDialogSuccess"
-        @emitConfirmDelete="deleteBtn"
+        @emitConfirmDelete="deleteData"
+        @emitCancelDelete="isDeleteDataDialogSuccess = false"
       ></dialog-setting>
-      <!--  ลบคำถาม update status -->
+      <!--ลบเรียบร้อย  -->
       <dialog-setting
         :type="4"
         v-if="isDeleteDialogSuccess"
         @autoClose="isDeleteDialogSuccess = false"
       ></dialog-setting>
+      <!-- บันทึกเรียบร้อย  -->
       <dialog-setting :type="6" v-if="isSaveDialogSuccess" @autoClose="isSaveDialogSuccess = false"></dialog-setting>
     </div>
   </q-page>
@@ -518,7 +520,7 @@ export default {
     },
 
     // กดปุ่ม ICON ลบ เพื่องเก็บ KEY
-    deleteData(key, id, index) {
+    deleteBtn(key, id, index) {
       this.name = "รหัสลำดับ" + " " + id;
       this.isDeleteDataDialogSuccess = true;
       this.orderId = id;
@@ -526,7 +528,7 @@ export default {
       this.indexKey = index;
     },
     // ลบข้อมูล
-    async deleteBtn() {
+    async deleteData() {
       await this.updateSyncStatus(
         this.$route.params.practiceId,
         this.$route.params.unitId

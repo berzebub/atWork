@@ -292,14 +292,15 @@
         :practice="'บทสนทนา'"
         v-if="isDeleteDataDialogSuccess"
         @emitConfirmDelete="deleteData"
+        @emitCancelDelete="isDeleteDataDialogSuccess = false"
       ></dialog-setting>
-
+      <!--ลบเรียบร้อย  -->
       <dialog-setting
         :type="4"
         v-if="isDeleteDialogSuccess"
         @autoClose="isDeleteDialogSuccess = false"
       ></dialog-setting>
-
+      <!-- บันทึกเรียบร้อย  -->
       <dialog-setting
         :type="6"
         v-if="isSaveVdoDialogSuccess"
@@ -323,6 +324,7 @@ export default {
   data() {
     return {
       name: "",
+      practiceId: this.$route.params.practiceId,
       isSaveVdoDialogSuccess: false,
       isDeleteDialogSuccess: false,
       isDeleteDataDialogSuccess: false,
