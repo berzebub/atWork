@@ -61,7 +61,7 @@
 </template>
 
 <script>
-import { auth, axios, db } from "../router";
+import { auth, db } from "../router";
 import { uid } from "quasar";
 export default {
   data() {
@@ -83,8 +83,7 @@ export default {
           return auth
             .signInWithEmailAndPassword(this.email, this.password)
             .catch(error => {
-              console.log(error);
-              this.confirmWrongEmail();
+              this.showWrongPasswordDialog();
               this.loadingHide();
             });
         })
@@ -107,7 +106,7 @@ export default {
           });
       });
     },
-    confirmWrongEmail() {
+    showWrongPasswordDialog() {
       this.dialogWrongPassword = true;
     },
     checkUserLogin() {

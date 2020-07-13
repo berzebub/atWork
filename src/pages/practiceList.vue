@@ -15,7 +15,7 @@
         </div>
         <div class="shadow-3 bg-white" style=" height: calc(100vh - 64px);overflow-y:auto">
           <q-list class="rounded-borders" v-for="(itemLv,index) in levelList" :key="index">
-            <q-expansion-item @click="showUnit(itemLv.levelId)" group="unitgroup">
+            <q-expansion-item @click="showUnit(itemLv)" group="unitgroup">
               <template v-slot:header>
                 <q-item-section>
                   {{ itemLv.name }}
@@ -64,8 +64,9 @@
           :levelId="levelId"
           :unitId="unitId"
           :unitName="unitName"
-          :num="num"
+          :num="practiceListOrder"
           :levelName="levelName"
+          :practiceListOrder="practiceListOrder"
           @finishSync="finishSync"
         ></practice-main>
         <div v-else class="full-height flex flex-center text-subtitle1 desktop-only">
@@ -96,7 +97,8 @@ export default {
       unitId: "",
       num: "",
       unitName: "",
-      levelName: ""
+      levelName: "",
+      practiceListOrder: null
     };
   },
   methods: {
@@ -116,6 +118,7 @@ export default {
       this.num = num + 1;
       this.unitName = itemUnit.label;
       this.levelName = levelName;
+      this.practiceListOrder = itemUnit.order;
 
       if (this.$q.platform.is.desktop) {
         this.isShowPracticeMain = true;
@@ -165,10 +168,10 @@ export default {
         this.unitList = temp;
       });
     },
-    showUnit(levelId) {
+    showUnit(value) {
       this.isShowPracticeMain = false;
       this.activeKey = "";
-      this.unitListShow = this.unitList.filter(x => x.levelId == levelId);
+      this.unitListShow = this.unitList.filter(x => x.levelId == value.levelId);
     }
   },
   mounted() {
