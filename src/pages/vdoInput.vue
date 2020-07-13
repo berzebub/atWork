@@ -243,10 +243,9 @@ export default {
                 .child("/practice/audio/" + doc.id + ".mp3")
                 .put(this.uploadAudio);
             }
-
+            this.loadingHide();
             this.isSaveDialogSuccess = true;
             setTimeout(() => {
-              this.loadingHide();
               this.$router.push(
                 "/vdoMain/" +
                   this.data.levelId +
@@ -272,9 +271,9 @@ export default {
                 this.uploadAudio
               );
             }
+            this.loadingHide();
             this.isSaveDialogSuccess = true;
             setTimeout(() => {
-              this.loadingHide();
               this.$router.push(
                 "/vdoMain/" +
                   this.data.levelId +

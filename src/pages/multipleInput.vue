@@ -20,7 +20,7 @@
             v-model.number="data.order"
             dense
             lazy-rules
-            :rules="[val => !!val || 'กรุณาใส่รหัสลำดับ', checkOrderId]"
+            :rules="[val => !!val , checkOrderId]"
           />
         </div>
       </div>
@@ -822,11 +822,9 @@ export default {
                 }
               });
             }
-
+            this.loadingHide();
             this.isSaveDialogSuccess = true;
-
             setTimeout(() => {
-              this.loadingHide();
               this.$router.push(
                 "/multipleMain/" +
                   this.data.levelId +
@@ -902,11 +900,9 @@ export default {
                 }
               });
             }
-
+            this.loadingHide();
             this.isSaveDialogSuccess = true;
-
             setTimeout(() => {
-              this.loadingHide();
               this.$router.push(
                 "/multipleMain/" +
                   this.data.levelId +
