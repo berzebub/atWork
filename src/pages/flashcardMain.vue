@@ -114,17 +114,17 @@
             <u>ยกเลิกการลบ</u>
           </div>
           <div class="row items-center absolute-right q-px-sm">
-            <!-- icon-delete -->
+            <!-- btn-delete -->
             <q-btn
               @click="openDialogDelete(item.id, item.order, item.vocabulary)"
               v-if="flashcardType == 'draft'"
               size="sm"
-              class="q-mr-sm"
+              class="q-mr-sm desktop-only"
               flat
               round
               icon="far fa-trash-alt"
             />
-            <!-- icon-edit -->
+            <!-- btn-edit -->
             <q-btn
               @click="editDataFlashcard(item)"
               v-if="flashcardType == 'draft'"
@@ -132,13 +132,16 @@
               flat
               round
               icon="far fa-edit"
+              class="desktop-only"
             />
             <!-- icon-menu -->
-            <q-icon
+            <q-btn
               v-if="flashcardType == 'draft'"
-              class="cursor-pointer q-pr-md mobile-only"
-              name="fas fa-ellipsis-v"
-              style="color:white; font-size: 1.4em;"
+              size="sm"
+              flat
+              round
+              class="cursor-pointer mobile-only"
+              icon="fas fa-ellipsis-v"
             />
             <!-- เมนูแก้ไข-ลบ -->
             <q-menu no-refocus>
