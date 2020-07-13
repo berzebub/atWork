@@ -520,6 +520,7 @@ export default {
         });
       this.isDeleteDialogSuccess = true;
     },
+    // ยกเลิกการลบข้อมูล
     async cancelDelete(key) {
       await this.updateSyncStatus(
         this.$route.params.practiceId,
