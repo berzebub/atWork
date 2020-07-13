@@ -82,6 +82,7 @@
       </div>
       <div>
         <q-input
+          dense
           mask="###"
           color="blue-grey-10"
           outlined
@@ -130,7 +131,7 @@
         </div>
       </div>
       <div v-else class="q-py-sm">
-        <q-input outlined :value="convertPracticeTypeToThai(data.practiceType)" readonly></q-input>
+        <q-input dense outlined :value="convertPracticeTypeToThai(data.practiceType)" readonly></q-input>
         <!-- <span>{{convertPracticeTypeToThai(data.practiceType)}}</span> -->
       </div>
       <div class="row q-pa-sm">
@@ -157,57 +158,20 @@
       v-if="dialogDelete"
       @emitConfirmDelete="deletePracticeConfirm"
     ></dialog-setting>
-    <!-- <q-dialog v-model="dialogDelete" persistent>
-      <q-card class="q-pa-md" style="width: 300px;" align="center">
-        <div class="q-py-lg">
-          คุณต้องการลบแบบฝึกหัด
-          <br />
-          " {{order}} - {{convertPracticeTypeToThai(data.practiceType)}} "
-        </div>
-
-        <div class="row">
-          <div class="col">
-            <q-btn
-              outline
-              style="width:120px; color: blue-grey-10;"
-              color
-              label="ยกเลิก"
-              v-close-popup
-            />
-          </div>
-          <div class="col">
-            <q-btn
-              style="width:120px"
-              color="blue-grey-10"
-              label="ยืนยัน"
-              v-close-popup
-              @click="deletePracticeConfirm()"
-            />
-          </div>
-        </div>
-      </q-card>
-    </q-dialog>-->
-
     <!-- dialog success -->
-    <dialog-setting :type="6" v-if="dialogSuccess" @autoClose="dialogSuccess = false"></dialog-setting>
-    <!-- <q-dialog v-model="dialogSuccess">
-      <q-card style="min-width: 350px; height:170px">
-        <q-card-section class="absolute-center" align="center">
-          <div>
-            <q-icon color="secondary" size="lg" name="far fa-check-circle" />
-          </div>
-          <div class="q-mt-lg">บันทึกข้อมูลเรียบร้อย</div>
-        </q-card-section>
-      </q-card>
-    </q-dialog>-->
+    <dialog-setting
+      :type="6"
+      v-if="dialogSuccess"
+      @autoClose="dialogSuccess = false,isShowPractice = true"
+    ></dialog-setting>
     <!-- dialog delete practicelist success -->
-    <q-dialog v-model="dialogDeletePracticeListSuccess">
+    <q-dialog v-model="dialogDuplicateOrder">
       <q-card style="min-width: 350px; height:170px">
         <q-card-section class="absolute-center" align="center">
           <div>
-            <q-icon color="secondary" size="lg" name="far fa-check-circle" />
+            <q-icon size="lg" class="error-text" name="far fa-times-circle" />
           </div>
-          <div class="q-mt-lg">ลบแบบฝึกหัดเรียบร้อย</div>
+          <div class="q-mt-lg">รหัสลำดับซ้ำ</div>
         </q-card-section>
       </q-card>
     </q-dialog>
@@ -222,7 +186,14 @@ export default {
   components: {
     dialogSetting
   },
-  props: ["levelId", "unitId", "num", "levelName", "unitName"],
+  props: [
+    "levelId",
+    "unitId",
+    "num",
+    "levelName",
+    "unitName",
+    "practiceListOrder"
+  ],
   data() {
     return {
       isShowPractice: true,
@@ -240,9 +211,10 @@ export default {
       order: "",
       practiceId: "",
       practiceType: "",
-      dialogDeletePracticeListSuccess: false,
+      dialogDuplicateOrder: false,
       name: "",
-      practice: "แบบฝึกหัด"
+      practice: "แบบฝึกหัด",
+      orderOld: null
     };
   },
   methods: {
@@ -255,6 +227,7 @@ export default {
     },
     editPractice(itemPrac) {
       // กดสามจุด+กดแก้ไขแบบฝึกหัด แก้ได้เฉพาะรหัสลำดับ
+      this.orderOld = itemPrac.order;
       this.data.order = itemPrac.order;
       this.data.practiceType = itemPrac.practiceType;
       this.practiceId = itemPrac.practiceId;
@@ -304,11 +277,6 @@ export default {
                 .then(() => {
                   this.loadingHide();
                   this.dialogSuccess = true;
-
-                  // this.dialogDeletePracticeListSuccess = true;
-                  // setTimeout(() => {
-                  //   this.dialogDeletePracticeListSuccess = false;
-                  // }, 1000);
                 });
             });
         });
@@ -338,27 +306,40 @@ export default {
         .then(doc => {
           this.dialogSuccess = true;
           this.data.order = "";
-          setTimeout(() => {
-            this.dialogSuccess = false;
-            this.isShowPractice = true;
-          }, 1000);
         });
     },
     saveOldData() {
-      // this.loadingShow();  // ถามเรื่องการ loadingshow
+      // this.loadingShow();
+
       db.collection("practice_list")
-        .doc(this.practiceId)
-        .set(this.data)
+        .where("levelId", "==", this.data.levelId)
+        .where("unitId", "==", this.data.unitId)
+        .where("order", "==", this.data.order)
+        .get()
         .then(doc => {
-          // this.loadingHide();
-          this.dialogSuccess = true;
-          setTimeout(() => {
-            this.data.order = "";
-            this.data.practiceType = "flashcard";
-            this.dialogSuccess = false;
-            this.isShowPractice = true;
-          }, 1000);
+          if (this.orderOld == this.data.order) {
+            // กรณีเป็นเลขรหัสเดิม ไม่ต้องเช็คว่าซ้ำหรือไม่
+            db.collection("practice_list")
+              .doc(this.practiceId)
+              .set(this.data)
+              .then(doc => {
+                this.dialogSuccess = true;
+                this.data.order = "";
+                this.data.practiceType = "flashcard";
+                this.isShowPractice = true;
+              });
+          } else {
+            // กรณีเป็นเลขลำดับใหม่
+            if (doc.size) {
+              // แจ้งเตือนรหัสลำดับซ้ำ
+              this.dialogDuplicateOrder = true;
+              setTimeout(() => {
+                this.dialogDuplicateOrder = false;
+              }, 1500);
+            }
+          }
         });
+      return;
     },
     loadData() {
       this.isSnap = db
@@ -368,30 +349,6 @@ export default {
         .onSnapshot(doc => {
           this.loadingShow();
           let temp = [];
-
-          // for (const element of doc.docs) {
-          //   let practice = await db
-          //     .collection("practice_draft")
-          //     .where("practiceId", "==", element.id)
-          //     .get();
-          //   let syncCheck = false;
-
-          //   practice.forEach(practiceElement => {
-          //     if (
-          //       practiceElement.data().status == "notSync" ||
-          //       practiceElement.data().status == "waitForDelete"
-          //     ) {
-          //       syncCheck = true;
-          //     }
-          //   });
-
-          //   temp.push({
-          //     ...element.data(),
-          //     practiceId: element.id,
-          //     isShowSyncBtn: syncCheck
-          //   });
-          // }
-
           doc.forEach(element => {
             temp.push({ ...element.data(), practiceId: element.id });
           });

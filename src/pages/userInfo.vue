@@ -23,7 +23,6 @@
             >
               <div class="col-6 q-pa-md">
                 <div class="text-subtitle1">ชื่อ - สกุล</div>
-                <div class="text-body2 text-blue-grey-7">{{userInfo.name}}</div>
               </div>
               <div class="col-6 q-pr-sm" align="right">
                 <q-icon name="fas fa-angle-right" />
@@ -47,6 +46,7 @@
           </div>
 
           <div class="col-12 self-end">
+            <q-separator class="desktop-only"></q-separator>
             <div
               @click="markLogOut()"
               v-ripple
@@ -64,7 +64,7 @@
             <div
               @click="markLogOut()"
               v-ripple
-              class="q-pl-md q-pt-md q-pb-md row items-center justify-between relative-position cursor-pointer"
+              class="q-pl-md q-pt-md q-pb-md row items-center justify-between relative-position cursor-pointer mobile-only"
             >
               <div>
                 <div class="text-subtitle1 q-my-xs">ออกจากระบบ</div>
@@ -78,7 +78,7 @@
         </div>
       </div>
       <!-- box1 หน้าแรก -->
-      <div v-if="mainPage == true" align="center" class="desktop-only container">
+      <div v-if="mainPage == true" align="center" class="brx desktop-only col flex flex-center">
         <div class="row justify-center items-center">
           <div>
             <q-icon name="fas fa-arrow-left" size="1.7em" />
@@ -90,7 +90,25 @@
         <user-setting :infoData="type" :userInfo="userInfo" @backStep="val => getBackPage(val)"></user-setting>
       </div>
     </div>
-    <dialog-setting></dialog-setting>
+    <!-- ต้องการลบข้อมูลรึไม่ -->
+    <q-dialog v-model="dialogResetPassword">
+      <q-card style="min-width: 350px; height:200px">
+        <q-card-section align="center" class="q-mt-md text-subtitle1">
+          <div class="q-mt-lg">คุณต้องการรีเซตรหัสผ่าน</div>
+          <div>{{userInfo.email}}</div>
+        </q-card-section>
+        <q-card-actions align="center">
+          <q-btn style="width:120px" outline color="blue-grey-10" label="ยกเลิก" v-close-popup />
+          <q-btn
+            @click="confirmResetPassword()"
+            color="blue-grey-10"
+            style="width:120px"
+            label="ยืนยัน"
+          />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+    <dialog-setting :type="2" v-if="isSuccessData == true" class="mobile-only"></dialog-setting>
   </q-page>
 </template>
 
@@ -112,10 +130,29 @@ export default {
       infoSetting: false,
       mainPage: true,
       type: "",
-      userInfo: ""
+      userInfo: "",
+      isSuccessData: false,
+      isToDialog: false,
+      dialogResetPassword: false
     };
   },
   methods: {
+    saveChangePassword() {
+      let _this = this;
+      auth
+        .sendPasswordResetEmail(this.userInfo.email)
+        .then(function() {
+          _this.isSuccessData = true;
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+    },
+    confirmResetPassword() {
+      this.isSuccessData = false;
+      this.dialogResetPassword = false;
+      this.saveChangePassword();
+    },
     async getBackPage(val) {
       this.isNameClick = false;
       this.isPasswordClick = false;
@@ -150,10 +187,7 @@ export default {
         this.isLogOutClick = false;
         this.type = "2";
       } else {
-        this.$router.push({
-          name: "userSettingMobile",
-          params: { type: "2", userInfo: this.userInfo }
-        });
+        this.dialogResetPassword = true;
       }
     },
     markLogOut() {

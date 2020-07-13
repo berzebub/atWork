@@ -37,7 +37,7 @@
                 >ไฟล์ jpg ขนาด 300x300 px เท่านั้น</div>
               </div>
               <div>
-                <q-file accept="image/*" bg-color="white" outlined v-model="uploadImg">
+                <q-file accept=".jpg" bg-color="white" outlined v-model="uploadImg">
                   <template v-slot:append>
                     <!-- ปุ่มเลือกไฟล์ -->
                     <div
@@ -56,13 +56,6 @@
                       size="12px"
                       style="padding:1.5px"
                     ></q-btn>
-                    <!-- <div
-                      class="cursor-pointer rounded-borders text-white bg-blue-grey-10"
-                      v-if="uploadImg"
-                      @click="uploadImg  = null"
-                    >
-                      <span style class="far fa-trash-alt q-px-xs"></span>
-                    </div>-->
                   </template>
                   <div
                     v-if="data.isImage == true"
@@ -88,7 +81,7 @@
                 >ไฟล์ jpg ขนาด 300x300 px เท่านั้น</div>
               </div>
               <div>
-                <q-file accept="image/*" bg-color="white" outlined v-model="uploadImg">
+                <q-file accept=".jpg" bg-color="white" outlined v-model="uploadImg">
                   <template v-slot:append>
                     <!-- ปุ่มเลือกไฟล์ -->
                     <div
@@ -284,6 +277,18 @@
         </div>
       </div>
       <!-- --------------------------------------dialog--------------------------------------- -->
+      <dialog-setting
+        :type="6"
+        v-if="isSaveFinish == true"
+        @autoClose=" $router.push(
+                '/flashcardMain/' +
+                  data.levelId +
+                  '/' +
+                  data.unitId +
+                  '/' +
+                  data.practiceId
+              )"
+      ></dialog-setting>
       <!-- เพิ่มข้อมูลสำเร็จ -->
       <q-dialog v-model="successData">
         <q-card style="min-width: 350px; height:200px">
@@ -301,9 +306,14 @@
 
 <script>
 import { db, st } from "../router";
+import dialogSetting from "../components/dialogSetting";
 export default {
+  components: {
+    dialogSetting
+  },
   data() {
     return {
+      isSaveFinish: false,
       successData: false,
       uploadSound: null,
       uploadImg: null,
@@ -385,18 +395,7 @@ export default {
                 this.uploadSound
               );
             }
-            this.successData = true;
-            setTimeout(() => {
-              this.successData = false;
-              this.$router.push(
-                "/flashcardMain/" +
-                  this.data.levelId +
-                  "/" +
-                  this.data.unitId +
-                  "/" +
-                  this.data.practiceId
-              );
-            }, 2500);
+            this.isSaveFinish = true;
           });
       } else {
         this.editData();
@@ -418,18 +417,7 @@ export default {
               this.uploadSound
             );
           }
-          this.successData = true;
-          setTimeout(() => {
-            this.successData = false;
-            this.$router.push(
-              "/flashcardMain/" +
-                this.data.levelId +
-                "/" +
-                this.data.unitId +
-                "/" +
-                this.data.practiceId
-            );
-          }, 2500);
+          this.isSaveFinish = true;
         });
     }
   },

@@ -1,40 +1,46 @@
 <template>
-  <div class="container full-height flex flex-center" align="center">
+  <div class="full-height flex flex-center" align="center">
     <!-- box2 แก้ไขชื่อ -->
-    <div class v-show="infoData == '1'" align="center" style="width:328px">
-      <div class="text-h6">แก้ไข ชื่อ นามสกุล</div>
-      <div class="q-mt-lg">
-        <div align="left" class="text-subtitle1">ชื่อ นามสกุล</div>
-        <div>
-          <q-input dense outlined ref="name" v-model="name" :rules="[val => !!val]" />
+    <div style="width:100%;max-width:328px" v-show="infoData == '1'">
+      <div>
+        <div v-if="$q.platform.is.desktop" class="text-h6">แก้ไข ชื่อ นามสกุล</div>
+        <div class="q-mt-lg">
+          <div align="left" class="text-subtitle1">ชื่อ นามสกุล</div>
+          <div>
+            <q-input dense outlined ref="name" v-model="name" :rules="[val => !!val]" />
+          </div>
         </div>
-      </div>
-      <div class="row justify-center">
-        <q-btn
-          @click="backMainPage()"
-          class="q-mx-md text-subtitle1"
-          label="ยกเลิก"
-          style="width:120px"
-          outline
-          color="blue-grey-10"
-        />
-        <q-btn
-          @click="saveChangeName()"
-          class="q-mx-md bg-blue-grey-10 text-white text-subtitle1"
-          label="บันทึก"
-          style="width:120px"
-        />
+        <div class="row justify-center">
+          <div class="q-px-sm">
+            <q-btn
+              @click="backMainPage()"
+              class="text-subtitle1"
+              label="ยกเลิก"
+              style="width:120px"
+              outline
+              color="blue-grey-10"
+            />
+          </div>
+          <div class="q-px-sm">
+            <q-btn
+              @click="saveChangeName()"
+              class="bg-blue-grey-10 text-white text-subtitle1"
+              label="บันทึก"
+              style="width:120px"
+            />
+          </div>
+        </div>
       </div>
     </div>
     <!-- box3 แก้ไขรหัสผ่าน -->
-    <div v-show="infoData == '2'" align="center">
+    <div style="width:100%;max-width:328px" class v-show="infoData == '2'" align="center">
       <div class="text-subtitle1">คุณต้องการรีเซตรหัสผ่าน</div>
       <div class="text-subtitle1">"{{userInfo.email}}"</div>
 
       <div class="row justify-center q-mt-xl">
         <q-btn
           @click="backMainPage()"
-          class="q-mx-md text-subtitle1"
+          class="q-mx-sm text-subtitle1"
           label="ยกเลิก"
           style="width:120px"
           outline
@@ -42,7 +48,7 @@
         />
         <q-btn
           @click="saveChangePassword()"
-          class="q-mx-md bg-blue-grey-10 text-white text-subtitle1"
+          class="q-mx-sm bg-blue-grey-10 text-white text-subtitle1"
           label="ตกลง"
           style="width:120px"
         />
@@ -80,23 +86,8 @@
     </div>
     <!-- -------------------------------------------Diaolog--------------------------------------- -->
     <dialog-setting :type="6" v-if="isDialogSuccess == true" @autoClose="backMainPage()"></dialog-setting>
-    <!-- correct Email -->
-    <q-dialog v-model="dialogEmail">
-      <q-card style="min-width: 350px; height:200px">
-        <q-card-section align="center"></q-card-section>
-        <q-card-section align="center" class="q-pt-none text-subtitle1">การรีเซตรหัสส่งไปยัง</q-card-section>
-        <q-card-section align="center" class="q-pt-none text-subtitle1">{{userInfo.email}}</q-card-section>
-        <q-card-actions align="center">
-          <q-btn
-            @click="confirmEmail()"
-            style="width:190px"
-            label="ตกลง"
-            color="blue-grey-10"
-            class="text-subtitle1"
-          />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
+    <dialog-setting :type="2" v-if="dialogEmail == true"></dialog-setting>
+
     <!-- dont complete data -->
     <q-dialog v-model="dialogDontChangeData">
       <q-card

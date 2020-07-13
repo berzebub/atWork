@@ -245,6 +245,7 @@ export default {
       levelId: this.$route.params.levelId,
       unitId: this.$route.params.unitId,
       practiceId: this.$route.params.practiceId,
+      orderId: this.$route.params.oser,
       isSnap: "",
       isDisable: false
     };
@@ -371,6 +372,7 @@ export default {
     this.loadDataExpression();
     this.loadLevelData();
     this.loadUnitData();
+    console.log(this.orderId);
 
     // var user = auth.currentUser;
   }

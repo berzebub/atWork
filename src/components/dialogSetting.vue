@@ -193,10 +193,10 @@ export default {
     if (stoTypeList.includes(this.type)) {
       setTimeout(() => {
         this.successData = false;
-      }, 2300);
+      }, 1300);
       setTimeout(() => {
         this.$emit("autoClose");
-      }, 2500);
+      }, 1500);
     }
   }
 };

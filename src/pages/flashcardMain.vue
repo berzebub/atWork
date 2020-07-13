@@ -1,5 +1,5 @@
 <template>
-  <q-page>
+  <q-page class="container">
     <div>
       <div class="row justify-between">
         <!-- กล่อง radio -->
@@ -91,10 +91,10 @@
           style="width:190px; z-index:2600; "
           class="absolute-center bg-white"
         >ยกเลิกการลบ</q-btn>
-        <q-card-section class="text-white bg-blue-grey-10">
+        <q-card-section class="text-white bg-blue-grey-10 no-padding">
           <div
             v-if="item.status != 'waitForDelete' || $q.platform.is.desktop"
-            class="text-subtitle1"
+            class="text-subtitle1 q-ml-sm"
           >รหัสลำดับ {{ item.order }}</div>
           <div
             @click="cancelDeleteFlashcard(item.id, item.order)"
@@ -159,9 +159,9 @@
             <div
               v-if="item.isImage == true"
               class="col-sm-6 col-xs-12 q-px-md q-pt-md q-pb-sm text-h6"
-              align="center"
+              align="left"
             >
-              <q-img :src="item.img" :ratio="1/1" style="width:300px;height:300px" class></q-img>
+              <q-img :src="item.img" :ratio="1/1" style="width:300px"></q-img>
             </div>
             <!-- คำ -->
             <div class="q-md-6 q-sm-12">
@@ -179,7 +179,7 @@
                 <div class="q-px-md q-pt-md q-pb-sm text-h6 text-blue-grey-10">{{item.vocabulary}}</div>
               </div>
               <div
-                class="q-ml-md q-px-md q-pt-md q-pb-sm text-subtitle1 text-blue-grey-10"
+                class="q-ml-md q-px-md q-pt-md q-pb-sm text-subtitle1 text-blue-grey-7"
               >{{item.read}}</div>
               <div
                 class="q-ml-md q-px-md q-p-md q-pb-sm text-subtitle1 text-blue-grey-10"
@@ -200,7 +200,6 @@
           <div align="center" class="q-mt-lg text-h6">คุณต้องการลบคำศัพท์</div>
           <div align="center" class="q-mb-md text-h6">"{{ getOrder }} - {{getVocabulary}}"</div>
         </q-card-section>
-
         <q-card-actions align="center">
           <q-btn style="width:120px" outline color="blue-grey-10" label="ยกเลิก" v-close-popup />
           <q-btn
@@ -212,62 +211,22 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
-    <!-- ลบข้อมูลสำเร็จ -->
-    <q-dialog v-model="successDelete">
-      <q-card style="min-width: 323px; height:200px">
-        <q-card-section class="absolute-center" align="center">
-          <div>
-            <q-icon color="secondary" size="lg" name="far fa-check-circle" />
-          </div>
-          <div class="q-mt-lg">บันทึกข้อมูลเรียบร้อย</div>
-        </q-card-section>
-      </q-card>
-    </q-dialog>
-    <!-- เพิ่มข้อมูลสำเร็จ -->
-    <q-dialog v-model="successDelete">
-      <q-card style="min-width: 323px; height:200px">
-        <q-card-section class="absolute-center" align="center">
-          <div>
-            <q-icon color="secondary" size="lg" name="far fa-check-circle" />
-          </div>
-          <div class="q-mt-lg">ลบคำศัพท์เรียบร้อย</div>
-        </q-card-section>
-      </q-card>
-    </q-dialog>
-    <!-- ซิงค์ข้อมูลเรียบร้อย -->
-    <q-dialog v-model="successSync">
-      <q-card style="width: 323px; height:200px">
-        <q-card-section align="center">
-          <div class="q-mt-lg" style="margin-top:45px">
-            <q-btn
-              outline
-              round
-              class="text-teal"
-              size="16px"
-              style="border-style:solid; border-width:3px"
-            >
-              <q-icon color="secondary" name="fas fa-sync" />
-            </q-btn>
-          </div>
-          <div class="q-mt-lg text-subtitle1">ซิงค์ข้อมูลเรียบร้อย</div>
-        </q-card-section>
-      </q-card>
-    </q-dialog>
+    <dialog-setting :type="4" v-if="deleteFinish == true"></dialog-setting>
   </q-page>
 </template>
 
 <script>
 import { db, auth } from "../router";
 import syncBtn from "../components/syncBtn.vue";
+import dialogSetting from "../components/dialogSetting";
 export default {
   components: {
-    syncBtn
+    syncBtn,
+    dialogSetting
   },
   data() {
     return {
-      successSync: false,
-      successData: false,
-      successDelete: false,
+      deleteFinish: false,
       flashcardType: "draft",
       dialogDelete: false,
       getId: "",
@@ -374,12 +333,6 @@ export default {
             });
         });
     },
-    openDialogSync() {
-      this.successSync = true;
-      setTimeout(() => {
-        this.successSync = false;
-      }, 2500);
-    },
     openDialogDelete(id, order, vocabulary) {
       this.dialogDelete = true;
       this.getId = id;
@@ -405,11 +358,7 @@ export default {
         .then(() => {
           this.getId = "";
           this.dialogDelete = false;
-          this.successDelete = true;
-          setTimeout(() => {
-            this.successDelete = false;
-            this.isDelete = true;
-          }, 2500);
+          this.deleteFinish = true;
         });
     },
     editDataFlashcard(item) {
