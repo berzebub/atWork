@@ -8,7 +8,7 @@
             <!-- แบบร่าง -->
             <div class="col">
               <q-radio
-                @input="loadPracticeData()"
+                @input="loadPracticeData(false)"
                 color="blue-grey-10"
                 v-model="mode"
                 val="draft"
@@ -18,7 +18,7 @@
             <!-- เซิร์ฟเวอร์ -->
             <div class="col">
               <q-radio
-                @input="loadPracticeData()"
+                @input="loadPracticeData(true)"
                 color="blue-grey-10"
                 v-model="mode"
                 val="server"
@@ -28,33 +28,17 @@
           </div>
         </div>
         <div>
-          <div class="mobile-only q-ml-md">
-            <q-btn
-              :disable="mode == 'server'"
-              round
-              push
-              color="blue-grey-10"
-              icon="fas fa-sync"
-              @click="sync($route.params.practiceId)"
-            />
+          <div class="q-ml-md" v-if="$q.platform.is.mobile">
+            <sync-btn :practiceId="practiceId " :isServer="isDisable"></sync-btn>
           </div>
-          <div class="text-right desktop-only">
-            <q-btn
-              v-if="mode == 'draft'"
-              round
-              push
-              color="blue-grey-10"
-              class="q-mx-md"
-              icon="fas fa-sync"
-              @click="sync($route.params.practiceId)"
-            />
-            <q-btn
-              v-if="mode == 'draft'"
-              round
-              color="blue-grey-10"
-              icon="fas fa-print"
-              to="/multiplePrint"
-            />
+          <div class="row desktop-only" v-if="mode == 'draft'">
+            <div class="q-mx-md">
+              <sync-btn :practiceId="practiceId"></sync-btn>
+            </div>
+            <!-- ปุ่มพิมพ์ -->
+            <div class="mobile-hide">
+              <q-btn v-if="mode == 'draft'" round color="blue-grey-10" icon="fas fa-print" />
+            </div>
           </div>
         </div>
       </div>
@@ -65,7 +49,7 @@
       <!-- box คำสั่ง -->
       <div class="box text-left q-my-md">
         <div class="bg-blue-grey-10 text-white boxQuestion row q-px-sm">
-          <div class="col self-center">คำสั่ง</div>
+          <div class="col self-center q-px-sm">คำสั่ง</div>
           <div class="col self-center" align="right">
             <q-btn
               v-if="mode == 'draft'"
@@ -131,7 +115,7 @@
         <div v-if="item.status == 'waitForDelete'" class="absolute-center backDrop"></div>
 
         <div class="boxQuestion bg-blue-grey-10 text-white q-py-xs q-px-sm row">
-          <div class="col self-center">
+          <div class="col self-center q-px-sm">
             <span class="desktop-only">รหัสลำดับ {{ item.order }}</span>
             <span
               class="mobile-only"
@@ -157,7 +141,15 @@
               icon="far fa-edit"
             />
           </div>
-          <q-btn class="mobile-only" size="13px" icon="fas fa-ellipsis-v" round dense flat>
+          <q-btn
+            class="mobile-only"
+            v-if="mode== 'draft'"
+            size="13px"
+            icon="fas fa-ellipsis-v"
+            round
+            dense
+            flat
+          >
             <q-menu anchor="top right" self="top right" :offset="[7,-37]">
               <q-list style="min-width: 120px">
                 <q-item clickable v-close-popup>
@@ -174,13 +166,17 @@
           <img style="max-width:400px;width:100%;" :src="item.imageURL" alt />
         </div>
         <div class="q-pa-md">
-          <div class>
+          <div>
             <span class>{{index + 1 + "."}}</span>
-            <span
+            <q-btn
+              round
+              size="xs"
+              flat
+              icon="fas fa-volume-up"
               v-if="item.audioURL"
               @click="playAudio(item.audioURL)"
-              class="fas fa-volume-up q-mx-xs cursor-pointer"
-            ></span>
+              class="q-mx-xs r"
+            ></q-btn>
             <span class="q-mx-xs q-pr-sm" v-html="item.question"></span>
           </div>
         </div>
@@ -201,12 +197,14 @@
                 <span v-if="!items.isSound && item.correctAnswer == index2 + 1">
                   <q-icon class="text-white no-pointer-events" name="fas fa-volume-mute  "></q-icon>
                 </span>
-                <span
-                  :class="
-                  items.isSound ? 'fas fa-volume-up cursor-pointer' : ' '
-                "
+                <q-btn
+                  v-if="items.isSound "
+                  flat
+                  round
+                  size="xs"
+                  icon="fas fa-volume-up"
                   @click="playAudio(items.soundURL)"
-                ></span>
+                ></q-btn>
                 {{ index2 + 1 + ") " + items.choice }}
               </span>
             </div>
@@ -329,10 +327,12 @@
 
 <script>
 import { db, st } from "../router";
+import syncBtn from "../components/syncBtn";
 import dialogSetting from "../components/dialogSetting";
 export default {
   components: {
-    dialogSetting
+    dialogSetting,
+    syncBtn
   },
   data() {
     return {
@@ -351,7 +351,7 @@ export default {
       orderId: "",
       instrunctionTh: "",
       instrunctionEng: "",
-
+      practiceId: this.$route.params.practiceId,
       indexKey: "",
       deleteKey: "",
       questionAdd: false,
@@ -365,7 +365,7 @@ export default {
       isDeleteDialog: false,
 
       isDeleteDialogSuccess: false,
-
+      isDisable: false,
       syncData: ""
     };
   },
@@ -427,7 +427,8 @@ export default {
         });
     },
     // โหลดข้อมูลเข้ามาเก็บไว้ทั้งหมด
-    loadPracticeData() {
+    loadPracticeData(val) {
+      this.isDisable = val;
       this.loadingShow();
 
       let practiceId = this.$route.params.practiceId;

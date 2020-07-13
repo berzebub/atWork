@@ -89,8 +89,8 @@
                 dense
                 icon="far fa-trash-alt"
                 color="blue-grey-10"
-                size="13px"
-                style="padding:1px"
+                size="14px"
+                style="padding-bottom:3px"
               />
             </div>
           </div>
@@ -124,7 +124,8 @@
               <!-- NOTE : ปุ่มเลือกไพล์ สำหรับ Add Mode -->
               <div v-if="isAddMode">
                 <div
-                  class="text-subtitle1 rounded-borders text-center bg-blue-grey-10 text-white q-px-sm cursor-pointer"
+                  style="width:100px"
+                  class="text-subtitle1 rounded-borders text-center bg-blue-grey-10 text-white q-pa-xs cursor-pointer"
                   @click.stop="uploadImg.file = null"
                   v-if="!uploadImg.file"
                 >เลือกไฟล์</div>
@@ -140,7 +141,8 @@
               <!-- NOTE : ปุ่มเลือกไพล์ สำหรับ Edit Mode -->
               <div v-if="!isAddMode">
                 <div
-                  class="text-subtitle1 rounded-borders text-center bg-blue-grey-10 text-white q-px-sm cursor-pointer"
+                  style="width:100px"
+                  class="text-subtitle1 rounded-borders text-center bg-blue-grey-10 text-white q-pa-xs cursor-pointer"
                   @click.stop="uploadImg.file = null"
                   v-if="!data.isImage && !uploadImg.file"
                 >เลือกไฟล์</div>
@@ -247,8 +249,8 @@
                   dense
                   icon="far fa-trash-alt"
                   color="blue-grey-10"
-                  size="13px"
-                  style="padding:1px"
+                  size="14px"
+                  style="padding-bottom:3px"
                 />
               </div>
             </div>
@@ -322,8 +324,8 @@
                   dense
                   icon="far fa-trash-alt"
                   color="blue-grey-10"
-                  size="13px"
-                  style="padding:1px"
+                  size="14px"
+                  style="padding-bottom:3px"
                 />
               </div>
             </div>
@@ -396,8 +398,8 @@
                   dense
                   icon="far fa-trash-alt"
                   color="blue-grey-10"
-                  size="13px"
-                  style="padding:1px"
+                  size="14px"
+                  style="padding-bottom:3px"
                 />
               </div>
             </div>
@@ -470,8 +472,8 @@
                   dense
                   icon="far fa-trash-alt"
                   color="blue-grey-10"
-                  size="13px"
-                  style="padding:1px"
+                  size="14px"
+                  style="padding-bottom:3px"
                 />
               </div>
             </div>
@@ -540,7 +542,7 @@
         </div>
       </div>
       <div class="q-pb-lg">
-        <span>คำอธิบาย *ต้องใช้ตัวหนาสำหรับตัวเลือกที่ถูกต้อง</span>
+        <span>คำอธิบาย</span>
         <div>
           <q-editor
             square

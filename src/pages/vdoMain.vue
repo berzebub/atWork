@@ -148,7 +148,15 @@
               >รหัสลำดับ {{item.order}}</div>
               <div style="height:28px" v-if="item.status == 'waitForDelete'"></div>
               <div style="height:10px">
-                <q-btn class="mobile-only" size="13px" icon="fas fa-ellipsis-v" round dense flat>
+                <q-btn
+                  class="mobile-only"
+                  v-if="mode == 'draft'"
+                  size="13px"
+                  icon="fas fa-ellipsis-v"
+                  round
+                  dense
+                  flat
+                >
                   <q-menu>
                     <q-list style="min-width: 130px">
                       <q-item clickable v-close-popup>
@@ -293,6 +301,9 @@
       </q-dialog>
       <q-dialog v-model="isShowUpload">
         <q-card style="max-width:610px;width:100%">
+          <div>
+            <div class="text-h6 q-px-lg q-py-md">การตั้งค่าการอัปโหลดวิดีโอ</div>
+          </div>
           <howtouploadfile />
           <div class="text-center">
             <q-btn

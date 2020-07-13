@@ -1,5 +1,8 @@
 <template>
   <div>
+    <div>
+      <div class="text-h6 q-pa-md">การตั้งค่าการอัปโหลดวิดีโอ</div>
+    </div>
     <howtouploadfile />
     <div class="text-center">
       <q-btn
