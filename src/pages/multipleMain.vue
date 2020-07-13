@@ -122,6 +122,7 @@
               v-if="item.status != 'waitForDelete'"
             >รหัสลำดับ {{ item.order }}</span>
           </div>
+
           <div class="col self-center desktop-only" align="right">
             <q-btn
               v-if="mode == 'draft'"
@@ -280,47 +281,21 @@
         </q-card>
       </q-dialog>
 
-      <!-- delete -->
-      <q-dialog v-model="isDeleteDialog" persistent>
-        <q-card style="max-width:330px;width:100%">
-          <div class="text-subtitle1 text-center q-pt-xl q-pb-lg">
-            <div>ต้องการลบข้อมูล</div>
-            <div>“รหัสลำดับ {{ orderId }}”</div>
-          </div>
-          <div>
-            <div class="row q-pa-md">
-              <div class="col" align="right">
-                <q-btn
-                  v-close-popup
-                  dense
-                  style="width:120px"
-                  color="white"
-                  class="q-mx-sm"
-                  outline
-                  text-color="black"
-                  label="ยกเลิก"
-                />
-              </div>
-              <div class="col" align="left">
-                <q-btn
-                  @click="deleteBtn()"
-                  dense
-                  style="width:120px"
-                  class="q-mx-sm"
-                  color="black"
-                  label="ตกลง"
-                />
-              </div>
-            </div>
-          </div>
-        </q-card>
-      </q-dialog>
-      <dialog-setting :type="6" v-if="isSaveDialogSuccess" @autoClose="isSaveDialogSuccess = false"></dialog-setting>
+      <!--แจ้ง ลบคำถาม  -->
+      <dialog-setting
+        :type="3"
+        :name="name"
+        :practice="'คำถาม'"
+        v-if="isDeleteDataDialogSuccess"
+        @emitConfirmDelete="isDeleteDataDialogSuccess = false"
+      ></dialog-setting>
+      <!--  ลบคำถาม update status -->
       <dialog-setting
         :type="4"
         v-if="isDeleteDialogSuccess"
         @autoClose="isDeleteDialogSuccess = false"
       ></dialog-setting>
+      <dialog-setting :type="6" v-if="isSaveDialogSuccess" @autoClose="isSaveDialogSuccess = false"></dialog-setting>
     </div>
   </q-page>
 </template>
@@ -336,8 +311,8 @@ export default {
   },
   data() {
     return {
+      name: "",
       mode: "draft",
-
       practiceData: {
         levelName: "",
         unitName: "",
@@ -362,8 +337,8 @@ export default {
 
       isSaveDialogSuccess: false,
       isQuestionDialog: false,
-      isDeleteDialog: false,
 
+      isDeleteDataDialogSuccess: false,
       isDeleteDialogSuccess: false,
       isDisable: false,
       syncData: ""
@@ -430,7 +405,7 @@ export default {
     loadPracticeData(val) {
       this.isDisable = val;
       this.loadingShow();
-
+      this.practiceDataList = [];
       let practiceId = this.$route.params.practiceId;
 
       let dbData;
@@ -547,7 +522,7 @@ export default {
         this.$route.params.practiceId,
         this.$route.params.unitId
       );
-      this.isDeleteDialog = false;
+      this.isDeleteDataDialogSuccess = false;
 
       db.collection("practice_draft")
         .doc(this.deleteKey)
@@ -560,7 +535,8 @@ export default {
     },
     // กดปุ่ม ICON ลบ เพื่องเก็บ KEY
     deleteData(key, id, index) {
-      this.isDeleteDialog = true;
+      this.name = "รหัสลำดับ" + " " + id;
+      this.isDeleteDataDialogSuccess = true;
       this.orderId = id;
       this.deleteKey = key;
       this.indexKey = index;

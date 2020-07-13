@@ -268,39 +268,7 @@
           </div>
         </q-card>
       </q-dialog>
-      <!-- delete -->
-      <q-dialog v-model="isDeleteDialog" persistent>
-        <q-card class="row justify-center" style="max-width:328px;width:100%;height:200px">
-          <div class="text-subtitle1 text-center q-pt-xl q-pb-sm">
-            <div>ต้องการลบข้อมูล</div>
-            <div>“รหัสลำดับ {{ orderId }}” หรือไม่</div>
-          </div>
-          <div>
-            <div class="row reverse-wrap justify-center q-px-md">
-              <div class="q-px-sm q-pb-md">
-                <q-btn
-                  v-close-popup
-                  dense
-                  style="width:120px"
-                  color="white"
-                  outline
-                  text-color="black"
-                  label="ยกเลิก"
-                />
-              </div>
-              <div class="q-px-sm q-pb-md">
-                <q-btn
-                  @click="deleteData(), (isDeleteDialog = false)"
-                  dense
-                  style="width:120px"
-                  color="black"
-                  label="ตกลง"
-                />
-              </div>
-            </div>
-          </div>
-        </q-card>
-      </q-dialog>
+
       <q-dialog v-model="isShowUpload">
         <q-card style="max-width:610px;width:100%">
           <div>
@@ -317,11 +285,21 @@
           </div>
         </q-card>
       </q-dialog>
+      <!--แจ้ง ลบคำถาม  -->
+      <dialog-setting
+        :type="3"
+        :name="name"
+        :practice="'บทสนทนา'"
+        v-if="isDeleteDataDialogSuccess"
+        @emitConfirmDelete="deleteData"
+      ></dialog-setting>
+
       <dialog-setting
         :type="4"
         v-if="isDeleteDialogSuccess"
         @autoClose="isDeleteDialogSuccess = false"
       ></dialog-setting>
+
       <dialog-setting
         :type="6"
         v-if="isSaveVdoDialogSuccess"
@@ -344,8 +322,10 @@ export default {
   },
   data() {
     return {
+      name: "",
       isSaveVdoDialogSuccess: false,
       isDeleteDialogSuccess: false,
+      isDeleteDataDialogSuccess: false,
       isShowUpload: false,
       isDeleteDialog: false,
       orderId: "",
@@ -410,6 +390,7 @@ export default {
     // โหลดข้อมูลทั้งหมด
     loadPracticeData(val) {
       this.isDisable = val;
+      this.practiceDataList = [];
       let practiceId = this.$route.params.practiceId;
       let dbData;
       if (typeof this.syncData == "function") {
@@ -518,12 +499,14 @@ export default {
       this.loadVdo();
     },
     deleteBtn(key, id, index) {
-      this.isDeleteDialog = true;
+      this.name = "รหัสลำดับ" + " " + id;
+      this.isDeleteDataDialogSuccess = true;
       this.isDeleteKey = key;
       this.orderId = id;
     },
     // อัพเดด
     async deleteData() {
+      this.isDeleteDataDialogSuccess = false;
       await this.updateSyncStatus(
         this.$route.params.practiceId,
         this.$route.params.unitId
