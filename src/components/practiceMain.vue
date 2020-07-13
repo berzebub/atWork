@@ -1,9 +1,11 @@
 <template>
   <div class="container">
     <div class="text-h6" align="center">
-      <span>{{levelName}}</span>
+      <span v-if="$q.platform.is.desktop">{{ levelName }}</span>
+      <span v-else>{{ levelMobileName }}</span>
       <br />
-      <span>{{num}}. {{unitName}}</span>
+      <span v-if="$q.platform.is.desktop">{{ num }}. {{ unitName }}</span>
+      <span v-else>{{ orderMobile }}. {{ unitMobileName }}</span>
     </div>
     <!-- หน้าหลัก -->
     <div v-if="isShowPractice" align="center">
@@ -25,11 +27,17 @@
         style="border: 1px solid #263238; border-radius: 5px"
       >
         <div class="bg-blue-grey-10 text-white q-pa-sm row" align="left">
-          <div class="col self-center">รหัสลำดับ {{itemPrac.order}}</div>
+          <div class="col self-center">รหัสลำดับ {{ itemPrac.order }}</div>
           <div class="col-1" align="right">
             <!-- ปุ่ม สามจุด -->
             <div class="col-1" align="right">
-              <q-btn round size="sm" color="blue-grey-10" icon="fas fa-ellipsis-v">
+              <q-btn
+                round
+                size="sm"
+                flat
+                class="text-white"
+                icon="fas fa-ellipsis-v"
+              >
                 <q-menu auto-close :offset="[5, 10]" content-class="shadow-3">
                   <q-list style="min-width: 100px">
                     <q-item clickable @click="editPractice(itemPrac)">
@@ -45,24 +53,32 @@
           </div>
         </div>
         <div class="row q-py-sm">
-          <div class="col q-pa-sm" align="left">
-            <span v-if="itemPrac.practiceType=='flashcard'">การ์ดคำศัพท์</span>
-            <span v-if="itemPrac.practiceType=='multipleChoice'">เลือกคำตอบ</span>
-            <span v-if="itemPrac.practiceType=='expression'">ประโยคสนทนา</span>
-            <span v-if="itemPrac.practiceType=='vdo'">บทสนทนา</span>
+          <div class="col  q-pa-sm" align="left">
+            <span v-if="itemPrac.practiceType == 'flashcard'"
+              >การ์ดคำศัพท์</span
+            >
+            <span v-if="itemPrac.practiceType == 'multipleChoice'"
+              >เลือกคำตอบ</span
+            >
+            <span v-if="itemPrac.practiceType == 'expression'"
+              >ประโยคสนทนา</span
+            >
+            <span v-if="itemPrac.practiceType == 'vdo'">บทสนทนา</span>
           </div>
-          <div class="row" :class="$q.platform.is.desktop ? 'col-2':'col-4'" align="center">
-            <div class="col">
+          <div class="row  col-3" style="width:130px;">
+            <div class="col " align="right">
               <q-btn
+                class="q-mx-sm"
                 v-show="itemPrac.isShowSyncBtn"
                 round
                 color="blue-grey-10"
                 icon="fas fa-sync-alt"
-                @click="sync(itemPrac.practiceId).then(() => emitData(itemPrac) )"
+                @click="
+                  sync(itemPrac.practiceId).then(() => emitData(itemPrac))
+                "
               />
-            </div>
-            <div class="col">
               <q-btn
+                class="q-mx-sm"
                 round
                 color="blue-grey-10"
                 icon="fas fa-pencil-alt"
@@ -78,7 +94,9 @@
     <div class="q-py-md" v-if="!isShowPractice">
       <div>
         <span class="text-subtitle1">รหัสลำดับ</span>
-        <span class="text-body2 q-pl-xs" style="color:#BDBDBD">ตัวเลข 3 หลัก</span>
+        <span class="text-body2 q-pl-xs" style="color:#BDBDBD"
+          >ตัวเลข 3 หลัก</span
+        >
       </div>
       <div>
         <q-input
@@ -87,7 +105,7 @@
           color="blue-grey-10"
           outlined
           v-model.number="data.order"
-          :rules="[value => !!value ]"
+          :rules="[value => !!value]"
           ref="order"
         />
       </div>
@@ -131,7 +149,12 @@
         </div>
       </div>
       <div v-else class="q-py-sm">
-        <q-input dense outlined :value="convertPracticeTypeToThai(data.practiceType)" readonly></q-input>
+        <q-input
+          dense
+          outlined
+          :value="convertPracticeTypeToThai(data.practiceType)"
+          readonly
+        ></q-input>
         <!-- <span>{{convertPracticeTypeToThai(data.practiceType)}}</span> -->
       </div>
       <div class="row q-pa-sm">
@@ -145,7 +168,11 @@
           ></q-btn>
         </div>
         <div class="col q-px-sm">
-          <q-btn class="boxbtn bg-blue-grey-10 text-white" label="บันทึก" @click="saveBtn()"></q-btn>
+          <q-btn
+            class="boxbtn bg-blue-grey-10 text-white"
+            label="บันทึก"
+            @click="saveBtn()"
+          ></q-btn>
         </div>
       </div>
     </div>
@@ -162,7 +189,7 @@
     <dialog-setting
       :type="6"
       v-if="dialogSuccess"
-      @autoClose="dialogSuccess = false,isShowPractice = true"
+      @autoClose="(dialogSuccess = false), (isShowPractice = true)"
     ></dialog-setting>
     <!-- dialog delete practicelist success -->
     <q-dialog v-model="dialogDuplicateOrder">
@@ -214,7 +241,10 @@ export default {
       dialogDuplicateOrder: false,
       name: "",
       practice: "แบบฝึกหัด",
-      orderOld: null
+      orderOld: null,
+      levelMobileName: "",
+      unitMobileName: "",
+      orderMobile: ""
     };
   },
   methods: {
@@ -401,10 +431,32 @@ export default {
         // ไม่อยู่ type ไหนเลยให้แก้ มีแจ้งเตือน
         this.$router.push("/practiceList");
       }
+    },
+    loadLevelName() {
+      this.loadingShow();
+      db.collection("level")
+        .doc(this.$route.params.levelId)
+        .get()
+        .then(doc => {
+          this.levelMobileName = doc.data().name;
+          // get unit name
+          db.collection("unit")
+            .doc(this.$route.params.unitId)
+            .get()
+            .then(doc1 => {
+              this.orderMobile = doc1.data().order;
+              this.unitMobileName = doc1.data().name;
+              this.loadingHide();
+            });
+        });
     }
   },
   mounted() {
     this.loadData();
+
+    if (this.$q.platform.is.mobile) {
+      this.loadLevelName();
+    }
   },
   watch: {
     unitId(newValue, oldValue) {
@@ -421,5 +473,4 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>
