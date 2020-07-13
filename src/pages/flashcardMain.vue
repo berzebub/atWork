@@ -1,6 +1,6 @@
 <template>
-  <q-page class="container">
-    <div>
+  <q-page>
+    <div class="container">
       <div class="row justify-between">
         <!-- กล่อง radio -->
         <div class="col text-left">
@@ -48,8 +48,8 @@
       </div>
       <!-- หัวข้อ -->
       <div class="q-ma-lg text-h6" align="center">
-        <div>{{getLevelName}}</div>
-        <div>{{getUnitName}}</div>
+        <div>{{ getLevelName }}</div>
+        <div>{{ getOrder + ". " + getUnitName }}</div>
       </div>
       <!-- ปุ่มเพิ่ม -->
       <div align="center">
@@ -76,57 +76,72 @@
         v-for="(item, index) in showDataFlashcard"
         v-show="item.collection == flashcardType"
         :key="index"
-        class="q-mt-md"
-        style="width:100%"
+        class="q-mt-md relative-position"
+        style="width:100%;"
       >
         <div
           v-if="item.status == 'waitForDelete'"
           class="absolute-center fit row items-center justify-center"
           style="background-color:black;opacity:0.6; z-index:2500;"
-        ></div>
-        <!-- cancel-delete -->
+        >
+          <!-- cancel-delete -->
+        </div>
+
         <q-btn
           v-if="item.status == 'waitForDelete' && $q.platform.is.desktop"
           @click="cancelDeleteFlashcard(item.id, item.order)"
           style="width:190px; z-index:2600; "
           class="absolute-center bg-white"
-        >ยกเลิกการลบ</q-btn>
-        <q-card-section class="text-white bg-blue-grey-10 no-padding">
+          >ยกเลิกการลบ</q-btn
+        >
+
+        <q-card-section
+          class="text-white bg-blue-grey-10 no-padding row"
+          style="height:40px;"
+        >
           <div
             v-if="item.status != 'waitForDelete' || $q.platform.is.desktop"
-            class="text-subtitle1 q-ml-sm"
-          >รหัสลำดับ {{ item.order }}</div>
+            class="text-subtitle1 q-ml-sm self-center"
+          >
+            รหัสลำดับ {{ item.order }}
+          </div>
           <div
             @click="cancelDeleteFlashcard(item.id, item.order)"
             v-if="$q.platform.is.mobile && item.status == 'waitForDelete'"
-            class="text-subtitle1 cursor-pointer"
+            class="text-subtitle1 cursor-pointer q-pa-sm"
             style="z-index:2600 ; position : relative; width: fit-content"
           >
             <u>ยกเลิกการลบ</u>
           </div>
-          <div class="row items-center absolute-right">
-            <!-- icon-delete -->
-            <q-icon
-              @click="openDialogDelete(item.id, item.order , item.vocabulary)"
+          <div class="row items-center absolute-right q-px-sm">
+            <!-- btn-delete -->
+            <q-btn
+              @click="openDialogDelete(item.id, item.order, item.vocabulary)"
               v-if="flashcardType == 'draft'"
-              class="cursor-pointer q-pr-lg desktop-only"
-              name="far fa-trash-alt"
-              style="color:white; font-size: 1.4em;"
+              size="sm"
+              class="q-mr-sm desktop-only"
+              flat
+              round
+              icon="far fa-trash-alt"
             />
-            <!-- icon-edit -->
-            <q-icon
+            <!-- btn-edit -->
+            <q-btn
               @click="editDataFlashcard(item)"
               v-if="flashcardType == 'draft'"
-              class="cursor-pointer q-pr-md desktop-only"
-              name="fas fa-edit"
-              style="color:white; font-size: 1.4em;"
+              size="sm"
+              flat
+              round
+              icon="far fa-edit"
+              class="desktop-only"
             />
             <!-- icon-menu -->
-            <q-icon
+            <q-btn
               v-if="flashcardType == 'draft'"
-              class="cursor-pointer q-pr-md mobile-only"
-              name="fas fa-ellipsis-v"
-              style="color:white; font-size: 1.4em;"
+              size="sm"
+              flat
+              round
+              class="cursor-pointer mobile-only"
+              icon="fas fa-ellipsis-v"
             />
             <!-- เมนูแก้ไข-ลบ -->
             <q-menu no-refocus>
@@ -143,7 +158,9 @@
                   clickable
                   v-close-popup
                   v-if="item.status != 'waitForDelete'"
-                  @click="openDialogDelete(item.id, item.order , item.vocabulary)"
+                  @click="
+                    openDialogDelete(item.id, item.order, item.vocabulary)
+                  "
                   class="cursor-pointer mobile-only"
                 >
                   <q-item-section>ลบคำศัพท์</q-item-section>
@@ -154,36 +171,40 @@
         </q-card-section>
         <!-- ประโยคข้อความ -->
         <q-card-section class="no-padding">
-          <div class="row">
+          <div class="row q-pa-md">
             <!-- รูป -->
             <div
               v-if="item.isImage == true"
-              class="col-sm-6 col-xs-12 q-px-md q-pt-md q-pb-sm text-h6"
+              class="col-sm-6 col-xs-12 text-h6"
               align="left"
             >
-              <q-img :src="item.img" :ratio="1/1" style="width:300px"></q-img>
+              <q-img :src="item.img" :ratio="1 / 1" style="width:300px"></q-img>
             </div>
             <!-- คำ -->
-            <div class="q-md-6 q-sm-12">
-              <div class="row items-center q-ml-md q-mt-md">
-                <div>
+            <div class="col q-pa-md ">
+              <div class="row items-center ">
+                <div class="self-center">
                   <q-btn
                     v-if="item.isSound == true"
-                    style="margin-top:10%"
                     flat
+                    dense=""
+                    round
+                    class="q-mr-md"
                     icon="fas fa-volume-up"
                     color="blue-grey-10"
-                    @click="playSound(item.audio)"
+                    @click="playAudio(item.audio)"
                   ></q-btn>
                 </div>
-                <div class="q-px-md q-pt-md q-pb-sm text-h6 text-blue-grey-10">{{item.vocabulary}}</div>
+                <div class="self-center text-h6 text-blue-grey-10">
+                  {{ item.vocabulary }}
+                </div>
               </div>
-              <div
-                class="q-ml-md q-px-md q-pt-md q-pb-sm text-subtitle1 text-blue-grey-7"
-              >{{item.read}}</div>
-              <div
-                class="q-ml-md q-px-md q-p-md q-pb-sm text-subtitle1 text-blue-grey-10"
-              >{{item.meaning}}</div>
+              <div class="text-subtitle1 text-blue-grey-7 q-mt-xs">
+                {{ item.read }}
+              </div>
+              <div class="text-subtitle1 text-blue-grey-10 q-mt-xs">
+                {{ item.meaning }}
+              </div>
             </div>
           </div>
           <q-separator />
@@ -193,25 +214,21 @@
       </q-card>
     </div>
     <!-- ------------------------------------------Dialog------------------------------------ -->
-    <!-- ลบ -->
-    <q-dialog v-model="dialogDelete" persistent>
-      <q-card style="min-width: 350px; height:200px">
-        <q-card-section>
-          <div align="center" class="q-mt-lg text-h6">คุณต้องการลบคำศัพท์</div>
-          <div align="center" class="q-mb-md text-h6">"{{ getOrder }} - {{getVocabulary}}"</div>
-        </q-card-section>
-        <q-card-actions align="center">
-          <q-btn style="width:120px" outline color="blue-grey-10" label="ยกเลิก" v-close-popup />
-          <q-btn
-            @click="deleteDataFlashcard()"
-            color="blue-grey-10"
-            style="width:120px"
-            label="ตกลง"
-          />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
-    <dialog-setting :type="4" v-if="deleteFinish == true"></dialog-setting>
+
+    <dialog-setting
+      :type="3"
+      v-if="dialogDelete"
+      :practice="topicDelete"
+      :name="orderDelete"
+      @emitConfirmDelete="deleteDataFlashcard()"
+      @emitCancelDelete="dialogDelete = false"
+    ></dialog-setting>
+
+    <dialog-setting
+      :type="4"
+      v-if="deleteFinish == true"
+      @autoClose="deleteFinish = false"
+    ></dialog-setting>
   </q-page>
 </template>
 
@@ -240,7 +257,12 @@ export default {
       isSnap: "",
       isDelete: true,
       practiceId: this.$route.params.practiceId,
-      isDisable: false
+      isDisable: false,
+      playSoundURL: "",
+
+      // Delete
+      topicDelete: "คำศัพท์",
+      orderDelete: ""
     };
   },
   methods: {
@@ -261,6 +283,7 @@ export default {
         .get()
         .then(data => {
           this.getUnitName = data.data().name;
+          this.getOrder = data.data().order;
         });
     },
     loadDataFlashcard() {
@@ -294,6 +317,7 @@ export default {
               audio: getSound
             });
           });
+
           db.collection("practice_server")
             .where("levelId", "==", this.levelId)
             .where("unitId", "==", this.unitId)
@@ -336,8 +360,8 @@ export default {
     openDialogDelete(id, order, vocabulary) {
       this.dialogDelete = true;
       this.getId = id;
-      this.getOrder = order;
-      this.getVocabulary = vocabulary;
+
+      this.orderDelete = order + " - " + vocabulary;
     },
     async cancelDeleteFlashcard(id) {
       await this.updateSyncStatus(this.practiceId, this.unitId);
@@ -351,13 +375,14 @@ export default {
         });
     },
     async deleteDataFlashcard() {
+      this.dialogDelete = false;
+
       await this.updateSyncStatus(this.practiceId, this.unitId);
       db.collection("practice_draft")
         .doc(this.getId)
         .update({ status: "waitForDelete" })
         .then(() => {
           this.getId = "";
-          this.dialogDelete = false;
           this.deleteFinish = true;
         });
     },
@@ -391,11 +416,6 @@ export default {
           getUnitName: this.getUnitName
         }
       });
-    },
-    playSound(pathSound) {
-      console.log(pathSound);
-      let audio = new Audio(pathSound);
-      audio.play();
     }
   },
   mounted() {

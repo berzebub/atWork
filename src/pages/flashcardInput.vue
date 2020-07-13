@@ -5,8 +5,8 @@
         <div class="col-sm-11 col-xs-12 relative-position">
           <!-- หัวข้อ -->
           <div class="q-ma-lg text-h6" align="center">
-            <div>{{getLevelName}}</div>
-            <div>{{getUnitName}}</div>
+            <div>{{ getLevelName }}</div>
+            <div>{{ getUnitName }}</div>
           </div>
           <!-- รหัสลำดับ -->
           <div>
@@ -15,12 +15,15 @@
               <div
                 class="q-ml-md text-body2 text-blue-grey-7"
                 style="margin-top:0.7%          "
-              >ตัวเลข 3 หลัก</div>
+              >
+                ตัวเลข 3 หลัก
+              </div>
             </div>
             <q-input
               dense
               ref="order"
-              :rules="[val => val || 'กรุณากรอกข้อมูลให้ถูกต้อง']"
+              lazy-rules
+              :rules="[val => val || 'กรุณากรอกข้อมูลให้ถูกต้อง', checkOrderId]"
               outlined
               mask="###"
               v-model.number="data.order"
@@ -34,39 +37,52 @@
                 <div
                   class="q-ml-md text-blue-grey-7 text-body2"
                   style="margin-top:0.7%"
-                >ไฟล์ jpg ขนาด 300x300 px เท่านั้น</div>
+                >
+                  ไฟล์ jpg ขนาด 300x300 px เท่านั้น
+                </div>
               </div>
               <div>
-                <q-file accept=".jpg" bg-color="white" outlined v-model="uploadImg">
+                <q-file
+                  accept=".jpg"
+                  bg-color="white"
+                  outlined
+                  v-model="uploadImg.file"
+                >
                   <template v-slot:append>
                     <!-- ปุ่มเลือกไฟล์ -->
                     <div
                       style="width:100px"
                       class="text-body2 rounded-borders text-center bg-blue-grey-10 text-white q-pa-xs cursor-pointer"
-                      @click.stop="uploadImg = null"
-                      v-if="!uploadImg"
-                    >เลือกไฟล์</div>
+                      @click.stop="uploadImg.file = null"
+                      v-if="!uploadImg.file"
+                    >
+                      เลือกไฟล์
+                    </div>
 
                     <q-btn
                       dense
                       class="cursor-pointer text-white bg-blue-grey-10"
-                      v-if="uploadImg"
-                      @click="uploadImg = null"
+                      v-if="uploadImg.file"
+                      @click="uploadImg.file = null"
                       icon="far fa-trash-alt"
                       size="12px"
                       style="padding:1.5px"
                     ></q-btn>
                   </template>
-                  <div
+                  <!-- <div
                     v-if="data.isImage == true"
                     style="width:1000px"
                     class="text-body2 text-grey-7 self-center"
-                  >{{uploadImg}}</div>
+                  >
+                    {{ uploadImg.file }}
+                  </div> -->
                   <div
                     style="width:1000px"
                     class="text-body2 text-grey-7 self-center"
-                    v-if="!uploadImg"
-                  >ลากแล้ววาง หรือ</div>
+                    v-if="!uploadImg.file"
+                  >
+                    ลากแล้ววาง หรือ
+                  </div>
                 </q-file>
               </div>
             </div>
@@ -78,38 +94,53 @@
                 <div
                   class="q-ml-md text-blue-grey-7 text-body2"
                   style="margin-top:0.7%"
-                >ไฟล์ jpg ขนาด 300x300 px เท่านั้น</div>
+                >
+                  ไฟล์ jpg ขนาด 300x300 px เท่านั้น
+                </div>
               </div>
               <div>
-                <q-file accept=".jpg" bg-color="white" outlined v-model="uploadImg">
+                <q-file
+                  accept=".jpg"
+                  bg-color="white"
+                  outlined
+                  v-model="uploadImg.file"
+                >
                   <template v-slot:append>
                     <!-- ปุ่มเลือกไฟล์ -->
                     <div
                       style="width:100px"
                       class="text-body2 rounded-borders text-center bg-blue-grey-10 text-white q-pa-xs cursor-pointer"
-                      @click.stop="uploadImg = null"
-                      v-if="!data.isImage"
-                    >เลือกไฟล์</div>
-                    <div
-                      class="cursor-pointer rounded-borders text-white bg-blue-grey-10"
-                      v-if="data.isImage "
-                      @click.stop="uploadImg  = null"
+                      @click.stop="uploadImg.file = null"
+                      v-if="!data.isImage && uploadImg.file == null"
                     >
-                      <span style class="far fa-trash-alt q-px-xs"></span>
+                      เลือกไฟล์
                     </div>
+
+                    <q-btn
+                      dense
+                      class="cursor-pointer text-white
+                    bg-blue-grey-10"
+                      v-if="data.isImage || uploadImg.file"
+                      @click="(uploadImg.file = null), (data.isImage = false)"
+                      icon="far fa-trash-alt"
+                      size="12px"
+                      style="padding:1.5px"
+                    ></q-btn>
                   </template>
                   <div
-                    v-if="data.isImage == true"
+                    v-if="data.isImage == true && !uploadImg.file"
                     style="width:1000px"
                     class="text-body2 text-grey-7 self-center"
                   >
-                    <span v-if="uploadImg == null">{{data.practiceId + ".jpg"}}</span>
+                    <span>{{ data.practiceId + ".jpg" }}</span>
                   </div>
                   <div
                     style="width:1000px"
                     class="text-body2 text-grey-7 self-center"
-                    v-if="!data.isImage"
-                  >ลากแล้ววาง หรือ</div>
+                    v-if="!data.isImage && uploadImg.file == null"
+                  >
+                    ลากแล้ววาง หรือ
+                  </div>
                 </q-file>
               </div>
             </div>
@@ -123,37 +154,52 @@
                 <div
                   class="q-ml-md text-blue-grey-7 text-body2"
                   style="margin-top:0.7%"
-                >ไฟล์ mp3 เท่านั้น</div>
+                >
+                  ไฟล์ mp3 เท่านั้น
+                </div>
               </div>
               <div>
-                <q-file accept=".mp3" bg-color="white" outlined v-model="uploadSound">
+                <q-file
+                  accept=".mp3"
+                  bg-color="white"
+                  outlined
+                  v-model="uploadSound.file"
+                >
                   <template v-slot:append>
                     <!-- ปุ่มเลือกไฟล์ -->
                     <div
                       style="width:100px;"
                       class="text-body2 rounded-borders text-center bg-blue-grey-10 text-white q-pa-xs cursor-pointer"
-                      @click.stop="uploadSound = null"
-                      v-if="!uploadSound"
-                    >เลือกไฟล์</div>
-                    <!-- ปุ่มลบไฟล์ -->
-                    <div
-                      class="cursor-pointer rounded-borders text-white bg-blue-grey-10"
-                      v-if="uploadSound"
-                      @click.stop="uploadSound = null"
+                      @click.stop="uploadSound.file = null"
+                      v-if="!uploadSound.file"
                     >
-                      <span style class="far fa-trash-alt q-px-xs"></span>
+                      เลือกไฟล์
                     </div>
+                    <!-- ปุ่มลบไฟล์ -->
+                    <q-btn
+                      dense
+                      class="cursor-pointer text-white bg-blue-grey-10"
+                      v-if="uploadSound.file"
+                      @click="uploadSound.file = null"
+                      icon="far fa-trash-alt"
+                      size="12px"
+                      style="padding:1.5px"
+                    ></q-btn>
                   </template>
-                  <div
-                    v-if="data.isSound == true"
+                  <!-- <div
+                    v-if="data.isSound == true "
                     style="width:1000px"
                     class="text-body2 text-grey-7 self-center"
-                  >{{uploadSound}}</div>
+                  >
+                    {{ uploadSound.file }}
+                  </div> -->
                   <div
                     style="width:1000px"
                     class="text-body2 text-grey-7 self-center"
-                    v-if="!uploadSound"
-                  >ลากแล้ววาง หรือ</div>
+                    v-if="!uploadSound.file"
+                  >
+                    ลากแล้ววาง หรือ
+                  </div>
                 </q-file>
               </div>
             </div>
@@ -162,39 +208,52 @@
             <div>
               <div class="row items-center">
                 <div align="left" class="text-subtitle1">ไฟล์เสียง</div>
-                <div class="q-ml-md text-blue-grey-7" style="margin-top:0.7%">ไฟล์ mp3 เท่านั้น</div>
+                <div class="q-ml-md text-blue-grey-7" style="margin-top:0.7%">
+                  ไฟล์ mp3 เท่านั้น
+                </div>
               </div>
               <div>
-                <q-file accept=".mp3" bg-color="white" outlined v-model="uploadSound">
+                <q-file
+                  accept=".mp3"
+                  bg-color="white"
+                  outlined
+                  v-model="uploadSound.file"
+                >
                   <template v-slot:append>
                     <!-- ปุ่มเลือกไฟล์ -->
                     <div
                       style="width:100px;"
                       class="text-body2 rounded-borders text-center bg-blue-grey-10 text-white q-pa-xs cursor-pointer"
-                      @click.stop="uploadSound = null"
-                      v-if="!data.isSound"
-                    >เลือกไฟล์</div>
-                    <!-- ปุ่มลบไฟล์ -->
-                    <div
-                      class="cursor-pointer rounded-borders text-white bg-blue-grey-10"
-                      v-if="data.isSound"
-                      @click.stop="uploadSound = null"
+                      @click.stop="uploadSound.file = null"
+                      v-if="!data.isSound && uploadSound.file == null"
                     >
-                      <span style class="far fa-trash-alt q-px-xs"></span>
+                      เลือกไฟล์
                     </div>
+                    <!-- ปุ่มลบไฟล์ -->
+                    <q-btn
+                      dense
+                      class="cursor-pointer text-white bg-blue-grey-10"
+                      v-if="data.isSound || uploadSound.file"
+                      @click="(uploadSound.file = null), (data.isSound = false)"
+                      icon="far fa-trash-alt"
+                      size="12px"
+                      style="padding:1.5px"
+                    ></q-btn>
                   </template>
                   <div
-                    v-if="data.isSound == true"
+                    v-if="data.isSound == true && !uploadSound.file"
                     style="width:1000px"
                     class="text-body2 text-grey-7 self-center"
                   >
-                    <span v-if="uploadSound == null">{{data.practiceId + ".jpg"}}</span>
+                    <span>{{ data.practiceId + ".mp3" }}</span>
                   </div>
                   <div
                     style="width:1000px"
                     class="text-body2 text-grey-7 self-center"
-                    v-if="!data.isSound"
-                  >ลากแล้ววาง หรือ</div>
+                    v-if="!data.isSound && uploadSound.file == null"
+                  >
+                    ลากแล้ววาง หรือ
+                  </div>
                 </q-file>
               </div>
             </div>
@@ -220,20 +279,20 @@
               <q-editor
                 dense
                 @input="checkRead()"
-                :class="this.checkValidate == true?'error-border': null "
+                :class="this.checkValidate == true ? 'error-border' : null"
                 ref="read"
                 v-model="data.read"
                 min-height="5rem"
-                :toolbar="[
-              ['bold', 'italic', 'underline']
-              ]"
+                :toolbar="[['bold', 'italic', 'underline']]"
               />
             </div>
             <div
               align="left"
-              :style="this.checkValidate == false?'visibility:hidden': null"
+              :style="this.checkValidate == false ? 'visibility:hidden' : null"
               class="error-text q-ml-md font"
-            >กรุณากรอกข้อมูลให้ถูกต้อง</div>
+            >
+              กรุณากรอกข้อมูลให้ถูกต้อง
+            </div>
           </div>
           <!-- คำแปล -->
           <div class="q-mt-md">
@@ -251,11 +310,21 @@
           </div>
         </div>
       </div>
-      <div class="row" :style="$q.platform.is.desktop?'width:360px; margin-left:21%':null">
+      <div
+        class="row"
+        :style="$q.platform.is.desktop ? 'width:360px; margin-left:21%' : null"
+      >
         <!-- ยกเลิก -->
         <div class="q-mt-md col">
           <q-btn
-            :to="'/flashcardMain/' + data.levelId + '/'+ data.unitId + '/'+ data.practiceId "
+            :to="
+              '/flashcardMain/' +
+                data.levelId +
+                '/' +
+                data.unitId +
+                '/' +
+                data.practiceId
+            "
             label="ยกเลิก"
             dense
             style="width:150px"
@@ -280,26 +349,17 @@
       <dialog-setting
         :type="6"
         v-if="isSaveFinish == true"
-        @autoClose=" $router.push(
-                '/flashcardMain/' +
-                  data.levelId +
-                  '/' +
-                  data.unitId +
-                  '/' +
-                  data.practiceId
-              )"
+        @autoClose="
+          $router.push(
+            '/flashcardMain/' +
+              data.levelId +
+              '/' +
+              data.unitId +
+              '/' +
+              data.practiceId
+          )
+        "
       ></dialog-setting>
-      <!-- เพิ่มข้อมูลสำเร็จ -->
-      <q-dialog v-model="successData">
-        <q-card style="min-width: 350px; height:200px">
-          <q-card-section class="absolute-center" align="center">
-            <div>
-              <q-icon color="secondary" size="lg" name="far fa-check-circle" />
-            </div>
-            <div class="q-mt-lg">บันทึกข้อมูลเรียบร้อย</div>
-          </q-card-section>
-        </q-card>
-      </q-dialog>
     </div>
   </q-page>
 </template>
@@ -315,8 +375,14 @@ export default {
     return {
       isSaveFinish: false,
       successData: false,
-      uploadSound: null,
-      uploadImg: null,
+      uploadSound: {
+        file: null,
+        status: false
+      },
+      uploadImg: {
+        file: null,
+        status: false
+      },
       checkValidate: false,
       isClick: false,
       isAddMode: true,
@@ -333,7 +399,8 @@ export default {
         practiceId: this.$route.params.practiceId,
         isImage: false,
         isSound: false
-      }
+      },
+      oldOrder: ""
     };
   },
   methods: {
@@ -344,8 +411,20 @@ export default {
         this.checkValidate = false;
       }
     },
+    async checkOrderId(val) {
+      let getOrder = await db
+        .collection("practice_draft")
+        .where("order", "==", val)
+        .where("practiceId", "==", this.data.practiceId)
+        .get();
+
+      if (this.oldOrder != val) {
+        return !getOrder.size || "รหัสลำดับนี้มีการใช้งานแล้ว";
+      }
+    },
     editMode() {
       this.isAddMode = false;
+      this.oldOrder = this.$route.params.data.order;
       if (this.$route.params.levelId == undefined) {
         this.$router.push(
           "/flashcardMain/" +
@@ -373,26 +452,28 @@ export default {
         this.checkValidate = true;
         return;
       }
+
+      if (this.uploadImg.file != null) {
+        this.data.isImage = true;
+      }
+      if (this.uploadSound.file != null) {
+        this.data.isSound = true;
+      }
+
       this.isClick = true;
       await this.updateSyncStatus(this.data.practiceId, this.data.unitId);
       if (this.$route.name == "flashcardInput") {
-        if (this.uploadImg != null) {
-          this.data.isImage = true;
-        }
-        if (this.uploadSound != null) {
-          this.data.isSound = true;
-        }
         db.collection("practice_draft")
           .add(this.data)
           .then(getId => {
             if (this.data.isImage == true) {
               st.child("practice/image/" + getId.id + ".jpg").put(
-                this.uploadImg
+                this.uploadImg.file
               );
             }
             if (this.data.isSound == true) {
               st.child("practice/audio/" + getId.id + ".mp3").put(
-                this.uploadSound
+                this.uploadSound.file
               );
             }
             this.isSaveFinish = true;
@@ -407,22 +488,40 @@ export default {
         .doc(this.$route.params.id)
         .update(this.data)
         .then(() => {
-          if (this.uploadImg) {
-            st.child("practice/image/" + this.$route.params.id + ".jpg").put(
-              this.uploadImg
-            );
+          if (this.uploadImg.file) {
+            if (this.data.isImage) {
+              st.child("practice/image/" + this.$route.params.id + ".jpg").put(
+                this.uploadImg.file
+              );
+            } else {
+              st.child(
+                "practice/image/" + this.$route.params.id + ".jpg"
+              ).delete();
+            }
           }
-          if (this.uploadSound) {
-            st.child("practice/audio/" + this.$route.params.id + ".mp3").put(
-              this.uploadSound
-            );
+          if (this.uploadSound.file) {
+            if (this.data.isSound) {
+              st.child("practice/audio/" + this.$route.params.id + ".mp3").put(
+                this.uploadSound.file
+              );
+            } else {
+              st.child(
+                "practice/audio/" + this.$route.params.id + ".mp3"
+              ).delete();
+            }
           }
           this.isSaveFinish = true;
         });
     }
   },
   mounted() {
-    if (this.$route.name == "flashcardEdit") this.editMode();
+    if (this.$route.name == "flashcardEdit") {
+      if (this.$route.params.id == undefined) {
+        this.$router.go(-1);
+        return;
+      }
+      this.editMode();
+    }
   }
 };
 </script>
