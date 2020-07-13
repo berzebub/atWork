@@ -29,7 +29,7 @@
           <div class="col-1" align="right">
             <!-- ปุ่ม สามจุด -->
             <div class="col-1" align="right">
-              <q-btn round size="sm" color="blue-grey-10" icon="fas fa-ellipsis-v">
+              <q-btn round size="sm" flat class="text-white" icon="fas fa-ellipsis-v">
                 <q-menu auto-close :offset="[5, 10]" content-class="shadow-3">
                   <q-list style="min-width: 100px">
                     <q-item clickable @click="editPractice(itemPrac)">
@@ -51,18 +51,18 @@
             <span v-if="itemPrac.practiceType=='expression'">ประโยคสนทนา</span>
             <span v-if="itemPrac.practiceType=='vdo'">บทสนทนา</span>
           </div>
-          <div class="row" :class="$q.platform.is.desktop ? 'col-2':'col-4'" align="center">
-            <div class="col">
+          <div class="row" :class="$q.platform.is.desktop ? 'col-3':'col-4'">
+            <div class="col" align="right">
               <q-btn
+                class="q-mx-sm"
                 v-show="itemPrac.isShowSyncBtn"
                 round
                 color="blue-grey-10"
                 icon="fas fa-sync-alt"
                 @click="sync(itemPrac.practiceId).then(() => emitData(itemPrac) )"
               />
-            </div>
-            <div class="col">
               <q-btn
+                class="q-mx-sm"
                 round
                 color="blue-grey-10"
                 icon="fas fa-pencil-alt"
