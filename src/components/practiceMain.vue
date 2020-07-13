@@ -1,9 +1,11 @@
 <template>
   <div class="container">
     <div class="text-h6" align="center">
-      <span>{{levelName}}</span>
+      <span v-if="$q.platform.is.desktop">{{levelName}}</span>
+      <span v-else>{{ levelMobileName }}</span>
       <br />
-      <span>{{num}}. {{unitName}}</span>
+      <span v-if="$q.platform.is.desktop">{{num}}. {{unitName}}</span>
+      <span v-else>{{orderMobile}}. {{ unitMobileName }}</span>
     </div>
     <!-- หน้าหลัก -->
     <div v-if="isShowPractice" align="center">
@@ -214,7 +216,10 @@ export default {
       dialogDuplicateOrder: false,
       name: "",
       practice: "แบบฝึกหัด",
-      orderOld: null
+      orderOld: null,
+      levelMobileName: "",
+      unitMobileName: "",
+      orderMobile: ""
     };
   },
   methods: {
@@ -401,10 +406,32 @@ export default {
         // ไม่อยู่ type ไหนเลยให้แก้ มีแจ้งเตือน
         this.$router.push("/practiceList");
       }
+    },
+    loadLevelName() {
+      this.loadingShow();
+      db.collection("level")
+        .doc(this.$route.params.levelId)
+        .get()
+        .then(doc => {
+          this.levelMobileName = doc.data().name;
+          // get unit name
+          db.collection("unit")
+            .doc(this.$route.params.unitId)
+            .get()
+            .then(doc1 => {
+              this.orderMobile = doc1.data().order;
+              this.unitMobileName = doc1.data().name;
+              this.loadingHide();
+            });
+        });
     }
   },
   mounted() {
     this.loadData();
+
+    if (this.$q.platform.is.mobile) {
+      this.loadLevelName();
+    }
   },
   watch: {
     unitId(newValue, oldValue) {
