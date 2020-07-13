@@ -715,7 +715,7 @@ export default {
               this.dataFiles[index].status = true;
             }
           });
-
+          this.isLoad = false;
           this.loadingHide();
         });
     },
@@ -841,9 +841,6 @@ export default {
 
       // หน้า แก้ไข
       else {
-        // if (!this.data.isSound) {
-        //   this.data.isSound = false;
-        // }
         db.collection("practice_draft")
           .doc(this.$route.params.id)
           .set(this.data)
