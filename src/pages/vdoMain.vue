@@ -8,7 +8,7 @@
             <div class="col">
               <q-radio
                 color="blue-grey-10"
-                @input="loadPracticeData()"
+                @input="loadPracticeData(false)"
                 v-model="mode "
                 val="draft"
                 label="แบบร่าง"
@@ -18,7 +18,7 @@
             <div class="col">
               <q-radio
                 color="blue-grey-10"
-                @input="loadPracticeData()"
+                @input="loadPracticeData(true)"
                 v-model="mode "
                 val="server"
                 label="เซิร์ฟเวอร์"
@@ -26,16 +26,18 @@
             </div>
           </div>
         </div>
-        <div class="desktop-only">
-          <div v-if="mode =='draft'" class="text-right">
-            <q-btn
-              @click="sync($route.params.practiceId),openDialogSync()"
-              class="q-mx-md"
-              round
-              color="blue-grey-10"
-              icon="fas fa-sync-alt"
-            />
-            <q-btn round color="blue-grey-10" icon="fas fa-print" />
+        <div>
+          <div class="q-ml-md" v-if="$q.platform.is.mobile">
+            <sync-btn :practiceId="practiceId " :isServer="isDisable"></sync-btn>
+          </div>
+          <div class="row desktop-only" v-if="mode == 'draft'">
+            <div class="q-mx-md">
+              <sync-btn :practiceId="practiceId"></sync-btn>
+            </div>
+            <!-- ปุ่มพิมพ์-->
+            <div class="mobile-hide">
+              <q-btn v-if="mode == 'draft'" round color="blue-grey-10" icon="fas fa-print" />
+            </div>
           </div>
         </div>
 
@@ -148,7 +150,15 @@
               >รหัสลำดับ {{item.order}}</div>
               <div style="height:28px" v-if="item.status == 'waitForDelete'"></div>
               <div style="height:10px">
-                <q-btn class="mobile-only" size="13px" icon="fas fa-ellipsis-v" round dense flat>
+                <q-btn
+                  class="mobile-only"
+                  v-if="mode == 'draft'"
+                  size="13px"
+                  icon="fas fa-ellipsis-v"
+                  round
+                  dense
+                  flat
+                >
                   <q-menu>
                     <q-list style="min-width: 130px">
                       <q-item clickable v-close-popup>
@@ -293,6 +303,9 @@
       </q-dialog>
       <q-dialog v-model="isShowUpload">
         <q-card style="max-width:610px;width:100%">
+          <div>
+            <div class="text-h6 q-px-lg q-py-md">การตั้งค่าการอัปโหลดวิดีโอ</div>
+          </div>
           <howtouploadfile />
           <div class="text-center">
             <q-btn
@@ -322,10 +335,12 @@
 import { db, st } from "../router";
 import howtouploadfile from "../components/howtouploadfile.vue";
 import dialogSetting from "../components/dialogSetting";
+import syncBtn from "../components/syncBtn";
 export default {
   components: {
     howtouploadfile,
-    dialogSetting
+    dialogSetting,
+    syncBtn
   },
   data() {
     return {
@@ -358,7 +373,8 @@ export default {
       playSoundURL: "",
       pathFile:
         "https://storage.cloud.google.com/atwork-dee11.appspot.com/practice/",
-      syncData: ""
+      syncData: "",
+      isDisable: false
     };
   },
   methods: {
@@ -392,7 +408,8 @@ export default {
         });
     },
     // โหลดข้อมูลทั้งหมด
-    loadPracticeData() {
+    loadPracticeData(val) {
+      this.isDisable = val;
       let practiceId = this.$route.params.practiceId;
       let dbData;
       if (typeof this.syncData == "function") {

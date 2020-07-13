@@ -89,8 +89,8 @@
                 dense
                 icon="far fa-trash-alt"
                 color="blue-grey-10"
-                size="13px"
-                style="padding:1px"
+                size="14px"
+                style="padding-bottom:3px"
               />
             </div>
           </div>
@@ -124,7 +124,8 @@
               <!-- NOTE : ปุ่มเลือกไพล์ สำหรับ Add Mode -->
               <div v-if="isAddMode">
                 <div
-                  class="text-subtitle1 rounded-borders text-center bg-blue-grey-10 text-white q-px-sm cursor-pointer"
+                  style="width:100px"
+                  class="text-subtitle1 rounded-borders text-center bg-blue-grey-10 text-white q-pa-xs cursor-pointer"
                   @click.stop="uploadImg.file = null"
                   v-if="!uploadImg.file"
                 >เลือกไฟล์</div>
@@ -140,7 +141,8 @@
               <!-- NOTE : ปุ่มเลือกไพล์ สำหรับ Edit Mode -->
               <div v-if="!isAddMode">
                 <div
-                  class="text-subtitle1 rounded-borders text-center bg-blue-grey-10 text-white q-px-sm cursor-pointer"
+                  style="width:100px"
+                  class="text-subtitle1 rounded-borders text-center bg-blue-grey-10 text-white q-pa-xs cursor-pointer"
                   @click.stop="uploadImg.file = null"
                   v-if="!data.isImage && !uploadImg.file"
                 >เลือกไฟล์</div>
@@ -247,8 +249,8 @@
                   dense
                   icon="far fa-trash-alt"
                   color="blue-grey-10"
-                  size="13px"
-                  style="padding:1px"
+                  size="14px"
+                  style="padding-bottom:3px"
                 />
               </div>
             </div>
@@ -322,8 +324,8 @@
                   dense
                   icon="far fa-trash-alt"
                   color="blue-grey-10"
-                  size="13px"
-                  style="padding:1px"
+                  size="14px"
+                  style="padding-bottom:3px"
                 />
               </div>
             </div>
@@ -396,8 +398,8 @@
                   dense
                   icon="far fa-trash-alt"
                   color="blue-grey-10"
-                  size="13px"
-                  style="padding:1px"
+                  size="14px"
+                  style="padding-bottom:3px"
                 />
               </div>
             </div>
@@ -470,8 +472,8 @@
                   dense
                   icon="far fa-trash-alt"
                   color="blue-grey-10"
-                  size="13px"
-                  style="padding:1px"
+                  size="14px"
+                  style="padding-bottom:3px"
                 />
               </div>
             </div>
@@ -487,7 +489,10 @@
       </div>
       <div class="q-py-sm">
         <span>ตัวเลือกที่ถูกต้อง</span>
-        <div class="row q-pa-sm" :class="isCorrectAnswer && !data.correctAnswer ? 'brx' : null">
+        <div
+          class="row q-px-md"
+          :class="isCorrectAnswer && !data.correctAnswer ? 'brx' : 'boxAnswer'"
+        >
           <div class="col-xs-6 col-md-3 col-sm-3">
             <q-radio
               style="margin-left:-10px"
@@ -540,7 +545,7 @@
         </div>
       </div>
       <div class="q-pb-lg">
-        <span>คำอธิบาย *ต้องใช้ตัวหนาสำหรับตัวเลือกที่ถูกต้อง</span>
+        <span>คำอธิบาย</span>
         <div>
           <q-editor
             square
@@ -710,7 +715,7 @@ export default {
               this.dataFiles[index].status = true;
             }
           });
-
+          this.isLoad = false;
           this.loadingHide();
         });
     },
@@ -732,12 +737,10 @@ export default {
 
       this.$refs.orderid.validate();
       if (this.$refs.orderid.hasError) {
-        return;
       }
 
       if (this.data.question == "") {
         this.isQuestion = false;
-        return;
       }
 
       if (hasChoice.length < 2) {
@@ -748,7 +751,6 @@ export default {
         } else if (index == 1) {
           this.isErrorChoice2 = true;
         }
-        return;
       }
 
       if (!this.data.correctAnswer) {
@@ -767,6 +769,13 @@ export default {
       if (this.uploadImg.file) {
         this.data.isImage = true;
         this.uploadImg.status = true;
+      }
+      if (this.dataQuestion.file) {
+        this.data.isSound = true;
+        this.dataQuestion.status = true;
+      } else {
+        this.data.isSound = false;
+        this.dataQuestion.status = false;
       }
 
       this.dataFiles.map((x, index) => {
@@ -797,7 +806,7 @@ export default {
                 .put(this.uploadImg.file);
             }
 
-            if (this.dataQuestion.file) {
+            if (this.dataQuestion.status) {
               await st
                 .child("/practice/audio/" + doc.id + ".mp3")
                 .put(this.dataQuestion.file);
@@ -850,21 +859,19 @@ export default {
                   .delete();
               }
             }
-
-            if (this.dataQuestion.status) {
+            if (this.data.isSound) {
               if (this.dataQuestion.file) {
                 await st
                   .child("/practice/audio/" + this.$route.params.id + ".mp3")
                   .put(this.dataQuestion.file);
               }
             } else {
-              if (this.data.isSound) {
+              if (this.dataQuestion.status) {
                 await st
-                  .child("/practice/audio/" + this.$route.params.id + ".jpg")
+                  .child("/practice/audio/" + this.$route.params.id + ".mp3")
                   .delete();
               }
             }
-
             // แบบมีเสียง เพิ่ม
             if (this.data.isAnswerSound) {
               this.dataFiles.map(async (x, index) => {
@@ -1021,6 +1028,9 @@ export default {
 };
 </script>
 <style scoped>
+.boxAnswer {
+  border: 1px solid #fafafa;
+}
 .box-choice-sound {
   border: 1px solid #d4d4d4;
 }
