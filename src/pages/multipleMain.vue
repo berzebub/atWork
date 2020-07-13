@@ -287,7 +287,7 @@
         :name="name"
         :practice="'คำถาม'"
         v-if="isDeleteDataDialogSuccess"
-        @emitConfirmDelete="isDeleteDataDialogSuccess = false"
+        @emitConfirmDelete="deleteBtn"
       ></dialog-setting>
       <!--  ลบคำถาม update status -->
       <dialog-setting
@@ -516,6 +516,15 @@ export default {
 
       this.isSaveDialogSuccess = true;
     },
+
+    // กดปุ่ม ICON ลบ เพื่องเก็บ KEY
+    deleteData(key, id, index) {
+      this.name = "รหัสลำดับ" + " " + id;
+      this.isDeleteDataDialogSuccess = true;
+      this.orderId = id;
+      this.deleteKey = key;
+      this.indexKey = index;
+    },
     // ลบข้อมูล
     async deleteBtn() {
       await this.updateSyncStatus(
@@ -532,14 +541,6 @@ export default {
         .then(() => {
           this.isDeleteDialogSuccess = true;
         });
-    },
-    // กดปุ่ม ICON ลบ เพื่องเก็บ KEY
-    deleteData(key, id, index) {
-      this.name = "รหัสลำดับ" + " " + id;
-      this.isDeleteDataDialogSuccess = true;
-      this.orderId = id;
-      this.deleteKey = key;
-      this.indexKey = index;
     },
     async cancelDelete(key) {
       await this.updateSyncStatus(
