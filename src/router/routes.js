@@ -151,14 +151,14 @@ const routes = [
         name: "hotelEdit"
       },
       {
-        path: "employeelAdd",
-        component: () => import("pages/employeelInput.vue"),
-        name: "employeelAdd"
+        path: "accountAdd",
+        component: () => import("pages/accountInput.vue"),
+        name: "accountAdd"
       },
       {
-        path: "employeelEdit/:employeelId",
-        component: () => import("pages/employeelInput.vue"),
-        name: "employeelEdit"
+        path: "accountEdit/:accountId",
+        component: () => import("pages/accountInput.vue"),
+        name: "accountEdit"
       },
       // ------------------- userMain ผู้ดูแลระบบ -------------------
       {
