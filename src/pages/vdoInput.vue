@@ -16,7 +16,7 @@
             ref="orderid"
             v-model.number="data.order"
             dense
-            :rules="[ val => !!val || 'กรุณาใส่รหัสลำดับ',checkOrderId]"
+            :rules="[ val => !!val ,checkOrderId]"
           />
         </div>
       </div>
@@ -169,7 +169,7 @@ export default {
   },
   methods: {
     engOnly() {
-      let regex = /[A-Za-z]/;
+      let regex = /[A-Z a-z ,.'?]/g;
       let chars = this.data.sentenceEng.split("");
       let char = chars.pop();
       if (!regex.test(char)) {
@@ -177,7 +177,7 @@ export default {
       }
     },
     thOnly() {
-      let regex = /[ก-ฮะ-์]/;
+      let regex = /[ก-ฮ ะ-์ ,.'?]/;
       let chars = this.data.sentenceTh.split("");
       let char = chars.pop();
       if (!regex.test(char)) {
@@ -185,6 +185,7 @@ export default {
       }
     },
     loadLevel() {
+      this.loadingShow();
       let levelKey = this.$route.params.levelId;
       db.collection("level")
         .doc(levelKey)
@@ -207,6 +208,7 @@ export default {
             this.practiceData.unitName = result.data().name;
             this.practiceData.unitOrder = result.data().order;
             // โหลดข้อมูล คำสั่ง
+            this.loadingHide();
           }
         });
     },

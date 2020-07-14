@@ -237,6 +237,7 @@
               <span>คำสั่งภาษาอังกฤษ</span>
               <q-input
                 dense
+                autogrow
                 :rules="[ val => val && val.length > 0]"
                 ref="instrunctionEng"
                 outlined
@@ -250,6 +251,7 @@
               <span>คำสั่งภาษาไทย</span>
               <q-input
                 dense
+                autogrow
                 :rules="[ val => val && val.length > 0 ]"
                 ref="instrunctionTh"
                 outlined
@@ -354,7 +356,7 @@ export default {
   },
   methods: {
     engOnly() {
-      let regex = /[A-Za-z]/;
+      let regex = /[A-Z a-z .,?']/;
       let chars = this.instrunctionEng.split("");
       let char = chars.pop();
       if (!regex.test(char)) {
@@ -362,7 +364,7 @@ export default {
       }
     },
     thOnly() {
-      let regex = /[ก-ฮะ-์]/;
+      let regex = /[ก-ฮ ะ-์ .,?']/;
       let chars = this.instrunctionTh.split("");
       let char = chars.pop();
       if (!regex.test(char)) {
