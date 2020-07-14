@@ -70,7 +70,6 @@ export default {
         });
     },
     editHotel(data) {
-      
       this.$router.push("/hotelEdit/" + data.hotelId);
     },
     loadHotel() {
