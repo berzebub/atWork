@@ -12,14 +12,10 @@
           <div>
             <div class="row items-center">
               <div class="text-subtitle1" align="left">รหัสลำดับ</div>
-              <div
-                class="q-ml-md text-body2 text-blue-grey-7"
-                style="margin-top:0.7%          "
-              >
-                ตัวเลข 3 หลัก
-              </div>
+              <div class="q-ml-md text-body2 text-blue-grey-7" style="margin-top:0.7%">ตัวเลข 3 หลัก</div>
             </div>
             <q-input
+              bg-color="white"
               dense
               ref="order"
               lazy-rules
@@ -37,17 +33,10 @@
                 <div
                   class="q-ml-md text-blue-grey-7 text-body2"
                   style="margin-top:0.7%"
-                >
-                  ไฟล์ jpg ขนาด 300x300 px เท่านั้น
-                </div>
+                >ไฟล์ jpg ขนาด 300x300 px เท่านั้น</div>
               </div>
               <div>
-                <q-file
-                  accept=".jpg"
-                  bg-color="white"
-                  outlined
-                  v-model="uploadImg.file"
-                >
+                <q-file accept=".jpg" bg-color="white" outlined v-model="uploadImg.file">
                   <template v-slot:append>
                     <!-- ปุ่มเลือกไฟล์ -->
                     <div
@@ -55,9 +44,7 @@
                       class="text-body2 rounded-borders text-center bg-blue-grey-10 text-white q-pa-xs cursor-pointer"
                       @click.stop="uploadImg.file = null"
                       v-if="!uploadImg.file"
-                    >
-                      เลือกไฟล์
-                    </div>
+                    >เลือกไฟล์</div>
 
                     <q-btn
                       dense
@@ -75,14 +62,12 @@
                     class="text-body2 text-grey-7 self-center"
                   >
                     {{ uploadImg.file }}
-                  </div> -->
+                  </div>-->
                   <div
                     style="width:1000px"
                     class="text-body2 text-grey-7 self-center"
                     v-if="!uploadImg.file"
-                  >
-                    ลากแล้ววาง หรือ
-                  </div>
+                  >ลากแล้ววาง หรือ</div>
                 </q-file>
               </div>
             </div>
@@ -94,17 +79,10 @@
                 <div
                   class="q-ml-md text-blue-grey-7 text-body2"
                   style="margin-top:0.7%"
-                >
-                  ไฟล์ jpg ขนาด 300x300 px เท่านั้น
-                </div>
+                >ไฟล์ jpg ขนาด 300x300 px เท่านั้น</div>
               </div>
               <div>
-                <q-file
-                  accept=".jpg"
-                  bg-color="white"
-                  outlined
-                  v-model="uploadImg.file"
-                >
+                <q-file accept=".jpg" bg-color="white" outlined v-model="uploadImg.file">
                   <template v-slot:append>
                     <!-- ปุ่มเลือกไฟล์ -->
                     <div
@@ -112,14 +90,11 @@
                       class="text-body2 rounded-borders text-center bg-blue-grey-10 text-white q-pa-xs cursor-pointer"
                       @click.stop="uploadImg.file = null"
                       v-if="!data.isImage && uploadImg.file == null"
-                    >
-                      เลือกไฟล์
-                    </div>
+                    >เลือกไฟล์</div>
 
                     <q-btn
                       dense
-                      class="cursor-pointer text-white
-                    bg-blue-grey-10"
+                      class="cursor-pointer text-white bg-blue-grey-10"
                       v-if="data.isImage || uploadImg.file"
                       @click="(uploadImg.file = null), (data.isImage = false)"
                       icon="far fa-trash-alt"
@@ -138,9 +113,7 @@
                     style="width:1000px"
                     class="text-body2 text-grey-7 self-center"
                     v-if="!data.isImage && uploadImg.file == null"
-                  >
-                    ลากแล้ววาง หรือ
-                  </div>
+                  >ลากแล้ววาง หรือ</div>
                 </q-file>
               </div>
             </div>
@@ -154,17 +127,10 @@
                 <div
                   class="q-ml-md text-blue-grey-7 text-body2"
                   style="margin-top:0.7%"
-                >
-                  ไฟล์ mp3 เท่านั้น
-                </div>
+                >ไฟล์ mp3 เท่านั้น</div>
               </div>
               <div>
-                <q-file
-                  accept=".mp3"
-                  bg-color="white"
-                  outlined
-                  v-model="uploadSound.file"
-                >
+                <q-file accept=".mp3" bg-color="white" outlined v-model="uploadSound.file">
                   <template v-slot:append>
                     <!-- ปุ่มเลือกไฟล์ -->
                     <div
@@ -172,9 +138,7 @@
                       class="text-body2 rounded-borders text-center bg-blue-grey-10 text-white q-pa-xs cursor-pointer"
                       @click.stop="uploadSound.file = null"
                       v-if="!uploadSound.file"
-                    >
-                      เลือกไฟล์
-                    </div>
+                    >เลือกไฟล์</div>
                     <!-- ปุ่มลบไฟล์ -->
                     <q-btn
                       dense
@@ -192,14 +156,12 @@
                     class="text-body2 text-grey-7 self-center"
                   >
                     {{ uploadSound.file }}
-                  </div> -->
+                  </div>-->
                   <div
                     style="width:1000px"
                     class="text-body2 text-grey-7 self-center"
                     v-if="!uploadSound.file"
-                  >
-                    ลากแล้ววาง หรือ
-                  </div>
+                  >ลากแล้ววาง หรือ</div>
                 </q-file>
               </div>
             </div>
@@ -208,17 +170,10 @@
             <div>
               <div class="row items-center">
                 <div align="left" class="text-subtitle1">ไฟล์เสียง</div>
-                <div class="q-ml-md text-blue-grey-7" style="margin-top:0.7%">
-                  ไฟล์ mp3 เท่านั้น
-                </div>
+                <div class="q-ml-md text-blue-grey-7" style="margin-top:0.7%">ไฟล์ mp3 เท่านั้น</div>
               </div>
               <div>
-                <q-file
-                  accept=".mp3"
-                  bg-color="white"
-                  outlined
-                  v-model="uploadSound.file"
-                >
+                <q-file accept=".mp3" bg-color="white" outlined v-model="uploadSound.file">
                   <template v-slot:append>
                     <!-- ปุ่มเลือกไฟล์ -->
                     <div
@@ -226,9 +181,7 @@
                       class="text-body2 rounded-borders text-center bg-blue-grey-10 text-white q-pa-xs cursor-pointer"
                       @click.stop="uploadSound.file = null"
                       v-if="!data.isSound && uploadSound.file == null"
-                    >
-                      เลือกไฟล์
-                    </div>
+                    >เลือกไฟล์</div>
                     <!-- ปุ่มลบไฟล์ -->
                     <q-btn
                       dense
@@ -251,9 +204,7 @@
                     style="width:1000px"
                     class="text-body2 text-grey-7 self-center"
                     v-if="!data.isSound && uploadSound.file == null"
-                  >
-                    ลากแล้ววาง หรือ
-                  </div>
+                  >ลากแล้ววาง หรือ</div>
                 </q-file>
               </div>
             </div>
@@ -265,6 +216,7 @@
               <div class="text-subtitle1" align="left">คำศัพท์</div>
             </div>
             <q-input
+              bg-color="white"
               dense
               ref="vocabulary"
               v-model="data.vocabulary"
@@ -290,9 +242,7 @@
               align="left"
               :style="this.checkValidate == false ? 'visibility:hidden' : null"
               class="error-text q-ml-md font"
-            >
-              กรุณากรอกข้อมูลให้ถูกต้อง
-            </div>
+            >กรุณากรอกข้อมูลให้ถูกต้อง</div>
           </div>
           <!-- คำแปล -->
           <div class="q-mt-md">
@@ -300,6 +250,7 @@
               <div class="text-subtitle1" align="left">คำแปล</div>
             </div>
             <q-input
+              bg-color="white"
               dense
               type="textarea"
               ref="meaning"
@@ -310,10 +261,7 @@
           </div>
         </div>
       </div>
-      <div
-        class="row"
-        :style="$q.platform.is.desktop ? 'width:360px; margin-left:21%' : null"
-      >
+      <div class="row" :style="$q.platform.is.desktop ? 'width:360px; margin-left:21%' : null">
         <!-- ยกเลิก -->
         <div class="q-mt-md col">
           <q-btn
