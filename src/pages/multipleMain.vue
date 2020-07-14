@@ -29,7 +29,7 @@
         </div>
         <div>
           <div class="q-ml-md" v-if="$q.platform.is.mobile">
-            <sync-btn :practiceId="practiceId " :isServer="isDisable"></sync-btn>
+            <sync-btn :practiceId="practiceId" :isServer="isDisable"></sync-btn>
           </div>
           <div class="row desktop-only" v-if="mode == 'draft'">
             <div class="q-mx-md">
@@ -237,9 +237,11 @@
               <span>คำสั่งภาษาอังกฤษ</span>
               <q-input
                 dense
-                :rules="[ val => val && val.length > 0 || 'กรุณาใส่คำสั่งภาษาอังกฤษ']"
+                :rules="[ val => val && val.length > 0]"
                 ref="instrunctionEng"
                 outlined
+                type="text"
+                @input="engOnly()"
                 v-model="instrunctionEng"
               />
             </div>
@@ -247,9 +249,11 @@
               <span>คำสั่งภาษาไทย</span>
               <q-input
                 dense
-                :rules="[ val => val && val.length > 0 || 'กรุณาใส่คำสั่งภาษาไทย']"
+                :rules="[ val => val && val.length > 0 ]"
                 ref="instrunctionTh"
                 outlined
+                type="text"
+                @input="thOnly()"
                 v-model="instrunctionTh"
               />
             </div>
@@ -347,6 +351,22 @@ export default {
     };
   },
   methods: {
+    engOnly() {
+      let regex = /[A-Za-z]/;
+      let chars = this.instrunctionEng.split("");
+      let char = chars.pop();
+      if (!regex.test(char)) {
+        this.instrunctionEng = chars.join("");
+      }
+    },
+    thOnly() {
+      let regex = /[ก-ฮ]/;
+      let chars = this.instrunctionTh.split("");
+      let char = chars.pop();
+      if (!regex.test(char)) {
+        this.instrunctionTh = chars.join("");
+      }
+    },
     loadLevel() {
       this.loadingShow();
 
@@ -544,7 +564,7 @@ export default {
           this.isDeleteDialogSuccess = true;
         });
     },
-     // ยกเลิกการลบข้อมูล
+    // ยกเลิกการลบข้อมูล
     async cancelDelete(key) {
       await this.updateSyncStatus(
         this.$route.params.practiceId,
