@@ -38,158 +38,178 @@
       <div class="row" v-for="(i) in boxCount+1" :key="i">
         <div class="col-sm-12 col-xs-12 relative-position">
           <q-card class="q-my-lg text-black">
-            <q-card-section class="row items-center justify-between bg-blue-grey-10 text-white">
-              <div align="left" class="q-ml-sm text-h6">ประโยคที่ {{i}}</div>
+            <div class="row items-center justify-between bg-blue-grey-10 text-white q-pa-xs">
+              <div align="left" class="q-ml-sm text-subtitle1">ประโยคที่ {{i}}</div>
               <!-- ถังขยะ -->
-              <div>
+              <div align="right">
                 <q-btn
                   v-if="i != 1"
-                  align="right"
                   @click="opendialogDeleteCard(i-1)"
                   flat
                   class="cursor-pointer"
+                  size="sm"
+                  round
                   icon="far fa-trash-alt"
-                  style="color:blue-grey-10; font-size: 1em;"
                 />
               </div>
-            </q-card-section>
+            </div>
             <!-- radio button -->
-            <q-card-section style="height:50px">
-              <div align="left" class="row">
-                <q-radio
-                  color="blue-grey-10"
-                  class="col-6"
-                  v-model="sentence[i-1].speaker"
-                  val="customer"
-                  label="ลูกค้า"
-                />
-                <q-radio
-                  color="blue-grey-10"
-                  class="col-6"
-                  v-model="sentence[i-1].speaker"
-                  val="employee"
-                  label="พนักงาน"
-                />
-              </div>
-            </q-card-section>
-            <q-card-section>
-              <div :class="$route.name == 'expressionEdit'?'q-mb-md':null">
-                <div class="q-pl-md" align="left">ประโยคภาษาอังกฤษ</div>
-                <div class="q-pl-md q-pr-md">
-                  <q-input
-                    dense
-                    :ref="'sentenceEng'+i"
-                    :error="sentence[i-1].errorEng"
-                    outlined
-                    v-model="sentence[i-1].sentenceEng"
-                  />
-                </div>
-              </div>
-              <div :class="$route.name == 'expressionEdit'?'q-mb-md':null">
-                <div class="q-pl-md" align="left">ประโยคภาษาไทย</div>
-                <div class="q-pl-md q-pr-md">
-                  <q-input
-                    dense
-                    :error="sentence[i-1].errorTh"
-                    :ref="'sentenceTh'+i"
-                    outlined
-                    v-model="sentence[i-1].sentenceTh"
-                  />
-                </div>
-              </div>
-              <!-- ไฟล์เสียง -->
-              <div v-if="isAddMode">
-                <div class="q-px-md">
-                  <div class="row items-center">
-                    <div align="left" class="text-subtitle1">ไฟล์เสียง</div>
-                    <div
-                      class="q-ml-md text-blue-grey-7 text-body2"
-                      style="margin-top:0.7%"
-                    >ไฟล์ mp3 เท่านั้น</div>
-                  </div>
-                  <div>
-                    <q-file
-                      accept=".mp3"
-                      bg-color="white"
-                      outlined
-                      v-model="sentence[i-1].uploadSound"
-                    >
-                      <template v-slot:append>
-                        <!-- ปุ่มเลือกไฟล์ -->
-                        <div
-                          style="width:100px;"
-                          class="text-body2 rounded-borders text-center bg-blue-grey-10 text-white q-pa-xs cursor-pointer"
-                          @click.stop="sentence[i-1].uploadSound = null"
-                          v-if="!sentence[i-1].uploadSound"
-                        >เลือกไฟล์</div>
-                        <!-- ปุ่มลบไฟล์ -->
-                        <div
-                          class="cursor-pointer rounded-borders text-white bg-blue-grey-10"
-                          v-if="sentence[i-1].uploadSound"
-                          @click="sentence[i-1].uploadSound = null"
-                        >
-                          <span style class="far fa-trash-alt q-px-xs"></span>
-                        </div>
-                      </template>
-                      <div
-                        v-if="sentence[i-1].isSound == true"
-                        style="width:1000px"
-                        class="text-body2 text-grey-7 self-center"
-                      >{{sentence[i-1].uploadSound}}</div>
-                      <div
-                        style="width:1000px"
-                        class="text-body2 text-grey-7 self-center"
-                        align="right"
-                        v-if="!sentence[i-1].uploadSound"
-                      >ลากแล้ววาง หรือ</div>
-                    </q-file>
-                  </div>
-                </div>
-              </div>
-              <div v-if="!isAddMode">
-                <div class="q-px-md">
-                  <div class="row items-center">
-                    <div align="left" class="text-subtitle1">ไฟล์เสียง</div>
-                    <div class="q-ml-md text-blue-grey-7" style="margin-top:0.7%">ไฟล์ mp3 เท่านั้น</div>
-                  </div>
-                  <div>
-                    <q-file accept=".mp3" bg-color="white" outlined v-model="uploadSound[i-1].file">
-                      <template v-slot:append>
-                        <!-- ปุ่มเลือกไฟล์ -->
-                        <div
-                          style="width:100px;"
-                          class="text-body2 rounded-borders text-center bg-blue-grey-10 text-white q-pa-xs cursor-pointer"
-                          @click.stop="uploadSound[i-1].file = null"
-                          v-if="!sentence[i-1].isSound && uploadSound[i-1].file == null"
-                        >เลือกไฟล์</div>
-                        <!-- ปุ่มลบไฟล์ -->
-                        <div
-                          class="cursor-pointer rounded-borders text-white bg-blue-grey-10"
-                          v-if="sentence[i-1].isSound || uploadSound[i-1].file "
-                          @click="sentence[i-1].isSound = false ,uploadSound[i-1].file = null "
-                        >
-                          <span style class="far fa-trash-alt q-px-xs"></span>
-                        </div>
-                      </template>
-                      <div
-                        v-if="sentence[i-1].isSound"
-                        style="width:1000px"
-                        class="text-body2 text-grey-7 self-center"
-                        align="right"
-                      >
-                        <span>{{$route.params.id +"-"+(i) + ".mp3"}}</span>
-                      </div>
 
-                      <div
-                        style="width:1000px"
-                        class="text-body2 text-grey-7 self-center"
-                        v-if="uploadSound[i-1].file == null && sentence[i-1].isSound == false"
-                      >ลากแล้ววาง หรือ</div>
-                    </q-file>
+            <div class="q-pa-md">
+              <div>
+                <div align="left" class="row">
+                  <div class="col-md-3 col-xs-6">
+                    <q-radio
+                      dense
+                      color="blue-grey-10"
+                      class="col-6"
+                      v-model="sentence[i-1].speaker"
+                      val="customer"
+                      label="ลูกค้า"
+                    />
+                  </div>
+                  <div class="col-md-3 col-xs-6">
+                    <q-radio
+                      dense
+                      color="blue-grey-10"
+                      class="col-6"
+                      v-model="sentence[i-1].speaker"
+                      val="employee"
+                      label="พนักงาน"
+                    />
                   </div>
                 </div>
               </div>
-            </q-card-section>
+
+              <div>
+                <div class="q-mt-md">
+                  <div align="left">ประโยคภาษาอังกฤษ</div>
+                  <div>
+                    <q-input
+                      dense
+                      :ref="'sentenceEng'+i"
+                      :error="sentence[i-1].errorEng"
+                      outlined
+                      v-model="sentence[i-1].sentenceEng"
+                      hide-bottom-space
+                    />
+                  </div>
+                </div>
+                <div class="q-mt-md">
+                  <div align="left">ประโยคภาษาไทย</div>
+                  <div>
+                    <q-input
+                      dense
+                      :error="sentence[i-1].errorTh"
+                      :ref="'sentenceTh'+i"
+                      outlined
+                      v-model="sentence[i-1].sentenceTh"
+                      hide-bottom-space
+                    />
+                  </div>
+                </div>
+                <!-- ไฟล์เสียง -->
+                <div v-if="isAddMode">
+                  <div class="q-mt-md">
+                    <div class="row items-center">
+                      <div align="left" class="text-subtitle1">ไฟล์เสียง</div>
+                      <div
+                        class="q-ml-md text-blue-grey-7 text-body2"
+                        style="margin-top:0.7%"
+                      >ไฟล์ mp3 เท่านั้น</div>
+                    </div>
+                    <div>
+                      <q-file
+                        accept=".mp3"
+                        bg-color="white"
+                        outlined
+                        v-model="sentence[i-1].uploadSound"
+                      >
+                        <template v-slot:append>
+                          <!-- ปุ่มเลือกไฟล์ -->
+                          <div
+                            style="width:100px;"
+                            class="text-body2 rounded-borders text-center bg-blue-grey-10 text-white q-pa-xs cursor-pointer"
+                            @click.stop="sentence[i-1].uploadSound = null"
+                            v-if="!sentence[i-1].uploadSound"
+                          >เลือกไฟล์</div>
+                          <!-- ปุ่มลบไฟล์ -->
+                          <div
+                            class="cursor-pointer rounded-borders text-white bg-blue-grey-10"
+                            v-if="sentence[i-1].uploadSound"
+                            @click="sentence[i-1].uploadSound = null"
+                          >
+                            <span style class="far fa-trash-alt q-px-xs"></span>
+                          </div>
+                        </template>
+                        <div
+                          v-if="sentence[i-1].isSound == true"
+                          style="width:1000px"
+                          class="text-body2 text-grey-7 self-center"
+                        >{{sentence[i-1].uploadSound}}</div>
+                        <div
+                          style="width:1000px"
+                          class="text-body2 text-grey-7 self-center"
+                          align="right"
+                          v-if="!sentence[i-1].uploadSound"
+                        >ลากแล้ววาง หรือ</div>
+                      </q-file>
+                    </div>
+                  </div>
+                </div>
+                <div v-if="!isAddMode">
+                  <div class="q-mt-md">
+                    <div class="row items-center">
+                      <div align="left" class="text-subtitle1">ไฟล์เสียง</div>
+                      <div
+                        class="q-ml-md text-blue-grey-7"
+                        style="margin-top:0.7%"
+                      >ไฟล์ mp3 เท่านั้น</div>
+                    </div>
+                    <div>
+                      <q-file
+                        accept=".mp3"
+                        bg-color="white"
+                        outlined
+                        v-model="uploadSound[i-1].file"
+                      >
+                        <template v-slot:append>
+                          <!-- ปุ่มเลือกไฟล์ -->
+                          <div
+                            style="width:100px;"
+                            class="text-body2 rounded-borders text-center bg-blue-grey-10 text-white q-pa-xs cursor-pointer"
+                            @click.stop="uploadSound[i-1].file = null"
+                            v-if="!sentence[i-1].isSound && uploadSound[i-1].file == null"
+                          >เลือกไฟล์</div>
+                          <!-- ปุ่มลบไฟล์ -->
+                          <div
+                            class="cursor-pointer rounded-borders text-white bg-blue-grey-10"
+                            v-if="sentence[i-1].isSound || uploadSound[i-1].file "
+                            @click="sentence[i-1].isSound = false ,uploadSound[i-1].file = null "
+                          >
+                            <span style class="far fa-trash-alt q-px-xs"></span>
+                          </div>
+                        </template>
+                        <div
+                          v-if="sentence[i-1].isSound"
+                          style="width:1000px"
+                          class="text-body2 text-grey-7 self-center"
+                          align="right"
+                        >
+                          <span>{{$route.params.id +"-"+(i) + ".mp3"}}</span>
+                        </div>
+
+                        <div
+                          style="width:1000px"
+                          class="text-body2 text-grey-7 self-center"
+                          v-if="uploadSound[i-1].file == null && sentence[i-1].isSound == false"
+                        >ลากแล้ววาง หรือ</div>
+                      </q-file>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </q-card>
         </div>
       </div>
