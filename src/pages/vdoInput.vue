@@ -169,7 +169,7 @@ export default {
   },
   methods: {
     engOnly() {
-      let regex = /[A-Za-z]/;
+      let regex = /[A-Z a-z ,.'?]/g;
       let chars = this.data.sentenceEng.split("");
       let char = chars.pop();
       if (!regex.test(char)) {
@@ -177,7 +177,7 @@ export default {
       }
     },
     thOnly() {
-      let regex = /[ก-ฮะ-์]/;
+      let regex = /[ก-ฮ ะ-์ ,.'?]/;
       let chars = this.data.sentenceTh.split("");
       let char = chars.pop();
       if (!regex.test(char)) {
