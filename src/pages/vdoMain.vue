@@ -236,7 +236,7 @@
                   v-model="dataVdo.linkVdo"
                   dense
                   ref="link"
-                  :rules="[ val => !!val || 'กรุณาใส่ลิงก์วิดีโอ']"
+                  :rules="[ val => !!val ]"
                 />
               </div>
             </div>
@@ -482,6 +482,16 @@ export default {
       this.$refs.link.validate();
       if (this.$refs.link.hasError) {
         return;
+      }
+      if (this.dataVdo.linkVdo) {
+        let http = "https://youtu.be/";
+        let key = this.dataVdo.linkVdo.split("/");
+        let linkVdo = key[3];
+        if (this.dataVdo.linkVdo == http + linkVdo && linkVdo.length == 11) {
+        } else {
+          this.dataVdo.linkVdo = "";
+          return;
+        }
       }
 
       this.fileVdo = this.dataVdo.linkVdo;
