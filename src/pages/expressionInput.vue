@@ -54,7 +54,7 @@
               </div>
             </q-card-section>
             <!-- radio button -->
-            <q-card-section>
+            <q-card-section style="height:50px">
               <div align="left" class="row">
                 <q-radio
                   color="blue-grey-10"
@@ -73,25 +73,29 @@
               </div>
             </q-card-section>
             <q-card-section>
-              <div class="q-pl-md" align="left">ประโยคภาษาอังกฤษ</div>
-              <div class="q-pa-md">
-                <q-input
-                  dense
-                  :ref="'sentenceEng'+i"
-                  :error="sentence[i-1].errorEng"
-                  outlined
-                  v-model="sentence[i-1].sentenceEng"
-                />
+              <div :class="$route.name == 'expressionEdit'?'q-mb-md':null">
+                <div class="q-pl-md" align="left">ประโยคภาษาอังกฤษ</div>
+                <div class="q-pl-md q-pr-md">
+                  <q-input
+                    dense
+                    :ref="'sentenceEng'+i"
+                    :error="sentence[i-1].errorEng"
+                    outlined
+                    v-model="sentence[i-1].sentenceEng"
+                  />
+                </div>
               </div>
-              <div class="q-pl-md" align="left">ประโยคภาษาไทย</div>
-              <div class="q-pa-md">
-                <q-input
-                  dense
-                  :error="sentence[i-1].errorTh"
-                  :ref="'sentenceTh'+i"
-                  outlined
-                  v-model="sentence[i-1].sentenceTh"
-                />
+              <div :class="$route.name == 'expressionEdit'?'q-mb-md':null">
+                <div class="q-pl-md" align="left">ประโยคภาษาไทย</div>
+                <div class="q-pl-md q-pr-md">
+                  <q-input
+                    dense
+                    :error="sentence[i-1].errorTh"
+                    :ref="'sentenceTh'+i"
+                    outlined
+                    v-model="sentence[i-1].sentenceTh"
+                  />
+                </div>
               </div>
               <!-- ไฟล์เสียง -->
               <div v-if="isAddMode">
@@ -105,7 +109,6 @@
                   </div>
                   <div>
                     <q-file
-                      dense
                       accept=".mp3"
                       bg-color="white"
                       outlined
