@@ -14,7 +14,7 @@
             bg-color="white"
             outlined
             ref="orderid"
-            v-model.number="data.order"
+            v-model.number="vdolist.order"
             dense
             :rules="[ val => !!val ,checkOrderId]"
           />
@@ -25,7 +25,7 @@
           <q-radio
             style="margin:-10px"
             color="blue-grey-10"
-            v-model="data.speaker"
+            v-model="vdolist.speaker"
             :val="'customer'"
             label="ลูกค้า"
           />
@@ -34,7 +34,7 @@
           <q-radio
             style="margin:-10px"
             color="blue-grey-10"
-            v-model="data.speaker"
+            v-model="vdolist.speaker"
             :val="'employee'"
             label="พนักงาน"
           />
@@ -48,7 +48,7 @@
             bg-color="white"
             outlined
             ref="eng"
-            v-model="data.sentenceEng"
+            v-model="sentenceEng"
             dense
             type="text"
             @input="engOnly()"
@@ -64,7 +64,7 @@
             bg-color="white"
             outlined
             ref="th"
-            v-model="data.sentenceTh"
+            v-model="sentenceTh"
             dense
             type="text"
             @input="thOnly()"
@@ -145,7 +145,7 @@ export default {
       checkble: false,
       uploadAudio: null,
       isKeyAudio: "",
-      data: {
+      vdolist: {
         order: "",
         practiceId: this.$route.params.practiceId,
         levelId: this.$route.params.levelId,
@@ -156,6 +156,8 @@ export default {
         speaker: "customer",
         status: "notSync"
       },
+      sentenceEng: "",
+      sentenceTh: "",
       practiceData: {
         levelName: "",
         unitName: "",
@@ -204,14 +206,16 @@ export default {
             this.isKeyAudio = doc.id + ".mp3";
           }
           this.orderOld = doc.data().order;
-          this.data = doc.data();
+          this.sentenceEng = doc.data().sentenceEng;
+          this.sentenceTh = doc.data().sentenceTh;
+          this.vdolist = doc.data();
         });
     },
     async checkOrderId(val) {
       let getOrder = await db
         .collection("practice_draft")
         .where("order", "==", val)
-        .where("practiceId", "==", this.data.practiceId)
+        .where("practiceId", "==", this.vdolist.practiceId)
         .get();
 
       if (this.orderOld != val) {
@@ -219,6 +223,8 @@ export default {
       }
     },
     async saveBtn() {
+      this.vdolist.sentenceEng = this.sentenceEng;
+      this.vdolist.sentenceTh = this.sentenceTh;
       this.$refs.orderid.validate();
       this.$refs.eng.validate();
       this.$refs.th.validate();
@@ -238,10 +244,10 @@ export default {
       this.checkble = true;
       if (this.$route.name == "vdoAdd") {
         if (this.uploadAudio) {
-          this.data.isSound = true;
+          this.vdolist.isSound = true;
         }
         db.collection("practice_draft")
-          .add(this.data)
+          .add(this.vdolist)
           .then(async doc => {
             if (this.uploadAudio) {
               await st
@@ -253,23 +259,23 @@ export default {
             setTimeout(() => {
               this.$router.push(
                 "/vdoMain/" +
-                  this.data.levelId +
+                  this.vdolist.levelId +
                   "/" +
-                  this.data.unitId +
+                  this.vdolist.unitId +
                   "/" +
-                  this.data.practiceId
+                  this.vdolist.practiceId
               );
             }, 1000);
           });
       } else {
         if (this.uploadAudio || this.isKeyAudio) {
-          this.data.isSound = true;
+          this.vdolist.isSound = true;
         } else {
-          this.data.isSound = false;
+          this.vdolist.isSound = false;
         }
         db.collection("practice_draft")
           .doc(this.$route.params.id)
-          .set(this.data)
+          .set(this.vdolist)
           .then(() => {
             if (this.uploadAudio) {
               st.child("/practice/audio/" + this.$route.params.id + ".mp3").put(
@@ -281,11 +287,11 @@ export default {
             setTimeout(() => {
               this.$router.push(
                 "/vdoMain/" +
-                  this.data.levelId +
+                  this.vdolist.levelId +
                   "/" +
-                  this.data.unitId +
+                  this.vdolist.unitId +
                   "/" +
-                  this.data.practiceId
+                  this.vdolist.practiceId
               );
             }, 1000);
           });
@@ -294,11 +300,11 @@ export default {
     backBtn() {
       this.$router.push(
         "/vdoMain/" +
-          this.data.levelId +
+          this.vdolist.levelId +
           "/" +
-          this.data.unitId +
+          this.vdolist.unitId +
           "/" +
-          this.data.practiceId
+          this.vdolist.practiceId
       );
     }
   },

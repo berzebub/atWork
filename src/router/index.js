@@ -61,18 +61,18 @@ Vue.mixin({
 
     engOnly() {
       let regex = /[A-Z a-z 0-9,.'?]/;
-      let chars = this.data.sentenceEng.split("");
+      let chars = this.sentenceEng.split("");
       let char = chars.pop();
       if (!regex.test(char)) {
-        this.data.sentenceEng = chars.join("");
+        this.sentenceEng = chars.join("");
       }
     },
     thOnly() {
       let regex = /[ก-ฮ ะ-์ 0-9,.'?]/;
-      let chars = this.data.sentenceTh.split("");
+      let chars = this.sentenceTh.split("");
       let char = chars.pop();
       if (!regex.test(char)) {
-        this.data.sentenceTh = chars.join("");
+        this.sentenceTh = chars.join("");
       }
     },
     logOut() {
