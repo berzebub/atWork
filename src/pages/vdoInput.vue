@@ -50,7 +50,9 @@
             ref="eng"
             v-model="data.sentenceEng"
             dense
-            :rules="[ val => !!val || 'กรุณาใส่ประโยคภาษาอังกฤษ']"
+            type="text"
+            @input="engOnly()"
+            :rules="[ val => !!val ]"
           />
         </div>
       </div>
@@ -64,7 +66,9 @@
             ref="th"
             v-model="data.sentenceTh"
             dense
-            :rules="[ val => !!val || 'กรุณาใส่ประโยคภาษาไทย']"
+            type="text"
+            @input="thOnly()"
+            :rules="[ val => !!val ]"
           />
         </div>
       </div>
@@ -164,6 +168,22 @@ export default {
     };
   },
   methods: {
+    engOnly() {
+      let regex = /[A-Za-z]/;
+      let chars = this.data.sentenceEng.split("");
+      let char = chars.pop();
+      if (!regex.test(char)) {
+        this.data.sentenceEng = chars.join("");
+      }
+    },
+    thOnly() {
+      let regex = /[ก-ฮะ-์]/;
+      let chars = this.data.sentenceTh.split("");
+      let char = chars.pop();
+      if (!regex.test(char)) {
+        this.data.sentenceTh = chars.join("");
+      }
+    },
     loadLevel() {
       let levelKey = this.$route.params.levelId;
       db.collection("level")
