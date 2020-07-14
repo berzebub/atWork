@@ -150,6 +150,16 @@ const routes = [
         component: () => import("pages/hotelInput.vue"),
         name: "hotelEdit"
       },
+      {
+        path: "employeelAdd",
+        component: () => import("pages/employeelInput.vue"),
+        name: "employeelAdd"
+      },
+      {
+        path: "employeelEdit/:employeelId",
+        component: () => import("pages/employeelInput.vue"),
+        name: "employeelEdit"
+      },
       // ------------------- userMain ผู้ดูแลระบบ -------------------
       {
         path: "userMain",

@@ -104,20 +104,30 @@ export default {
       ) {
         return console.log("กรอก input ไม่ครบ");
       }
+
       this.loadingShow();
       // บันทึก add
       if (this.$route.name == "hotelAdd") {
-        console.log("666");
-        // db.collection("hotel")
-        //   .add(this.datahotel)
-        //   .then(() => {
-        //     this.isAddDialogSucess = true;
-        //     this.loadingHide();
-        //   });
+        console.log(" add save");
+        db.collection("hotel")
+          .add(this.datahotel)
+          .then(() => {
+            this.isAddDialogSucess = true;
+            this.loadingHide();
+          });
       } else {
-        console.log("55");
+        console.log("edit save");
+        db.collection("hotel")
+          .doc(this.$route.params.hotelId)
+          .update(this.datahotel)
+          .then(() => {
+            this.isAddDialogSucess = true;
+
+            this.loadingHide();
+          });
       }
     },
+
     addDialogSucess() {
       this.isAddDialogSucess = false;
       setTimeout(() => {
@@ -135,6 +145,7 @@ export default {
           this.datahotel.adminPhone = doc.data().adminPhone;
           this.datahotel.email = doc.data().email;
           this.datahotel.password = doc.data().password;
+          this.nameOld = doc.data().name;
         });
     }
   },

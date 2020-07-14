@@ -1,6 +1,6 @@
 <template>
   <q-page class="text-blue-grey-10">
-    <div class="mobile-only">
+    <div>
       <!-- ชื่อโรงแรม -->
       <div class="row items-end">
         <div class="col-10">
@@ -41,9 +41,9 @@
           <q-icon v-else name="fas fa-chevron-up"></q-icon>
           {{item.name}}
         </q-toolbar-title>
-        <q-btn @click.stop="addEmployee()" icon="fas fa-user-plus" flat size="10px"></q-btn>
-        <q-btn @click.stop="deleteDepartment()" icon="far fa-trash-alt" flat size="10px"></q-btn>
-        <q-btn @click.stop="editDepartment()" icon="fas fa-edit" flat size="10px"></q-btn>
+        <q-btn @click.stop="addEmployee(item)" icon="fas fa-user-plus" flat size="10px"></q-btn>
+        <q-btn @click.stop="deleteDepartment(item)" icon="far fa-trash-alt" flat size="10px"></q-btn>
+        <q-btn @click.stop="editDepartment(item)" icon="fas fa-edit" flat size="10px"></q-btn>
       </q-toolbar>
       <q-separator v-if="clickedToolbar!=item.departmentId" />
       <!-- ชื่อพนักงาน -->
@@ -79,7 +79,14 @@
         <div class="q-ma-md">
           <div class="text-subtitle1">ชื่อแผนก</div>
           <div>
-            <q-input dense outlined v-model="departmentName"></q-input>
+            <q-input
+              :error="errorNameDepartment"
+              :error-message="errorNameDepartmentMessage"
+              @keyup="errorNameDepartment=false"
+              dense
+              outlined
+              v-model="departmentName"
+            ></q-input>
           </div>
           <div class="row">
             <div class="col-6 q-pr-sm q-py-md" align="right">
@@ -97,7 +104,7 @@
                 dense
                 color="blue-grey-10"
                 style="width:120px"
-                label="ยืนยัน"
+                label="บันทึก"
               ></q-btn>
             </div>
           </div>
@@ -105,7 +112,26 @@
       </div>
     </q-dialog>
     <dialog-center :type="6" v-if="addDialogSucess" @autoClose="autoCloseDialog"></dialog-center>
-    <div class="desktop-only"></div>
+    <!-- dialog ลบ กรณีมีข้อมูล -->
+    <dialog-center
+      :type="5"
+      :practice="'แผนกภายในกิจการ'"
+      :name="dataDepartment.name"
+      v-if="isShowNoDeleteDialog"
+      @emitConfirmDelete="isShowNoDeleteDialog = false"
+    ></dialog-center>
+    <!-- dialog ลบ กรณีไม่มีข้อมูล -->
+    <dialog-center
+      :type="3"
+      :practice="'กิจการ'"
+      :name="dataDepartment.name"
+      v-if="isShowDeleteDialog"
+      @emitCancelDelete="isShowDeleteDialog = false"
+      @emitConfirmDelete="confirmDelete"
+    ></dialog-center>
+    <!-- dialog ลบ สำเร็จ -->
+    <dialog-center :type="4" v-if="isDeleteDialogSucess" @autoClose="isDeleteDialogSucess = false"></dialog-center>
+
     <span></span>
   </q-page>
 </template>
@@ -129,7 +155,16 @@ export default {
       userList: "",
       clickedToolbar: "",
       employeeAll: "",
-      employeeList: ""
+      employeeList: "",
+      editId: "",
+      errorNameDepartment: false,
+      errorNameDepartmentMessage: "",
+      nameOld: "",
+      isShowNoDeleteDialog: false,
+      isShowDeleteDialog: false,
+      isDeleteDialogSucess: false,
+      nameDepartmentDialogDelete: "",
+      isSnapShot: ""
     };
   },
   methods: {
@@ -156,23 +191,23 @@ export default {
       this.$router.push("hotelMain");
     },
     loadDepartment() {
-      db.collection("department")
-        .get()
-        .then(doc => {
-          doc.forEach(element => {
-            let temp = {
-              departmentId: element.id
-            };
+      this.isSnapShot = db.collection("department").onSnapshot(doc => {
+        let temp = [];
+        doc.forEach(element => {
+          let temp1 = {
+            departmentId: element.id
+          };
 
-            let final = { ...temp, ...element.data() };
+          let final = { ...temp1, ...element.data() };
 
-            this.departmentAll.push(final);
-          });
+          temp.push(final);
         });
+        this.departmentAll = temp;
+        this.selectDepartment();
+      });
     },
 
     selectDepartment() {
-      console.log(this.hotelSelectedId);
       this.deparmentSelect = this.departmentAll.filter(
         x => x.hotelId == this.hotelSelectedId
       );
@@ -180,28 +215,52 @@ export default {
     },
     cancelAddDepartment() {
       this.addDepartmentDialog = false;
+      this.departmentName = "";
     },
     saveDepartment() {
-      db.collection("department")
-        .add({
-          hotelId: this.hotelSelectedId,
-          name: this.departmentName
-        })
-        .then(() => {
-          this.addDepartmentDialog = false;
-          this.addDialogSucess = true;
-        });
+      if (this.departmentName == "") {
+        console.log("ไม่กรอกข้อมูล");
+        this.errorNameDepartment = true;
+        console.log(this.editId);
+        return;
+      }
+      console.log("555");
+      this.loadingShow();
+      if (this.editId == "") {
+        console.log("บันทึกตอนเพิ่ม");
+        db.collection("department")
+          .add({
+            hotelId: this.hotelSelectedId,
+            name: this.departmentName
+          })
+          .then(() => {
+            this.loadingHide();
+            this.addDepartmentDialog = false;
+            this.addDialogSucess = true;
+          });
+      } else {
+        console.log("บันทึกตอนแก้ไข");
+        db.collection("department")
+          .doc(this.editId)
+          .update({ name: this.departmentName })
+          .then(() => {
+            this.loadingHide();
+            this.editId = "";
+            this.addDepartmentDialog = false;
+            this.addDialogSucess = true;
+          });
+      }
     },
     addDepartment() {
       this.addDepartmentDialog = true;
+      this.errorNameDepartment = false;
       this.departmentName = "";
+      this.editId = "";
     },
     autoCloseDialog(value) {
-      console.log(value);
       this.addDialogSucess = false;
     },
     filterEmployee(data) {
-      console.log(data);
       if (
         data.departmentId == this.clickedToolbar &&
         this.clickedToolbar != ""
@@ -229,15 +288,61 @@ export default {
           this.employeeAll = temp;
         });
     },
+
     addEmployee() {},
-    deleteDepartment() {},
-    editDepartment() {},
+    deleteDepartment(data) {
+      this.dataDepartment = data;
+      console.log(data);
+
+      db.collection("employee")
+
+        .where("departmentId", "==", data.departmentId)
+        .get()
+        .then(doc => {
+          if (doc.size > 0) {
+            this.isShowNoDeleteDialog = true;
+          } else {
+            this.isShowDeleteDialog = true;
+          }
+        });
+    },
+    editDepartment(data) {
+      this.errorNameDepartment = false;
+      this.editId = data.departmentId;
+      this.addDepartmentDialog = true;
+      this.departmentName = data.name;
+    },
+    async isCheckName(val) {
+      console.log(val);
+      let doc = await db
+        .collection("department")
+        .where("name", "==", val)
+        .where("hotelId", "==", this.hotelSelectedId)
+        .get();
+      return doc.size ? true : false;
+    },
     deleteEmployee() {},
-    editEmployee() {}
+    editEmployee(data) {},
+    confirmDelete() {
+      console.log(this.dataDepartment.departmentId);
+      this.loadingShow();
+      this.isShowDeleteDialog = false;
+      db.collection("department")
+        .doc(this.dataDepartment.departmentId)
+        .delete()
+        .then(() => {
+          console.log("6666");
+          this.loadingHide();
+          this.isDeleteDialogSucess = true;
+        });
+    }
   },
   mounted() {
     this.loadDepartment();
     this.loadHotelList();
+  },
+  beforeDestroy() {
+    this.isSnapShot();
   }
 };
 </script>
