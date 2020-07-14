@@ -242,7 +242,6 @@
                 ref="instrunctionEng"
                 outlined
                 type="text"
-                onpaste="return false;"
                 @input="engOnly()"
                 v-model="instrunctionEng"
               />
@@ -256,7 +255,6 @@
                 ref="instrunctionTh"
                 outlined
                 type="text"
-                onpaste="return false;"
                 @input="thOnly()"
                 v-model="instrunctionTh"
               />
@@ -356,7 +354,7 @@ export default {
   },
   methods: {
     engOnly() {
-      let regex = /[A-Z a-z .,?']/;
+      let regex = /[A-Z a-z 0-9.,?']/;
       let chars = this.instrunctionEng.split("");
       let char = chars.pop();
       if (!regex.test(char)) {
@@ -364,7 +362,7 @@ export default {
       }
     },
     thOnly() {
-      let regex = /[ก-ฮ ะ-์ .,?']/;
+      let regex = /[ก-ฮ ะ-์ 0-9.,?']/;
       let chars = this.instrunctionTh.split("");
       let char = chars.pop();
       if (!regex.test(char)) {

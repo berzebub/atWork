@@ -52,7 +52,7 @@
             dense
             type="text"
             @input="engOnly()"
-            :rules="[ val => !!val ]"
+            :rules="[ val => !!val,engError ]"
           />
         </div>
       </div>
@@ -68,7 +68,7 @@
             dense
             type="text"
             @input="thOnly()"
-            :rules="[ val => !!val ]"
+            :rules="[ val => !!val,thError ]"
           />
         </div>
       </div>
@@ -161,29 +161,12 @@ export default {
         unitName: "",
         unitOrder: ""
       },
-
       orderOld: "",
       orderNew: "",
       isSaveDialogSuccess: false
     };
   },
   methods: {
-    engOnly() {
-      let regex = /[A-Z a-z ,.'?]/g;
-      let chars = this.data.sentenceEng.split("");
-      let char = chars.pop();
-      if (!regex.test(char)) {
-        this.data.sentenceEng = chars.join("");
-      }
-    },
-    thOnly() {
-      let regex = /[ก-ฮ ะ-์ ,.'?]/;
-      let chars = this.data.sentenceTh.split("");
-      let char = chars.pop();
-      if (!regex.test(char)) {
-        this.data.sentenceTh = chars.join("");
-      }
-    },
     loadLevel() {
       this.loadingShow();
       let levelKey = this.$route.params.levelId;
