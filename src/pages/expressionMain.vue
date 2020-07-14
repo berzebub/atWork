@@ -76,7 +76,7 @@
         v-for="(item, index) in  showDataExpression"
         v-show="item.collection == expressionType"
         :key="index"
-        class="q-mt-md"
+        class="q-mt-md bdt"
         style="width:100%"
       >
         <div
@@ -91,10 +91,10 @@
           style="width:190px; z-index:2600; "
           class="absolute-center bg-white"
         >ยกเลิกการลบ</q-btn>
-        <q-card-section class="text-white bg-blue-grey-10">
+        <q-card-section class="text-white bg-blue-grey-10 no-padding">
           <div
             v-if="item.status != 'waitForDelete' || $q.platform.is.desktop"
-            class="text-h6"
+            class="text-subtitle1 q-pl-md"
           >รหัสลำดับ {{item.order}}</div>
           <div
             @click="cancelDeleteExpression(item.id, item.order)"
@@ -157,35 +157,30 @@
           </div>
         </q-card-section>
         <!-- ประโยคข้อความ -->
-        <q-card-section v-for="(item2, index2) in item.expression" :key="index2" class="no-padding">
+        <div v-for="(item2, index2) in item.expression" :key="index2" class="no-padding">
           <div v-if="item2.speaker == 'employee'" class="q-px-md q-pt-md q-pb-sm text-h6">พนักงาน:</div>
           <div v-if="item2.speaker == 'customer'" class="q-px-md q-pt-md q-pb-sm text-h6">ลูกค้า:</div>
           <div class="row items-center">
-            <div class="col-1">
+            <div class="col-1 self-start" style="width:50px" v-if="item2.isSound == true">
               <q-btn
-                v-if="item2.isSound == true"
-                style="margin-top:10%"
                 flat
+                size="sm"
                 icon="fas fa-volume-up"
                 color="blue-grey-10"
                 @click="playSound('https://storage.cloud.google.com/atwork-dee11.appspot.com/practice/audio/' + item.id +'-' +(index2+1)+'.mp3')"
               ></q-btn>
             </div>
             <div
-              :class="$q.platform.is.desktop?'col-11 text-subtitle1':'q-ml-lg  text-subtitle1'"
-            >{{item2.sentenceEng}}</div>
+              class="col"
+              :class="$q.platform.is.desktop && item2.isSound == true?'text-subtitle1':' q-pl-md  text-subtitle1'"
+              :style="$q.platform.is.mobile && item2.isSound == true?'margin-left:24px':null"
+            >
+              <div>{{item2.sentenceEng}}</div>
+              <div>{{item2.sentenceTh}}</div>
+            </div>
           </div>
-          <div class="row">
-            <div
-              :class="$q.platform.is.desktop?'col-11 offset-1 text-subtitle1 text-blue-grey-7':'text-blue-grey-7  text-subtitle1' "
-              :style="$q.platform.is.mobile?'margin-left:52px': null"
-            >{{item2.sentenceTh}}</div>
-          </div>
-
           <q-separator />
-        </q-card-section>
-
-        <q-separator />
+        </div>
       </q-card>
     </div>
     <!-- ------------------------------------------Dialog------------------------------------ -->
@@ -379,5 +374,9 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style>
+.bdt {
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
 </style>

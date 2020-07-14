@@ -37,7 +37,7 @@
       </div>
       <div class="row" v-for="(i) in boxCount+1" :key="i">
         <div class="col-sm-12 col-xs-12 relative-position">
-          <q-card class="q-my-lg text-black">
+          <q-card class="q-mt-lg text-black">
             <div class="row items-center justify-between bg-blue-grey-10 text-white q-pa-xs">
               <div align="left" class="q-ml-sm text-subtitle1">ประโยคที่ {{i}}</div>
               <!-- ถังขยะ -->
@@ -194,7 +194,7 @@
                           v-if="sentence[i-1].isSound"
                           style="width:1000px"
                           class="text-body2 text-grey-7 self-center"
-                          align="right"
+                          align="left"
                         >
                           <span>{{$route.params.id +"-"+(i) + ".mp3"}}</span>
                         </div>
@@ -213,7 +213,7 @@
           </q-card>
         </div>
       </div>
-      <div class="row justify-center" style="width:100%; margin:auto">
+      <div class="row justify-center q-mt-md" style="width:100%;">
         <!-- ยกเลิก -->
         <div class="q-px-md">
           <q-btn
