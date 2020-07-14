@@ -493,7 +493,6 @@ export default {
           return;
         }
       }
-
       this.fileVdo = this.dataVdo.linkVdo;
       if (!this.dataVdo.isVdo) {
         this.dataVdo.isVdo = true;
