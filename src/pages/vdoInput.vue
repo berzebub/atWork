@@ -16,7 +16,7 @@
             ref="orderid"
             v-model.number="data.order"
             dense
-            :rules="[ val => !!val || 'กรุณาใส่รหัสลำดับ',checkOrderId]"
+            :rules="[ val => !!val ,checkOrderId]"
           />
         </div>
       </div>
@@ -185,6 +185,7 @@ export default {
       }
     },
     loadLevel() {
+      this.loadingShow();
       let levelKey = this.$route.params.levelId;
       db.collection("level")
         .doc(levelKey)
@@ -207,6 +208,7 @@ export default {
             this.practiceData.unitName = result.data().name;
             this.practiceData.unitOrder = result.data().order;
             // โหลดข้อมูล คำสั่ง
+            this.loadingHide();
           }
         });
     },
