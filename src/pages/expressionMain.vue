@@ -76,13 +76,13 @@
         v-for="(item, index) in  showDataExpression"
         v-show="item.collection == expressionType"
         :key="index"
-        class="q-mt-md bdt"
+        class="q-mt-md bdt relative-position"
         style="width:100%"
       >
         <div
           v-if="item.status == 'waitForDelete'"
           class="absolute-center fit row items-center justify-center"
-          style="background-color:black;opacity:0.6; z-index:2500"
+          style="background-color:black;opacity:0.6; z-index:2500; border-top-left:10px"
         ></div>
         <!-- cancel-delete -->
         <q-btn
@@ -92,68 +92,72 @@
           class="absolute-center bg-white"
         >ยกเลิกการลบ</q-btn>
         <q-card-section class="text-white bg-blue-grey-10 no-padding">
-          <div
-            v-if="item.status != 'waitForDelete' || $q.platform.is.desktop"
-            class="text-subtitle1 q-pl-md"
-          >รหัสลำดับ {{item.order}}</div>
-          <div
-            @click="cancelDeleteExpression(item.id, item.order)"
-            v-if="$q.platform.is.mobile && item.status == 'waitForDelete'"
-            class="text-subtitle1 cursor-pointer"
-            style="z-index:2600 ; position : relative; width: fit-content"
-          >
-            <u>ยกเลิกการลบ</u>
-          </div>
-          <div class="row items-center absolute-right">
-            <!-- icon-delete -->
-            <q-icon
-              @click="openDialogDelete(item.id,item.order)"
-              v-if="expressionType == 'draft'"
-              class="cursor-pointer q-pr-lg desktop-only"
-              name="far fa-trash-alt"
-              style="color:white; font-size: 1.4em;"
-            />
-            <!-- icon-edit -->
-            <q-icon
-              @click="editDataExpression(item)"
-              v-if="expressionType == 'draft'"
-              class="cursor-pointer q-pr-md desktop-only"
-              name="fas fa-edit"
-              style="color:white; font-size: 1.4em;"
-            />
-            <!-- icon-menu -->
-            <q-btn
-              dense
-              flat
-              round
-              size="13px"
-              v-if="expressionType == 'draft'"
-              class="cursor-pointer mobile-only"
-              icon="fas fa-ellipsis-v"
-            >
-              <!-- เมนูแก้ไข-ลบ -->
-              <q-menu anchor="top right" self="top right" :offset="[0,-37]" class="mobile-only">
-                <q-list style="min-width:180px">
-                  <q-item
-                    clickable
-                    v-close-popup
-                    @click="editDataExpression(item)"
-                    class="cursor-pointer text-subtitle1"
-                  >
-                    <q-item-section>แก้ไขประโยคสนทนา</q-item-section>
-                  </q-item>
-                  <q-item
-                    clickable
-                    v-close-popup
-                    v-if="item.status != 'waitForDelete'"
-                    @click="openDialogDelete(item.id,item.order)"
-                    class="cursor-pointer text-subtitle1"
-                  >
-                    <q-item-section>ลบประโยคสนทนา</q-item-section>
-                  </q-item>
-                </q-list>
-              </q-menu>
-            </q-btn>
+          <div class="row q-pa-sm">
+            <div class="col">
+              <div
+                v-if="item.status != 'waitForDelete' || $q.platform.is.desktop"
+                class="text-subtitle1"
+              >รหัสลำดับ {{item.order}}</div>
+              <div
+                @click="cancelDeleteExpression(item.id, item.order)"
+                v-if="$q.platform.is.mobile && item.status == 'waitForDelete'"
+                class="text-subtitle1 cursor-pointer"
+                style="z-index:2600 ; position : relative; width: fit-content"
+              >
+                <u>ยกเลิกการลบ</u>
+              </div>
+            </div>
+            <div class="col self-center" align="right">
+              <!-- icon-delete -->
+              <q-icon
+                @click="openDialogDelete(item.id,item.order)"
+                v-if="expressionType == 'draft'"
+                class="cursor-pointer q-pr-lg desktop-only"
+                name="far fa-trash-alt"
+                style="color:white; font-size: 1.4em;"
+              />
+              <!-- icon-edit -->
+              <q-icon
+                @click="editDataExpression(item)"
+                v-if="expressionType == 'draft'"
+                class="cursor-pointer q-pr-md desktop-only"
+                name="fas fa-edit"
+                style="color:white; font-size: 1.4em;"
+              />
+              <!-- icon-menu -->
+              <q-btn
+                dense
+                flat
+                round
+                size="13px"
+                v-if="expressionType == 'draft'"
+                class="cursor-pointer mobile-only"
+                icon="fas fa-ellipsis-v"
+              >
+                <!-- เมนูแก้ไข-ลบ -->
+                <q-menu anchor="top right" self="top right" :offset="[0,-37]" class="mobile-only">
+                  <q-list style="min-width:180px">
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="editDataExpression(item)"
+                      class="cursor-pointer text-subtitle1"
+                    >
+                      <q-item-section>แก้ไขประโยคสนทนา</q-item-section>
+                    </q-item>
+                    <q-item
+                      clickable
+                      v-close-popup
+                      v-if="item.status != 'waitForDelete'"
+                      @click="openDialogDelete(item.id,item.order)"
+                      class="cursor-pointer text-subtitle1"
+                    >
+                      <q-item-section>ลบประโยคสนทนา</q-item-section>
+                    </q-item>
+                  </q-list>
+                </q-menu>
+              </q-btn>
+            </div>
           </div>
         </q-card-section>
         <!-- ประโยคข้อความ -->
