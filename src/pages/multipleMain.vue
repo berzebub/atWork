@@ -241,6 +241,7 @@
                 ref="instrunctionEng"
                 outlined
                 type="text"
+                onpaste="return false;"
                 @input="engOnly()"
                 v-model="instrunctionEng"
               />
@@ -253,6 +254,7 @@
                 ref="instrunctionTh"
                 outlined
                 type="text"
+                onpaste="return false;"
                 @input="thOnly()"
                 v-model="instrunctionTh"
               />
@@ -360,7 +362,7 @@ export default {
       }
     },
     thOnly() {
-      let regex = /[ก-ฮ]/;
+      let regex = /[ก-ฮะ-์]/;
       let chars = this.instrunctionTh.split("");
       let char = chars.pop();
       if (!regex.test(char)) {
