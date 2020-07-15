@@ -40,18 +40,6 @@
             </div>
           </div>
         </div>
-
-        <div class="mobile-only">
-          <div class="text-right q-pl-md">
-            <q-btn
-              @click="sync($route.params.practiceId),openDialogSync()"
-              :disable="mode !='draft'"
-              round
-              color="blue-grey-10"
-              icon="fas fa-sync-alt"
-            />
-          </div>
-        </div>
       </div>
       <div class="text-h6 text-center q-pt-md">
         <div>{{practiceData.levelName}}</div>
@@ -192,20 +180,12 @@
               </div>
             </div>
             <div class="q-px-md q-py-sm">
-              <div class="self-center" v-if="item.speaker == 'customer' ">ลูกค้า:</div>
+              <div class="self-center " v-if="item.speaker == 'customer' ">ลูกค้า:</div>
               <div class="self-center" v-if="item.speaker == 'employee' ">พนักงาน:</div>
-              <div class="row">
-                <div class="q-pr-xs">
+              <div class="row ">
+                <div >
                   <q-btn
-                    class="no-pointer-events"
-                    v-if="!item.isSound"
-                    color="grey-6"
-                    round
-                    flat
-                    size="sm"
-                    icon="fas fa-volume-mute"
-                  />
-                  <q-btn
+                  class="q-mr-xs"
                     v-if="item.isSound"
                     size="sm"
                     @click="playAudio(item.soundURL)"
