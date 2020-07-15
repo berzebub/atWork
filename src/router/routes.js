@@ -156,7 +156,7 @@ const routes = [
         name: "accountAdd"
       },
       {
-        path: "accountEdit/:hotelId/:departmentId",
+        path: "accountEdit/:hotelId/:departmentId/:employeeId",
         component: () => import("pages/accountInput.vue"),
         name: "accountEdit"
       },

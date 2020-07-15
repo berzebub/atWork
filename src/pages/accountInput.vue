@@ -1,123 +1,210 @@
 <template>
   <q-page>
-    <div class="q-pb-lg">
-      <div>ชื่อแผนก</div>
-      <q-select
-        v-model="dataEmployee.nameDepartmentSelect"
-        dense
-        outlined
-        :options="departmentOptions"
-        map-options
-        emit-value
-      />
-    </div>
-    <div>
-      <div>ชื่อ นามสกุล</div>
-      <q-input
-        v-model.trim="dataEmployee.name"
-        ref="adminName"
-        outlined
-        dense
-        :rules="[value => !!value ]"
-      ></q-input>
-    </div>
-    <div>
-      <div>เบอร์โทร</div>
-      <q-input
-        v-model.trim="dataEmployee.phone"
-        ref="adminPhone"
-        outlined
-        dense
-        :rules="[value => !!value ]"
-      ></q-input>
-    </div>
-    <div>
-      <div>อีเมล</div>
-      <q-input
-        v-model.trim="dataEmployee.email"
-        ref="email"
-        outlined
-        dense
-        :rules="[value => !!value ]"
-      ></q-input>
-    </div>
-    <div>
-      <div>รหัสผ่าน</div>
-      <q-input
-        v-model.trim="dataEmployee.password"
-        ref="password"
-        outlined
-        dense
-        :rules="[value => !!value ]"
-      ></q-input>
-    </div>
-    <div class="q-pb-md">
-      <div>บทเรียนเริ่มต้น</div>
-      <q-select
-        v-model="dataEmployee.startLevel"
-        dense
-        outlined
-        :options="levelOpions"
-        map-options
-        emit-value
-      />
-    </div>
-    <div class="row">
-      <div class="col-6 q-pr-sm q-py-md" align="right">
-        <q-btn @click="cancelAddEmployee()" dense style="width:150px" outline label="ยกเลิก"></q-btn>
-      </div>
-      <div class="col-6 q-pl-sm q-py-md">
-        <q-btn
-          @click="saveEmployee()"
+    <div class="container">
+      <div class="q-pb-lg">
+        <div>ชื่อแผนก</div>
+        <q-select
+          v-model="dataEmployee.departmentSelect"
           dense
-          color="blue-grey-10"
-          style="width:150px"
-          label="บันทึก"
-        ></q-btn>
+          outlined
+          :options="departmentOptions"
+          map-options
+          emit-value
+        />
       </div>
+      <div>
+        <div>ชื่อ นามสกุล</div>
+        <q-input
+          v-model.trim="dataEmployee.name"
+          ref="name"
+          outlined
+          dense
+          :rules="[value => !!value ]"
+        ></q-input>
+      </div>
+      <div>
+        <div>เบอร์โทร</div>
+        <q-input v-model.trim="dataEmployee.tel" ref="tel" outlined dense :rules="[val => val ]"></q-input>
+      </div>
+      <div>
+        <div>อีเมล</div>
+        <q-input
+          v-model.trim="dataEmployee.email"
+          ref="email"
+          outlined
+          dense
+          :rules="[value => !!value ]"
+        ></q-input>
+      </div>
+      <div>
+        <div>รหัสผ่าน</div>
+        <q-input
+          v-model.trim="dataEmployee.password"
+          ref="password"
+          outlined
+          dense
+          :rules="[value => !!value ]"
+        ></q-input>
+      </div>
+      <div class="q-pb-md">
+        <div>บทเรียนเริ่มต้น</div>
+        <q-select
+          v-model="dataEmployee.startLevelId"
+          dense
+          outlined
+          :options="levelOpions"
+          map-options
+          emit-value
+        />
+      </div>
+      <div class="row">
+        <div class="col-6 q-pr-sm q-py-md" align="right">
+          <q-btn @click="cancelAddEmployee()" dense style="width:150px" outline label="ยกเลิก"></q-btn>
+        </div>
+        <div class="col-6 q-pl-sm q-py-md">
+          <q-btn
+            @click="saveEmployee()"
+            dense
+            color="blue-grey-10"
+            style="width:150px"
+            label="บันทึก"
+          ></q-btn>
+        </div>
+      </div>
+      <dialog-center :type="6" v-if="isAddDialogSucess" @autoClose="isAddDialogSucess = false" />
     </div>
   </q-page>
 </template>
 
 <script>
 import { db } from "../router";
+import dialogCenter from "../components/dialogSetting";
 export default {
+  components: {
+    dialogCenter
+  },
   data() {
     return {
       departmentOptions: [],
       levelOpions: [],
       dataEmployee: {
-        nameDepartmentSelect: "",
+        departmentSelect: "",
         name: "",
-        phone: "",
+        tel: "",
         email: "",
         password: "",
-        startLevel: ""
+        startLevelId: "",
+        star: 0
       },
-      departmentAll: ""
+      departmentAll: "",
+      isAddDialogSucess: false
     };
   },
   methods: {
-    saveEmployee() {},
-    cancelAddEmployee() {},
+    saveEmployee() {
+      // check validate
+      this.$refs.name.validate();
+      this.$refs.tel.validate();
+      this.$refs.email.validate();
+      this.$refs.password.validate();
+      if (
+        this.$refs.name.hasError ||
+        this.$refs.tel.hasError ||
+        this.$refs.password.hasError ||
+        this.$refs.email.hasError
+      ) {
+        return console.log("กรอก input ไม่ครบ");
+      }
+
+      db.collection("employee")
+        .add({
+          hotelId: this.$route.params.hotelId,
+          departmentId: this.dataEmployee.departmentSelect,
+          name: this.dataEmployee.name,
+          email: this.dataEmployee.email,
+          startLevelId: this.dataEmployee.startLevelId,
+          tel: this.dataEmployee.tel,
+          star: 0
+        })
+        .then(() => {});
+    },
+    cancelAddEmployee() {
+      this.$router.push("/accountMain");
+    },
     loadDepartment() {
       db.collection("department")
         .get()
         .then(doc => {
           let temp = [];
           doc.forEach(element => {
-            temp.push({ ...element.data(), departmentId: element.id });
+            temp.push({
+              value: element.id,
+              label: element.data().name,
+              hotelId: element.data().hotelId
+            });
+            // temp.push({ ...element.data(), departmentId: element.id });
           });
           temp.sort((a, b) => {
             return a.name > b.name ? 1 : -1;
           });
 
           this.departmentAll = temp;
+          this.filleDepartment();
+        });
+    },
+    filleDepartment() {
+      this.departmentOptions = this.departmentAll.filter(
+        x => x.hotelId == this.$route.params.hotelId
+      );
+
+      console.log(
+        this.departmentOptions.filter(
+          x => x.value == this.$route.params.departmentId
+        )
+      );
+      this.dataEmployee.departmentSelect = this.departmentOptions.filter(
+        x => x.value == this.$route.params.departmentId
+      )[0].value;
+    },
+    loadLevel() {
+      db.collection("level")
+        .get()
+        .then(doc => {
+          let temp = [];
+          doc.forEach(element => {
+            temp.push({
+              value: element.id,
+              label: element.data().name
+            });
+          });
+          temp.sort((a, b) => {
+            return a.name > b.name ? 1 : -1;
+          });
+          this.levelOpions = temp;
+          this.dataEmployee.startLevelId = this.levelOpions[0].value;
+        });
+    },
+    loadEdit() {
+      db.collection("employee")
+        .doc(this.$route.params.employeeId)
+        .get()
+        .then(doc => {
+          (this.dataEmployee.departmentId = data().departmentId),
+            (this.dataEmployee.name = data().name),
+            (this.dataEmployee.email = data().email),
+            (this.dataEmployee.tel = data().tel),
+            (this.dataEmployee.password = data().password),
+            (this.dataEmployee.startLevelId = data().departmentId);
         });
     }
   },
   mounted() {
+    if (this.$route.name == "accountEdit") {
+      this.loadEdit();
+      return;
+    }
     this.loadDepartment();
+    this.loadLevel();
   }
 };
 </script>
