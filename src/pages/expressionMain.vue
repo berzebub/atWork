@@ -177,10 +177,10 @@
             <div
               class="col"
               :class="$q.platform.is.desktop && item2.isSound == true?'text-subtitle1':' q-pl-md  text-subtitle1'"
-              :style="$q.platform.is.mobile && item2.isSound == true?'margin-left:24px':null"
+              
             >
               <div>{{item2.sentenceEng}}</div>
-              <div>{{item2.sentenceTh}}</div>
+              <div class="text-blue-grey-7">{{item2.sentenceTh}}</div>
             </div>
           </div>
           <q-separator />
@@ -243,7 +243,6 @@ export default {
       levelId: this.$route.params.levelId,
       unitId: this.$route.params.unitId,
       practiceId: this.$route.params.practiceId,
-      orderId: this.$route.params.oser,
       isSnap: "",
       isDisable: false,
       playAudio : ""
@@ -345,19 +344,20 @@ export default {
           levelId: this.levelId,
           unitId: this.unitId,
           getLevelName: this.getLevelName,
-          getUnitName: this.getUnitName
+          getUnitName: this.getUnitName,
+          
         }
       });
-      console.log(item);
     },
     addDataExpression() {
       this.$router.push({
         name: "expressionInput",
         params: {
+
           getLevelName: this.getLevelName,
           getUnitName: this.getUnitName,
           levelId: this.levelId,
-          unitId: this.unitId
+          unitId: this.unitId,
         }
       });
     },
@@ -374,8 +374,6 @@ export default {
     this.loadDataExpression();
     this.loadLevelData();
     this.loadUnitData();
-    console.log(this.orderId);
-
     // var user = auth.currentUser;
   }
 };

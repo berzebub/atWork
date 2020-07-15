@@ -410,6 +410,10 @@ export default {
         });
         return;
       }
+      if (this.order == this.$route.params.order.length) {
+        return
+      }
+      
       await this.updateSyncStatus(this.practiceId, this.unitId);
       if (this.$route.name == "expressionInput") {
         let filterData = this.sentence.filter(
