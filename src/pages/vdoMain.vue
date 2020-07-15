@@ -40,15 +40,27 @@
             </div>
           </div>
         </div>
+
       </div>
       <div class="text-h6 text-center q-pt-md">
         <div>{{practiceData.levelName}}</div>
         <div>{{ practiceData.unitOrder + ". " + practiceData.unitName}}</div>
       </div>
       <div class="q-my-md boxCard text-left">
-        <div
+         <div class="bg-blue-grey-10 text-white boxVdo row q-px-xs">
+          <div class="col self-center q-px-sm">วิดีโอสนทนา</div>
+            <q-btn
+              v-if="mode  == 'draft'"
+              @click="editBtn()"
+              size="sm"
+              icon="far fa-edit"
+              round
+              flat
+            ></q-btn>
+        </div>
+        <!-- <div
           style="border-top-left-radius: 6px;border-top-right-radius: 6px "
-          class="bg-blue-grey-10 text-white q-py-sm q-pr-xs q-pl-md text-subtitle1 row justify-between"
+          class="bg-blue-grey-10 text-white q-py-sm q-pr-xs q-pl-sm text-subtitle1 row justify-between"
         >
           <div class="self-center">วิดีโอสนทนา</div>
           <div style="height:10px">
@@ -61,7 +73,7 @@
               flat
             ></q-btn>
           </div>
-        </div>
+        </div> -->
 
         <div class="q-px-md q-py-sm">
           <div v-if="dataVdo.isVdo" align="center">
@@ -104,19 +116,19 @@
           <div
             v-for="item,index in practiceDataList"
             :key="index"
-            class="q-mt-md boxCard text-left relative-position"
+            class="q-my-md boxCard text-left relative-position"
           >
-            <div
-              class="absolute-top-left q-pt-sm q-px-md mobile-only"
-              v-if="item.status == 'waitForDelete'"
-              style="z-index:30"
-            >
-              <a
-                class="text-white cursor-pointer text-subtitle1"
-                @click="cancelDelete(item.key)"
-                style="text-decoration:underline;"
-              >ยกเลิกการลบ</a>
-            </div>
+              <div
+          class="absolute-top-left q-pa-sm mobile-only"
+          v-if="item.status == 'waitForDelete'"
+          style="z-index:30"
+        >
+          <a
+            class="text-white cursor-pointer"
+            @click="cancelDelete(item.key)"
+            style="text-decoration:underline;"
+          >ยกเลิกการลบ</a>
+        </div>
             <q-btn
               dense
               style="z-index:30;width:190px;"
@@ -127,58 +139,55 @@
               @click="cancelDelete(item.key)"
             ></q-btn>
             <div v-if="item.status  == 'waitForDelete'" class="absolute-center backDrop"></div>
-            <div
-              style="border-top-left-radius: 6px;border-top-right-radius: 6px "
-              class="bg-blue-grey-10 text-white q-py-sm q-pr-xs q-pl-md text-subtitle1 row justify-between"
-            >
-              <div class="self-center desktop-only">รหัสลำดับ {{item.order}}</div>
-              <div
-                v-if="item.status != 'waitForDelete'"
-                class="self-center mobile-only"
-              >รหัสลำดับ {{item.order}}</div>
-              <div style="height:28px" v-if="item.status == 'waitForDelete'"></div>
-              <div style="height:10px">
-                <q-btn
-                  class="mobile-only"
-                  v-if="mode == 'draft'"
-                  size="13px"
-                  icon="fas fa-ellipsis-v"
-                  round
-                  dense
-                  flat
-                >
-                  <q-menu>
-                    <q-list style="min-width: 130px">
-                      <q-item clickable v-close-popup>
-                        <q-item-section @click="editBtn(item.key)">แก้ไขบทสนทนา</q-item-section>
-                      </q-item>
-                      <q-item clickable v-close-popup>
-                        <q-item-section @click="deleteBtn(item.key,item.order)">ลบบทสนทนา</q-item-section>
-                      </q-item>
-                    </q-list>
-                  </q-menu>
-                </q-btn>
-                <div class="col self-center desktop-only" align="right">
-                  <q-btn
-                    v-if="mode == 'draft'"
-                    @click="deleteBtn(item.key,item.order)"
-                    size="sm"
-                    class="q-mr-sm"
-                    round
-                    flat
-                    icon="far fa-trash-alt"
-                  />
-                  <q-btn
-                    v-if=" mode == 'draft'"
-                    @click="editBtn(item.key)"
-                    size="sm"
-                    flat
-                    round
-                    icon="far fa-edit"
-                  />
-                </div>
-              </div>
-            </div>
+            <div class="boxVdo bg-blue-grey-10 text-white q-py-xs q-px-xs row">
+          <div class="col self-center q-px-sm ">
+            <span class="desktop-only">รหัสลำดับ {{ item.order }}</span>
+            <span
+              class="mobile-only" 
+              v-if="item.status != 'waitForDelete'"
+            >รหัสลำดับ {{ item.order }}</span>
+          </div>
+          <div class="col self-center desktop-only " align="right">
+            <q-btn 
+              
+              v-if="mode == 'draft'"
+              @click="deleteBtn(item.key,item.order)"
+              size="sm"
+              class="q-mr-sm"
+              round
+              flat
+              icon="far fa-trash-alt"
+            />
+            <q-btn
+              v-if="mode == 'draft'"
+             @click="editBtn(item.key)"
+              size="sm"
+              flat
+              round
+              icon="far fa-edit"
+            />
+          </div>
+          <q-btn
+            class="mobile-only "
+            v-if="mode== 'draft'"
+            size="13px"
+            icon="fas fa-ellipsis-v"
+            round
+            dense
+            flat
+          >
+            <q-menu  anchor="top right" self="top right" :offset="[7,-37]">
+              <q-list style="min-width: 120px">
+                <q-item clickable v-close-popup>
+                  <q-item-section  @click="editBtn(item.key)">แก้ไขคำถาม</q-item-section>
+                </q-item>
+                <q-item clickable v-close-popup>
+                  <q-item-section  @click="deleteBtn(item.key,item.order)">ลบคำถาม</q-item-section>
+                </q-item>
+              </q-list>
+            </q-menu>
+          </q-btn>
+        </div>
             <div class="q-px-md q-py-sm">
               <div class="self-center " v-if="item.speaker == 'customer' ">ลูกค้า:</div>
               <div class="self-center" v-if="item.speaker == 'employee' ">พนักงาน:</div>
@@ -540,6 +549,11 @@ export default {
 }
 .box {
   border: 1px solid #263238;
+}
+.boxVdo {
+  height: 40px;
+  border-top-right-radius: 6px;
+  border-top-left-radius: 6px;
 }
 .boxServer {
   width: 100%;

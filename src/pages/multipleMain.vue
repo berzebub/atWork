@@ -49,7 +49,7 @@
       </div>
       <!-- box คำสั่ง -->
       <div class="box text-left q-my-md">
-        <div class="bg-blue-grey-10 text-white boxQuestion row q-px-sm">
+        <div class="bg-blue-grey-10 text-white boxQuestion row q-px-xs">
           <div class="col self-center q-px-sm">คำสั่ง</div>
           <div class="col self-center" align="right">
             <q-btn
@@ -114,18 +114,17 @@
           @click="cancelDelete(item.id)"
         ></q-btn>
         <div v-if="item.status == 'waitForDelete'" class="absolute-center backDrop"></div>
-
-        <div class="boxQuestion bg-blue-grey-10 text-white q-py-xs q-px-sm row">
-          <div class="col self-center q-px-sm">
+        <div class="boxQuestion bg-blue-grey-10 text-white q-py-xs q-px-xs row">
+          <div class="col self-center q-px-sm ">
             <span class="desktop-only">รหัสลำดับ {{ item.order }}</span>
             <span
-              class="mobile-only"
+              class="mobile-only" 
               v-if="item.status != 'waitForDelete'"
             >รหัสลำดับ {{ item.order }}</span>
           </div>
-
-          <div class="col self-center desktop-only" align="right">
-            <q-btn
+          <div class="col self-center desktop-only " align="right">
+            <q-btn 
+              
               v-if="mode == 'draft'"
               @click="deleteBtn(item.id, item.order, index)"
               size="sm"
@@ -144,7 +143,7 @@
             />
           </div>
           <q-btn
-            class="mobile-only"
+            class="mobile-only "
             v-if="mode== 'draft'"
             size="13px"
             icon="fas fa-ellipsis-v"
@@ -152,7 +151,7 @@
             dense
             flat
           >
-            <q-menu anchor="top right" self="top right" :offset="[7,-37]">
+            <q-menu  anchor="top right" self="top right" :offset="[7,-37]">
               <q-list style="min-width: 120px">
                 <q-item clickable v-close-popup>
                   <q-item-section @click="editData(item)">แก้ไขคำถาม</q-item-section>
@@ -177,7 +176,7 @@
               icon="fas fa-volume-up"
               v-if="item.audioURL"
               @click="playAudio(item.audioURL)"
-              class="q-mx-xs r"
+              class="q-mx-xs "
             ></q-btn>
             <span class="q-mx-xs q-pr-sm" v-html="item.question"></span>
           </div>
@@ -402,6 +401,7 @@ export default {
           }
         });
     },
+    
     loadInstrunction() {
       let practiceId = this.$route.params.practiceId;
       db.collection("practice_list")
