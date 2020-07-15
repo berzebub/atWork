@@ -14,6 +14,7 @@
                 val="draft"
                 label="แบบร่าง"
               />
+              
             </div>
             <!-- เซิร์ฟเวอร์ -->
             <div class="col">
@@ -61,14 +62,14 @@
             />
           </div>
         </div>
-        <div class="row q-px-md q-py-sm" style="height:120px;">
+        <div class="row q-px-md q-py-sm " >
           <div class="col-12 self-center q-py-sm">
             <span class="text-subtitle1" v-if="instrunction.eng">{{ instrunction.eng }}</span>
             <span v-else>ยังไม่ระบุ</span>
           </div>
           <q-separator class="q-my-xs" />
-          <div class="col-12 self-center q-py-sm">
-            <span class="text-subtitle1" v-if="instrunction.th ">{{ instrunction.th }}</span>
+          <div class="col-12 self-center q-py-sm ">
+            <span class="text-subtitle1 " v-if="instrunction.th ">{{ instrunction.th }}</span>
             <span v-else>ยังไม่ระบุ</span>
           </div>
         </div>
@@ -238,7 +239,7 @@
               <q-input
                 dense
                 autogrow
-                :rules="[ val => val && val.length > 0]"
+                :rules="[ val => val && val.length > 0,engError]"
                 ref="instrunctionEng"
                 outlined
                 type="text"
@@ -251,7 +252,7 @@
               <q-input
                 dense
                 autogrow
-                :rules="[ val => val && val.length > 0 ]"
+                :rules="[ val => val && val.length > 0,thError ]"
                 ref="instrunctionTh"
                 outlined
                 type="text"
@@ -342,7 +343,6 @@ export default {
       pathFile:
         "https://storage.cloud.google.com/atwork-dee11.appspot.com/practice/",
       playSoundURL: "",
-
       isSaveDialogSuccess: false,
       isQuestionDialog: false,
 
@@ -600,6 +600,7 @@ export default {
 </script>
 <style scoped>
 .box {
+ 
   border: 1px solid #263238;
   border-radius: 10px;
 }
