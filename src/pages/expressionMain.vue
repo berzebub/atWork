@@ -209,7 +209,6 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
-
     <q-dialog v-model="dialogCancelDelete" persistent>
       <q-card style="min-width: 350px; height:170px">
         <q-card-section>
@@ -246,7 +245,8 @@ export default {
       practiceId: this.$route.params.practiceId,
       orderId: this.$route.params.oser,
       isSnap: "",
-      isDisable: false
+      isDisable: false,
+      playAudio : ""
     };
   },
   methods: {
@@ -362,9 +362,12 @@ export default {
       });
     },
     playSound(pathSound) {
-      let audio = new Audio(pathSound);
-      console.log(pathSound);
-      audio.play();
+    
+      if (this.playAudio != "") {
+        this.playAudio.pause()
+      }
+      this.playAudio= new Audio(pathSound)
+      this.playAudio.play();
     }
   },
   mounted() {
