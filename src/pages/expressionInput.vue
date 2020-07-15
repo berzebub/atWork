@@ -296,6 +296,7 @@ export default {
       boxCount: 1,
       type: "",
       order: "",
+      checkOrder : this.$route.params.checkOrder,
       errorSentenceEng1: false,
       uploadSound: [
         {
@@ -410,7 +411,7 @@ export default {
         });
         return;
       }
-      if (this.order == this.$route.params.order.length) {
+      if (this.order == this.checkOrder) {
         return
       }
       

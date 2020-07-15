@@ -108,21 +108,27 @@
               </div>
             </div>
             <div class="col self-center" align="right">
-              <!-- icon-delete -->
-              <q-icon
+              <!-- icon-ถังขยะ -->
+              <q-btn
                 @click="openDialogDelete(item.id,item.order)"
                 v-if="expressionType == 'draft'"
-                class="cursor-pointer q-pr-lg desktop-only"
-                name="far fa-trash-alt"
-                style="color:white; font-size: 1.4em;"
+                class="cursor-pointer desktop-only q-mx-sm"
+                icon="far fa-trash-alt"
+                style="color:white"
+                size="sm"
+                round
+                flat
               />
-              <!-- icon-edit -->
-              <q-icon
+              <!-- icon-ดินสอ -->
+              <q-btn
+                round
                 @click="editDataExpression(item)"
                 v-if="expressionType == 'draft'"
-                class="cursor-pointer q-pr-md desktop-only"
-                name="fas fa-edit"
-                style="color:white; font-size: 1.4em;"
+                class="cursor-pointer desktop-only"
+                icon="fas fa-edit"
+                style="color:white"
+                size="sm"
+                flat
               />
               <!-- icon-menu -->
               <q-btn
@@ -350,10 +356,11 @@ export default {
       });
     },
     addDataExpression() {
+      let checkOrder = ""
       this.$router.push({
         name: "expressionInput",
         params: {
-
+          checkOrder: this.showDataExpression.order,
           getLevelName: this.getLevelName,
           getUnitName: this.getUnitName,
           levelId: this.levelId,
