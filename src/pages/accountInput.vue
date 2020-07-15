@@ -112,8 +112,7 @@ export default {
             return a.name > b.name ? 1 : -1;
           });
 
-          this.departmentOptions = temp;
-          this.dataEmployee.nameDepartmentSelect = this.departmentOptions[0];
+          this.departmentAll = temp;
         });
     }
   },

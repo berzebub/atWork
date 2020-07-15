@@ -151,12 +151,12 @@ const routes = [
         name: "hotelEdit"
       },
       {
-        path: "accountAdd",
+        path: "accountAdd/:hotelId/:departmentId",
         component: () => import("pages/accountInput.vue"),
         name: "accountAdd"
       },
       {
-        path: "accountEdit/:accountId",
+        path: "accountEdit/:hotelId/:departmentId",
         component: () => import("pages/accountInput.vue"),
         name: "accountEdit"
       },

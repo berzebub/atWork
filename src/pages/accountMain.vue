@@ -289,7 +289,11 @@ export default {
         });
     },
 
-    addEmployee() {},
+    addEmployee(data) {
+      this.$router.push(
+        "/accountAdd/" + data.hotelId + "/" + data.departmentId
+      );
+    },
     deleteDepartment(data) {
       this.dataDepartment = data;
       console.log(data);
