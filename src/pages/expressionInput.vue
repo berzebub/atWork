@@ -8,6 +8,8 @@
             <div>{{getLevelName}}</div>
             <div>{{getUnitName}}</div>
           </div>
+          <!-- :error="errorOrder"
+          :error-message="'รหัสลำดับซ้ำ'"-->
           <!-- รหัสลำดับ -->
           <div>
             <div class="row">
@@ -15,13 +17,13 @@
               <div class="text-subtitle1 q-ml-md text-grey-7" style="margin-top:0.7px">ตัวเลข 3 หลัก</div>
             </div>
             <q-input
-              :error="errorOrder"
-              :error-message="'รหัสลำดับซ้ำ'"
               dense
               ref="order"
-              :rules="[ val => val]"
+              lazy-rules
+              :rules="[val => val || 'ค่าว่าง',val => checkOrderId(val)]"
               outlined
               mask="###"
+              debounce="1000"
               v-model.number="order"
             />
           </div>
@@ -298,6 +300,7 @@ export default {
       boxCount: 1,
       type: "",
       order: "",
+      oldOrder: "",
       checkOrder: this.$route.params.checkOrder,
       errorSentenceEng1: false,
       errorOrder: false,
@@ -360,6 +363,18 @@ export default {
     };
   },
   methods: {
+    async checkOrderId(val) {
+      console.log(val);
+      let checkOrder = await db
+        .collection("practice_draft")
+        .where("order", "==", val)
+        .where("practiceId", "==", this.practiceId)
+        .get();
+      console.log(checkOrder.size);
+      if (this.oldOrder != this.order) {
+        return !checkOrder.size || "รหัสลำดับซ้ำ";
+      }
+    },
     editMode() {
       this.isAddMode = false;
       if (
@@ -378,6 +393,7 @@ export default {
       this.levelId = this.$route.params.levelId;
       this.practiceId = this.$route.params.practiceId;
       this.order = this.$route.params.order;
+      this.oldOrder = this.$route.params.order;
       this.unitId = this.$route.params.unitId;
       let getSentence = this.$route.params.expression;
       this.boxCount = this.$route.params.expression.length - 1;
@@ -423,17 +439,6 @@ export default {
           color: "red",
           position: "top"
         });
-        return;
-      }
-
-      let checkOrder = await db
-        .collection("practice_draft")
-        .where("order", "==", this.order)
-        .where("practiceId", "==", this.practiceId)
-        .get();
-
-      if (checkOrder.size) {
-        this.errorOrder = true;
         return;
       }
 
