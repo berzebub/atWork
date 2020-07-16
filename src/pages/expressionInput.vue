@@ -21,10 +21,6 @@
               :error-message="errorOrderMes"
               outlined
               mask="###"
-<<<<<<< Updated upstream
-              debounce="500"
-=======
->>>>>>> Stashed changes
               v-model.number="order"
               @keyup="isOrderError = false"
             />
