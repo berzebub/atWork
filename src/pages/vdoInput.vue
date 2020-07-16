@@ -16,9 +16,9 @@
             ref="orderid"
             v-model.number="vdoObject.order"
             dense
-             :error="isErrorOrder"
-              :error-message="'รหัสลำดับนี้มีการใช้งานแล้ว'"
-            :rules="[ val => !!val ]"
+            :error="isErrorOrder"
+            :error-message="orderMessage"
+            :rules="[val => !!val]"
           />
         </div>
       </div>
@@ -164,6 +164,7 @@ export default {
         unitOrder: ""
       },
       isErrorOrder: false,
+      orderMessage:"",
       orderOld: "",
       isSaveDialogSuccess: false
     };
@@ -171,7 +172,6 @@ export default {
   methods: {
    
     loadLevel() {
-      this.loadingShow();
       let levelKey = this.$route.params.levelId;
       db.collection("level")
         .doc(levelKey)
@@ -194,7 +194,6 @@ export default {
             this.practiceData.unitName = result.data().name;
             this.practiceData.unitOrder = result.data().order;
             // โหลดข้อมูล คำสั่ง
-            this.loadingHide();
           }
         });
     },
@@ -224,17 +223,21 @@ export default {
         this.$refs.eng.hasError ||
         this.$refs.th.hasError
       ) {
-        return;
+      return  this.orderMessage = ''
       } 
   let getOrder = await db.collection("practice_draft")
    .where("order", "==", this.vdoObject.order)
+    .where("practiceId", "==", this.vdoObject.practiceId)
    .get()
       if (getOrder.size > 0 && this.orderOld != this.vdoObject.order) {
+        this.orderMessage = 'รหัสลำดับนี้มีการใช้งานแล้ว'
         this.isErrorOrder = true
         this.loadingHide();
          setTimeout(() => {
-            this.isErrorOrder = false
+           this.orderMessage = ''
+          this.isErrorOrder = false
             }, 1000);
+   
      }else{
        this.loadingShow();
       await this.updateSyncStatus(

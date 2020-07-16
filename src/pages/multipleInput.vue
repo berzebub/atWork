@@ -21,7 +21,7 @@
             dense
             lazy-rules
               :error="isErrorOrder"
-              :error-message="'รหัสลำดับนี้มีการใช้งานแล้ว'"
+              :error-message="orderMessage"
             :rules="[val => !!val]"
           />
         </div>
@@ -656,7 +656,8 @@ export default {
       isErrorChoice1: false,
       isErrorChoice2: false,
       finishDialog: false,
-       isErrorOrder: false,
+      isErrorOrder: false,
+      orderMessage:"",
       isAddMode: true,
 
       isSaveData: false,
@@ -719,6 +720,7 @@ export default {
       let hasChoice = this.data.choices.filter(x => x.choice != "");
       this.$refs.orderid.validate();
       if (this.$refs.orderid.hasError) {
+          this.orderMessage = ''
       }
 
       if (this.data.question == "") {
@@ -775,11 +777,14 @@ export default {
 
 
  let getOrder = await db.collection("practice_draft")
-   .where("order", "==", this.data.order)
+  .where("order", "==", this.data.order)
+  .where("practiceId", "==", this.data.practiceId)
    .get()
       if (getOrder.size > 0 && this.oldOrder != this.data.order) {
+          this.orderMessage = 'รหัสลำดับนี้มีการใช้งานแล้ว'
         this.isErrorOrder = true
          setTimeout(() => {
+        this.orderMessage = ''
          this.isErrorOrder = false
         }, 1000);
      }else{
