@@ -1,13 +1,13 @@
 <template>
   <q-page>
-    <div>
+    <div class="container">
       <div align="center">
-        <q-btn style="width:190px" color="blue-grey-10" label="เพิ่ม" @click="addUser()"></q-btn>
+        <q-btn style="width:190px" color="blue-grey-10" label="เพิ่มผู้ดูแลระบบ" @click="addUser()"></q-btn>
       </div>
-      <div>
-        <q-card class="rounded-borders q-py-md q-mt-lg br" v-for="item in nameArr" :key="item.id">
+      <div v-if="dataUser.length">
+        <q-card class="rounded-borders q-pa-md q-mt-md br" v-for="item in nameArr" :key="item.id">
           <q-card-section class="no-padding">
-            <q-btn class="q-mb-md q-ml-md" dense color="blue-grey-10" round :label="item"></q-btn>
+            <q-btn dense color="blue-grey-10" round :label="item"></q-btn>
           </q-card-section>
           <q-card-section
             class="no-padding"
@@ -16,27 +16,45 @@
             )"
             :key="index"
           >
-            <div class="row q-px-md">
-              <div class="col-11">
+            <div class="row q-mt-md">
+              <div class="col">
                 <div class="text-subtitle1">{{ item2.name }}</div>
                 <div class="text-subtitle2 text-blue-grey-7">{{ item2.email }}</div>
                 <span v-for="(item3, index2) in item2.userGroup" :key="index2">
-                  <q-badge :label="item3" color="blue-grey-7" outline class="q-mr-sm q-mt-sm"></q-badge>
+                  <q-badge
+                    :label="convertPremision.filter(x => x.type == item3)[0].name"
+                    color="blue-grey-7"
+                    outline
+                    class="q-mr-sm q-mt-sm"
+                  ></q-badge>
                 </span>
               </div>
-              <div class="col" align="right">
-                <q-btn size="13px" icon="fas fa-ellipsis-v" round dense flat>
-                  <q-menu :offset="[-15, 0]" self="top right">
-                    <q-list style="min-width: 120px">
-                      <q-item clickable v-close-popup>
-                        <q-item-section @click="editBtn(item2)">แก้ไขข้อมูล</q-item-section>
-                      </q-item>
-                      <q-item clickable v-close-popup>
-                        <q-item-section @click="deleteBtn(item2)">ลบ</q-item-section>
-                      </q-item>
-                    </q-list>
-                  </q-menu>
-                </q-btn>
+              <div class="col-1 self-center" style="width:100px;" align="right">
+                <div class="desktop-only">
+                  <q-btn
+                    flat
+                    size="sm"
+                    class="q-mr-md"
+                    round
+                    icon="far fa-trash-alt"
+                    @click="deleteBtn(item2)"
+                  ></q-btn>
+                  <q-btn flat size="sm" round icon="far fa-edit" @click="editBtn(item2)"></q-btn>
+                </div>
+                <div class="mobile-only">
+                  <q-btn size="13px" icon="fas fa-ellipsis-v" round dense flat>
+                    <q-menu :offset="[-15, 0]" self="top right">
+                      <q-list style="min-width: 120px">
+                        <q-item clickable v-close-popup>
+                          <q-item-section @click="editBtn(item2)">แก้ไขข้อมูล</q-item-section>
+                        </q-item>
+                        <q-item clickable v-close-popup>
+                          <q-item-section @click="deleteBtn(item2)">ลบ</q-item-section>
+                        </q-item>
+                      </q-list>
+                    </q-menu>
+                  </q-btn>
+                </div>
               </div>
             </div>
             <q-separator
@@ -90,7 +108,25 @@ export default {
       nameArr: "",
       deleteDataDialog: false,
       nameDialog: "",
-      uid: ""
+      uid: "",
+      convertPremision: [
+        {
+          name: "แบบฝึกหัด",
+          type: "practice"
+        },
+        {
+          name: "บทเรียน",
+          type: "level"
+        },
+        {
+          name: "ผู้ใช้งาน",
+          type: "personel"
+        },
+        {
+          name: "ผู้ดูแลระบบ",
+          type: "admin"
+        }
+      ]
     };
   },
   methods: {

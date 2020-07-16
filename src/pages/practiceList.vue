@@ -13,7 +13,7 @@
             <span class="text-white text-h6">แบบฝึกหัด</span>
           </div>
         </div>
-        <div class="shadow-3 bg-white" style=" height: calc(100vh - 64px);overflow-y:auto">
+        <div class="shadow-3 bg-white" style="height: calc(100vh - 64px);overflow-y:auto">
           <q-list class="rounded-borders" v-for="(itemLv,index) in levelList" :key="index">
             <q-expansion-item @click="showUnit(itemLv)" group="unitgroup">
               <template v-slot:header>
@@ -58,7 +58,7 @@
           </q-list>
         </div>
       </div>
-      <div class="col">
+      <div class="col" style="height:100vh;overflow-y:auto">
         <practice-main
           v-if="isShowPracticeMain"
           :levelId="levelId"

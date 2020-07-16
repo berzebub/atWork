@@ -31,13 +31,7 @@
           <div class="col-1" align="right">
             <!-- ปุ่ม สามจุด -->
             <div class="col-1" align="right">
-              <q-btn
-                round
-                size="sm"
-                flat
-                class="text-white"
-                icon="fas fa-ellipsis-v"
-              >
+              <q-btn round size="sm" flat class="text-white" icon="fas fa-ellipsis-v">
                 <q-menu auto-close :offset="[5, 10]" content-class="shadow-3">
                   <q-list style="min-width: 100px">
                     <q-item clickable @click="editPractice(itemPrac)">
@@ -53,20 +47,14 @@
           </div>
         </div>
         <div class="row q-py-sm">
-          <div class="col  q-pa-sm" align="left">
-            <span v-if="itemPrac.practiceType == 'flashcard'"
-              >การ์ดคำศัพท์</span
-            >
-            <span v-if="itemPrac.practiceType == 'multipleChoice'"
-              >เลือกคำตอบ</span
-            >
-            <span v-if="itemPrac.practiceType == 'expression'"
-              >ประโยคสนทนา</span
-            >
+          <div class="col q-pa-sm" align="left">
+            <span v-if="itemPrac.practiceType == 'flashcard'">การ์ดคำศัพท์</span>
+            <span v-if="itemPrac.practiceType == 'multipleChoice'">เลือกคำตอบ</span>
+            <span v-if="itemPrac.practiceType == 'expression'">ประโยคสนทนา</span>
             <span v-if="itemPrac.practiceType == 'vdo'">บทสนทนา</span>
           </div>
-          <div class="row  col-3" style="width:130px;">
-            <div class="col " align="right">
+          <div class="row col-3" style="width:130px;">
+            <div class="col" align="right">
               <q-btn
                 class="q-mx-sm"
                 v-show="itemPrac.isShowSyncBtn"
@@ -94,9 +82,7 @@
     <div class="q-py-md" v-if="!isShowPractice">
       <div>
         <span class="text-subtitle1">รหัสลำดับ</span>
-        <span class="text-body2 q-pl-xs" style="color:#BDBDBD"
-          >ตัวเลข 3 หลัก</span
-        >
+        <span class="text-body2 q-pl-xs" style="color:#BDBDBD">ตัวเลข 3 หลัก</span>
       </div>
       <div>
         <q-input
@@ -149,12 +135,7 @@
         </div>
       </div>
       <div v-else class="q-py-sm">
-        <q-input
-          dense
-          outlined
-          :value="convertPracticeTypeToThai(data.practiceType)"
-          readonly
-        ></q-input>
+        <q-input dense outlined :value="convertPracticeTypeToThai(data.practiceType)" readonly></q-input>
         <!-- <span>{{convertPracticeTypeToThai(data.practiceType)}}</span> -->
       </div>
       <div class="row q-pa-sm">
@@ -168,11 +149,7 @@
           ></q-btn>
         </div>
         <div class="col q-px-sm">
-          <q-btn
-            class="boxbtn bg-blue-grey-10 text-white"
-            label="บันทึก"
-            @click="saveBtn()"
-          ></q-btn>
+          <q-btn class="boxbtn bg-blue-grey-10 text-white" label="บันทึก" @click="saveBtn()"></q-btn>
         </div>
       </div>
     </div>

@@ -6,7 +6,7 @@
         <q-input ref="name" outlined dense v-model="dataUser.name" :rules="[val => !!val ]"></q-input>
       </div>
 
-      <div class="q-pt-md">
+      <div>
         <div class="text-subtitle1">อีเมล</div>
         <q-input
           :readonly="$route.name=='userEdit'"
@@ -21,7 +21,7 @@
         ></q-input>
       </div>
 
-      <div class="q-pt-md">
+      <div>
         <div class="text-subtitle1">รหัสผ่าน</div>
         <div class="text-subtitle2">ไม่ต่ำกว่า 6 ตัวอักษร</div>
 
@@ -44,7 +44,7 @@
         </q-input>
       </div>
       <!-- checkbox -->
-      <div class="row q-pt-md">
+      <div class="row">
         <div class="text-subtitle1 row items-center">สิทธิ์การใช้การ</div>
         <div class="text-subtitle1">
           <q-checkbox
