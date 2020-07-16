@@ -223,7 +223,7 @@ export default {
         this.$refs.eng.hasError ||
         this.$refs.th.hasError
       ) {
-      return  this.orderMessage = ''
+     return
       } 
   let getOrder = await db.collection("practice_draft")
    .where("order", "==", this.vdoObject.order)
@@ -237,7 +237,7 @@ export default {
            this.orderMessage = ''
           this.isErrorOrder = false
             }, 1000);
-   
+   return
      }else{
        this.loadingShow();
       await this.updateSyncStatus(

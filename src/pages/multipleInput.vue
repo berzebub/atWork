@@ -719,14 +719,13 @@ export default {
       // เช็คช่องกรอกข้อมูล ก่อนบันทึก ว่ากรอกข้อมูลรึยัง ข้อมูลที่จำเป็นต้องกรอก
       let hasChoice = this.data.choices.filter(x => x.choice != "");
       this.$refs.orderid.validate();
-      if (this.$refs.orderid.hasError) {
-          this.orderMessage = ''
+      if (this.$refs.orderid.hasError ) {
       }
 
-      if (this.data.question == "") {
+       if (this.data.question == "" ) {
         this.isQuestion = false;
+        
       }
-
       if (hasChoice.length < 2) {
         // การเช็คตัวเลือก 1&2 ถ้าข้อความน้อยก่ว่า 0 ให้ มีกรอบสีแดง
         let index = this.data.choices.findIndex(x => x.choice == "");
@@ -734,12 +733,14 @@ export default {
           this.isErrorChoice1 = true;
         } else if (index == 1) {
           this.isErrorChoice2 = true;
+        
         }
       }
       if (!this.data.correctAnswer) {
         this.isCorrectAnswer = true;
-        return;
+        return
       }
+      
       this.data.choices.map((x, index) => {
         if (hasChoice[index]) {
           this.data.choices[index].choice = hasChoice[index].choice;
@@ -765,18 +766,14 @@ export default {
           this.data.choices[index].isSound = false;
         }
       });
-
-    
-
-      //  หน้า เพิ่มข้อมูล
-
-      await this.updateSyncStatus(
+   if (this.data.question == "" || this.data.order == "" ) {
+      return
+      }
+ await this.updateSyncStatus(
         this.$route.params.practiceId,
         this.$route.params.unitId
       );
-
-
- let getOrder = await db.collection("practice_draft")
+let getOrder = await db.collection("practice_draft")
   .where("order", "==", this.data.order)
   .where("practiceId", "==", this.data.practiceId)
    .get()
@@ -788,8 +785,9 @@ export default {
          this.isErrorOrder = false
         }, 1000);
      }else{
-         this.loadingShow();
+      this.loadingShow();
       this.isSaveData = true;
+       //  หน้า เพิ่มข้อมูล
         if (this.isAddMode) {
         db.collection("practice_draft")
           .add(this.data)
