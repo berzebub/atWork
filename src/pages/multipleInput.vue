@@ -764,8 +764,7 @@ export default {
         }
       });
 
-      this.loadingShow();
-      this.isSaveData = true;
+    
 
       //  หน้า เพิ่มข้อมูล
 
@@ -780,12 +779,12 @@ export default {
    .get()
       if (getOrder.size > 0 && this.oldOrder != this.data.order) {
         this.isErrorOrder = true
-        this.isSaveData = false;
-        this.loadingHide();
          setTimeout(() => {
          this.isErrorOrder = false
         }, 1000);
      }else{
+         this.loadingShow();
+      this.isSaveData = true;
         if (this.isAddMode) {
         db.collection("practice_draft")
           .add(this.data)
