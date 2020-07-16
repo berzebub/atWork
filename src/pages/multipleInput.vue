@@ -779,7 +779,9 @@ export default {
    .where("order", "==", this.data.order)
    .get()
       if (getOrder.size > 0 && this.oldOrder != this.data.order) {
-         this.isErrorOrder = true
+        this.isErrorOrder = true
+        this.isSaveData = false;
+        this.loadingHide();
          setTimeout(() => {
          this.isErrorOrder = false
         }, 1000);

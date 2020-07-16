@@ -231,6 +231,8 @@ export default {
    .get()
       if (getOrder.size > 0 && this.orderOld != this.vdoObject.order) {
         this.isErrorOrder = true
+        this.loadingHide();
+        this.isCheckble = false;
          setTimeout(() => {
             this.isErrorOrder = false
             }, 1000);
