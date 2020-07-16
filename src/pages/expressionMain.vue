@@ -171,13 +171,19 @@
           <div v-if="item2.speaker == 'employee'" class="q-px-md q-pt-md q-pb-sm text-h6">พนักงาน:</div>
           <div v-if="item2.speaker == 'customer'" class="q-px-md q-pt-md q-pb-sm text-h6">ลูกค้า:</div>
           <div class="row items-center">
-            <div class="col-1 self-start" style="width:50px" v-if="item2.isSound == true">
+            <div
+              class="col-1 self-start"
+              align="center"
+              style="width:50px"
+              v-if="item2.isSound == true"
+            >
               <q-btn
+                round
                 flat
                 size="sm"
                 icon="fas fa-volume-up"
                 color="blue-grey-10"
-                @click="playSound('https://storage.cloud.google.com/atwork-dee11.appspot.com/practice/audio/' + item.id +'-' +(index2+1)+'.mp3')"
+                @click="playAudio('https://storage.cloud.google.com/atwork-dee11.appspot.com/practice/audio/' + item.id +'-' +(index2+1)+'.mp3')"
               ></q-btn>
             </div>
             <div
@@ -236,7 +242,7 @@ export default {
       practiceId: this.$route.params.practiceId,
       isSnap: "",
       isDisable: false,
-      playAudio: ""
+      playSoundURL: ""
     };
   },
   methods: {
@@ -350,13 +356,6 @@ export default {
           unitId: this.unitId
         }
       });
-    },
-    playSound(pathSound) {
-      if (this.playAudio != "") {
-        this.playAudio.pause();
-      }
-      this.playAudio = new Audio(pathSound);
-      this.playAudio.play();
     }
   },
   mounted() {

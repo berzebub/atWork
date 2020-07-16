@@ -16,6 +16,8 @@
             ref="orderid"
             v-model.number="vdoObject.order"
             dense
+            debounce="500"
+            lazy-rules
             :rules="[ val => !!val ,checkOrderId]"
           />
         </div>
@@ -167,7 +169,6 @@ export default {
     };
   },
   methods: {
-   
     loadLevel() {
       this.loadingShow();
       let levelKey = this.$route.params.levelId;

@@ -23,7 +23,7 @@
               :rules="[val => val || 'ค่าว่าง',val => checkOrderId(val)]"
               outlined
               mask="###"
-              debounce="1000"
+              debounce="500"
               v-model.number="order"
             />
           </div>
