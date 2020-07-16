@@ -15,6 +15,8 @@
               <div class="text-subtitle1 q-ml-md text-grey-7" style="margin-top:0.7px">ตัวเลข 3 หลัก</div>
             </div>
             <q-input
+              :error="errorOrder"
+              :error-message="'รหัสลำดับซ้ำ'"
               dense
               ref="order"
               :rules="[ val => val]"
@@ -296,8 +298,9 @@ export default {
       boxCount: 1,
       type: "",
       order: "",
-      checkOrder : this.$route.params.checkOrder,
+      checkOrder: this.$route.params.checkOrder,
       errorSentenceEng1: false,
+      errorOrder: false,
       uploadSound: [
         {
           file: null,
@@ -359,8 +362,18 @@ export default {
   methods: {
     editMode() {
       this.isAddMode = false;
-      if (this.$route.params.levelId == undefined) {
-        this.$router.push("/expressionMain");
+      if (
+        this.$route.params.levelId == undefined ||
+        this.$route.params.order == undefined
+      ) {
+        this.$router.push(
+          "/expressionMain/" +
+            this.levelId +
+            "/" +
+            this.unitId +
+            "/" +
+            this.practiceId
+        );
       }
       this.levelId = this.$route.params.levelId;
       this.practiceId = this.$route.params.practiceId;
@@ -379,6 +392,7 @@ export default {
       this.sentence = getSentence;
     },
     async saveData() {
+      this.errorOrder = false;
       for (let i = 0; i < this.boxCount + 1; i++) {
         this.sentence[i].errorEng = false;
         this.sentence[i].errorTh = false;
@@ -411,10 +425,18 @@ export default {
         });
         return;
       }
-      if (this.order == this.checkOrder) {
-        return
+
+      let checkOrder = await db
+        .collection("practice_draft")
+        .where("order", "==", this.order)
+        .where("practiceId", "==", this.practiceId)
+        .get();
+
+      if (checkOrder.size) {
+        this.errorOrder = true;
+        return;
       }
-      
+
       await this.updateSyncStatus(this.practiceId, this.unitId);
       if (this.$route.name == "expressionInput") {
         let filterData = this.sentence.filter(
@@ -546,7 +568,9 @@ export default {
     }
   },
   mounted() {
-    if (this.$route.name == "expressionEdit") this.editMode();
+    if (this.$route.name == "expressionEdit") {
+      this.editMode();
+    }
   }
 };
 </script>

@@ -183,7 +183,6 @@
             <div
               class="col"
               :class="$q.platform.is.desktop && item2.isSound == true?'text-subtitle1':' q-pl-md  text-subtitle1'"
-              
             >
               <div>{{item2.sentenceEng}}</div>
               <div class="text-blue-grey-7">{{item2.sentenceTh}}</div>
@@ -251,7 +250,7 @@ export default {
       practiceId: this.$route.params.practiceId,
       isSnap: "",
       isDisable: false,
-      playAudio : ""
+      playAudio: ""
     };
   },
   methods: {
@@ -350,30 +349,27 @@ export default {
           levelId: this.levelId,
           unitId: this.unitId,
           getLevelName: this.getLevelName,
-          getUnitName: this.getUnitName,
-          
+          getUnitName: this.getUnitName
         }
       });
     },
     addDataExpression() {
-      let checkOrder = ""
+      let checkOrder = "";
       this.$router.push({
         name: "expressionInput",
         params: {
-          checkOrder: this.showDataExpression.order,
           getLevelName: this.getLevelName,
           getUnitName: this.getUnitName,
           levelId: this.levelId,
-          unitId: this.unitId,
+          unitId: this.unitId
         }
       });
     },
     playSound(pathSound) {
-    
       if (this.playAudio != "") {
-        this.playAudio.pause()
+        this.playAudio.pause();
       }
-      this.playAudio= new Audio(pathSound)
+      this.playAudio = new Audio(pathSound);
       this.playAudio.play();
     }
   },
