@@ -64,8 +64,8 @@
               <span class="q-pl-md">{{index2+1}}. {{item2.name}}</span>
             </q-toolbar-title>
             <q-btn class="invisible" icon="far fa-trash-alt" flat size="10px"></q-btn>
-            <q-btn @click.stop="deleteEmployee()" icon="far fa-trash-alt" flat size="10px"></q-btn>
-            <q-btn @click.stop="editEmployee()" icon="fas fa-edit" flat size="10px"></q-btn>
+            <q-btn @click.stop="deleteEmployee(item2)" icon="far fa-trash-alt" flat size="10px"></q-btn>
+            <q-btn @click.stop="editEmployee(item2)" icon="fas fa-edit" flat size="10px"></q-btn>
           </q-toolbar>
         </div>
         <q-separator />
@@ -326,7 +326,16 @@ export default {
       return doc.size ? true : false;
     },
     deleteEmployee() {},
-    editEmployee(data) {},
+    editEmployee(data) {
+      this.$router.push(
+        "/accountEdit/" +
+          data.hotelId +
+          "/" +
+          data.departmentId +
+          "/" +
+          data.employeeId
+      );
+    },
     confirmDelete() {
       console.log(this.dataDepartment.departmentId);
       this.loadingShow();

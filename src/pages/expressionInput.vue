@@ -8,6 +8,8 @@
             <div>{{getLevelName}}</div>
             <div>{{getUnitName}}</div>
           </div>
+          <!-- :error="errorOrder"
+          :error-message="'รหัสลำดับซ้ำ'"-->
           <!-- รหัสลำดับ -->
           <div>
             <div class="row">
@@ -17,9 +19,11 @@
             <q-input
               dense
               ref="order"
-              :rules="[ val => val]"
+              lazy-rules
+              :rules="[val => val || 'ค่าว่าง',val => checkOrderId(val)]"
               outlined
               mask="###"
+              debounce="1000"
               v-model.number="order"
             />
           </div>
@@ -296,8 +300,10 @@ export default {
       boxCount: 1,
       type: "",
       order: "",
-      checkOrder : this.$route.params.checkOrder,
+      oldOrder: "",
+      checkOrder: this.$route.params.checkOrder,
       errorSentenceEng1: false,
+      errorOrder: false,
       uploadSound: [
         {
           file: null,
@@ -357,14 +363,37 @@ export default {
     };
   },
   methods: {
+    async checkOrderId(val) {
+      console.log(val);
+      let checkOrder = await db
+        .collection("practice_draft")
+        .where("order", "==", val)
+        .where("practiceId", "==", this.practiceId)
+        .get();
+      console.log(checkOrder.size);
+      if (this.oldOrder != this.order) {
+        return !checkOrder.size || "รหัสลำดับซ้ำ";
+      }
+    },
     editMode() {
       this.isAddMode = false;
-      if (this.$route.params.levelId == undefined) {
-        this.$router.push("/expressionMain");
+      if (
+        this.$route.params.levelId == undefined ||
+        this.$route.params.order == undefined
+      ) {
+        this.$router.push(
+          "/expressionMain/" +
+            this.levelId +
+            "/" +
+            this.unitId +
+            "/" +
+            this.practiceId
+        );
       }
       this.levelId = this.$route.params.levelId;
       this.practiceId = this.$route.params.practiceId;
       this.order = this.$route.params.order;
+      this.oldOrder = this.$route.params.order;
       this.unitId = this.$route.params.unitId;
       let getSentence = this.$route.params.expression;
       this.boxCount = this.$route.params.expression.length - 1;
@@ -379,6 +408,7 @@ export default {
       this.sentence = getSentence;
     },
     async saveData() {
+      this.errorOrder = false;
       for (let i = 0; i < this.boxCount + 1; i++) {
         this.sentence[i].errorEng = false;
         this.sentence[i].errorTh = false;
@@ -411,10 +441,7 @@ export default {
         });
         return;
       }
-      if (this.order == this.checkOrder) {
-        return
-      }
-      
+
       await this.updateSyncStatus(this.practiceId, this.unitId);
       if (this.$route.name == "expressionInput") {
         let filterData = this.sentence.filter(
@@ -546,7 +573,9 @@ export default {
     }
   },
   mounted() {
-    if (this.$route.name == "expressionEdit") this.editMode();
+    if (this.$route.name == "expressionEdit") {
+      this.editMode();
+    }
   }
 };
 </script>

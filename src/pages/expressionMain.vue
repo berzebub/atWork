@@ -183,7 +183,6 @@
             <div
               class="col"
               :class="$q.platform.is.desktop && item2.isSound == true?'text-subtitle1':' q-pl-md  text-subtitle1'"
-              
             >
               <div>{{item2.sentenceEng}}</div>
               <div class="text-blue-grey-7">{{item2.sentenceTh}}</div>
@@ -194,34 +193,20 @@
       </q-card>
     </div>
     <!-- ------------------------------------------Dialog------------------------------------ -->
-    <dialog-setting :type="4" v-if="isShowDialogDelete == true"></dialog-setting>
+    <dialog-setting
+      :type="3"
+      :practice="'ประโยคสนทนา'"
+      :name="'รหัสลำดับ '+ getOrder"
+      v-if="dialogDelete == true"
+      @emitCancelDelete="dialogDelete = false"
+      @emitConfirmDelete="deleteExpression()"
+    ></dialog-setting>
+    <dialog-setting
+      :type="4"
+      v-if="isShowDialogDelete == true"
+      @autoClose="isShowDialogDelete = false"
+    ></dialog-setting>
     <dialog-setting :type="9" v-if="isShowDialogSync == true"></dialog-setting>
-
-    <q-dialog v-model="dialogDelete" persistent>
-      <q-card style="min-width: 350px; height:200px">
-        <q-card-section align="center">
-          <div class="q-mt-lg text-subtitle1">ต้องการลบประโยคสนทนา</div>
-          <div class="q-mb-md text-subtitle1">"รหัสลำดับ {{getOrder}}"</div>
-        </q-card-section>
-
-        <q-card-actions align="center">
-          <q-btn style="width:120px" outline color="blue-grey-10" label="ยกเลิก" v-close-popup />
-          <q-btn
-            @click="deleteExpression()"
-            color="blue-grey-10"
-            style="width:120px"
-            label="ยืนยัน"
-          />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
-    <q-dialog v-model="dialogCancelDelete" persistent>
-      <q-card style="min-width: 350px; height:170px">
-        <q-card-section>
-          <div class="q-mt-lg text-h6">ต้องการลบ "รหัสลำดับ {{getOrder}}" หรือไม่</div>
-        </q-card-section>
-      </q-card>
-    </q-dialog>
   </q-page>
 </template>
 
@@ -251,7 +236,7 @@ export default {
       practiceId: this.$route.params.practiceId,
       isSnap: "",
       isDisable: false,
-      playAudio : ""
+      playAudio: ""
     };
   },
   methods: {
@@ -332,13 +317,13 @@ export default {
         });
     },
     async deleteExpression() {
+      this.dialogDelete = false;
       await this.updateSyncStatus(this.practiceId, this.unitId);
       db.collection("practice_draft")
         .doc(this.getId)
         .update({ status: "waitForDelete" })
         .then(() => {
           this.getId = "";
-          this.dialogDelete = false;
           this.isShowDialogDelete = true;
         });
     },
@@ -350,30 +335,27 @@ export default {
           levelId: this.levelId,
           unitId: this.unitId,
           getLevelName: this.getLevelName,
-          getUnitName: this.getUnitName,
-          
+          getUnitName: this.getUnitName
         }
       });
     },
     addDataExpression() {
-      let checkOrder = ""
+      let checkOrder = "";
       this.$router.push({
         name: "expressionInput",
         params: {
-          checkOrder: this.showDataExpression.order,
           getLevelName: this.getLevelName,
           getUnitName: this.getUnitName,
           levelId: this.levelId,
-          unitId: this.unitId,
+          unitId: this.unitId
         }
       });
     },
     playSound(pathSound) {
-    
       if (this.playAudio != "") {
-        this.playAudio.pause()
+        this.playAudio.pause();
       }
-      this.playAudio= new Audio(pathSound)
+      this.playAudio = new Audio(pathSound);
       this.playAudio.play();
     }
   },
