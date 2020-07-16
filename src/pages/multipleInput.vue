@@ -20,7 +20,9 @@
             v-model.number="data.order"
             dense
             lazy-rules
-            :rules="[val => !!val , checkOrderId]"
+              :error="isErrorOrder"
+              :error-message="'รหัสลำดับนี้มีการใช้งานแล้ว'"
+            :rules="[val => !!val]"
           />
         </div>
       </div>
@@ -654,7 +656,7 @@ export default {
       isErrorChoice1: false,
       isErrorChoice2: false,
       finishDialog: false,
-
+       isErrorOrder: false,
       isAddMode: true,
 
       isSaveData: false,
@@ -666,10 +668,7 @@ export default {
   methods: {
     // โหลด ข้อมูล หน้าแก้ไข
     loadLevel() {
-      this.loadingShow();
-
-      let levelKey = this.$route.params.levelId;
-
+  let levelKey = this.$route.params.levelId;
       db.collection("level")
         .doc(levelKey)
         .get()
@@ -690,9 +689,7 @@ export default {
           if (result.exists) {
             this.practiceData.unitName = result.data().name;
             this.practiceData.unitOrder = result.data().order;
-
             // โหลดข้อมูล คำสั่ง
-            this.loadingHide();
           }
         });
     },
@@ -704,12 +701,9 @@ export default {
         .get()
         .then(doc => {
           this.data = doc.data();
-
           this.oldOrder = doc.data().order;
-
           this.dataQuestion.status = doc.data().isSound;
           this.uploadImg.status = doc.data().isImage;
-
           doc.data().choices.map(async (x, index) => {
             if (x.isSound) {
               this.dataFiles[index].status = true;
@@ -719,22 +713,10 @@ export default {
           this.loadingHide();
         });
     },
-    async checkOrderId(val) {
-      let getOrder = await db
-        .collection("practice_draft")
-        .where("order", "==", val)
-        .where("practiceId", "==", this.data.practiceId)
-        .get();
-
-      if (this.oldOrder != val) {
-        return !getOrder.size || "รหัสลำดับนี้มีการใช้งานแล้ว";
-      }
-    },
     // บันทึก
     async saveBtn() {
       // เช็คช่องกรอกข้อมูล ก่อนบันทึก ว่ากรอกข้อมูลรึยัง ข้อมูลที่จำเป็นต้องกรอก
       let hasChoice = this.data.choices.filter(x => x.choice != "");
-
       this.$refs.orderid.validate();
       if (this.$refs.orderid.hasError) {
       }
@@ -752,12 +734,10 @@ export default {
           this.isErrorChoice2 = true;
         }
       }
-
       if (!this.data.correctAnswer) {
         this.isCorrectAnswer = true;
         return;
       }
-
       this.data.choices.map((x, index) => {
         if (hasChoice[index]) {
           this.data.choices[index].choice = hasChoice[index].choice;
@@ -765,7 +745,6 @@ export default {
           this.data.choices[index].choice = "";
         }
       });
-
       if (this.uploadImg.file) {
         this.data.isImage = true;
         this.uploadImg.status = true;
@@ -777,7 +756,6 @@ export default {
         this.data.isSound = false;
         this.dataQuestion.status = false;
       }
-
       this.dataFiles.map((x, index) => {
         if (x.status) {
           this.data.choices[index].isSound = true;
@@ -795,7 +773,18 @@ export default {
         this.$route.params.practiceId,
         this.$route.params.unitId
       );
-      if (this.isAddMode) {
+
+
+ let getOrder = await db.collection("practice_draft")
+   .where("order", "==", this.data.order)
+   .get()
+      if (getOrder.size > 0 && this.oldOrder != this.data.order) {
+         this.isErrorOrder = true
+         setTimeout(() => {
+         this.isErrorOrder = false
+        }, 1000);
+     }else{
+        if (this.isAddMode) {
         db.collection("practice_draft")
           .add(this.data)
           .then(async doc => {
@@ -914,6 +903,8 @@ export default {
             }, 1000);
           });
       }
+     }
+
     },
     checkEditor(type) {
       if (type == "question") {

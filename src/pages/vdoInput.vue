@@ -16,9 +16,9 @@
             ref="orderid"
             v-model.number="vdoObject.order"
             dense
-            debounce="500"
-            lazy-rules
-            :rules="[ val => !!val ,checkOrderId]"
+             :error="isErrorOrder"
+              :error-message="'รหัสลำดับนี้มีการใช้งานแล้ว'"
+            :rules="[ val => !!val ]"
           />
         </div>
       </div>
@@ -163,12 +163,13 @@ export default {
         unitName: "",
         unitOrder: ""
       },
+      isErrorOrder: false,
       orderOld: "",
-      orderNew: "",
       isSaveDialogSuccess: false
     };
   },
   methods: {
+   
     loadLevel() {
       this.loadingShow();
       let levelKey = this.$route.params.levelId;
@@ -211,18 +212,8 @@ export default {
           this.vdoObject = doc.data();
         });
     },
-    async checkOrderId(val) {
-      let getOrder = await db
-        .collection("practice_draft")
-        .where("order", "==", val)
-        .where("practiceId", "==", this.vdoObject.practiceId)
-        .get();
-
-      if (this.orderOld != val) {
-        return !getOrder.size || "รหัสลำดับนี้มีการใช้งานแล้ว";
-      }
-    },
-    async saveBtn() {
+ 
+ async saveBtn() {
       this.vdoObject.sentenceEng = this.sentenceEng;
       this.vdoObject.sentenceTh = this.sentenceTh;
       this.$refs.orderid.validate();
@@ -234,9 +225,17 @@ export default {
         this.$refs.th.hasError
       ) {
         return;
-      }
-
-      this.loadingShow();
+      } 
+  let getOrder = await db.collection("practice_draft")
+   .where("order", "==", this.vdoObject.order)
+   .get()
+      if (getOrder.size > 0 && this.orderOld != this.vdoObject.order) {
+        this.isErrorOrder = true
+         setTimeout(() => {
+            this.isErrorOrder = false
+            }, 1000);
+     }else{
+       this.loadingShow();
       await this.updateSyncStatus(
         this.$route.params.practiceId,
         this.$route.params.unitId
@@ -296,6 +295,10 @@ export default {
             }, 1000);
           });
       }
+     }
+
+     return
+    
     },
     backBtn() {
       this.$router.push(
