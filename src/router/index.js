@@ -43,37 +43,12 @@ Vue.mixin({
   },
   methods: {
     engError(val) {
-      let regex = /[A-Z a-z 0-9,.'?]/;
-      let chars = val.split("");
-      let char = chars.pop();
-      if (!regex.test(char)) {
-        return !val
-      }
+      let regex = /^[a-zA-Z0-9$@$!%*?&#^-_. +]+$/;
+      return regex.test(val)
     },
     thError(val) {
-      let regex = /[ก-ฮ ะ-์ 0-9,.'?]/;
-      let chars = val.split("");
-      let char = chars.pop();
-      if (!regex.test(char)) {
-        return !val
-      }
-    },
-
-    engOnly() {
-      let regex = /[A-Z a-z 0-9,.'?]/;
-      let chars = this.sentenceEng.split("");
-      let char = chars.pop();
-      if (!regex.test(char)) {
-        this.sentenceEng = chars.join("");
-      }
-    },
-    thOnly() {
-      let regex = /[ก-ฮ ะ-์ 0-9,.'?]/;
-      let chars = this.sentenceTh.split("");
-      let char = chars.pop();
-      if (!regex.test(char)) {
-        this.sentenceTh = chars.join("");
-      }
+      let regex = /^[ก-ฮะ-์0-9$@$!%*?&#^-_. +]+$/
+      return regex.test(val)
     },
     logOut() {
       auth

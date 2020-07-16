@@ -242,7 +242,6 @@
                 ref="instrunctionEng"
                 outlined
                 type="text"
-                @input="engOnly()"
                 v-model="instrunctionEng"
               />
             </div>
@@ -255,7 +254,6 @@
                 ref="instrunctionTh"
                 outlined
                 type="text"
-                @input="thOnly()"
                 v-model="instrunctionTh"
               />
             </div>
@@ -352,22 +350,7 @@ export default {
     };
   },
   methods: {
-    engOnly() {
-      let regex = /[A-Z a-z 0-9.,?']/;
-      let chars = this.instrunctionEng.split("");
-      let char = chars.pop();
-      if (!regex.test(char)) {
-        this.instrunctionEng = chars.join("");
-      }
-    },
-    thOnly() {
-      let regex = /[ก-ฮ ะ-์ 0-9.,?']/;
-      let chars = this.instrunctionTh.split("");
-      let char = chars.pop();
-      if (!regex.test(char)) {
-        this.instrunctionTh = chars.join("");
-      }
-    },
+
     loadLevel() {
       this.loadingShow();
 

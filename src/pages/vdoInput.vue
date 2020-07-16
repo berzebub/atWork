@@ -14,7 +14,7 @@
             bg-color="white"
             outlined
             ref="orderid"
-            v-model.number="vdolist.order"
+            v-model.number="vdoObject.order"
             dense
             :rules="[ val => !!val ,checkOrderId]"
           />
@@ -25,7 +25,7 @@
           <q-radio
             style="margin:-10px"
             color="blue-grey-10"
-            v-model="vdolist.speaker"
+            v-model="vdoObject.speaker"
             :val="'customer'"
             label="ลูกค้า"
           />
@@ -34,7 +34,7 @@
           <q-radio
             style="margin:-10px"
             color="blue-grey-10"
-            v-model="vdolist.speaker"
+            v-model="vdoObject.speaker"
             :val="'employee'"
             label="พนักงาน"
           />
@@ -51,8 +51,7 @@
             v-model="sentenceEng"
             dense
             type="text"
-            @input="engOnly()"
-            :rules="[ val => !!val,engError ]"
+            :rules="[ val => !!val, engError ]"
           />
         </div>
       </div>
@@ -64,11 +63,10 @@
             bg-color="white"
             outlined
             ref="th"
-            v-model="sentenceTh"
+            v-model.trim="sentenceTh"
             dense
             type="text"
-            @input="thOnly()"
-            :rules="[ val => !!val,thError ]"
+            :rules="[ val => !!val, thError ]"
           />
         </div>
       </div>
@@ -119,7 +117,7 @@
           </div>
           <div class="col-6 q-py-sm text-right">
             <q-btn
-              :disable="checkble"
+              :disable="isCheckble"
               @click="saveBtn()"
               dense
               style="width:150px"
@@ -142,10 +140,10 @@ export default {
   },
   data() {
     return {
-      checkble: false,
+      isCheckble: false,
       uploadAudio: null,
       isKeyAudio: "",
-      vdolist: {
+      vdoObject: {
         order: "",
         practiceId: this.$route.params.practiceId,
         levelId: this.$route.params.levelId,
@@ -169,6 +167,7 @@ export default {
     };
   },
   methods: {
+   
     loadLevel() {
       this.loadingShow();
       let levelKey = this.$route.params.levelId;
@@ -208,14 +207,14 @@ export default {
           this.orderOld = doc.data().order;
           this.sentenceEng = doc.data().sentenceEng;
           this.sentenceTh = doc.data().sentenceTh;
-          this.vdolist = doc.data();
+          this.vdoObject = doc.data();
         });
     },
     async checkOrderId(val) {
       let getOrder = await db
         .collection("practice_draft")
         .where("order", "==", val)
-        .where("practiceId", "==", this.vdolist.practiceId)
+        .where("practiceId", "==", this.vdoObject.practiceId)
         .get();
 
       if (this.orderOld != val) {
@@ -223,8 +222,8 @@ export default {
       }
     },
     async saveBtn() {
-      this.vdolist.sentenceEng = this.sentenceEng;
-      this.vdolist.sentenceTh = this.sentenceTh;
+      this.vdoObject.sentenceEng = this.sentenceEng;
+      this.vdoObject.sentenceTh = this.sentenceTh;
       this.$refs.orderid.validate();
       this.$refs.eng.validate();
       this.$refs.th.validate();
@@ -241,13 +240,13 @@ export default {
         this.$route.params.practiceId,
         this.$route.params.unitId
       );
-      this.checkble = true;
+      this.isCheckble = true;
       if (this.$route.name == "vdoAdd") {
         if (this.uploadAudio) {
-          this.vdolist.isSound = true;
+          this.vdoObject.isSound = true;
         }
         db.collection("practice_draft")
-          .add(this.vdolist)
+          .add(this.vdoObject)
           .then(async doc => {
             if (this.uploadAudio) {
               await st
@@ -259,23 +258,23 @@ export default {
             setTimeout(() => {
               this.$router.push(
                 "/vdoMain/" +
-                  this.vdolist.levelId +
+                  this.vdoObject.levelId +
                   "/" +
-                  this.vdolist.unitId +
+                  this.vdoObject.unitId +
                   "/" +
-                  this.vdolist.practiceId
+                  this.vdoObject.practiceId
               );
             }, 1000);
           });
       } else {
         if (this.uploadAudio || this.isKeyAudio) {
-          this.vdolist.isSound = true;
+          this.vdoObject.isSound = true;
         } else {
-          this.vdolist.isSound = false;
+          this.vdoObject.isSound = false;
         }
         db.collection("practice_draft")
           .doc(this.$route.params.id)
-          .set(this.vdolist)
+          .set(this.vdoObject)
           .then(() => {
             if (this.uploadAudio) {
               st.child("/practice/audio/" + this.$route.params.id + ".mp3").put(
@@ -287,11 +286,11 @@ export default {
             setTimeout(() => {
               this.$router.push(
                 "/vdoMain/" +
-                  this.vdolist.levelId +
+                  this.vdoObject.levelId +
                   "/" +
-                  this.vdolist.unitId +
+                  this.vdoObject.unitId +
                   "/" +
-                  this.vdolist.practiceId
+                  this.vdoObject.practiceId
               );
             }, 1000);
           });
@@ -300,11 +299,11 @@ export default {
     backBtn() {
       this.$router.push(
         "/vdoMain/" +
-          this.vdolist.levelId +
+          this.vdoObject.levelId +
           "/" +
-          this.vdolist.unitId +
+          this.vdoObject.unitId +
           "/" +
-          this.vdolist.practiceId
+          this.vdoObject.practiceId
       );
     }
   },
