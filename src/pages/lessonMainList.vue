@@ -41,15 +41,8 @@
                   </div>
                   <!-- เมนู mobile -->
                   <div class="col self-center mobile-only" align="right">
-                    <q-btn
-                      size="13px"
-                      icon="fas fa-ellipsis-v"
-                      round
-                      dense
-                      color="blue-grey-10"
-                      flat
-                    >
-                      <q-menu>
+                    <q-btn size="sm" icon="fas fa-ellipsis-v" round dense color="blue-grey-10" flat>
+                      <q-menu anchor="top right" self="top right" :offset="[15, -33]">
                         <q-list style="min-width: 144px">
                           <q-item clickable v-close-popup>
                             <q-item-section @click="editPositionBtn(item)">แก้ไขตำแหน่ง</q-item-section>
@@ -81,14 +74,13 @@
                 </div>
                 <q-separator class="bg-blue-grey-10" />
                 <!-- ปุ่มเพิ่มบทเรียน mobile-->
-
                 <div v-show="showLessonList == 0 " align="center" class="q-py-lg mobile-only">
                   <div @click="addLesson(item) " class="text-blue-grey-10">
                     <u>เพิ่มบทเรียน</u>
                   </div>
                 </div>
-                <!-- ปุ่มเพิ่มบทเรียน desktop -->
 
+                <!-- ปุ่มเพิ่มบทเรียน desktop -->
                 <div v-show="showLessonList == 0 " align="center" class="q-py-lg desktop-only">
                   <div class="text-blue-grey-10">กรุณาเพิ่มบทเรียน</div>
                 </div>
@@ -99,52 +91,45 @@
                   v-for="(item2,index2) in showLessonList "
                   :key="index2"
                 >
-                  <q-separator />
                   <div
-                    class="text-blue-grey-10 q-pl-md text-subtitle1 col-9"
+                    class="text-blue-grey-10 q-pl-md text-subtitle1 col q-py-xs"
                   >{{item2.order}} - {{item2.name}}</div>
                   <!-- mobile -->
                   <div
                     :style="item2.status == true?'visibility:hidden':null"
-                    class="col mobile-only q-py-md q-pr-lg"
-                    align="right"
+                    class="col-1 mobile-only q-py-xs"
+                    style="width:55px;"
+                    align="center"
                   >
-                    <q-icon size="16px" name="fas fa-power-off" dense color="negative" flat></q-icon>
+                    <q-icon size="xs" name="fas fa-power-off" dense color="negative" flat></q-icon>
                   </div>
                   <!-- desktop -->
-                  <div class="col desktop-only q-py-md q-pr-lg" align="right">
-                    <div class="row justify-between items-center">
-                      <div :style="item2.status == true?'visibility:hidden':null">
-                        <q-btn
-                          class="q-px-sm"
-                          dense
-                          outline
-                          color="blue-grey-6"
-                          disable
-                          label="ปิดการใช้การ"
-                        />
-                      </div>
-                      <div>
-                        <q-btn
-                          size="15px"
-                          flat
-                          round
-                          @click="deleteLessonBtnPc(item2) "
-                          color="blue-grey-10"
-                          icon="far fa-trash-alt"
-                        />
-                      </div>
-                      <div>
-                        <q-btn
-                          @click="editLessonBtnPc(item2) "
-                          size="15px"
-                          flat
-                          round
-                          color="blue-grey-10"
-                          icon="far fa-edit"
-                        />
-                      </div>
-                    </div>
+                  <div class="col desktop-only" align="right">
+                    <q-badge
+                      :style="item2.status == true?'visibility:hidden':null"
+                      outline
+                      color="blue-grey-6"
+                      class="q-mx-md"
+                      label="ปิดการใช้การ"
+                    />
+                    <q-btn
+                      size="sm"
+                      flat
+                      round
+                      class="q-mx-md"
+                      @click="deleteLessonBtnPc(item2) "
+                      color="blue-grey-10"
+                      icon="far fa-trash-alt"
+                    />
+                    <q-btn
+                      @click="editLessonBtnPc(item2) "
+                      size="sm"
+                      flat
+                      round
+                      class="q-mx-sm"
+                      color="blue-grey-10"
+                      icon="far fa-edit"
+                    />
                   </div>
 
                   <q-separator />
@@ -156,6 +141,30 @@
       </div>
     </div>
 
+    <!-- NOTE : Dialog delete Position -->
+    <dialog-setting
+      :type="3"
+      :practice="topic"
+      :name="detail"
+      v-if="dialogDelete"
+      @emitConfirmDelete="deletePosition()"
+      @emitCancelDelete="dialogDelete = false"
+    ></dialog-setting>
+
+    <!-- NOTE : Dialog delete Lesson -->
+    <dialog-setting
+      :type="3"
+      :practice="topic"
+      :name="detail"
+      v-if="deleteLesson"
+      @emitConfirmDelete="deleteLessonBtn()"
+      @emitCancelDelete="deleteLesson = false"
+    ></dialog-setting>
+
+    <dialog-setting :type="4" v-if="deleted" @autoClose="deleted = false"></dialog-setting>
+
+    <dialog-setting :type="6" v-if="savedDataDialog" @autoClose="savedDataDialog = false"></dialog-setting>
+
     <!-- dialog การไม่ให้ลบ -->
     <q-dialog v-model="dialogNoDelete">
       <div
@@ -164,135 +173,116 @@
         align="center"
       >
         <div class="text-subtitle1 q-mt-md col-12">
-          ต้องการลบบทเรียนภายในบทเรียน
+          ต้องการลบบทเรียนภายในตำแหน่ง
           <br />
-          "{{namePosition}}"
+          “{{detail}}”
         </div>
 
         <div class="q-pt-lg q-pb-md">
-          <q-btn dense color="blue-grey-10" style="width:120px" @click="okDelete()" label="ตกลง"></q-btn>
+          <q-btn
+            dense
+            color="blue-grey-10"
+            style="width:120px"
+            @click="dialogNoDelete = false"
+            label="ตกลง"
+          ></q-btn>
         </div>
       </div>
     </q-dialog>
-    <!-- dialog ยืนยันการลบ -->
-    <q-dialog v-model="dialogDelete">
+
+    <!-- dialog เช็คในระบบมี Position อยุ่แล้ว -->
+    <q-dialog v-model="dialogDupilcatePosition">
       <div
-        class="bg-white row justify-center items-center"
-        style="width:323px;height:200px"
+        class="bg-white row justify-center items-center q-py-md"
+        style="width:323px"
         align="center"
       >
         <div class="text-subtitle1 q-mt-md col-12">
-          คุณต้องการลบตำแหน่ง
-          <br />
-          "{{namePosition}}"
+          <div>
+            <q-icon name="far fa-times-circle" class="text-red-10" size="lg"></q-icon>
+          </div>
+
+          <div class="q-mt-lg q-mb-sm">ในระบบมีตำแหน่ง “{{dataPositionPc.name}}” อยู่แล้ว</div>
         </div>
 
-        <div class="col-6 q-pr-sm" align="right">
-          <q-btn @click="cancelDelete()" dense style="width:120px" outline label="ยกเลิก"></q-btn>
-        </div>
-        <div class="col-6 q-pl-sm" align="left">
+        <div class="q-pb-md">
           <q-btn
-            @click="deletePosition()"
             dense
             color="blue-grey-10"
             style="width:120px"
-            label="ยืนยัน"
+            @click="dialogDupilcatePosition = false"
+            label="ตกลง"
           ></q-btn>
         </div>
       </div>
     </q-dialog>
-    <!-- dialog ลบสำเร็จ -->
-    <q-dialog v-model="deleted">
-      <div
-        class="bg-white row justify-center items-center"
-        style="width:320px;height:200px"
-        align="center"
-      >
-        <div>
-          <q-icon name="far fa-check-circle" class="text-secondary" size="40px" />
-          <div class="text-subtitle1 q-pt-md">ลบข้อมูลเรียบร้อยแล้ว</div>
-        </div>
-      </div>
-    </q-dialog>
-    <!-- dialog เพิ่มบทเรียน -->
+
+    <!-- Dialog Lesson เพิ่มบทเรียน -->
     <q-dialog v-model="dialogLesson" class="desktop-only">
-      <div class="bg-white row q-pb-lg" style="width:330px ;border-radius: 10px">
-        <div
-          align="center"
-          style="width:330px"
-          class="text-h6 bg-blue-grey-10 text-white q-py-md"
-        >เพิ่มบทเรียน</div>
-        <div class="text-subtitle1 col-12 q-px-md q-pt-md" align="letf">
-          <span>รหัสลำดับ</span>
-          <span class="text-grey-5 text-body2 q-pl-sm">ตัวเลข 3 หลัก</span>
-        </div>
-        <div style="width:300px" class="q-mx-md">
-          <q-input
-            ref="order"
-            dense
-            mask="###"
-            outlined
-            v-model.number="dataLesson.order"
-            :error="errorOrder  "
-            :error-message="errorOrderMsg"
-            @keyup="errorOrder=false"
-          ></q-input>
-        </div>
-        <span class="text-subtitle1 q-pt-sm q-mx-md">ชื่อบทเรียน</span>
-        <div style="width:300px" class="q-mx-md">
-          <q-input
-            ref="name"
-            dense
-            outlined
-            v-model="dataLesson.name"
-            :error="errorLesson"
-            :error-message="errorNameMsg"
-            @keyup="errorLesson=false"
-          ></q-input>
-        </div>
-        <div class="col-12 q- q-px-md">
-          <span class="text-black text-subtitle1">การใช้งานบทเรียน</span>
+      <div class="row" style="max-width:400px;width:100%;border-radius: 10px">
+        <div align="center" class="col-12 text-h6 bg-blue-grey-10 text-white q-py-sm">เพิ่มบทเรียน</div>
+        <div class="col-12 row bg-white q-pb-lg q-px-md">
+          <div class="col-12">
+            <div class="text-subtitle1 col-12 q-pt-md" align="letf">
+              <span>รหัสลำดับ</span>
+              <span class="text-grey-5 text-body2 q-pl-sm">ตัวเลข 3 หลัก</span>
+            </div>
+            <q-input
+              ref="order"
+              dense
+              mask="###"
+              outlined
+              v-model.number="dataLesson.order"
+              :error="errorOrder"
+              :error-message="errorOrderMsg"
+              @keyup="errorOrder=false"
+            ></q-input>
+          </div>
 
-          <q-toggle v-model="dataLesson.status" color="secondary" />
-        </div>
-        <div class="col-6 q-pr-sm q-pt-md" align="right">
-          <q-btn @click="cancelAddLessonPc()" dense style="width:120px" outline label="ยกเลิก"></q-btn>
-        </div>
-        <div class="col-6 q-pl-sm q-pt-md">
-          <q-btn
-            @click="saveLessonPc()"
-            dense
-            color="blue-grey-10"
-            style="width:120px"
-            label="บันทึก"
-          ></q-btn>
+          <div class="col-12">
+            <span class="text-subtitle1 q-pt-sm">ชื่อบทเรียน</span>
+            <q-input
+              ref="name"
+              dense
+              outlined
+              v-model="dataLesson.name"
+              :error="errorLesson"
+              :error-message="errorNameMsg"
+              @keyup="errorLesson=false"
+            ></q-input>
+          </div>
+          <div class="col-12">
+            <span class="text-black text-subtitle1">การใช้งาน</span>
+
+            <q-toggle v-model="dataLesson.status" color="secondary" />
+          </div>
+          <div class="col-6 q-pr-sm q-pt-md" align="right">
+            <q-btn @click="cancelAddLessonPc()" dense style="width:120px" outline label="ยกเลิก"></q-btn>
+          </div>
+          <div class="col-6 q-pl-sm q-pt-md">
+            <q-btn
+              @click="saveLessonPc()"
+              dense
+              color="blue-grey-10"
+              style="width:120px"
+              label="บันทึก"
+            ></q-btn>
+          </div>
         </div>
       </div>
     </q-dialog>
-    <!-- dialog บันทึกสำเร็จ -->
-    <q-dialog v-model="savedDataDialog">
-      <div
-        class="bg-white row justify-center items-center"
-        style="width:320px;height:200px"
-        align="center"
-      >
-        <div>
-          <q-icon name="far fa-check-circle" class="text-secondary" size="40px" />
-          <div class="text-subtitle1 q-pt-md">บันทึกข้อมูลเรียบร้อยแล้ว</div>
-        </div>
-      </div>
-    </q-dialog>
-    <!-- dialog เพิ่มตำแหน่ง -->
+
+    <!-- Dialog Position บันทึกข้อมูลของตำแหน่ง -->
     <q-dialog v-model="dialogAddPosition" class="desktop-only">
       <div class="bg-white row q-pb-lg" style="width:400px ;border-radius: 10px">
         <div
           align="center"
           style="width:400px"
-          class="text-h6 bg-blue-grey-10 text-white q-py-md"
+          class="text-h6 bg-blue-grey-10 text-white q-py-sm"
         >เพิ่มตำแหน่ง</div>
 
-        <div style="width:362px" class="q-mx-md q-py-lg">
-          <div class="text-subtitle1">ชื่อตำแหน่ง</div>
+        <div style="width:362px" class="q-mx-md">
+          <div class="text-subtitle1 q-mt-lg">ชื่อตำแหน่ง</div>
           <div>
             <q-input
               ref="namePosition"
@@ -305,14 +295,19 @@
             ></q-input>
           </div>
         </div>
-
-        <div class="col-6 q-pr-sm q-py-md" align="right">
-          <q-btn @click="cancelAddPositionPc()" dense style="width:120px" outline label="ยกเลิก"></q-btn>
-        </div>
-        <div class="col-6 q-pl-sm q-py-md">
+        <div class="col-12 q-mb-sm q-mt-sm" align="center">
+          <q-btn
+            @click="cancelAddPositionPc()"
+            class="q-mx-md"
+            dense
+            style="width:120px"
+            outline
+            label="ยกเลิก"
+          ></q-btn>
           <q-btn
             @click="savePositionPc()"
             dense
+            class="q-mx-md"
             color="blue-grey-10"
             style="width:120px"
             label="ยืนยัน"
@@ -320,7 +315,8 @@
         </div>
       </div>
     </q-dialog>
-    <!-- dialog lesson ยืนยันการลบ -->
+
+    <!-- Dialog Lesson ไม่สามารถลบได้เนื่องจากมีข้อมูล แบบฝึกหดัแล้ว -->
     <q-dialog v-model="dialogNoDeleteLesson">
       <div
         class="bg-white row justify-center items-center q-py-md"
@@ -328,39 +324,18 @@
         align="center"
       >
         <div class="text-subtitle1 q-mt-md col-12">
-          ต้องการลบแบบฝึกหัดภายในบทเรียน
+          ต้องลบแบบฝึกหัดภายในบทเรียน
           <br />
-          "{{nameLesson}}"
+          "{{detail}}"
         </div>
 
         <div class="q-pt-lg q-pb-md">
-          <q-btn dense color="blue-grey-10" style="width:120px" @click="okDelete()" label="ตกลง"></q-btn>
-        </div>
-      </div>
-    </q-dialog>
-    <!-- dialog lesson ยืนยันการลบ -->
-    <q-dialog v-model="deleteLesson">
-      <div
-        class="bg-white row justify-center items-center"
-        style="width:323px;height:200px"
-        align="center"
-      >
-        <div class="text-subtitle1 q-mt-md col-12">
-          คุณต้องการลบบทเรียน
-          <br />
-          "{{nameLesson}}"
-        </div>
-
-        <div class="col-6 q-pr-sm" align="right">
-          <q-btn @click="cancelDeleteLesson()" dense style="width:120px" outline label="ยกเลิก"></q-btn>
-        </div>
-        <div class="col-6 q-pl-sm" align="left">
           <q-btn
-            @click="deleteLessonBtn()"
             dense
             color="blue-grey-10"
             style="width:120px"
-            label="ยืนยัน"
+            @click="dialogNoDeleteLesson = false"
+            label="ตกลง"
           ></q-btn>
         </div>
       </div>
@@ -370,7 +345,11 @@
 
 <script>
 import { db } from "../router";
+import dialogSetting from "../components/dialogSetting.vue";
 export default {
+  components: {
+    dialogSetting
+  },
   data() {
     return {
       // mobile
@@ -414,7 +393,12 @@ export default {
       editLessonMode: false,
       errorOrderMsg: "",
       errorNameMsg: "",
-      errorNamePositionMessage: ""
+      errorNamePositionMessage: "",
+      dialogDupilcatePosition: false,
+
+      // ข้อมูลการลบ ตำแหน่ง
+      topic: "",
+      detail: ""
     };
   },
   methods: {
@@ -444,10 +428,10 @@ export default {
     },
     // ปุ่มลบตำแหน่ง
     deletePositionBtn(data) {
-      this.namePosition = data.name;
-      // console.log(data);
+      this.topic = "ตำแหน่ง";
+      this.detail = data.name;
 
-      db.collection("practice_server")
+      db.collection("unit")
         .where("levelId", "==", data.levelId)
         .get()
         .then(doc => {
@@ -455,12 +439,19 @@ export default {
             //  กรณีมีข้อมูลในแบบฝึกหัด ขึ้นแจ้งเตือน ให้ลบ
             this.dialogNoDelete = true;
           } else {
-            console.log(doc.size);
             //  กรณีไม่มีข้อมูลในแบบฝึกหัด ขึ้นแจ้งเตือน ไม่ให้ลบ
             this.dataDelete = data;
             this.dialogDelete = true;
           }
         });
+
+      // db.collection("practice_server")
+      //   .where("levelId", "==", data.levelId)
+      //   .get()
+      //   .then(doc => {
+      //     console.log(doc.size);
+
+      //   });
     },
     // โหลดข้อมูลตำแหน่งออกมาโชว์
     loadDataPosition() {
@@ -511,28 +502,17 @@ export default {
     showLesson(levelId) {
       this.showLessonList = this.lessonList.filter(x => x.levelId == levelId);
     },
-    // ปุ่มตกลง หน้า dialog ลบตำแหน่งที่มีข้อมูลบทเรียนอยู่
-    okDelete() {
-      this.dialogNoDelete = false;
-    },
-    // ปุ่มยกเลิก หน้า dialog ลบตำแหน่งที่มีไม่ข้อมูลบทเรียน
-    cancelDelete() {
-      this.dialogDelete = false;
-    },
-    // ปุ่มตกลง หน้า dialog ลบตำแหน่งที่มีไม่ข้อมูลบทเรียน
 
+    // ปุ่มตกลง หน้า dialog ลบตำแหน่งที่มีไม่ข้อมูลบทเรียน
     deletePosition() {
+      this.dialogDelete = false;
+
       console.log(this.dataDelete.levelId);
       db.collection("level")
         .doc(this.dataDelete.levelId)
         .delete()
         .then(() => {
-          this.dialogDelete = false;
           this.deleted = true;
-          this.loadDataPosition();
-          setTimeout(() => {
-            this.deleted = false;
-          }, 1000);
           this.showLesson();
         });
     },
@@ -562,6 +542,7 @@ export default {
         (this.dialogLesson = true);
     }, // ปุ่มแก้ไขตำแหน่ง pc
     editPositionBtnPc(data) {
+      this.nameOld = data.name;
       this.dataPositionPc = { ...data };
       this.editPositionMode = true;
       this.dialogAddPosition = true;
@@ -569,6 +550,10 @@ export default {
     // ปุ่มบันทึก dialog เพิ่มบทเรียน ของ pc
 
     async saveLessonPc() {
+      this.errorOrderMsg = "";
+      this.errorOrder = false;
+      this.errorLesson = false;
+
       if (this.dataLesson.order == "" || this.dataLesson.name == "") {
         console.log("เช็ค input ว่าง");
         if (this.dataLesson.order == "") {
@@ -580,35 +565,31 @@ export default {
         return;
       }
 
-      if (
-        this.nameOld != this.dataLesson.name ||
-        this.orderOld != this.dataLesson.order
-      ) {
-        let checkName = false;
+      if (this.orderOld != this.dataLesson.order) {
         let checkOrder = false;
-        if (this.nameOld != this.dataLesson.name) {
-          checkName = await this.isCheckName(this.dataLesson.name);
-        }
-        if (this.orderOld != this.dataLesson.order) {
-          checkOrder = await this.isCheckOrder(this.dataLesson.order);
-        }
+
+        checkOrder = await this.isCheckOrder(this.dataLesson.order);
 
         this.errorOrder = false;
-        this.errorLesson = false;
-        if (checkName || checkOrder) {
-          if (checkOrder) {
-            this.errorOrderMsg = "รหัสลำดับนี้มีผู้ใช้งานแล้ว";
-            this.errorOrder = true;
-          }
-          if (checkName) {
-            this.errorNameMsg = "ชื่อนี้มีผู้ใช้งานแล้ว";
-            this.errorLesson = true;
-          }
+        // this.errorLesson = false;
+        if (checkOrder) {
+          this.errorOrderMsg = "รหัสลำดับนี้มีแล้ว";
+          this.errorOrder = true;
           return;
+          // if (checkOrder) {
+
+          // }
+          // if (checkName) {
+          //   this.errorNameMsg = "ชื่อนี้มีผู้ใช้งานแล้ว";
+          //   this.errorLesson = true;
+          // }
         }
       }
 
       this.loadingShow();
+
+      this.dialogLesson = false;
+
       if (this.editId != "") {
         console.log("save edit");
         db.collection("unit")
@@ -617,8 +598,8 @@ export default {
           .then(() => {
             this.editId = "";
             this.loadingHide();
-            this.dialogLesson = false;
-            this.savedDataDialog = false;
+            this.savedDataDialog = true;
+
             this.showLesson(this.dataLesson.levelId);
           });
       } else {
@@ -629,15 +610,19 @@ export default {
             this.loadingHide();
             this.savedDataDialog = true;
 
-            setTimeout(() => {
-              this.dialogLesson = false;
-              this.savedDataDialog = false;
-            }, 1000);
             this.showLesson(this.dataLesson.levelId);
           });
       }
     },
 
+    async checkLevelName(val) {
+      let doc = await db
+        .collection("level")
+        .where("name", "==", val)
+        .get();
+
+      return doc.size ? true : false;
+    },
     // เช็คชื่อซ้ำ
     async isCheckName(val) {
       console.log(val);
@@ -659,6 +644,7 @@ export default {
       return doc.size ? true : false;
     }, // แก้ไขบทเรียน
     editLessonBtnPc(data) {
+      this.errorOrder = false;
       this.editLessonMode = true;
       // console.log(data);
       let coppyData = { ...data };
@@ -676,20 +662,27 @@ export default {
         this.errorNamePosition = true;
         return;
       }
+
       if (this.nameOld != this.dataPositionPc.name) {
         let checkName = false;
-        checkName = await this.isCheckName(this.dataPositionPc.name);
+        checkName = await this.checkLevelName(this.dataPositionPc.name);
 
         this.errorNamePosition = false;
 
         if (checkName) {
-          this.errorNamePositio;
-          this.errorNamePositionMessage = "ชื่อนี้มีตำแหน่งแล้ว";
-          n = true;
+          this.dialogAddPosition = false;
+
+          this.dialogDupilcatePosition = true;
+          // this.errorNamePosition = true;
+          // this.errorNamePositionMessage = "ชื่อนี้มีตำแหน่งแล้ว";
+
           return;
         }
       }
+
       this.loadingShow();
+      this.dialogAddPosition = false;
+
       if (this.editPositionMode == true) {
         console.log("edit");
         db.collection("level")
@@ -699,7 +692,6 @@ export default {
             this.loadingHide();
             this.savedDataDialog = true;
             setTimeout(() => {
-              this.dialogAddPosition = false;
               this.savedDataDialog = false;
             }, 1000);
           });
@@ -710,10 +702,6 @@ export default {
           .then(() => {
             this.loadingHide();
             this.savedDataDialog = true;
-            setTimeout(() => {
-              this.dialogAddPosition = false;
-              this.savedDataDialog = false;
-            }, 1000);
           });
       }
     },
@@ -722,26 +710,34 @@ export default {
         .collection("unit")
         .where("name", "==", val)
         .get();
+
+      console.log(doc.size);
+
       return doc.size ? true : false;
     },
     // dialog ลบบทเรียน
-    deleteLessonBtnPc(data) {
-      this.nameLesson = data.name;
+    async deleteLessonBtnPc(data) {
+      this.topic = "บทเรียน";
+      this.detail = data.name;
 
-      // console.log(data);
-      db.collection("practice_server")
+      let awaitDraft = await db
+        .collection("practice_draft")
         .where("levelId", "==", data.levelId)
         .where("unitId", "==", data.unitId)
-        .get()
-        .then(doc => {
-          console.log(doc.size);
-          if (doc.size > 0) {
-            this.dialogNoDeleteLesson = true;
-          } else {
-            this.dataDeleteLessson = data;
-            this.deleteLesson = true;
-          }
-        });
+        .get();
+
+      let awaitServer = await db
+        .collection("practice_server")
+        .where("levelId", "==", data.levelId)
+        .where("unitId", "==", data.unitId)
+        .get();
+
+      if (awaitServer.size || awaitDraft.size) {
+        this.dialogNoDeleteLesson = true;
+      } else {
+        this.dataDeleteLessson = data;
+        this.deleteLesson = true;
+      }
     },
     // ยกเลิก dialog ลบบทเรียน
     cancelDeleteLesson() {
@@ -749,22 +745,20 @@ export default {
     },
     // ลบ lesson
     deleteLessonBtn() {
+      this.deleteLesson = false;
+
       db.collection("unit")
         .doc(this.dataDeleteLessson.unitId)
         .delete()
         .then(() => {
-          this.deleteLesson = false;
           this.deleted = true;
-          setTimeout(() => {
-            this.deleted = false;
-          }, 1000);
-          this.showLesson();
+
+          this.showLesson(this.dataDeleteLessson.levelId);
         });
     }
   },
   mounted() {
     this.loadDataPosition();
-    console.log(this.$q.platform.is.desktop);
   }
 };
 </script>

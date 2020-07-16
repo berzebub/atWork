@@ -7,7 +7,7 @@
       </div>
     </div>
 
-    <div align="center" class="q-py-md text-subtitle1">
+    <div align="center" class="q-pb-md text-subtitle1">
       <q-btn
         dense
         color="blue-grey-10"
@@ -17,56 +17,53 @@
       ></q-btn>
     </div>
     <!-- ShowLesson -->
-    <div class="row" v-for="(item,index) in lessonList">
-      <q-separator />
-      <div class="bg-white q-pa-md text-subtitle1 col-9">{{item.order}} - {{item.name}}</div>
+    <q-separator />
+    <div v-for="(item,index) in lessonList">
+      <div class="row q-pa-sm bg-white">
+        <div class="text-subtitle1 col self-center q-px-sm">{{item.order}} - {{item.name}}</div>
 
-      <div v-show="item.status != true" class="col q-py-md bg-white" align="right">
-        <q-icon size="16px" name="fas fa-power-off" dense color="negative" flat></q-icon>
-      </div>
-      <div class="col q-py-md bg-white" align="right">
-        <q-btn
-          size="10px"
-          icon="fas fa-ellipsis-v"
-          round
-          dense
-          color="blue-grey-10"
-          class="bg-white"
-          flat
-        >
-          <q-menu>
-            <q-list style="min-width: 170px">
-              <q-item clickable v-close-popup>
-                <q-item-section @click="editLessonBtn(item)">แก้ไขบทเรียน</q-item-section>
-              </q-item>
-              <q-item clickable v-close-popup>
-                <q-item-section @click="deleteLessonBtn(item)">ลบบทเรียน</q-item-section>
-              </q-item>
-            </q-list>
-          </q-menu>
-        </q-btn>
-      </div>
-      <q-separator />
-    </div>
-    <q-dialog v-model="savedDataDialog">
-      <div
-        class="bg-white row justify-center items-center"
-        style="width:320px;height:200px"
-        align="center"
-      >
-        <div>
-          <q-icon name="far fa-check-circle" class="text-secondary" size="40px" />
-          <div class="text-subtitle1 q-pt-md">บันทึกข้อมูลเรียบร้อยแล้ว</div>
+        <div class="col-1 self-center bg-white" align="right" style="width:60px;">
+          <q-icon
+            v-show="item.status != true"
+            size="16px"
+            name="fas fa-power-off"
+            dense
+            color="red-7"
+            class="q-mx-sm"
+            flat
+          ></q-icon>
+          <q-btn
+            size="sm"
+            icon="fas fa-ellipsis-v"
+            round
+            dense
+            color="blue-grey-10"
+            class="bg-white"
+            flat
+          >
+            <q-menu anchor="top right" self="top right" :offset="[10, -38]">
+              <q-list style="min-width: 170px">
+                <q-item clickable v-close-popup>
+                  <q-item-section @click="editLessonBtn(item)">แก้ไขบทเรียน</q-item-section>
+                </q-item>
+                <q-item clickable v-close-popup>
+                  <q-item-section @click="deleteLessonBtn(item)">ลบบทเรียน</q-item-section>
+                </q-item>
+              </q-list>
+            </q-menu>
+          </q-btn>
         </div>
       </div>
-    </q-dialog>
-    <!-- dialog เพิ่มบทเรียน -->
+
+      <q-separator />
+    </div>
+
     <q-dialog v-model="dialogLesson">
       <div class="bg-white row q-pb-lg" style="width:330px ;border-radius: 10px">
         <div
           align="center"
           style="width:330px"
-          class="text-h6 bg-blue-grey-10 text-white q-py-md"
+          class="text-h6 bg-blue-grey-10 text-white q-py-sm"
         >เพิ่มบทเรียน</div>
         <div class="text-subtitle1 col-12 q-px-md q-pt-md" align="letf">
           <span>รหัสลำดับ</span>
@@ -115,6 +112,23 @@
         </div>
       </div>
     </q-dialog>
+
+    <!-- Dialog บันทึกข้อมูลเรียบร้อย -->
+    <dialog-setting :type="6" v-if="savedDataDialog" @autoClose="savedDataDialog = false"></dialog-setting>
+
+    <!-- Dialog ลบข้อมูลเรียบร้อย -->
+    <dialog-setting :type="4" v-if="deleted" @autoClose="deleted = false"></dialog-setting>
+
+    <!-- Dialog ยืนยันการลบ -->
+    <dialog-setting
+      :type="3"
+      :practice="topic"
+      :name="detail"
+      v-if="dialogDelete"
+      @emitConfirmDelete="deleteLesson()"
+      @emitCancelDelete="dialogDelete = false"
+    ></dialog-setting>
+
     <!-- dialog ยืนยันการลบ -->
     <q-dialog v-model="dialogDeleteNull">
       <div
@@ -125,51 +139,17 @@
         <div class="text-subtitle1 q-mt-md col-12">
           ต้องการลบแบบฝึกหัดภายในบทเรียน
           <br />
-          "{{nameLesson}}"
+          "{{detail}}"
         </div>
 
         <div class="q-pt-lg q-pb-md">
-          <q-btn dense color="blue-grey-10" style="width:120px" @click="okDelete()" label="ตกลง"></q-btn>
-        </div>
-      </div>
-    </q-dialog>
-    <!-- dialog ยืนยันการลบ -->
-    <q-dialog v-model="dialogDelete">
-      <div
-        class="bg-white row justify-center items-center"
-        style="width:323px;height:200px"
-        align="center"
-      >
-        <div class="text-subtitle1 q-mt-md">
-          คุณต้องการลบบทเรียน
-          <br />
-          "{{nameLesson}}"
-        </div>
-
-        <div class="col-6 q-pr-sm" align="right">
-          <q-btn @click="cancelDelete()" dense style="width:120px" outline label="ยกเลิก"></q-btn>
-        </div>
-        <div class="col-6 q-pl-sm" align="left">
           <q-btn
-            @click="deleteLesson()"
             dense
             color="blue-grey-10"
             style="width:120px"
-            label="ยืนยัน"
+            @click="dialogDeleteNull = false"
+            label="ตกลง"
           ></q-btn>
-        </div>
-      </div>
-    </q-dialog>
-    <!-- dialog ลบสำเร็จ -->
-    <q-dialog v-model="deleted">
-      <div
-        class="bg-white row justify-center items-center"
-        style="width:320px;height:200px"
-        align="center"
-      >
-        <div>
-          <q-icon name="far fa-check-circle" class="text-secondary" size="40px" />
-          <div class="text-subtitle1 q-pt-md">ลบข้อมูลเรียบร้อยแล้ว</div>
         </div>
       </div>
     </q-dialog>
@@ -179,7 +159,11 @@
 <script>
 import { db } from "../router";
 import { colors } from "quasar";
+import dialogSetting from "../components/dialogSetting.vue";
 export default {
+  components: {
+    dialogSetting
+  },
   data() {
     return {
       errorLessonMessage: "",
@@ -205,7 +189,10 @@ export default {
       dialogDelete: false,
       nameLesson: "",
       dataDelete: "",
-      deleted: false
+      deleted: false,
+
+      topic: "",
+      detail: ""
     };
   },
   methods: {
@@ -214,6 +201,11 @@ export default {
       this.editId = "";
     },
     async saveLesson() {
+      this.errorOrder = false;
+      this.errorOrderMessage = "";
+      this.errorLesson = false;
+      this.errorLessonMessage = "";
+
       if (this.dataLesson.order == "" || this.dataLesson.name == "") {
         console.log("เช็ค input ว่าง");
         if (this.dataLesson.order == "") {
@@ -261,6 +253,8 @@ export default {
 
       console.log("add mode");
 
+      this.dialogLesson = false;
+
       this.loadingShow();
       if (this.editId != "") {
         console.log("save add");
@@ -270,8 +264,8 @@ export default {
           .then(() => {
             this.editId = "";
             this.loadingHide();
-            this.dialogLesson = false;
-            this.savedDataDialog = false;
+
+            this.savedDataDialog = true;
           });
       } else {
         console.log("save edit");
@@ -279,11 +273,8 @@ export default {
           .add(this.dataLesson)
           .then(() => {
             this.loadingHide();
+
             this.savedDataDialog = true;
-            setTimeout(() => {
-              this.dialogLesson = false;
-              this.savedDataDialog = false;
-            }, 1000);
           });
       }
     },
@@ -306,6 +297,7 @@ export default {
         .where("name", "==", val)
         .where("levelId", "==", this.dataLesson.levelId)
         .get();
+
       return doc.size ? true : false;
     },
 
@@ -319,23 +311,28 @@ export default {
       return doc.size ? true : false;
     },
     // ลบบทเรียน
-    deleteLessonBtn(data) {
-      this.nameLesson = data.name;
+    async deleteLessonBtn(data) {
+      this.topic = "บทเรียน";
+      this.detail = data.name;
 
-      console.log(data);
-      db.collection("practice_server")
+      let awaitDraft = await db
+        .collection("practice_draft")
         .where("levelId", "==", data.levelId)
         .where("unitId", "==", data.unitId)
-        .get()
-        .then(doc => {
-          console.log(doc.size);
-          if (doc.size > 0) {
-            this.dialogDeleteNull = true;
-          } else {
-            this.dataDelete = data;
-            this.dialogDelete = true;
-          }
-        });
+        .get();
+
+      let awaitServer = await db
+        .collection("practice_server")
+        .where("levelId", "==", data.levelId)
+        .where("unitId", "==", data.unitId)
+        .get();
+
+      if (awaitServer.size || awaitDraft.size) {
+        this.dialogDeleteNull = true;
+      } else {
+        this.dataDelete = data;
+        this.dialogDelete = true;
+      }
     },
     // แก้ไขบทเรียน
     editLessonBtn(data) {
@@ -385,15 +382,13 @@ export default {
       this.dialogDelete = false;
     },
     deleteLesson() {
+      this.dialogDelete = false;
+
       db.collection("unit")
         .doc(this.dataDelete.unitId)
         .delete()
         .then(() => {
-          this.dialogDelete = false;
           this.deleted = true;
-          setTimeout(() => {
-            this.deleted = false;
-          }, 1000);
         });
     }
   },

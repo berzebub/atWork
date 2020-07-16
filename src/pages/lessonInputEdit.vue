@@ -7,9 +7,8 @@
         dense
         outlined
         v-model="dataPosition.name"
-        :error="errorNamePosition"
-        :error-message="errorNamePositionMessage"
         @keyup="errorNamePosition=false"
+        :rules="[val => !!val]"
       ></q-input>
       <div class="row q-pt-lg">
         <div class="col-6 q-pr-sm" align="right">
@@ -18,6 +17,7 @@
         <div class="col-6 q-pl-sm" align="left">
           <q-btn
             @click="saveNamePosition()"
+            :disable="isSaveData"
             dense
             color="blue-grey-10"
             style="width:150px"
@@ -28,15 +28,31 @@
     </div>
 
     <!-- dialog บันทึกสำเร็จ -->
-    <q-dialog v-model="savedDataDialog">
+    <dialog-setting :type="6" v-if="savedDataDialog" @autoClose="$router.push('/lessonMainList')"></dialog-setting>
+
+    <!-- dialog เช็คในระบบมี Position อยุ่แล้ว -->
+    <q-dialog v-model="dialogDupilcatePosition">
       <div
-        class="bg-white row justify-center items-center"
-        style="width:320px;height:200px"
+        class="bg-white row justify-center items-center q-py-md"
+        style="width:323px"
         align="center"
       >
-        <div>
-          <q-icon name="far fa-check-circle" class="text-secondary" size="40px" />
-          <div class="text-subtitle1 q-pt-md">บันทึกข้อมูลเรียบร้อยแล้ว</div>
+        <div class="text-subtitle1 q-mt-md col-12">
+          <div>
+            <q-icon name="far fa-times-circle" class="text-red-10" size="lg"></q-icon>
+          </div>
+
+          <div class="q-mt-lg q-mb-sm">ในระบบมีตำแหน่ง “{{dataPosition.name}}” อยู่แล้ว</div>
+        </div>
+
+        <div class="q-pb-md">
+          <q-btn
+            dense
+            color="blue-grey-10"
+            style="width:120px"
+            @click="dialogDupilcatePosition = false"
+            label="ตกลง"
+          ></q-btn>
         </div>
       </div>
     </q-dialog>
@@ -45,14 +61,21 @@
 
 <script>
 import { db, axios } from "../router";
+import dialogSetting from "../components/dialogSetting.vue";
 export default {
+  components: {
+    dialogSetting
+  },
   data() {
     return {
       dataPosition: { name: "", status: false },
       savedDataDialog: false,
       errorNamePosition: false,
       nameOld: "",
-      errorNamePositionMessage: ""
+      errorNamePositionMessage: "",
+      dialogDupilcatePosition: false,
+
+      isSaveData: false
     };
   },
   methods: {
@@ -64,18 +87,25 @@ export default {
         this.errorNamePosition = true;
         return;
       }
+
+      this.isSaveData = true;
+
       if (this.nameOld != this.dataPosition.name) {
         let checkName = false;
+        this.dialogDupilcatePosition = false;
         checkName = await this.isCheckName(this.dataPosition.name);
-        this.errorNamePosition = false;
-        this.errorNamePositionMessage = "ชื่อนี้มีตำแหน่งแล้ว";
 
         if (checkName) {
-          this.errorNamePosition = true;
+          this.dialogDupilcatePosition = true;
+          this.isSaveData = false;
           return;
         }
       }
+
       this.loadingShow();
+
+      this.savedDataDialog = true;
+
       if (this.$route.name == "lessonEdit") {
         console.log(this.$route.params.levelId);
         console.log(this.dataPosition.name);
@@ -84,20 +114,12 @@ export default {
           .update(this.dataPosition)
           .then(() => {
             this.loadingHide();
-            this.savedDataDialog = true;
-            setTimeout(() => {
-              this.$router.push("/lessonMainList");
-            }, 1000);
           });
       } else {
         db.collection("level")
           .add(this.dataPosition)
           .then(() => {
             this.loadingHide();
-            this.savedDataDialog = true;
-            setTimeout(() => {
-              this.$router.push("/lessonMainList");
-            }, 1000);
           });
       }
     },
