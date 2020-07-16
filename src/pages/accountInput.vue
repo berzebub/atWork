@@ -4,7 +4,7 @@
       <div class="q-pb-lg">
         <div>ชื่อแผนก</div>
         <q-select
-          v-model="dataEmployee.departmentSelect"
+          v-model="dataEmployee.departmentId"
           dense
           outlined
           :options="departmentOptions"
@@ -24,7 +24,7 @@
       </div>
       <div>
         <div>เบอร์โทร</div>
-        <q-input v-model.trim="dataEmployee.tel" ref="tel" outlined dense :rules="[val => val ]"></q-input>
+        <q-input v-model.trim="dataEmployee.tel" ref="tel" outlined dense :rules="[val => !!val ]"></q-input>
       </div>
       <div>
         <div>อีเมล</div>
@@ -71,7 +71,7 @@
           ></q-btn>
         </div>
       </div>
-      <dialog-center :type="6" v-if="isAddDialogSucess" @autoClose="isAddDialogSucess = false" />
+      <dialog-center :type="6" v-if="isAddDialogSucess" @autoClose=" addDialogSucess" />
     </div>
   </q-page>
 </template>
@@ -88,7 +88,7 @@ export default {
       departmentOptions: [],
       levelOpions: [],
       dataEmployee: {
-        departmentSelect: "",
+        departmentId: "",
         name: "",
         tel: "",
         email: "",
@@ -115,18 +115,32 @@ export default {
       ) {
         return console.log("กรอก input ไม่ครบ");
       }
-
-      db.collection("employee")
-        .add({
-          hotelId: this.$route.params.hotelId,
-          departmentId: this.dataEmployee.departmentSelect,
-          name: this.dataEmployee.name,
-          email: this.dataEmployee.email,
-          startLevelId: this.dataEmployee.startLevelId,
-          tel: this.dataEmployee.tel,
-          star: 0
-        })
-        .then(() => {});
+      this.loadingShow();
+      if (this.$route.name != "accountEdit") {
+        db.collection("employee")
+          .add({
+            hotelId: this.$route.params.hotelId,
+            departmentId: this.dataEmployee.departmentId,
+            name: this.dataEmployee.name,
+            email: this.dataEmployee.email,
+            password: this.dataEmployee.password,
+            startLevelId: this.dataEmployee.startLevelId,
+            tel: this.dataEmployee.tel,
+            star: 0
+          })
+          .then(() => {
+            this.loadingHide();
+            this.isAddDialogSucess = true;
+          });
+      } else {
+        db.collection("employee")
+          .doc(this.$route.params.employeeId)
+          .update(this.dataEmployee)
+          .then(() => {
+            this.loadingHide();
+            this.isAddDialogSucess = true;
+          });
+      }
     },
     cancelAddEmployee() {
       this.$router.push("/accountMain");
@@ -137,12 +151,12 @@ export default {
         .then(doc => {
           let temp = [];
           doc.forEach(element => {
-            temp.push({
+            let newData = {
               value: element.id,
               label: element.data().name,
               hotelId: element.data().hotelId
-            });
-            // temp.push({ ...element.data(), departmentId: element.id });
+            };
+            temp.push(newData);
           });
           temp.sort((a, b) => {
             return a.name > b.name ? 1 : -1;
@@ -162,11 +176,12 @@ export default {
           x => x.value == this.$route.params.departmentId
         )
       );
-      this.dataEmployee.departmentSelect = this.departmentOptions.filter(
+      this.dataEmployee.departmentId = this.departmentOptions.filter(
         x => x.value == this.$route.params.departmentId
       )[0].value;
     },
     loadLevel() {
+      this.loadingShow();
       db.collection("level")
         .get()
         .then(doc => {
@@ -181,7 +196,9 @@ export default {
             return a.name > b.name ? 1 : -1;
           });
           this.levelOpions = temp;
+
           this.dataEmployee.startLevelId = this.levelOpions[0].value;
+          this.loadingHide();
         });
     },
     loadEdit() {
@@ -189,22 +206,26 @@ export default {
         .doc(this.$route.params.employeeId)
         .get()
         .then(doc => {
-          (this.dataEmployee.departmentId = data().departmentId),
-            (this.dataEmployee.name = data().name),
-            (this.dataEmployee.email = data().email),
-            (this.dataEmployee.tel = data().tel),
-            (this.dataEmployee.password = data().password),
-            (this.dataEmployee.startLevelId = data().departmentId);
+          this.dataEmployee.departmentId = doc.data().departmentId;
+          this.dataEmployee.name = doc.data().name;
+          this.dataEmployee.email = doc.data().email;
+          this.dataEmployee.tel = doc.data().tel;
+          this.dataEmployee.password = doc.data().password;
+          this.dataEmployee.startLevelId = doc.data().startLevelId;
         });
+    },
+    addDialogSucess() {
+      this.$router.push("/accountMain");
     }
   },
   mounted() {
+    this.loadDepartment();
+    this.loadLevel();
     if (this.$route.name == "accountEdit") {
+      console.log("555");
       this.loadEdit();
       return;
     }
-    this.loadDepartment();
-    this.loadLevel();
   }
 };
 </script>

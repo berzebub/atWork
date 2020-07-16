@@ -8,6 +8,8 @@
           ref="name"
           outlined
           dense
+          :error="isErrorNameHotel"
+          :error-message="'ชื่อโรงแรมนี้มีอยู่แล้ว'"
           :rules="[value => !!value ]"
         ></q-input>
       </div>
@@ -21,6 +23,7 @@
           :rules="[value => !!value ]"
         ></q-input>
       </div>
+
       <div>
         <div>เบอร์ติดต่อผู้ดูแลระบบ</div>
         <q-input
@@ -81,14 +84,24 @@ export default {
         password: ""
       },
       isAddDialogSucess: false,
-      hotelList: ""
+      hotelList: "",
+      nameHotelOld: "",
+      isErrorNameHotel: false,
+      errorNameDepartmentMessage: ""
     };
   },
   methods: {
     cancelAddHotel() {
       this.$router.push("/hotelMain");
     },
-    saveHotel() {
+    async isCheckName(val) {
+      let doc = await db
+        .collection("hotel")
+        .where("name", "==", val)
+        .get();
+      return doc.size ? true : false;
+    },
+    async saveHotel() {
       // check validate
       this.$refs.name.validate();
       this.$refs.adminName.validate();
@@ -104,6 +117,18 @@ export default {
       ) {
         return console.log("กรอก input ไม่ครบ");
       }
+      if (this.nameHotelOld != this.datahotel.name) {
+        let checkName = false;
+        checkName = await this.isCheckName(this.datahotel.name);
+        this.isErrorNameHotel = false;
+        this.errorNameDepartmentMessage = "มีชื่อแผนกนี้แล้ว";
+
+        if (checkName) {
+          this.isErrorNameHotel = true;
+          return;
+        }
+      }
+      return;
 
       this.loadingShow();
       // บันทึก add
@@ -145,7 +170,7 @@ export default {
           this.datahotel.adminPhone = doc.data().adminPhone;
           this.datahotel.email = doc.data().email;
           this.datahotel.password = doc.data().password;
-          this.nameOld = doc.data().name;
+          this.nameHotelOld = doc.data().name;
         });
     }
   },

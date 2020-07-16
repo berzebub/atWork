@@ -8,18 +8,12 @@
             <q-icon class="error-text" size="40px" name="far fa-times-circle" />
           </div>
           <div>
-            <div class="q-mt-lg text-subtitle1">
-              อีเมลหรือรหัสผ่านไม่ถูกต้อง
-            </div>
+            <div class="q-mt-lg text-subtitle1">อีเมลหรือรหัสผ่านไม่ถูกต้อง</div>
           </div>
         </q-card-section>
         <q-card-actions align="center">
           <div class="q-mt-xs">
-            <q-btn
-              label="ตกลง"
-              class="bg-blue-grey-10 text-white"
-              style="width:190px"
-            ></q-btn>
+            <q-btn label="ตกลง" class="bg-blue-grey-10 text-white" style="width:190px"></q-btn>
           </div>
         </q-card-actions>
       </q-card>
@@ -31,9 +25,7 @@
           <div class="q-mt-lg">
             <q-icon color="secondary" size="40px" name="far fa-check-circle" />
           </div>
-          <div class="q-mt-lg text-subtitle1">
-            เราทำการส่งอีเมลสำหรับการตั้งค่า
-          </div>
+          <div class="q-mt-lg text-subtitle1">เราทำการส่งอีเมลสำหรับการตั้งค่า</div>
           <div class="text-subtitle1">รหัสผ่านใหม่ไปยังอีเมลของคุณแล้ว</div>
         </q-card-section>
       </q-card>
@@ -126,20 +118,10 @@
         </q-card-section>
         <q-card-actions align="center">
           <div>
-            <q-btn
-              label="ยกเลิก"
-              color="blue-grey-10"
-              style="width:120px"
-              outline
-              v-close-popup
-            ></q-btn>
+            <q-btn label="ยกเลิก" color="blue-grey-10" style="width:120px" outline v-close-popup></q-btn>
           </div>
           <div>
-            <q-btn
-              label="ตกลง"
-              class="bg-blue-grey-10 text-white q-ml-md"
-              style="width:120px"
-            ></q-btn>
+            <q-btn label="ตกลง" class="bg-blue-grey-10 text-white q-ml-md" style="width:120px"></q-btn>
           </div>
         </q-card-actions>
       </q-card>
@@ -156,20 +138,10 @@
         </q-card-section>
         <q-card-actions align="center">
           <div>
-            <q-btn
-              label="ยกเลิก"
-              color="blue-grey-10"
-              style="width:120px"
-              outline
-              v-close-popup
-            ></q-btn>
+            <q-btn label="ยกเลิก" color="blue-grey-10" style="width:120px" outline v-close-popup></q-btn>
           </div>
           <div>
-            <q-btn
-              label="อัพโหลด"
-              class="bg-blue-grey-10 text-white q-ml-md"
-              style="width:120px"
-            ></q-btn>
+            <q-btn label="อัพโหลด" class="bg-blue-grey-10 text-white q-ml-md" style="width:120px"></q-btn>
           </div>
         </q-card-actions>
       </q-card>
