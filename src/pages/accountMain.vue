@@ -81,21 +81,95 @@
         </div>
         <!-- หน้า desktop -->
         <div class="desktop-only">
-          <q-list class="shadow-1 bg-blue-grey-10 text-white q-mt-sm" style="border-radius: 10px">
-            <q-expansion-item expand-separator :label="item.name">
+          <q-list
+            class="rounded-borders q-mt-sm box-main bg-blue-grey-10 shadow-1"
+            style="border-radius: 10px"
+          >
+            <q-expansion-item
+              group="departmentGroup"
+              class="text-white"
+              expand-separator
+              :label="item.name"
+            >
               <q-card>
-                <q-card-section>
-                  <div class="row">
-                    <div>
+                <q-card-section class="no-padding">
+                  <div class="row justify-between">
+                    <div class="col-10"></div>
+                    <div class="col q-py-md">
                       <q-btn
-                      size="13px"
-                      icon="fas fa-user-plus"
-                      round
-                      dense
-                      color="blue-grey-10"
-                      flat
-                      / >
+                        size="12px"
+                        @click.stop="addEmployee(item)"
+                        icon="fas fa-user-plus"
+                        round
+                        dense
+                        color="blue-grey-10"
+                        flat
+                      />
                     </div>
+                    <div class="col q-py-md">
+                      <q-btn
+                        size="12px"
+                        @click.stop="deleteDepartment(item)"
+                        icon="far fa-trash-alt"
+                        round
+                        dense
+                        color="blue-grey-10"
+                        flat
+                      />
+                    </div>
+                    <div class="col q-py-md">
+                      <q-btn
+                        size="12px"
+                        @click.stop="editDepartment(item)"
+                        icon="fas fa-edit"
+                        round
+                        dense
+                        color="blue-grey-10"
+                        flat
+                      />
+                    </div>
+                  </div>
+                  <q-separator color="blue-grey-10" />
+                  <div v-if="employeeList.length == 0">
+                    <!-- กรณีไม่มีพนักงานในแผนก -->
+                    <div
+                      v-if="employeeList.length==0"
+                      class="text-body2 q-py-md text-blue-grey-10"
+                      align="center"
+                    >กรุณาเพิ่มพนักงาน</div>
+                  </div>
+                  <div
+                    class="row text-blue-grey-10 text-subtitle1"
+                    v-for="(item2,index2) in employeeList"
+                    :key="index2"
+                  >
+                    <!-- กรณีมีพนักงาน -->
+
+                    <div class="col-10 row items-center q-pl-md">{{index2+1}}. {{item2.name}}</div>
+                    <div class="col q-py-md">
+                      <q-btn dense round class="invisible" icon="far fa-trash-alt" flat size="12px"></q-btn>
+                    </div>
+                    <div class="col q-py-md">
+                      <q-btn
+                        round
+                        @click.stop="deleteEmployee(item2)"
+                        icon="far fa-trash-alt"
+                        flat
+                        dense
+                        size="12px"
+                      ></q-btn>
+                    </div>
+                    <div class="col q-py-md">
+                      <q-btn
+                        round
+                        @click.stop="editEmployee(item2)"
+                        icon="fas fa-edit"
+                        flat
+                        dense
+                        size="12px"
+                      ></q-btn>
+                    </div>
+                    <q-separator />
                   </div>
                 </q-card-section>
               </q-card>
@@ -446,5 +520,8 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style >
+.box-main {
+  border: 1px solid #263238;
+}
 </style>

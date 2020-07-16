@@ -128,7 +128,6 @@ export default {
           return;
         }
       }
-      return;
 
       this.loadingShow();
       // บันทึก add
@@ -154,10 +153,7 @@ export default {
     },
 
     addDialogSucess() {
-      this.isAddDialogSucess = false;
-      setTimeout(() => {
-        this.$router.push("hotelMain");
-      }, 500);
+      this.$router.push("/hotelMain");
     },
     loadHotelEdit() {
       db.collection("hotel")
