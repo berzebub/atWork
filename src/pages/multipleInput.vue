@@ -502,7 +502,7 @@
               v-model.number="data.correctAnswer"
               :val="1"
               label="1"
-              :disable="!data.choices[0].choice"
+              :disable="!data.choices[0].choice || !data.choices[1].choice"
             />
           </div>
           <div class="col-xs-6 col-md-3 col-sm-3">
@@ -512,7 +512,7 @@
               v-model.number="data.correctAnswer"
               :val="2"
               label="2"
-              :disable="!data.choices[1].choice"
+              :disable="!data.choices[0].choice ||!data.choices[1].choice"
             />
           </div>
           <div class="col-xs-6 col-md-3 col-sm-3">
@@ -766,10 +766,10 @@ export default {
           this.data.choices[index].isSound = false;
         }
       });
-   if (this.data.question == "" || this.data.order == "" ) {
+     if (this.data.question == "" || this.data.order == "" ) {
       return
       }
- await this.updateSyncStatus(
+     await this.updateSyncStatus(
         this.$route.params.practiceId,
         this.$route.params.unitId
       );
