@@ -346,7 +346,6 @@ export default {
       });
     },
     addDataExpression() {
-      let checkOrder = "";
       this.$router.push({
         name: "expressionInput",
         params: {

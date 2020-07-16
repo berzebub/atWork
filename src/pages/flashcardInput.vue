@@ -18,11 +18,12 @@
               bg-color="white"
               dense
               ref="order"
-              lazy-rules
-              :rules="[val => val || 'กรุณากรอกข้อมูลให้ถูกต้อง', checkOrderId]"
+              :error="isOrderError"
+              :error-message="errorOrderMes"
               outlined
               mask="###"
               v-model.number="data.order"
+              @keyup="isOrderError = false"
             />
           </div>
           <!-- ไฟล์รูปภาพ -->
@@ -56,13 +57,6 @@
                       style="padding:1.5px"
                     ></q-btn>
                   </template>
-                  <!-- <div
-                    v-if="data.isImage == true"
-                    style="width:1000px"
-                    class="text-body2 text-grey-7 self-center"
-                  >
-                    {{ uploadImg.file }}
-                  </div>-->
                   <div
                     style="width:1000px"
                     class="text-body2 text-grey-7 self-center"
@@ -150,13 +144,7 @@
                       style="padding:1.5px"
                     ></q-btn>
                   </template>
-                  <!-- <div
-                    v-if="data.isSound == true "
-                    style="width:1000px"
-                    class="text-body2 text-grey-7 self-center"
-                  >
-                    {{ uploadSound.file }}
-                  </div>-->
+
                   <div
                     style="width:1000px"
                     class="text-body2 text-grey-7 self-center"
@@ -348,7 +336,9 @@ export default {
         isImage: false,
         isSound: false
       },
-      oldOrder: ""
+
+      isOrderError: false,
+      errorOrderMes: ""
     };
   },
   methods: {
@@ -357,17 +347,6 @@ export default {
         this.checkValidate = true;
       } else {
         this.checkValidate = false;
-      }
-    },
-    async checkOrderId(val) {
-      let getOrder = await db
-        .collection("practice_draft")
-        .where("order", "==", val)
-        .where("practiceId", "==", this.data.practiceId)
-        .get();
-
-      if (this.oldOrder != val) {
-        return !getOrder.size || "รหัสลำดับนี้มีการใช้งานแล้ว";
       }
     },
     editMode() {
@@ -386,6 +365,8 @@ export default {
       this.data = this.$route.params.data;
     },
     async saveData() {
+      this.isOrderError = false;
+      this.errorOrderMes = "";
       this.$refs.order.validate();
       this.$refs.vocabulary.validate();
       this.$refs.meaning.validate();
@@ -406,6 +387,54 @@ export default {
       }
       if (this.uploadSound.file != null) {
         this.data.isSound = true;
+      }
+
+      if (this.order == "") {
+        this.isOrderError = true;
+
+        this.$q.notify({
+          message: "กรุณาตรวจสอบข้อมูลให้ถูกต้อง",
+          color: "red",
+          position: "top"
+        });
+        return;
+      }
+      let checkOrder = await db
+        .collection("practice_draft")
+        .where("order", "==", this.data.order)
+        .where("practiceId", "==", this.data.practiceId)
+        .get();
+
+      if (this.$route.name == "flashcardInput") {
+        if (checkOrder.size > 0) {
+          this.errorOrderMes = "รหัสลำดับซ้ำ";
+          this.isOrderError = true;
+          this.$q.notify({
+            message: "กรุณาตรวจสอบข้อมูลให้ถูกต้อง",
+            color: "red",
+            position: "top"
+          });
+          return;
+        }
+      }
+      if (this.$route.name == "flashcardEdit") {
+        if (this.data.order != this.oldOrder) {
+          if (checkOrder.size > 0) {
+            this.errorOrderMes = "รหัสลำดับซ้ำ";
+            this.isOrderError = true;
+            this.$q.notify({
+              message: "กรุณาตรวจสอบข้อมูลให้ถูกต้อง",
+              color: "red",
+              position: "top"
+            });
+            return;
+          } else {
+            this.editData();
+          }
+          return;
+        } else {
+          this.editData();
+        }
       }
 
       this.isClick = true;

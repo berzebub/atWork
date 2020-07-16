@@ -8,8 +8,6 @@
             <div>{{getLevelName}}</div>
             <div>{{getUnitName}}</div>
           </div>
-          <!-- :error="errorOrder"
-          :error-message="'รหัสลำดับซ้ำ'"-->
           <!-- รหัสลำดับ -->
           <div>
             <div class="row">
@@ -19,12 +17,16 @@
             <q-input
               dense
               ref="order"
-              lazy-rules
-              :rules="[val => val || 'ค่าว่าง',val => checkOrderId(val)]"
+              :error="isOrderError"
+              :error-message="errorOrderMes"
               outlined
               mask="###"
+<<<<<<< Updated upstream
               debounce="500"
+=======
+>>>>>>> Stashed changes
               v-model.number="order"
+              @keyup="isOrderError = false"
             />
           </div>
           <!-- ปุ่มเพิ่ม -->
@@ -300,10 +302,11 @@ export default {
       boxCount: 1,
       type: "",
       order: "",
-      oldOrder: "",
-      checkOrder: this.$route.params.checkOrder,
+      oldOrder: this.$route.params.order,
+      isOrderError: false,
       errorSentenceEng1: false,
-      errorOrder: false,
+      errorOrderMes: "",
+
       uploadSound: [
         {
           file: null,
@@ -363,18 +366,6 @@ export default {
     };
   },
   methods: {
-    async checkOrderId(val) {
-      console.log(val);
-      let checkOrder = await db
-        .collection("practice_draft")
-        .where("order", "==", val)
-        .where("practiceId", "==", this.practiceId)
-        .get();
-      console.log(checkOrder.size);
-      if (this.oldOrder != this.order) {
-        return !checkOrder.size || "รหัสลำดับซ้ำ";
-      }
-    },
     editMode() {
       this.isAddMode = false;
       if (
@@ -408,7 +399,8 @@ export default {
       this.sentence = getSentence;
     },
     async saveData() {
-      this.errorOrder = false;
+      this.isOrderError = false;
+      this.errorOrderMes = "";
       for (let i = 0; i < this.boxCount + 1; i++) {
         this.sentence[i].errorEng = false;
         this.sentence[i].errorTh = false;
@@ -432,14 +424,53 @@ export default {
         });
         return;
       }
-      this.$refs.order.validate();
-      if (this.$refs.order.hasError) {
+      // this.$refs.order.validate();
+      if (this.order == "") {
+        this.isOrderError = true;
+
         this.$q.notify({
           message: "กรุณาตรวจสอบข้อมูลให้ถูกต้อง",
           color: "red",
           position: "top"
         });
         return;
+      }
+      let checkOrder = await db
+        .collection("practice_draft")
+        .where("order", "==", this.order)
+        .where("practiceId", "==", this.practiceId)
+        .get();
+      // console.log(checkOrder.size);
+      if (this.$route.name == "expressionInput") {
+        if (checkOrder.size > 0) {
+          this.errorOrderMes = "รหัสลำดับซ้ำ";
+          this.isOrderError = true;
+          this.$q.notify({
+            message: "กรุณาตรวจสอบข้อมูลให้ถูกต้อง",
+            color: "red",
+            position: "top"
+          });
+          return;
+        }
+      }
+      if (this.$route.name == "expressionEdit") {
+        if (this.order != this.oldOrder) {
+          if (checkOrder.size > 0) {
+            this.errorOrderMes = "รหัสลำดับซ้ำ";
+            this.isOrderError = true;
+            this.$q.notify({
+              message: "กรุณาตรวจสอบข้อมูลให้ถูกต้อง",
+              color: "red",
+              position: "top"
+            });
+            return;
+          } else {
+            this.editData();
+          }
+          return;
+        } else {
+          this.editData();
+        }
       }
 
       await this.updateSyncStatus(this.practiceId, this.unitId);
