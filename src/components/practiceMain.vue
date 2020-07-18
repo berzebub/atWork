@@ -296,6 +296,7 @@ export default {
                   doc.forEach(elementPractice => {
                     tempPractice.push(elementPractice.data().status);
                   });
+
                   let isShowSyncBtn = false;
                   if (
                     tempPractice.includes("notSync") ||
@@ -303,6 +304,7 @@ export default {
                   ) {
                     isShowSyncBtn = true;
                   }
+
                   db.collection("unit")
                     .doc(this.data.unitId)
                     .update({

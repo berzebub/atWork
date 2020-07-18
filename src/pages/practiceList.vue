@@ -99,6 +99,7 @@ export default {
       unitName: "",
       levelName: "",
       practiceListOrder: null,
+      currentLevelClick: "",
 
       snapLevel: "",
       snapUnit: ""
@@ -172,10 +173,14 @@ export default {
         temp.sort((a, b) => {
           return a.order - b.order;
         });
+
         this.unitList = temp;
+
+        this.showUnit(this.currentLevelClick);
       });
     },
     showUnit(value) {
+      this.currentLevelClick = value;
       this.isShowPracticeMain = false;
       this.activeKey = "";
       this.unitListShow = this.unitList.filter(x => x.levelId == value.levelId);
