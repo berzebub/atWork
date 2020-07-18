@@ -27,9 +27,9 @@ var firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 
 export const db = firebase.firestore();
-if (location.hostname === "localhost") {
-  db.settings({ host: "localhost:4005", ssl: false });
-}
+// if (location.hostname === "localhost") {
+//   db.settings({ host: "localhost:4005", ssl: false });
+// }
 const storage = firebase.storage();
 export const st = storage.ref();
 export const auth = firebase.auth();
@@ -156,7 +156,7 @@ Vue.mixin({
       let res;
       if (type == "flashcard") {
         res = "การ์ดคำศัพท์";
-      } else if (type == "multiplechoice") {
+      } else if (type == "multipleChoice") {
         res = "เลือกคำตอบ";
       } else if (type == "expression") {
         res = "ประโยคสนธนา";
