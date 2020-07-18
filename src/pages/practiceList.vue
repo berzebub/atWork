@@ -98,7 +98,10 @@ export default {
       num: "",
       unitName: "",
       levelName: "",
-      practiceListOrder: null
+      practiceListOrder: null,
+
+      snapLevel: "",
+      snapUnit: ""
     };
   },
   methods: {
@@ -130,27 +133,30 @@ export default {
     },
 
     loadLevel() {
-      db.collection("level")
-        .get()
-        .then(doc => {
-          // console.log("level");
-          doc.forEach(element => {
-            let showData = {
-              levelId: element.id,
-              name: element.data().name,
-              status: element.data().status
-            };
-            this.levelList.push(showData);
-            this.levelList.sort((a, b) => {
-              return a.name > b.name ? 1 : -1;
-            });
-          });
+      this.snapLevel = db.collection("level").onSnapshot(doc => {
+        // console.log("level");
+        let temp = [];
+        doc.forEach(element => {
+          let showData = {
+            levelId: element.id,
+            name: element.data().name,
+            status: element.data().status
+          };
 
-          this.loadUnit();
+          temp.push(showData);
         });
+
+        temp.sort((a, b) => {
+          return a.name > b.name ? 1 : -1;
+        });
+
+        this.levelList = temp;
+
+        this.loadUnit();
+      });
     },
     loadUnit() {
-      db.collection("unit").onSnapshot(doc => {
+      this.snapUnit = db.collection("unit").onSnapshot(doc => {
         let temp = [];
         doc.forEach(element => {
           let showData = {
@@ -162,9 +168,11 @@ export default {
           };
           temp.push(showData);
         });
+
         temp.sort((a, b) => {
           return a.order - b.order;
         });
+
         this.unitList = temp;
       });
     },
@@ -176,6 +184,15 @@ export default {
   },
   mounted() {
     this.loadLevel();
+  },
+  beforeDestroy() {
+    if (typeof this.snapLevel == "function") {
+      this.snapLevel();
+    }
+
+    if (typeof this.snapUnit == "function") {
+      this.snapUnit();
+    }
   }
 };
 </script>
