@@ -175,9 +175,9 @@
               icon="fas fa-volume-up"
               v-if="item.audioURL && item.isQuestionSound"
               @click="playAudio(item.audioURL)"
-              class="q-mx-xs"
+              class="q-mr-xs"
             ></q-btn>
-            <span class="q-mx-sm" v-if="item.isQuestionSound && !item.isSound">
+            <span class="q-mr-sm" v-if="item.isQuestionSound && !item.isSound">
               <q-icon class="text-grey-6 no-pointer-events" name="fas fa-volume-mute  "></q-icon>
             </span>
             <span v-if="item.question" v-html="item.question"></span>
