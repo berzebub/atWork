@@ -13,7 +13,10 @@
             <span class="text-white text-h6">ตั้งค่า</span>
           </div>
         </div>
-        <div class="bg-white row" :style=" $q.platform.is.mobile?null:'height: calc(100vh - 64px)'">
+        <div
+          class="bg-white row shadow-3"
+          :style=" $q.platform.is.mobile?null:'height: calc(100vh - 64px)'"
+        >
           <div class="col-12">
             <div
               @click="markName()"
@@ -78,7 +81,7 @@
         </div>
       </div>
       <!-- box1 หน้าแรก -->
-      <div v-if="mainPage == true" align="center" class="brx desktop-only col flex flex-center">
+      <div v-if="mainPage == true" align="center" class="desktop-only col flex flex-center">
         <div class="row justify-center items-center">
           <div>
             <q-icon name="fas fa-arrow-left" size="1.7em" />

@@ -19,7 +19,7 @@
       </div>
       <!-- หน้า desktop -->
       <div class="desktop-only">
-        <div class="brx q-mt-lg box-main" style="border-radius: 10px">
+        <div class="q-mt-lg box-main" style="border-radius: 10px">
           <div v-for="(item, index) in hotelList" :key="index">
             <q-toolbar class="no-padding">
               <div class="text-subtitle1 q-pl-md">
