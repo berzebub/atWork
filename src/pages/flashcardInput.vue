@@ -412,8 +412,9 @@ export default {
       }
 
       this.isClick = true;
-      await this.updateSyncStatus(this.data.practiceId, this.data.unitId);
+
       if (this.$route.name == "flashcardInput") {
+        await this.updateSyncStatus(this.data.practiceId, this.data.unitId);
         db.collection("practice_draft")
           .add(this.data)
           .then(getId => {
@@ -434,7 +435,8 @@ export default {
       }
     },
 
-    editData() {
+    async editData() {
+      await this.updateSyncStatus(this.data.practiceId, this.data.unitId);
       db.collection("practice_draft")
         .doc(this.$route.params.id)
         .update(this.data)
