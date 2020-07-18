@@ -157,7 +157,6 @@ export default {
     },
     loadUnit() {
       this.snapUnit = db.collection("unit").onSnapshot(doc => {
-        console.log("is Snap");
         let temp = [];
         doc.forEach(element => {
           let showData = {
@@ -173,7 +172,6 @@ export default {
         temp.sort((a, b) => {
           return a.order - b.order;
         });
-
         this.unitList = temp;
       });
     },
