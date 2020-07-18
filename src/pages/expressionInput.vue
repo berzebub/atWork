@@ -540,7 +540,8 @@ export default {
       }
     },
 
-    editData() {
+    async editData() {
+      await this.updateSyncStatus(this.practiceId, this.unitId);
       let filterData = this.sentence.filter(
         x => x.sentenceEng != "" && x.sentenceTh != ""
       );

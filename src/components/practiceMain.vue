@@ -285,6 +285,30 @@ export default {
                   this.loadingHide();
                   this.dialogSuccess = true;
                 });
+
+              // CHECK SYNC STATUS IN COLLECTION (PRACTICE LIST) AND COLLECTION (UNIT)
+
+              db.collection("practice_draft")
+                .where("unitId", "==", this.data.unitId)
+                .get()
+                .then(doc => {
+                  let tempPractice = [];
+                  doc.forEach(elementPractice => {
+                    tempPractice.push(elementPractice.data().status);
+                  });
+                  let isShowSyncBtn = false;
+                  if (
+                    tempPractice.includes("notSync") ||
+                    tempPractice.includes("waitForDelete")
+                  ) {
+                    isShowSyncBtn = true;
+                  }
+                  db.collection("unit")
+                    .doc(this.data.unitId)
+                    .update({
+                      isShowSyncBtn: isShowSyncBtn
+                    });
+                });
             });
         });
     },
