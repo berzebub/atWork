@@ -14,7 +14,6 @@
                 val="draft"
                 label="แบบร่าง"
               />
-              
             </div>
             <!-- เซิร์ฟเวอร์ -->
             <div class="col">
@@ -62,14 +61,14 @@
             />
           </div>
         </div>
-        <div class="row q-px-md q-py-sm " >
+        <div class="row q-px-md q-py-sm">
           <div class="col-12 self-center q-py-sm">
             <span class="text-subtitle1" v-if="instrunction.eng">{{ instrunction.eng }}</span>
             <span v-else>ยังไม่ระบุ</span>
           </div>
           <q-separator class="q-my-xs" />
-          <div class="col-12 self-center q-py-sm ">
-            <span class="text-subtitle1 " v-if="instrunction.th ">{{ instrunction.th }}</span>
+          <div class="col-12 self-center q-py-sm">
+            <span class="text-subtitle1" v-if="instrunction.th ">{{ instrunction.th }}</span>
             <span v-else>ยังไม่ระบุ</span>
           </div>
         </div>
@@ -115,16 +114,15 @@
         ></q-btn>
         <div v-if="item.status == 'waitForDelete'" class="absolute-center backDrop"></div>
         <div class="boxQuestion bg-blue-grey-10 text-white q-py-xs q-px-xs row">
-          <div class="col self-center q-px-sm ">
+          <div class="col self-center q-px-sm">
             <span class="desktop-only">รหัสลำดับ {{ item.order }}</span>
             <span
-              class="mobile-only" 
+              class="mobile-only"
               v-if="item.status != 'waitForDelete'"
             >รหัสลำดับ {{ item.order }}</span>
           </div>
-          <div class="col self-center desktop-only " align="right">
-            <q-btn 
-              
+          <div class="col self-center desktop-only" align="right">
+            <q-btn
               v-if="mode == 'draft'"
               @click="deleteBtn(item.id, item.order, index)"
               size="sm"
@@ -143,7 +141,7 @@
             />
           </div>
           <q-btn
-            class="mobile-only "
+            class="mobile-only"
             v-if="mode== 'draft'"
             size="13px"
             icon="fas fa-ellipsis-v"
@@ -151,7 +149,7 @@
             dense
             flat
           >
-            <q-menu  anchor="top right" self="top right" :offset="[7,-37]">
+            <q-menu anchor="top right" self="top right" :offset="[7,-37]">
               <q-list style="min-width: 120px">
                 <q-item clickable v-close-popup>
                   <q-item-section @click="editData(item)">แก้ไขคำถาม</q-item-section>
@@ -174,10 +172,15 @@
               size="xs"
               flat
               icon="fas fa-volume-up"
-              v-if="item.audioURL"
+              v-if="item.audioURL && item.isQuestionSound"
               @click="playAudio(item.audioURL)"
-              class="q-mx-xs "
+              class="q-mx-xs"
             ></q-btn>
+            <span class="q-mx-sm" v-if="item.isQuestionSound && !item.isSound">
+              <q-icon class="text-grey-6 no-pointer-events" name="fas fa-volume-mute  "></q-icon>
+            </span>
+
+            <!-- <q-btn round size="xs" flat icon="fas fa-volume-up" class="q-mx-xs"></q-btn> -->
             <span class="q-mx-xs q-pr-sm" v-html="item.question"></span>
           </div>
         </div>
@@ -350,7 +353,6 @@ export default {
     };
   },
   methods: {
-
     loadLevel() {
       this.loadingShow();
 
@@ -384,7 +386,7 @@ export default {
           }
         });
     },
-    
+
     loadInstrunction() {
       let practiceId = this.$route.params.practiceId;
       db.collection("practice_list")
@@ -583,7 +585,6 @@ export default {
 </script>
 <style scoped>
 .box {
- 
   border: 1px solid #263238;
   border-radius: 10px;
 }

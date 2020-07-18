@@ -20,8 +20,8 @@
             v-model.number="data.order"
             dense
             lazy-rules
-              :error="isErrorOrder"
-              :error-message="orderMessage"
+            :error="isErrorOrder"
+            :error-message="orderMessage"
             :rules="[val => !!val]"
           />
         </div>
@@ -29,7 +29,7 @@
       <div class="q-pb-md">
         <q-checkbox
           color="black"
-          v-model="data.isSound"
+          v-model="data.isQuestionSound"
           style="margin-left:-10px;"
           label="คำถามเป็นเสียง"
         />
@@ -43,7 +43,7 @@
             :content-class="!isQuestion ? 'brx' : null"
             @input="checkEditor('question')"
             :definitions="
-                data.isSound
+                data.isQuestionSound
                   ? {
                       upload: {
                         icon: 'cloud_upload',
@@ -60,7 +60,7 @@
             v-model="data.question"
             min-height="7rem"
           />
-          <div v-if="data.isSound" class="box-choice-sound bg-white row">
+          <div v-if="data.isQuestionSound" class="box-choice-sound bg-white row">
             <div
               :class="dataQuestion.status ? 'offset-1' : ''"
               class="col self-center q-pa-md"
@@ -607,6 +607,7 @@ export default {
         file: null,
         status: false
       },
+
       practiceData: {
         levelName: "",
         unitName: "",
@@ -629,6 +630,7 @@ export default {
           { choice: "", isSound: false }
         ],
         isAnswerSound: false,
+        isQuestionSound: false,
         status: "notSync"
       },
 
@@ -657,7 +659,7 @@ export default {
       isErrorChoice2: false,
       finishDialog: false,
       isErrorOrder: false,
-      orderMessage:"",
+      orderMessage: "",
       isAddMode: true,
 
       isSaveData: false,
@@ -669,7 +671,7 @@ export default {
   methods: {
     // โหลด ข้อมูล หน้าแก้ไข
     loadLevel() {
-  let levelKey = this.$route.params.levelId;
+      let levelKey = this.$route.params.levelId;
       db.collection("level")
         .doc(levelKey)
         .get()
@@ -719,12 +721,11 @@ export default {
       // เช็คช่องกรอกข้อมูล ก่อนบันทึก ว่ากรอกข้อมูลรึยัง ข้อมูลที่จำเป็นต้องกรอก
       let hasChoice = this.data.choices.filter(x => x.choice != "");
       this.$refs.orderid.validate();
-      if (this.$refs.orderid.hasError ) {
+      if (this.$refs.orderid.hasError) {
       }
 
-       if (this.data.question == "" ) {
+      if (this.data.question == "") {
         this.isQuestion = false;
-        
       }
       if (hasChoice.length < 2) {
         // การเช็คตัวเลือก 1&2 ถ้าข้อความน้อยก่ว่า 0 ให้ มีกรอบสีแดง
@@ -733,14 +734,13 @@ export default {
           this.isErrorChoice1 = true;
         } else if (index == 1) {
           this.isErrorChoice2 = true;
-        
         }
       }
       if (!this.data.correctAnswer) {
         this.isCorrectAnswer = true;
-        return
+        return;
       }
-      
+
       this.data.choices.map((x, index) => {
         if (hasChoice[index]) {
           this.data.choices[index].choice = hasChoice[index].choice;
@@ -755,10 +755,8 @@ export default {
       if (this.dataQuestion.file) {
         this.data.isSound = true;
         this.dataQuestion.status = true;
-      } else {
-        this.data.isSound = false;
-        this.dataQuestion.status = false;
       }
+
       this.dataFiles.map((x, index) => {
         if (x.status) {
           this.data.choices[index].isSound = true;
@@ -766,149 +764,150 @@ export default {
           this.data.choices[index].isSound = false;
         }
       });
-     if (this.data.question == "" || this.data.order == "" ) {
-      return
+      if (this.data.question == "" || this.data.order == "") {
+        return;
       }
-     await this.updateSyncStatus(
+
+      await this.updateSyncStatus(
         this.$route.params.practiceId,
         this.$route.params.unitId
       );
-let getOrder = await db.collection("practice_draft")
-  .where("order", "==", this.data.order)
-  .where("practiceId", "==", this.data.practiceId)
-   .get()
+      let getOrder = await db
+        .collection("practice_draft")
+        .where("order", "==", this.data.order)
+        .where("practiceId", "==", this.data.practiceId)
+        .get();
       if (getOrder.size > 0 && this.oldOrder != this.data.order) {
-          this.orderMessage = 'รหัสลำดับนี้มีการใช้งานแล้ว'
-        this.isErrorOrder = true
-         setTimeout(() => {
-        this.orderMessage = ''
-         this.isErrorOrder = false
+        this.orderMessage = "รหัสลำดับนี้มีการใช้งานแล้ว";
+        this.isErrorOrder = true;
+        setTimeout(() => {
+          this.orderMessage = "";
+          this.isErrorOrder = false;
         }, 1000);
-     }else{
-      this.loadingShow();
-      this.isSaveData = true;
-       //  หน้า เพิ่มข้อมูล
+      } else {
+        this.loadingShow();
+        this.isSaveData = true;
+        //  หน้า เพิ่มข้อมูล
         if (this.isAddMode) {
-        db.collection("practice_draft")
-          .add(this.data)
-          .then(async doc => {
-            // เช็คขูอมูลภาพและเสียง
-            if (this.uploadImg.status) {
-              await st
-                .child("/practice/image/" + doc.id + ".jpg")
-                .put(this.uploadImg.file);
-            }
-
-            if (this.dataQuestion.status) {
-              await st
-                .child("/practice/audio/" + doc.id + ".mp3")
-                .put(this.dataQuestion.file);
-            }
-
-            // แบบมีเสียง เพิ่ม
-            if (this.data.isAnswerSound) {
-              this.dataFiles.map((x, index) => {
-                if (x.status) {
-                  st.child(
-                    "/practice/audio/" + doc.id + "-" + (index + 1) + ".mp3"
-                  ).put(x.file);
-                }
-              });
-            }
-            this.loadingHide();
-            this.isSaveDialogSuccess = true;
-            setTimeout(() => {
-              this.$router.push(
-                "/multipleMain/" +
-                  this.data.levelId +
-                  "/" +
-                  this.data.unitId +
-                  "/" +
-                  this.data.practiceId
-              );
-            }, 1000);
-          });
-      }
-
-      // หน้า แก้ไข
-      else {
-        db.collection("practice_draft")
-          .doc(this.$route.params.id)
-          .set(this.data)
-          .then(async () => {
-            // เช็คขูอมูลภาพและเสียง
-            if (this.data.isImage) {
-              if (this.uploadImg.file) {
-                await st
-                  .child("/practice/image/" + this.$route.params.id + ".jpg")
-                  .put(this.uploadImg.file);
-              }
-            } else {
+          db.collection("practice_draft")
+            .add(this.data)
+            .then(async doc => {
+              // เช็คขูอมูลภาพและเสียง
               if (this.uploadImg.status) {
                 await st
-                  .child("/practice/image/" + this.$route.params.id + ".jpg")
-                  .delete();
+                  .child("/practice/image/" + doc.id + ".jpg")
+                  .put(this.uploadImg.file);
               }
-            }
-            if (this.data.isSound) {
-              if (this.dataQuestion.file) {
-                await st
-                  .child("/practice/audio/" + this.$route.params.id + ".mp3")
-                  .put(this.dataQuestion.file);
-              }
-            } else {
+
               if (this.dataQuestion.status) {
                 await st
-                  .child("/practice/audio/" + this.$route.params.id + ".mp3")
-                  .delete();
+                  .child("/practice/audio/" + doc.id + ".mp3")
+                  .put(this.dataQuestion.file);
               }
-            }
-            // แบบมีเสียง เพิ่ม
-            if (this.data.isAnswerSound) {
-              this.dataFiles.map(async (x, index) => {
-                if (x.status) {
-                  if (x.file) {
-                    await st
-                      .child(
-                        "/practice/audio/" +
-                          this.$route.params.id +
-                          "-" +
-                          (index + 1) +
-                          ".mp3"
-                      )
-                      .put(x.file);
-                  }
-                } else {
-                  if (this.data.choices[index].isSound) {
-                    await st
-                      .child(
-                        "/practice/audio/" +
-                          this.$route.params.id +
-                          "-" +
-                          (index + 1) +
-                          ".mp3"
-                      )
-                      .delete();
-                  }
-                }
-              });
-            }
-            this.loadingHide();
-            this.isSaveDialogSuccess = true;
-            setTimeout(() => {
-              this.$router.push(
-                "/multipleMain/" +
-                  this.data.levelId +
-                  "/" +
-                  this.data.unitId +
-                  "/" +
-                  this.data.practiceId
-              );
-            }, 1000);
-          });
-      }
-     }
 
+              // แบบมีเสียง เพิ่ม
+              if (this.data.isAnswerSound) {
+                this.dataFiles.map((x, index) => {
+                  if (x.status) {
+                    st.child(
+                      "/practice/audio/" + doc.id + "-" + (index + 1) + ".mp3"
+                    ).put(x.file);
+                  }
+                });
+              }
+              this.loadingHide();
+              this.isSaveDialogSuccess = true;
+              setTimeout(() => {
+                this.$router.push(
+                  "/multipleMain/" +
+                    this.data.levelId +
+                    "/" +
+                    this.data.unitId +
+                    "/" +
+                    this.data.practiceId
+                );
+              }, 1000);
+            });
+        }
+
+        // หน้า แก้ไข
+        else {
+          db.collection("practice_draft")
+            .doc(this.$route.params.id)
+            .set(this.data)
+            .then(async () => {
+              // เช็คขูอมูลภาพและเสียง
+              if (this.data.isImage) {
+                if (this.uploadImg.file) {
+                  await st
+                    .child("/practice/image/" + this.$route.params.id + ".jpg")
+                    .put(this.uploadImg.file);
+                }
+              } else {
+                if (this.uploadImg.status) {
+                  await st
+                    .child("/practice/image/" + this.$route.params.id + ".jpg")
+                    .delete();
+                }
+              }
+              if (this.data.isSound) {
+                if (this.dataQuestion.file) {
+                  await st
+                    .child("/practice/audio/" + this.$route.params.id + ".mp3")
+                    .put(this.dataQuestion.file);
+                }
+              } else {
+                if (this.dataQuestion.status) {
+                  await st
+                    .child("/practice/audio/" + this.$route.params.id + ".mp3")
+                    .delete();
+                }
+              }
+              // แบบมีเสียง เพิ่ม
+              if (this.data.isAnswerSound) {
+                this.dataFiles.map(async (x, index) => {
+                  if (x.status) {
+                    if (x.file) {
+                      await st
+                        .child(
+                          "/practice/audio/" +
+                            this.$route.params.id +
+                            "-" +
+                            (index + 1) +
+                            ".mp3"
+                        )
+                        .put(x.file);
+                    }
+                  } else {
+                    if (this.data.choices[index].isSound) {
+                      await st
+                        .child(
+                          "/practice/audio/" +
+                            this.$route.params.id +
+                            "-" +
+                            (index + 1) +
+                            ".mp3"
+                        )
+                        .delete();
+                    }
+                  }
+                });
+              }
+              this.loadingHide();
+              this.isSaveDialogSuccess = true;
+              setTimeout(() => {
+                this.$router.push(
+                  "/multipleMain/" +
+                    this.data.levelId +
+                    "/" +
+                    this.data.unitId +
+                    "/" +
+                    this.data.practiceId
+                );
+              }, 1000);
+            });
+        }
+      }
     },
     checkEditor(type) {
       if (type == "question") {
