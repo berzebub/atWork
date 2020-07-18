@@ -45,7 +45,7 @@
       </div>
       <!-- checkbox -->
       <div class="row">
-        <div class="text-subtitle1 row items-center">สิทธิ์การใช้การ</div>
+        <div class="text-subtitle1 row items-center">สิทธิ์การใช้งาน</div>
         <div class="text-subtitle1">
           <q-checkbox
             :color="!isEroorCheckbox?'blue-grey-10':'negative'"
@@ -244,7 +244,14 @@ export default {
     }
   },
   mounted() {
+    let _this = this;
     if (this.$route.name == "userEdit") {
+      console.log(this.$route.params.userGroup.length);
+      if (this.$route.params.userGroup.length == 4) {
+        setTimeout(() => {
+          this.all = true;
+        }, 1000);
+      }
       this.loadDataEdit();
     } else {
     }

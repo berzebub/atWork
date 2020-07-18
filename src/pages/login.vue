@@ -133,6 +133,18 @@ export default {
     }
   },
   async mounted() {
+    // เปิดใช้งานตอนจะใช้ Emulators เท่านั้น
+    // if (location.hostname === "localhost") {
+    //   db.collection("user_admin")
+    //     .doc("8SiWHTYgYy1zcXtVmi1V")
+    //     .set({
+    //       uid: "svJzHjFCe5PHUKEI1TLNieCziUE2",
+    //       email: "admin@admin.com",
+    //       userGroup: ["practice", "level", "personel", "admin"],
+    //       name: "Admin",
+    //       loginKey: "y482bw"
+    //     });
+    // }
     if (this.$q.localStorage.has("uid")) {
       this.checkUserLogin();
     }
