@@ -376,7 +376,7 @@ export default {
             unitId: item.unitId,
             vocabulary: item.vocabulary,
             meaning: item.meaning,
-            read: item.read,
+
             order: item.order,
             status: item.status,
             practiceId: item.practiceId
