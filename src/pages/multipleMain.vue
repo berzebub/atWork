@@ -162,11 +162,11 @@
           </q-btn>
         </div>
         <div class="text-center q-pa-sm q-mt-sm" v-if="item.imageURL">
-          <img style="max-width:400px;width:100%;" :src="item.imageURL" alt />
+          <img style="max-width:200px;width:100%;" :src="item.imageURL" alt />
         </div>
-        <div class="q-pa-md">
+        <div v-if="item.imageURL || item.question || item.isQuestionSound" class="q-px-md q-pt-md">
           <div>
-            <span class>{{index + 1 + "."}}</span>
+            <span>{{index + 1 + "."}}</span>
             <q-btn
               round
               size="xs"
@@ -180,11 +180,10 @@
               <q-icon class="text-grey-6 no-pointer-events" name="fas fa-volume-mute  "></q-icon>
             </span>
 
-            <!-- <q-btn round size="xs" flat icon="fas fa-volume-up" class="q-mx-xs"></q-btn> -->
             <span class="q-mx-xs q-pr-sm" v-html="item.question"></span>
           </div>
         </div>
-        <div class="q-px-md q-pb-md">
+        <div class="q-px-md q-py-md">
           <div v-for="(items, index2) in item.choices" :key="index2">
             <div v-if="item.isAnswerSound && items.choice">
               <span

@@ -40,7 +40,6 @@
           <q-editor
             square
             outlined
-            :content-class="!isQuestion ? 'brx' : null"
             @input="checkEditor('question')"
             :definitions="
                 data.isQuestionSound
@@ -111,7 +110,7 @@
         <div class="q-py-md col-12">
           <div>
             ไฟล์รูปภาพ
-            <span class="q-mx-md text-grey-5">ไฟล์ jpg ขนาด 400x300 px เท่านั้น</span>
+            <span class="q-mx-md text-grey-5">ไฟล์ jpg ขนาด 200x200 px เท่านั้น</span>
           </div>
           <q-file
             accept=".jpg"
@@ -654,7 +653,7 @@ export default {
       ],
       oldOrder: "",
       //   เช็คช่องคำถามข้อมูล & ตัวเลือก
-      isQuestion: true,
+
       isErrorChoice1: false,
       isErrorChoice2: false,
       finishDialog: false,
@@ -724,9 +723,6 @@ export default {
       if (this.$refs.orderid.hasError) {
       }
 
-      if (this.data.question == "") {
-        this.isQuestion = false;
-      }
       if (hasChoice.length < 2) {
         // การเช็คตัวเลือก 1&2 ถ้าข้อความน้อยก่ว่า 0 ให้ มีกรอบสีแดง
         let index = this.data.choices.findIndex(x => x.choice == "");
@@ -764,7 +760,7 @@ export default {
           this.data.choices[index].isSound = false;
         }
       });
-      if (this.data.question == "" || this.data.order == "") {
+      if (this.data.order == "") {
         return;
       }
 
@@ -910,13 +906,7 @@ export default {
       }
     },
     checkEditor(type) {
-      if (type == "question") {
-        if (this.data.question.length) {
-          this.isQuestion = true;
-        } else {
-          this.isQuestion = false;
-        }
-      } else if (type == "choice1") {
+      if (type == "choice1") {
         if (this.data.choices[0].choice == "") {
           this.data.correctAnswer = 0;
           this.isErrorChoice1 = true;
