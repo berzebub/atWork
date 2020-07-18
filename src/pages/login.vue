@@ -71,7 +71,8 @@ export default {
       isPwd: true,
       dialogWrongPassword: false,
       isKey: false,
-      loginKey: ""
+      loginKey: "",
+      authLogin: ""
     };
   },
   methods: {
@@ -82,6 +83,11 @@ export default {
         .then(() => {
           return auth
             .signInWithEmailAndPassword(this.email, this.password)
+            .then(async result => {
+              this.$q.localStorage.set("uid", result.user.uid);
+              await this.getLoginKey(result.user.uid);
+              this.$router.push("/practiceList");
+            })
             .catch(error => {
               this.showWrongPasswordDialog();
               this.loadingHide();
@@ -111,8 +117,7 @@ export default {
     },
     checkUserLogin() {
       this.loadingShow();
-      auth.onAuthStateChanged(async user => {
-        // console.log("object");
+      this.authLogin = auth.onAuthStateChanged(async user => {
         if (user) {
           this.$q.localStorage.set("uid", user.uid);
           await this.getLoginKey(user.uid);
@@ -127,7 +132,14 @@ export default {
     }
   },
   async mounted() {
-    this.checkUserLogin();
+    if (this.$q.localStorage.has("uid")) {
+      this.checkUserLogin();
+    }
+  },
+  beforeDestroy() {
+    if (typeof this.authLogin == "function") {
+      this.authLogin();
+    }
   }
 };
 </script>
