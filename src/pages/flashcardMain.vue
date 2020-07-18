@@ -167,7 +167,7 @@
         <q-card-section class="no-padding">
           <div class="row q-pa-md">
             <!-- รูป -->
-            <div v-if="item.isImage == true" class="col-sm-6 col-xs-12 text-h6" align="left">
+            <div v-if="item.isImage == true" class="col-sm-6 col-xs-12 text-h6" align="center">
               <q-img :src="item.img" :ratio="1 / 1" style="width:200px"></q-img>
             </div>
             <!-- คำ -->
