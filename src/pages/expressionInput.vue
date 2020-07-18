@@ -497,10 +497,10 @@ export default {
           })
           .then(getId => {
             filterData.forEach((element, index) => {
-              console.log(element);
+              // console.log(element);
               if (element.uploadSound != null) {
                 let soundId = getId.id + "-" + (index + 1);
-                console.log(soundId);
+                // console.log(soundId);
                 st.child("practice/audio/" + soundId + ".mp3").put(
                   element.uploadSound
                 );

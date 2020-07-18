@@ -148,7 +148,7 @@ export default {
           _this.isSuccessData = true;
         })
         .catch(function(error) {
-          console.log(error);
+          // console.log(error);
         });
     },
     confirmResetPassword() {

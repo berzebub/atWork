@@ -207,7 +207,7 @@ export default {
       this.errorLessonMessage = "";
 
       if (this.dataLesson.order == "" || this.dataLesson.name == "") {
-        console.log("เช็ค input ว่าง");
+        // console.log("เช็ค input ว่าง");
         if (this.dataLesson.order == "") {
           this.errorOrder = true;
         }
@@ -225,39 +225,39 @@ export default {
         let checkOrder = false;
         if (this.nameOld != this.dataLesson.name) {
           checkName = await this.isCheckName(this.dataLesson.name);
-          console.log("เช็คชื่อซ้ำ");
+          // console.log("เช็คชื่อซ้ำ");
         }
         if (this.orderOld != this.dataLesson.order) {
           checkOrder = await this.isCheckOrder(this.dataLesson.order);
-          console.log("เช็คลำดับซ้ำ");
+          // console.log("เช็คลำดับซ้ำ");
         }
 
         this.errorOrder = false;
         this.errorLesson = false;
-        console.log(checkName);
-        console.log(checkOrder);
+        // console.log(checkName);
+        // console.log(checkOrder);
         if (checkName || checkOrder) {
           if (checkOrder) {
             this.errorOrderMessage = "รหัสลำดับนี้มีผู้ใช้งานแล้ว";
             this.errorOrder = true;
-            console.log("ลำดับซ้ำ");
+            // console.log("ลำดับซ้ำ");
           }
           if (checkName) {
             this.errorLesson = true;
             this.errorLessonMessage = "ชื่อนี้มีผู้ใช้งานแล้ว";
-            console.log("ชื่อซ้ำ");
+            // console.log("ชื่อซ้ำ");
           }
           return;
         }
       }
 
-      console.log("add mode");
+      // console.log("add mode");
 
       this.dialogLesson = false;
 
       this.loadingShow();
       if (this.editId != "") {
-        console.log("save add");
+        // console.log("save add");
         db.collection("unit")
           .doc(this.editId)
           .update(this.dataLesson)
@@ -268,7 +268,7 @@ export default {
             this.savedDataDialog = true;
           });
       } else {
-        console.log("save edit");
+        // console.log("save edit");
         db.collection("unit")
           .add(this.dataLesson)
           .then(() => {

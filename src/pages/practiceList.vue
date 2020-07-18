@@ -110,7 +110,7 @@ export default {
       this.isShowPracticeMain = true;
     },
     gotoEdit(itemUnit, num, levelName) {
-      console.log(num);
+      // console.log(num);
       this.isShowPracticeMain = false;
       this.activeKey = itemUnit.unitId;
       this.levelId = itemUnit.levelId;

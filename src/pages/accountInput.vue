@@ -113,7 +113,8 @@ export default {
         this.$refs.password.hasError ||
         this.$refs.email.hasError
       ) {
-        return console.log("กรอก input ไม่ครบ");
+        // console.log("กรอก input ไม่ครบ");
+        return;
       }
       this.loadingShow();
       if (this.$route.name != "accountEdit") {
@@ -171,11 +172,11 @@ export default {
         x => x.hotelId == this.$route.params.hotelId
       );
 
-      console.log(
-        this.departmentOptions.filter(
-          x => x.value == this.$route.params.departmentId
-        )
-      );
+      // console.log(
+      //   this.departmentOptions.filter(
+      //     x => x.value == this.$route.params.departmentId
+      //   )
+      // );
       this.dataEmployee.departmentId = this.departmentOptions.filter(
         x => x.value == this.$route.params.departmentId
       )[0].value;
@@ -222,7 +223,7 @@ export default {
     this.loadDepartment();
     this.loadLevel();
     if (this.$route.name == "accountEdit") {
-      console.log("555");
+      // console.log("555");
       this.loadEdit();
       return;
     }

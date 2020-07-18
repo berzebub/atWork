@@ -51,7 +51,7 @@ export default {
   },
   mounted() {
     this.checkSyncStatus();
-    console.log(this.isServer);
+    // console.log(this.isServer);
   },
   beforeDestroy() {
     this.isSnapPracticeList();

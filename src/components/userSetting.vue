@@ -137,7 +137,7 @@ export default {
   },
   watch: {
     infoData() {
-      console.log(this.infoData);
+      // console.log(this.infoData);
       if (this.infoData == "1") {
         this.$refs.name.resetValidation();
       }
@@ -171,7 +171,7 @@ export default {
           _this.dialogEmail = true;
         })
         .catch(function(error) {
-          console.log(error);
+          // console.log(error);
         });
     },
     // ตกลง

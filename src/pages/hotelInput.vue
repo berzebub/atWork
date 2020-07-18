@@ -115,7 +115,8 @@ export default {
         this.$refs.password.hasError ||
         this.$refs.email.hasError
       ) {
-        return console.log("กรอก input ไม่ครบ");
+        return;
+        // console.log("กรอก input ไม่ครบ");
       }
       if (this.nameHotelOld != this.datahotel.name) {
         let checkName = false;
@@ -132,7 +133,7 @@ export default {
       this.loadingShow();
       // บันทึก add
       if (this.$route.name == "hotelAdd") {
-        console.log(" add save");
+        // console.log(" add save");
         db.collection("hotel")
           .add(this.datahotel)
           .then(() => {
@@ -140,7 +141,7 @@ export default {
             this.loadingHide();
           });
       } else {
-        console.log("edit save");
+        // console.log("edit save");
         db.collection("hotel")
           .doc(this.$route.params.hotelId)
           .update(this.datahotel)
@@ -160,7 +161,7 @@ export default {
         .doc(this.$route.params.hotelId)
         .get()
         .then(doc => {
-          console.log(doc.data());
+          // console.log(doc.data());
           this.datahotel.name = doc.data().name;
           this.datahotel.adminName = doc.data().adminName;
           this.datahotel.adminPhone = doc.data().adminPhone;

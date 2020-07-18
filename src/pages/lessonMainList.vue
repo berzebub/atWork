@@ -449,7 +449,7 @@ export default {
       //   .where("levelId", "==", data.levelId)
       //   .get()
       //   .then(doc => {
-      //     console.log(doc.size);
+      // console.log(doc.size);
 
       //   });
     },
@@ -507,7 +507,7 @@ export default {
     deletePosition() {
       this.dialogDelete = false;
 
-      console.log(this.dataDelete.levelId);
+      // console.log(this.dataDelete.levelId);
       db.collection("level")
         .doc(this.dataDelete.levelId)
         .delete()
@@ -555,7 +555,7 @@ export default {
       this.errorLesson = false;
 
       if (this.dataLesson.order == "" || this.dataLesson.name == "") {
-        console.log("เช็ค input ว่าง");
+        // console.log("เช็ค input ว่าง");
         if (this.dataLesson.order == "") {
           this.errorOrder = true;
         }
@@ -591,7 +591,7 @@ export default {
       this.dialogLesson = false;
 
       if (this.editId != "") {
-        console.log("save edit");
+        // console.log("save edit");
         db.collection("unit")
           .doc(this.editId)
           .update(this.dataLesson)
@@ -603,7 +603,7 @@ export default {
             this.showLesson(this.dataLesson.levelId);
           });
       } else {
-        console.log("save add");
+        // console.log("save add");
         db.collection("unit")
           .add(this.dataLesson)
           .then(() => {
@@ -625,7 +625,7 @@ export default {
     },
     // เช็คชื่อซ้ำ
     async isCheckName(val) {
-      console.log(val);
+      // console.log(val);
       let doc = await db
         .collection("unit")
         .where("name", "==", val)
@@ -684,7 +684,7 @@ export default {
       this.dialogAddPosition = false;
 
       if (this.editPositionMode == true) {
-        console.log("edit");
+        // console.log("edit");
         db.collection("level")
           .doc(this.dataPositionPc.levelId)
           .update(this.dataPositionPc)
@@ -696,7 +696,7 @@ export default {
             }, 1000);
           });
       } else {
-        console.log("add");
+        // console.log("add");
         db.collection("level")
           .add(this.dataPositionPc)
           .then(() => {
@@ -711,7 +711,7 @@ export default {
         .where("name", "==", val)
         .get();
 
-      console.log(doc.size);
+      // console.log(doc.size);
 
       return doc.size ? true : false;
     },

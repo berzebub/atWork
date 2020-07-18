@@ -27,7 +27,7 @@ export default {
       this.indexClick = index;
     },
     testClick1() {
-      console.log("123");
+      // console.log("123");
     }
   }
 };

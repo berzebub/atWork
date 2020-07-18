@@ -107,8 +107,8 @@ export default {
       this.savedDataDialog = true;
 
       if (this.$route.name == "lessonEdit") {
-        console.log(this.$route.params.levelId);
-        console.log(this.dataPosition.name);
+        // console.log(this.$route.params.levelId);
+        // console.log(this.dataPosition.name);
         db.collection("level")
           .doc(this.$route.params.levelId)
           .update(this.dataPosition)

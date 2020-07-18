@@ -112,7 +112,7 @@ export default {
     checkUserLogin() {
       this.loadingShow();
       auth.onAuthStateChanged(async user => {
-        console.log("object");
+        // console.log("object");
         if (user) {
           this.$q.localStorage.set("uid", user.uid);
           await this.getLoginKey(user.uid);

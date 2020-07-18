@@ -294,17 +294,22 @@ export default {
       db.collection("hotel")
         .get()
         .then(doc => {
-          doc.forEach(element => {
-            let temp = {
-              value: element.id,
-              label: element.data().name
-            };
-            this.hotelList.push(temp);
-          });
-          this.hotelList.sort((a, b) => {
-            return a.name > b.name ? 1 : -1;
-          });
-          this.hotelSelectedId = this.hotelList[0].value;
+          if (doc.size) {
+            doc.forEach(element => {
+              let temp = {
+                value: element.id,
+                label: element.data().name
+              };
+              this.hotelList.push(temp);
+            });
+            this.hotelList.sort((a, b) => {
+              return a.name > b.name ? 1 : -1;
+            });
+            this.hotelSelectedId = this.hotelList[0].value;
+          } else {
+            this.hotelSelectedId = "กรุณาเพิ่มกิจการ";
+          }
+
           this.selectDepartment();
           this.loadEmployee();
         });
@@ -348,7 +353,7 @@ export default {
     },
     async saveDepartment() {
       if (this.departmentName == "") {
-        console.log("ไม่กรอกข้อมูล");
+        // console.log("ไม่กรอกข้อมูล");
         this.errorNameDepartment = true;
 
         return;
@@ -365,10 +370,10 @@ export default {
         }
       }
 
-      console.log("555");
+      // console.log("555");
       this.loadingShow();
       if (this.editId == "") {
-        console.log("บันทึกตอนเพิ่ม");
+        // console.log("บันทึกตอนเพิ่ม");
         db.collection("department")
           .add({
             hotelId: this.hotelSelectedId,
@@ -380,7 +385,7 @@ export default {
             this.addDialogSucess = true;
           });
       } else {
-        console.log("บันทึกตอนแก้ไข");
+        // console.log("บันทึกตอนแก้ไข");
         db.collection("department")
           .doc(this.editId)
           .update({ name: this.departmentName })
@@ -437,7 +442,7 @@ export default {
     },
     deleteDepartment(data) {
       this.dataDepartment = data;
-      console.log(data);
+      // console.log(data);
 
       db.collection("employee")
 
@@ -459,7 +464,7 @@ export default {
       this.departmentName = data.name;
     },
     async isCheckName(val) {
-      console.log(val);
+      // console.log(val);
       let doc = await db
         .collection("department")
         .where("name", "==", val)
@@ -479,21 +484,21 @@ export default {
       );
     },
     confirmDelete() {
-      console.log(this.dataDepartment.departmentId);
+      // console.log(this.dataDepartment.departmentId);
       this.loadingShow();
       this.isShowDeleteDialog = false;
       db.collection("department")
         .doc(this.dataDepartment.departmentId)
         .delete()
         .then(() => {
-          console.log("6666");
+          // console.log("6666");
           this.loadingHide();
           this.isDeleteDialogSucess = true;
         });
     },
     deleteEmployee(data) {
       this.dataEmployee = data;
-      console.log(this.dataEmployee);
+      // console.log(this.dataEmployee);
       this.isShowDeleteDialogEmployee = true;
     },
     confirmDeleteEmployee() {
@@ -514,8 +519,13 @@ export default {
     this.loadHotelList();
   },
   beforeDestroy() {
-    this.isSnapShot();
-    this.isOnSnapshotEmployee();
+    if (typeof this.isSnapShot == "function") {
+      this.isSnapShot();
+    }
+
+    if (typeof this.isOnSnapshotEmployee == "function") {
+      this.isOnSnapshotEmployee();
+    }
   }
 };
 </script>

@@ -137,13 +137,13 @@ export default {
         this.$refs.email.hasError ||
         this.$refs.password.hasError
       ) {
-        console.log("ยังไม่กรอกข้อมูล");
+        // console.log("ยังไม่กรอกข้อมูล");
         return;
       }
       // check checkbox
 
       if (this.dataUser.userGroup == "") {
-        console.log("ไม่ได้เลือกเช็คบ็อค");
+        // console.log("ไม่ได้เลือกเช็คบ็อค");
         this.isEroorCheckbox = true;
         return;
       }

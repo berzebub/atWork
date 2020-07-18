@@ -44,30 +44,36 @@ Vue.mixin({
   methods: {
     engError(val) {
       let regex = /^[a-zA-Z0-9$@$!%*?&#^-_. +]+$/;
-      return regex.test(val)
+      return regex.test(val);
     },
     thError(val) {
-      let regex = /^[ก-ฮะ-์0-9$@$!%*?&#^-_. +]+$/
-      return regex.test(val)
+      let regex = /^[ก-ฮะ-์0-9$@$!%*?&#^-_. +]+$/;
+      return regex.test(val);
     },
     logOut() {
       auth
         .signOut()
         .then(() => this.$router.push("/"))
-        .catch(function (error) { });
+        .catch(function(error) {});
     },
     async updateSyncStatus(practiceId, unitId) {
       return new Promise((a, b) => {
-        db.collection("practice_list").doc(practiceId).update({
-          isShowSyncBtn: true
-        }).then(() => {
-          db.collection("unit").doc(unitId).update({
+        db.collection("practice_list")
+          .doc(practiceId)
+          .update({
             isShowSyncBtn: true
-          }).then(() => {
-            a()
           })
-        })
-      })
+          .then(() => {
+            db.collection("unit")
+              .doc(unitId)
+              .update({
+                isShowSyncBtn: true
+              })
+              .then(() => {
+                a();
+              });
+          });
+      });
     },
     // ฟังชั่น ซิงโครไนค์
     async sync(practiceId) {
@@ -86,13 +92,14 @@ Vue.mixin({
                 delete data.status;
                 db.collection("practice_server")
                   .doc(element.id)
-                  .set(data).then(() => {
+                  .set(data)
+                  .then(() => {
                     db.collection("practice_draft")
                       .doc(element.id)
                       .update({
                         status: "updated"
                       });
-                  })
+                  });
               } else if (element.data().status == "waitForDelete") {
                 db.collection("practice_server")
                   .doc(element.id)
@@ -119,7 +126,7 @@ Vue.mixin({
                   })
                   .then(() => {
                     this.loadingHide();
-                    console.log("FINISH");
+                    // console.log("FINISH");
                     a("finish");
                   });
               });
@@ -173,7 +180,7 @@ Vue.mixin({
   }
 });
 
-export default function ( /* { store, ssrContext } */) {
+export default function(/* { store, ssrContext } */) {
   const Router = new VueRouter({
     scrollBehavior: () => ({
       x: 0,
