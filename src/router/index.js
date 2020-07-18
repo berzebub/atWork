@@ -27,9 +27,9 @@ var firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 
 export const db = firebase.firestore();
-if (location.hostname === "localhost") {
-  db.settings({ host: "localhost:4005", ssl: false });
-}
+// if (location.hostname === "localhost") {
+//   db.settings({ host: "localhost:4005", ssl: false });
+// }
 const storage = firebase.storage();
 export const st = storage.ref();
 export const auth = firebase.auth();
@@ -56,7 +56,10 @@ Vue.mixin({
     logOut() {
       auth
         .signOut()
-        .then(() => this.$router.push("/"))
+        .then(() => {
+          this.$router.push("/");
+          this.$q.localStorage.clear();
+        })
         .catch(function(error) {});
     },
     async updateSyncStatus(practiceId, unitId) {

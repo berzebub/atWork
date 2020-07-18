@@ -86,6 +86,7 @@ export default {
             .then(async result => {
               this.$q.localStorage.set("uid", result.user.uid);
               await this.getLoginKey(result.user.uid);
+              this.loadingHide();
               this.$router.push("/practiceList");
             })
             .catch(error => {
