@@ -223,7 +223,7 @@ export default {
         this.dataUser.email = this.$route.params.email;
         this.dataUser.password = this.$route.params.password;
         this.dataUser.userGroup = this.$route.params.userGroup;
-        if (this.dataUser.userGroup.length == 5) {
+        if (this.dataUser.userGroup.length == 4) {
           this.all = true;
         } else {
           this.all = false;
@@ -244,10 +244,8 @@ export default {
     }
   },
   mounted() {
-    let _this = this;
     if (this.$route.name == "userEdit") {
       this.loadDataEdit();
-    } else {
     }
   }
 };
