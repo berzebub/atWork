@@ -161,12 +161,13 @@
             </q-menu>
           </q-btn>
         </div>
-        <div class="text-center q-pa-sm q-mt-sm" v-if="item.imageURL">
-          <img style="max-width:200px;width:100%;" :src="item.imageURL" alt />
-        </div>
+
         <div v-if="item.imageURL || item.question || item.isQuestionSound" class="q-px-md q-pt-md">
           <div>
-            <span>{{index + 1 + "."}}</span>
+            <span class="q-pr-sm">{{index + 1 + "."}}</span>
+            <div class="text-center" v-if="item.imageURL">
+              <img style="max-width:200px;width:100%;" :src="item.imageURL" alt />
+            </div>
             <q-btn
               round
               size="xs"
@@ -179,8 +180,7 @@
             <span class="q-mx-sm" v-if="item.isQuestionSound && !item.isSound">
               <q-icon class="text-grey-6 no-pointer-events" name="fas fa-volume-mute  "></q-icon>
             </span>
-
-            <span class="q-mx-xs q-pr-sm" v-html="item.question"></span>
+            <span v-if="item.question" v-html="item.question"></span>
           </div>
         </div>
         <div class="q-px-md q-py-md">
@@ -395,12 +395,14 @@ export default {
           if (result.exists) {
             if (result.data().instrunctionEng) {
               this.instrunction.eng = result.data().instrunctionEng;
+              this.instrunctionEng = result.data().instrunctionEng;
             } else {
               this.instrunction.eng = "";
             }
 
             if (result.data().instrunctionTh) {
               this.instrunction.th = result.data().instrunctionTh;
+              this.instrunctionTh = result.data().instrunctionTh;
             } else {
               this.instrunction.th = "";
             }
@@ -492,8 +494,6 @@ export default {
     },
     // กดไปหน้าแก้ไขข้อมูล
     editQuestion() {
-      this.instrunctionTh = "";
-      this.instrunctionEng = "";
       this.isQuestionDialog = true;
     },
     // บันทึกข้อมูลคำสั่ง
