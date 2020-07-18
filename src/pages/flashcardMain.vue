@@ -92,19 +92,13 @@
           @click="cancelDeleteFlashcard(item.id, item.order)"
           style="width:190px; z-index:2600; "
           class="absolute-center bg-white"
-          >ยกเลิกการลบ</q-btn
-        >
+        >ยกเลิกการลบ</q-btn>
 
-        <q-card-section
-          class="text-white bg-blue-grey-10 no-padding row"
-          style="height:40px;"
-        >
+        <q-card-section class="text-white bg-blue-grey-10 no-padding row" style="height:40px;">
           <div
             v-if="item.status != 'waitForDelete' || $q.platform.is.desktop"
             class="text-subtitle1 q-ml-sm self-center"
-          >
-            รหัสลำดับ {{ item.order }}
-          </div>
+          >รหัสลำดับ {{ item.order }}</div>
           <div
             @click="cancelDeleteFlashcard(item.id, item.order)"
             v-if="$q.platform.is.mobile && item.status == 'waitForDelete'"
@@ -173,21 +167,17 @@
         <q-card-section class="no-padding">
           <div class="row q-pa-md">
             <!-- รูป -->
-            <div
-              v-if="item.isImage == true"
-              class="col-sm-6 col-xs-12 text-h6"
-              align="left"
-            >
-              <q-img :src="item.img" :ratio="1 / 1" style="width:300px"></q-img>
+            <div v-if="item.isImage == true" class="col-sm-6 col-xs-12 text-h6" align="left">
+              <q-img :src="item.img" :ratio="1 / 1" style="width:200px"></q-img>
             </div>
             <!-- คำ -->
-            <div class="col q-pa-md ">
-              <div class="row items-center ">
+            <div class="col q-pa-md">
+              <div class="row items-center">
                 <div class="self-center">
                   <q-btn
                     v-if="item.isSound == true"
                     flat
-                    dense=""
+                    dense
                     round
                     class="q-mr-md"
                     icon="fas fa-volume-up"
@@ -195,16 +185,9 @@
                     @click="playAudio(item.audio)"
                   ></q-btn>
                 </div>
-                <div class="self-center text-h6 text-blue-grey-10">
-                  {{ item.vocabulary }}
-                </div>
+                <div class="self-center text-h6 text-blue-grey-10">{{ item.vocabulary }}</div>
               </div>
-              <div class="text-subtitle1 text-blue-grey-7 q-mt-xs">
-                {{ item.read }}
-              </div>
-              <div class="text-subtitle1 text-blue-grey-10 q-mt-xs">
-                {{ item.meaning }}
-              </div>
+              <div class="text-subtitle1 text-blue-grey-10 q-mt-xs">{{ item.meaning }}</div>
             </div>
           </div>
           <q-separator />
@@ -224,11 +207,7 @@
       @emitCancelDelete="dialogDelete = false"
     ></dialog-setting>
 
-    <dialog-setting
-      :type="4"
-      v-if="deleteFinish == true"
-      @autoClose="deleteFinish = false"
-    ></dialog-setting>
+    <dialog-setting :type="4" v-if="deleteFinish == true" @autoClose="deleteFinish = false"></dialog-setting>
   </q-page>
 </template>
 

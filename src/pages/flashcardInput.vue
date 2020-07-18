@@ -18,6 +18,7 @@
               bg-color="white"
               dense
               ref="order"
+              :rules="[val => !!val]"
               :error="isOrderError"
               :error-message="errorOrderMes"
               outlined
@@ -34,7 +35,7 @@
                 <div
                   class="q-ml-md text-blue-grey-7 text-body2"
                   style="margin-top:0.7%"
-                >ไฟล์ jpg ขนาด 300x300 px เท่านั้น</div>
+                >ไฟล์ jpg ขนาด 200x200 px เท่านั้น</div>
               </div>
               <div>
                 <q-file accept=".jpg" bg-color="white" outlined v-model="uploadImg.file">
@@ -73,7 +74,7 @@
                 <div
                   class="q-ml-md text-blue-grey-7 text-body2"
                   style="margin-top:0.7%"
-                >ไฟล์ jpg ขนาด 300x300 px เท่านั้น</div>
+                >ไฟล์ jpg ขนาด 200x200 px เท่านั้น</div>
               </div>
               <div>
                 <q-file accept=".jpg" bg-color="white" outlined v-model="uploadImg.file">
@@ -114,7 +115,7 @@
           </div>
 
           <!-- ไฟล์เสียง -->
-          <div v-if="isAddMode">
+          <div v-if="isAddMode" class="q-pt-md">
             <div>
               <div class="row items-center">
                 <div align="left" class="text-subtitle1">ไฟล์เสียง</div>
@@ -154,7 +155,7 @@
               </div>
             </div>
           </div>
-          <div v-if="!isAddMode">
+          <div v-if="!isAddMode" class="q-pt-md">
             <div>
               <div class="row items-center">
                 <div align="left" class="text-subtitle1">ไฟล์เสียง</div>
@@ -209,29 +210,10 @@
               ref="vocabulary"
               v-model="data.vocabulary"
               outlined
-              :rules="[val => !!val || 'กรุณากรอกข้อมูลให้ถูกต้อง']"
+              :rules="[val => !!val]"
             />
           </div>
-          <!-- คำอ่าน -->
-          <div>
-            <div class="text-subtitle1" align="left">คำอ่าน</div>
-            <div align="left">
-              <q-editor
-                dense
-                @input="checkRead()"
-                :class="this.checkValidate == true ? 'error-border' : null"
-                ref="read"
-                v-model="data.read"
-                min-height="5rem"
-                :toolbar="[['bold', 'italic', 'underline']]"
-              />
-            </div>
-            <div
-              align="left"
-              :style="this.checkValidate == false ? 'visibility:hidden' : null"
-              class="error-text q-ml-md font"
-            >กรุณากรอกข้อมูลให้ถูกต้อง</div>
-          </div>
+
           <!-- คำแปล -->
           <div class="q-mt-md">
             <div>
@@ -244,7 +226,7 @@
               ref="meaning"
               v-model="data.meaning"
               outlined
-              :rules="[val => !!val || 'กรุณากรอกข้อมูลให้ถูกต้อง']"
+              :rules="[val => !!val]"
             />
           </div>
         </div>
@@ -327,7 +309,6 @@ export default {
       data: {
         order: "",
         vocabulary: "",
-        read: "",
         meaning: "",
         levelId: this.$route.params.levelId,
         unitId: this.$route.params.unitId,
@@ -342,13 +323,6 @@ export default {
     };
   },
   methods: {
-    checkRead() {
-      if (this.data.read == "") {
-        this.checkValidate = true;
-      } else {
-        this.checkValidate = false;
-      }
-    },
     editMode() {
       this.isAddMode = false;
       this.oldOrder = this.$route.params.data.order;
