@@ -168,8 +168,14 @@
         </q-card-section>
         <!-- ประโยคข้อความ -->
         <div v-for="(item2, index2) in item.expression" :key="index2" class="no-padding">
-          <div v-if="item2.speaker == 'employee'" class="q-px-md q-pt-md q-pb-sm text-h6">พนักงาน:</div>
-          <div v-if="item2.speaker == 'customer'" class="q-px-md q-pt-md q-pb-sm text-h6">ลูกค้า:</div>
+          <div
+            v-if="item2.speaker == 'employee'"
+            class="q-px-md q-pt-md q-pb-sm text-subtitle1"
+          >พนักงาน:</div>
+          <div
+            v-if="item2.speaker == 'customer'"
+            class="q-px-md q-pt-sm q-pb-none text-subtitle1"
+          >ลูกค้า:</div>
           <div class="row items-center">
             <div
               class="col-1 self-start"
@@ -191,7 +197,7 @@
               :class="$q.platform.is.desktop && item2.isSound == true?'text-subtitle1':' q-pl-md  text-subtitle1'"
             >
               <div>{{item2.sentenceEng}}</div>
-              <div class="text-blue-grey-7">{{item2.sentenceTh}}</div>
+              <div class="text-blue-grey-7 q-pb-sm">{{item2.sentenceTh}}</div>
             </div>
           </div>
           <q-separator />
