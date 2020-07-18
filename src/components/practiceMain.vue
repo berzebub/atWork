@@ -31,7 +31,14 @@
           <div class="col-1" align="right">
             <!-- ปุ่ม สามจุด -->
             <div class="col-1" align="right">
-              <q-btn round size="sm" flat class="text-white" icon="fas fa-ellipsis-v">
+              <q-btn
+                @click="dialogDelete = false"
+                round
+                size="sm"
+                flat
+                class="text-white"
+                icon="fas fa-ellipsis-v"
+              >
                 <q-menu auto-close :offset="[5, 10]" content-class="shadow-3">
                   <q-list style="min-width: 100px">
                     <q-item clickable @click="editPractice(itemPrac)">
