@@ -246,12 +246,6 @@ export default {
   mounted() {
     let _this = this;
     if (this.$route.name == "userEdit") {
-      console.log(this.$route.params.userGroup.length);
-      if (this.$route.params.userGroup.length == 4) {
-        setTimeout(() => {
-          this.all = true;
-        }, 1000);
-      }
       this.loadDataEdit();
     } else {
     }

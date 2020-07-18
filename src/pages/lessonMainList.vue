@@ -25,6 +25,7 @@
             @click="showLesson(item.levelId)"
             class="text-white text-subtitle1"
             :label="item.name"
+            :value="item.levelId == currentLessonClickedId ? true : false"
           >
             <q-card style="border-bottom-left-radius: 10px ; border-bottom-right-radius:10px">
               <div class="relative-position cursor-pointer" v-ripple>
@@ -398,7 +399,8 @@ export default {
 
       // ข้อมูลการลบ ตำแหน่ง
       topic: "",
-      detail: ""
+      detail: "",
+      currentLessonClickedId: ""
     };
   },
   methods: {
@@ -500,6 +502,7 @@ export default {
     },
     // ฟังชั่นแยกบทเรียนออกมาโชว์ให้ตรงกับตำแหน่งของตัวเอง
     showLesson(levelId) {
+      this.currentLessonClickedId = levelId;
       this.showLessonList = this.lessonList.filter(x => x.levelId == levelId);
     },
 
@@ -658,6 +661,7 @@ export default {
       this.dialogAddPosition = false;
     },
     async savePositionPc() {
+      this.currentLessonClickedId = "";
       if (this.dataPositionPc.name == "") {
         this.errorNamePosition = true;
         return;
@@ -691,6 +695,9 @@ export default {
           .then(() => {
             this.loadingHide();
             this.savedDataDialog = true;
+            this.showLessonList = this.lessonList.filter(
+              x => x.levelId == this.currentLessonClickedId
+            );
             setTimeout(() => {
               this.savedDataDialog = false;
             }, 1000);
@@ -699,7 +706,7 @@ export default {
         // console.log("add");
         db.collection("level")
           .add(this.dataPositionPc)
-          .then(() => {
+          .then(doc => {
             this.loadingHide();
             this.savedDataDialog = true;
           });
@@ -755,7 +762,8 @@ export default {
 
           this.showLesson(this.dataDeleteLessson.levelId);
         });
-    }
+    },
+    testShowExpansion() {}
   },
   mounted() {
     this.loadDataPosition();
