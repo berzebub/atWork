@@ -439,8 +439,8 @@ export default {
     async editData() {
       await this.updateSyncStatus(this.data.practiceId, this.data.unitId);
       let temp = { type: "flashcard" };
+      this.data.status = "notSync";
       this.data = { ...this.data, ...temp };
-      console.log(this.data);
       db.collection("practice_draft")
         .doc(this.$route.params.id)
         .update(this.data)
