@@ -488,6 +488,7 @@ export default {
 
         db.collection("practice_draft")
           .add({
+            type: "expression",
             unitId: this.unitId,
             levelId: this.levelId,
             practiceId: this.practiceId,
@@ -554,6 +555,7 @@ export default {
       db.collection("practice_draft")
         .doc(this.$route.params.id)
         .update({
+          type: "expression",
           levelId: this.levelId,
           unitId: this.unitId,
           order: this.order,
