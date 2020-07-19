@@ -315,7 +315,8 @@ export default {
         status: "notSync",
         practiceId: this.$route.params.practiceId,
         isImage: false,
-        isSound: false
+        isSound: false,
+        type: "flashcard"
       },
 
       isOrderError: false,
@@ -437,6 +438,9 @@ export default {
 
     async editData() {
       await this.updateSyncStatus(this.data.practiceId, this.data.unitId);
+      let temp = { type: "flashcard" };
+      this.data = { ...this.data, ...temp };
+      console.log(this.data);
       db.collection("practice_draft")
         .doc(this.$route.params.id)
         .update(this.data)
