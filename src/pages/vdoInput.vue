@@ -154,7 +154,8 @@ export default {
         sentenceTh: "",
         isSound: false,
         speaker: "customer",
-        status: "notSync"
+        status: "notSync",
+        type: "vdo"
       },
       sentenceEng: "",
       sentenceTh: "",
@@ -164,13 +165,12 @@ export default {
         unitOrder: ""
       },
       isErrorOrder: false,
-      orderMessage:"",
+      orderMessage: "",
       orderOld: "",
       isSaveDialogSuccess: false
     };
   },
   methods: {
-   
     loadLevel() {
       let levelKey = this.$route.params.levelId;
       db.collection("level")
@@ -211,8 +211,8 @@ export default {
           this.vdoObject = doc.data();
         });
     },
- 
- async saveBtn() {
+
+    async saveBtn() {
       this.vdoObject.sentenceEng = this.sentenceEng;
       this.vdoObject.sentenceTh = this.sentenceTh;
       this.$refs.orderid.validate();
@@ -223,86 +223,86 @@ export default {
         this.$refs.eng.hasError ||
         this.$refs.th.hasError
       ) {
-     return
-      } 
-  let getOrder = await db.collection("practice_draft")
-   .where("order", "==", this.vdoObject.order)
-    .where("practiceId", "==", this.vdoObject.practiceId)
-   .get()
-      if (getOrder.size > 0 && this.orderOld != this.vdoObject.order) {
-        this.orderMessage = 'รหัสลำดับนี้มีการใช้งานแล้ว'
-        this.isErrorOrder = true
-        this.loadingHide();
-         setTimeout(() => {
-           this.orderMessage = ''
-          this.isErrorOrder = false
-            }, 1000);
-   return
-     }else{
-       this.loadingShow();
-      await this.updateSyncStatus(
-        this.$route.params.practiceId,
-        this.$route.params.unitId
-      );
-      this.isCheckble = true;
-      if (this.$route.name == "vdoAdd") {
-        if (this.uploadAudio) {
-          this.vdoObject.isSound = true;
-        }
-        db.collection("practice_draft")
-          .add(this.vdoObject)
-          .then(async doc => {
-            if (this.uploadAudio) {
-              await st
-                .child("/practice/audio/" + doc.id + ".mp3")
-                .put(this.uploadAudio);
-            }
-            this.loadingHide();
-            this.isSaveDialogSuccess = true;
-            setTimeout(() => {
-              this.$router.push(
-                "/vdoMain/" +
-                  this.vdoObject.levelId +
-                  "/" +
-                  this.vdoObject.unitId +
-                  "/" +
-                  this.vdoObject.practiceId
-              );
-            }, 1000);
-          });
-      } else {
-        if (this.uploadAudio || this.isKeyAudio) {
-          this.vdoObject.isSound = true;
-        } else {
-          this.vdoObject.isSound = false;
-        }
-        db.collection("practice_draft")
-          .doc(this.$route.params.id)
-          .set(this.vdoObject)
-          .then(() => {
-            if (this.uploadAudio) {
-              st.child("/practice/audio/" + this.$route.params.id + ".mp3").put(
-                this.uploadAudio
-              );
-            }
-            this.loadingHide();
-            this.isSaveDialogSuccess = true;
-            setTimeout(() => {
-              this.$router.push(
-                "/vdoMain/" +
-                  this.vdoObject.levelId +
-                  "/" +
-                  this.vdoObject.unitId +
-                  "/" +
-                  this.vdoObject.practiceId
-              );
-            }, 1000);
-          });
+        return;
       }
-     }
+      let getOrder = await db
+        .collection("practice_draft")
+        .where("order", "==", this.vdoObject.order)
+        .where("practiceId", "==", this.vdoObject.practiceId)
+        .get();
+      if (getOrder.size > 0 && this.orderOld != this.vdoObject.order) {
+        this.orderMessage = "รหัสลำดับนี้มีการใช้งานแล้ว";
+        this.isErrorOrder = true;
+        this.loadingHide();
+        setTimeout(() => {
+          this.orderMessage = "";
+          this.isErrorOrder = false;
+        }, 1000);
+        return;
+      } else {
+        this.loadingShow();
+        await this.updateSyncStatus(
+          this.$route.params.practiceId,
+          this.$route.params.unitId
+        );
+        this.isCheckble = true;
+        if (this.$route.name == "vdoAdd") {
+          if (this.uploadAudio) {
+            this.vdoObject.isSound = true;
+          }
+          db.collection("practice_draft")
+            .add(this.vdoObject)
+            .then(async doc => {
+              if (this.uploadAudio) {
+                await st
+                  .child("/practice/audio/" + doc.id + ".mp3")
+                  .put(this.uploadAudio);
+              }
+              this.loadingHide();
+              this.isSaveDialogSuccess = true;
+              setTimeout(() => {
+                this.$router.push(
+                  "/vdoMain/" +
+                    this.vdoObject.levelId +
+                    "/" +
+                    this.vdoObject.unitId +
+                    "/" +
+                    this.vdoObject.practiceId
+                );
+              }, 1000);
+            });
+        } else {
+          if (this.uploadAudio || this.isKeyAudio) {
+            this.vdoObject.isSound = true;
+          } else {
+            this.vdoObject.isSound = false;
+          }
+          db.collection("practice_draft")
+            .doc(this.$route.params.id)
+            .set(this.vdoObject)
+            .then(() => {
+              if (this.uploadAudio) {
+                st.child(
+                  "/practice/audio/" + this.$route.params.id + ".mp3"
+                ).put(this.uploadAudio);
+              }
+              this.loadingHide();
+              this.isSaveDialogSuccess = true;
+              setTimeout(() => {
+                this.$router.push(
+                  "/vdoMain/" +
+                    this.vdoObject.levelId +
+                    "/" +
+                    this.vdoObject.unitId +
+                    "/" +
+                    this.vdoObject.practiceId
+                );
+              }, 1000);
+            });
+        }
+      }
 
-     return
-    
+      return;
     },
     backBtn() {
       this.$router.push(
