@@ -277,6 +277,7 @@ export default {
           } else {
             this.vdoObject.isSound = false;
           }
+          this.vdoObject.status = "notSync";
           db.collection("practice_draft")
             .doc(this.$route.params.id)
             .set(this.vdoObject)
