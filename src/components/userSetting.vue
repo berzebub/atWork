@@ -109,7 +109,7 @@
 </template>
 
 <script>
-import { auth, db } from "../router";
+import { auth, db, axios } from "../router";
 import { uid } from "quasar";
 import userInfo from "../pages/userInfo.vue";
 import dialogSetting from "../components/dialogSetting.vue";
@@ -120,7 +120,7 @@ export default {
   props: ["infoData", "userInfo"],
   data() {
     return {
-      name: this.userInfo.name,
+      name: this.userInfo.displayName,
       oldPassword: "",
       newPassword: "",
       confrimPassword: "",
@@ -151,17 +151,24 @@ export default {
         this.$router.push("/userInfo");
       }
     },
-    saveChangeName() {
+    async saveChangeName() {
+      this.loadingShow();
       this.$refs.name.validate();
       if (this.$refs.name.hasError) {
         return;
       }
-      db.collection("user_admin")
-        .doc(this.userInfo.userId)
-        .update({ name: this.name })
-        .then(() => {
-          this.isDialogSuccess = true;
-        });
+      const apiURL =
+        "https://us-central1-atwork-dee11.cloudfunctions.net/atworkFunctions/user/updateDisplayName";
+
+      let updateData = await axios.post(apiURL, {
+        displayName: this.name,
+        uid: this.userInfo.uid
+      });
+      this.loadingHide();
+      this.isDialogSuccess = true;
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
     },
     saveChangePassword() {
       let _this = this;
@@ -189,10 +196,6 @@ export default {
         .doc(this.userInfo.userId)
         .update({ loginKey: genCode });
     }
-
-    // checkConfrimPassword(val) {
-    //   return this.newPassword == val || "รหัสผ่านไม่ตรงกัน";
-    // }
   },
   mounted() {}
 };

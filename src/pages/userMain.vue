@@ -11,22 +11,22 @@
           </q-card-section>
           <q-card-section
             class="no-padding"
-            v-for="(item2, index) in dataUser.filter(
-              x => x.name[0].toUpperCase() == item
-            )"
+            v-for="(item2, index) in dataUser.filter(x => x.displayName[0] == item)"
             :key="index"
           >
             <div class="row q-mt-md">
               <div class="col">
-                <div class="text-subtitle1">{{ item2.name }}</div>
+                <div class="text-subtitle1">{{ item2.displayName }}</div>
                 <div class="text-subtitle2 text-blue-grey-7">{{ item2.email }}</div>
-                <span v-for="(item3, index2) in item2.userGroup" :key="index2">
-                  <q-badge
-                    :label="convertPremision.filter(x => x.type == item3)[0].name"
-                    color="blue-grey-7"
-                    outline
-                    class="q-mr-sm q-mt-sm"
-                  ></q-badge>
+
+                <span v-if="item2.customClaims">
+                  <span v-for="(item3,index2) in item2.customClaims.dataEntryPermissions">
+                    <q-badge
+                      color="blue-grey-7"
+                      outline
+                      class="q-mr-sm q-mt-sm"
+                    >{{ convertPremision.filter(x => x.type == item3)[0].name }}</q-badge>
+                  </span>
                 </span>
               </div>
               <div class="col-1 self-center" style="width:100px;" align="right">
@@ -60,7 +60,7 @@
             <q-separator
               v-if="
                 index !=
-                  dataUser.filter(x => x.name[0].toUpperCase() == item).length -
+                  dataUser.filter(x => x.displayName[0] == item).length -
                     1
               "
               class="q-my-md"
@@ -130,36 +130,19 @@ export default {
     };
   },
   methods: {
-    loadDataUser() {
-      db.collection("user_admin").onSnapshot(doc => {
-        let nameArr = [];
-        let userTemp = [];
-        doc.forEach(element => {
-          nameArr.push(element.data().name[0].toUpperCase());
+    async loadDataUser() {
+      this.loadingShow();
+      const apiURL =
+        "https://us-central1-atwork-dee11.cloudfunctions.net/atworkFunctions/user/getAllUser";
 
-          let dataKey = {
-            id: element.id
-          };
-          let dataFinal = {
-            ...dataKey,
-            ...element.data()
-          };
+      let userData = await axios.get(apiURL);
 
-          userTemp.push(dataFinal);
-        });
+      this.dataUser = userData.data;
 
-        nameArr = [...new Set(nameArr)];
-
-        nameArr.sort((a, b) => {
-          return a < b ? -1 : 1;
-        });
-        this.nameArr = nameArr;
-
-        userTemp.sort((a, b) => {
-          return a.name < b.name ? -1 : 1;
-        });
-        this.dataUser = userTemp;
-      });
+      let nameArr = userData.data.map(x => x.displayName.slice(0, 1));
+      nameArr.sort((a, b) => (a > b ? 1 : -1));
+      this.nameArr = nameArr;
+      this.loadingHide();
     },
 
     addUser() {
@@ -168,25 +151,22 @@ export default {
     editBtn(data) {
       this.$router.push({ name: "userEdit", params: data });
     },
-    deleteBtn(id) {
-      this.deleteKey = id.id;
-      this.nameDialog = id.name;
+    deleteBtn(item) {
+      this.nameDialog = item.displayName;
       this.deleteDataDialog = true;
-      this.uid = id.uid;
+      this.uid = item.uid;
     },
     cencel() {
       this.deleteDataDialog = false;
     },
     async confirm() {
-      let apiUrl = `https://api-winner-adventures.herokuapp.com/deleteUser?uid=${this.uid}`;
-      // console.log(apiUrl);
-      let deleteUser = await axios.get(apiUrl);
-      db.collection("user_admin")
-        .doc(this.deleteKey)
-        .delete()
-        .then(() => {
-          this.deleteDataDialog = false;
-        });
+      // DELETE USER FROM AUTH
+      const apiURL =
+        "https://us-central1-atwork-dee11.cloudfunctions.net/atworkFunctions/user/delete?uid=" +
+        this.uid;
+      await axios.get(apiURL);
+      this.deleteDataDialog = false;
+      this.loadDataUser();
     }
   },
   mounted() {
