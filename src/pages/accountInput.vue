@@ -37,7 +37,7 @@
           :rules="[value => !!value ]"
         ></q-input>
       </div>
-      <div>
+      <div v-if="$route.name != 'accountEdit'">
         <div>รหัสผ่าน</div>
         <q-input
           v-model.trim="dataEmployee.password"
@@ -46,6 +46,10 @@
           dense
           :rules="[value => !!value ]"
         ></q-input>
+      </div>
+      <div v-else class="q-pb-md">
+        <div>รหัสผ่าน</div>
+        <q-input value="123456789" type="password" ref="password" outlined dense readonly></q-input>
       </div>
       <div class="q-pb-md">
         <div>บทเรียนเริ่มต้น</div>
@@ -114,7 +118,6 @@ export default {
         this.$refs.password.hasError ||
         this.$refs.email.hasError
       ) {
-        // console.log("กรอก input ไม่ครบ");
         return;
       }
       let apiURL =
@@ -125,11 +128,14 @@ export default {
           email: this.dataEmployee.email,
           password: this.dataEmployee.password,
           displayName: this.dataEmployee.name,
-          permissions: ["Super Admin"]
+          accessProgram: ["FrontEnd"],
+          hotelId: this.$route.params.hotelId,
+          dataEntryPermissions: []
         };
         let userRecord = await axios.post(apiURL, postData);
 
         let uid = userRecord.data.uid;
+
         db.collection("employee")
           .add({
             uid: uid,

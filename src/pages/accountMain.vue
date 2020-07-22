@@ -482,14 +482,12 @@ export default {
       );
     },
     confirmDelete() {
-      // console.log(this.dataDepartment.departmentId);
       this.loadingShow();
       this.isShowDeleteDialog = false;
       db.collection("department")
         .doc(this.dataDepartment.departmentId)
         .delete()
         .then(() => {
-          // console.log("6666");
           this.loadingHide();
           this.isDeleteDialogSucess = true;
         });
@@ -513,8 +511,6 @@ export default {
         .doc(this.dataEmployee.employeeId)
         .delete()
         .then(() => {
-          // this.filterEmployee(departmentCurrent);
-
           this.employeeList = this.employeeAll.filter(
             x => x.departmentId == departmentCurrent.departmentId
           );
