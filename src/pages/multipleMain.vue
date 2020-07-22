@@ -240,7 +240,7 @@
               <q-input
                 dense
                 autogrow
-                :rules="[ val => val && val.length > 0,engError]"
+                :rules="[ val => val && val.length > 0]"
                 ref="instrunctionEng"
                 outlined
                 type="text"
@@ -252,7 +252,7 @@
               <q-input
                 dense
                 autogrow
-                :rules="[ val => val && val.length > 0,thError ]"
+                :rules="[ val => val && val.length > 0 ]"
                 ref="instrunctionTh"
                 outlined
                 type="text"
