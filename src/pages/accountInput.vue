@@ -33,6 +33,7 @@
           ref="email"
           outlined
           dense
+          :readonly="$route.name == 'accountEdit'"
           :rules="[value => !!value ]"
         ></q-input>
       </div>
@@ -77,7 +78,7 @@
 </template>
 
 <script>
-import { db } from "../router";
+import { db, axios } from "../router";
 import dialogCenter from "../components/dialogSetting";
 export default {
   components: {
@@ -101,7 +102,7 @@ export default {
     };
   },
   methods: {
-    saveEmployee() {
+    async saveEmployee() {
       // check validate
       this.$refs.name.validate();
       this.$refs.tel.validate();
@@ -116,15 +117,26 @@ export default {
         // console.log("กรอก input ไม่ครบ");
         return;
       }
+      let apiURL =
+        "https://us-central1-atwork-dee11.cloudfunctions.net/atworkFunctions/user/create";
       this.loadingShow();
       if (this.$route.name != "accountEdit") {
+        let postData = {
+          email: this.dataEmployee.email,
+          password: this.dataEmployee.password,
+          displayName: this.dataEmployee.name,
+          permissions: ["Super Admin"]
+        };
+        let userRecord = await axios.post(apiURL, postData);
+
+        let uid = userRecord.data.uid;
         db.collection("employee")
           .add({
+            uid: uid,
             hotelId: this.$route.params.hotelId,
             departmentId: this.dataEmployee.departmentId,
             name: this.dataEmployee.name,
             email: this.dataEmployee.email,
-            password: this.dataEmployee.password,
             startLevelId: this.dataEmployee.startLevelId,
             tel: this.dataEmployee.tel,
             star: 0
@@ -134,9 +146,20 @@ export default {
             this.isAddDialogSucess = true;
           });
       } else {
+        let apiURL =
+          "https://us-central1-atwork-dee11.cloudfunctions.net/atworkFunctions/user/update";
+        let postData = {
+          displayName: this.dataEmployee.name,
+          password: this.dataEmployee.password
+        };
+        await axios.post(apiURL, postData);
+
+        let updateData = { ...this.dataEmployee };
+        delete updateData.password;
+
         db.collection("employee")
           .doc(this.$route.params.employeeId)
-          .update(this.dataEmployee)
+          .update(updateData)
           .then(() => {
             this.loadingHide();
             this.isAddDialogSucess = true;
@@ -172,11 +195,6 @@ export default {
         x => x.hotelId == this.$route.params.hotelId
       );
 
-      // console.log(
-      //   this.departmentOptions.filter(
-      //     x => x.value == this.$route.params.departmentId
-      //   )
-      // );
       this.dataEmployee.departmentId = this.departmentOptions.filter(
         x => x.value == this.$route.params.departmentId
       )[0].value;
@@ -207,12 +225,7 @@ export default {
         .doc(this.$route.params.employeeId)
         .get()
         .then(doc => {
-          this.dataEmployee.departmentId = doc.data().departmentId;
-          this.dataEmployee.name = doc.data().name;
-          this.dataEmployee.email = doc.data().email;
-          this.dataEmployee.tel = doc.data().tel;
-          this.dataEmployee.password = doc.data().password;
-          this.dataEmployee.startLevelId = doc.data().startLevelId;
+          this.dataEmployee = doc.data();
         });
     },
     addDialogSucess() {

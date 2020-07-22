@@ -85,6 +85,8 @@
             class="rounded-borders q-mt-sm box-main bg-blue-grey-10 shadow-1"
             style="border-radius: 10px"
           >
+            <!-- :value="clickedToolbar == item.departmentId ? true : false" -->
+
             <q-expansion-item
               group="departmentGroup"
               class="text-white"
@@ -247,7 +249,7 @@
         :practice="'พนักงาน'"
         :name="dataEmployee.name"
         v-if="isShowDeleteDialogEmployee"
-        @emitCancelDelete="isShowDeleteDialog = false"
+        @emitCancelDelete="isShowDeleteDialogEmployee = false"
         @emitConfirmDelete="confirmDeleteEmployee"
       ></dialog-center>
       <span></span>
@@ -256,7 +258,7 @@
 </template>
 
 <script>
-import { db } from "../router";
+import { db, axios } from "../router";
 import dialogCenter from "../components/dialogSetting";
 export default {
   components: {
@@ -442,10 +444,7 @@ export default {
     },
     deleteDepartment(data) {
       this.dataDepartment = data;
-      // console.log(data);
-
       db.collection("employee")
-
         .where("departmentId", "==", data.departmentId)
         .get()
         .then(doc => {
@@ -464,7 +463,6 @@ export default {
       this.departmentName = data.name;
     },
     async isCheckName(val) {
-      // console.log(val);
       let doc = await db
         .collection("department")
         .where("name", "==", val)
@@ -498,18 +496,34 @@ export default {
     },
     deleteEmployee(data) {
       this.dataEmployee = data;
-      // console.log(this.dataEmployee);
       this.isShowDeleteDialogEmployee = true;
     },
-    confirmDeleteEmployee() {
+    async confirmDeleteEmployee() {
       this.loadingShow();
       this.isShowDeleteDialogEmployee = false;
+      let apiURL =
+        "https://us-central1-atwork-dee11.cloudfunctions.net/atworkFunctions/user/delete?uid=" +
+        this.dataEmployee.uid;
+      let deleteEmp = await axios.get(apiURL);
+      let departmentCurrent = this.departmentAll.filter(
+        x => x.departmentId == this.clickedToolbar
+      )[0];
+
       db.collection("employee")
         .doc(this.dataEmployee.employeeId)
         .delete()
         .then(() => {
-          this.loadingHide();
+          // this.filterEmployee(departmentCurrent);
 
+          this.employeeList = this.employeeAll.filter(
+            x => x.departmentId == departmentCurrent.departmentId
+          );
+          this.clickedToolbar = departmentCurrent.departmentId;
+          if (departmentCurrent.length == 0) {
+            this.clickedToolbar = "";
+          }
+
+          this.loadingHide();
           this.isDeleteDialogSucess = true;
         });
     }

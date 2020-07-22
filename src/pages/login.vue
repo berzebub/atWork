@@ -61,7 +61,7 @@
 </template>
 
 <script>
-import { auth, db } from "../router";
+import { auth, db, axios } from "../router";
 import { uid } from "quasar";
 export default {
   data() {
@@ -84,12 +84,19 @@ export default {
           return auth
             .signInWithEmailAndPassword(this.email, this.password)
             .then(async result => {
-              this.$q.localStorage.set("uid", result.user.uid);
-              await this.getLoginKey(result.user.uid);
-              this.loadingHide();
-              this.$router.push("/practiceList");
+              let apiURL =
+                "https://us-central1-atwork-dee11.cloudfunctions.net/atworkFunctions/getUserData?uid=" +
+                result.user.uid;
+              let getData = await axios.get(apiURL);
+              const customClaims = getData.data.customClaims.accessProgram;
+
+              if (customClaims.includes("dataEntry")) {
+                this.loadingHide();
+                this.$router.push("/practiceList");
+              }
             })
             .catch(error => {
+              console.log(error);
               this.showWrongPasswordDialog();
               this.loadingHide();
             });
@@ -99,20 +106,7 @@ export default {
     forgetPassword() {
       this.$router.push("/forgetPassword");
     },
-    async getLoginKey(uid) {
-      return new Promise((a, b) => {
-        db.collection("user_admin")
-          .where("uid", "==", uid)
-          .get()
-          .then(getUserId => {
-            this.$q.localStorage.set(
-              "loginKey",
-              getUserId.docs[0].data().loginKey
-            );
-            a("finish");
-          });
-      });
-    },
+
     showWrongPasswordDialog() {
       this.dialogWrongPassword = true;
     },
@@ -120,13 +114,12 @@ export default {
       this.loadingShow();
       this.authLogin = auth.onAuthStateChanged(async user => {
         if (user) {
-          this.$q.localStorage.set("uid", user.uid);
-          await this.getLoginKey(user.uid);
           this.$router.push("/welcomeBack");
-
           this.loadingHide();
         } else {
-          this.$q.localStorage.clear();
+          if (typeof this.authLogin == "function") {
+            this.authLogin();
+          }
           this.loadingHide();
         }
       });
@@ -145,9 +138,8 @@ export default {
     //       loginKey: "y482bw"
     //     });
     // }
-    if (this.$q.localStorage.has("uid")) {
-      this.checkUserLogin();
-    }
+
+    this.checkUserLogin();
   },
   beforeDestroy() {
     if (typeof this.authLogin == "function") {

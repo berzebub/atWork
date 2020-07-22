@@ -27,7 +27,8 @@ export default {
     return {
       dialogEmail: false,
       dialogWrongEmail: false,
-      userInfo: ""
+      userInfo: "",
+      authState: ""
     };
   },
   methods: {
@@ -37,10 +38,21 @@ export default {
     },
     toLoginPage() {
       this.logOut();
+    },
+    getCurrentUser() {
+      this.authstate = auth.onAuthStateChanged(user => {
+        if (user) {
+          this.userInfo = { name: user.displayName };
+        } else {
+        }
+      });
     }
   },
-  async mounted() {
-    this.userInfo = await this.getUserInfo(this.$q.localStorage.getItem("uid"));
+  mounted() {
+    this.getCurrentUser();
+  },
+  beforeDestroy() {
+    this.authState = "";
   }
 };
 </script>
