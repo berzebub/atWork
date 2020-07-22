@@ -630,7 +630,8 @@ export default {
         ],
         isAnswerSound: false,
         isQuestionSound: false,
-        status: "notSync"
+        status: "notSync",
+        type: "multiplechoice"
       },
 
       dataFiles: [
