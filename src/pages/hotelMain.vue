@@ -60,7 +60,7 @@
 </template>
 
 <script>
-import { db } from "../router";
+import { db, axios } from "../router";
 import dialogCenter from "../components/dialogSetting";
 export default {
   components: {
@@ -80,10 +80,13 @@ export default {
     deleteHotel(data) {
       this.hotelData = data;
       db.collection("department")
-
         .where("hotelId", "==", data.hotelId)
         .get()
-        .then(doc => {
+        .then(async doc => {
+          let apiURL =
+            "https://us-central1-atwork-dee11.cloudfunctions.net/atworkFunctions/user/delete?uid=" +
+            this.hotelData.uid;
+          await axios.get(apiURL);
           if (doc.size > 0) {
             this.isShowNoDeleteDialog = true;
           } else {

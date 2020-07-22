@@ -44,7 +44,8 @@
           ref="password"
           outlined
           dense
-          :rules="[value => !!value ]"
+          :rules="[value => value.length >=6  ]"
+          lazy-rules
         ></q-input>
       </div>
       <div v-else class="q-pb-md">
@@ -129,13 +130,26 @@ export default {
           password: this.dataEmployee.password,
           displayName: this.dataEmployee.name,
           accessProgram: ["FrontEnd"],
-          hotelId: this.$route.params.hotelId,
           dataEntryPermissions: []
         };
         let userRecord = await axios.post(apiURL, postData);
+        if (userRecord.data.code) {
+          if (userRecord.data.code == "auth/email-already-exists") {
+            this.$q.notify({
+              message: "มีอีเมลนี้ในระบบแล้ว",
+              color: "red"
+            });
+          } else {
+            this.$q.notify({
+              message: "กรุณาตรวจสอบข้อมูลใหม่อีกครั้ง",
+              color: "red"
+            });
+          }
+          this.loadingHide();
+          return;
+        }
 
         let uid = userRecord.data.uid;
-
         db.collection("employee")
           .add({
             uid: uid,
@@ -156,13 +170,13 @@ export default {
           "https://us-central1-atwork-dee11.cloudfunctions.net/atworkFunctions/user/update";
         let postData = {
           displayName: this.dataEmployee.name,
-          password: this.dataEmployee.password
+          password: this.dataEmployee.password,
+          uid: this.dataEmployee.uid,
+          accessProgram: ["FrontEnd"]
         };
-        await axios.post(apiURL, postData);
-
+        let axiosData = await axios.post(apiURL, postData);
         let updateData = { ...this.dataEmployee };
         delete updateData.password;
-
         db.collection("employee")
           .doc(this.$route.params.employeeId)
           .update(updateData)

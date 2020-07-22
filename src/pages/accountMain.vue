@@ -85,13 +85,12 @@
             class="rounded-borders q-mt-sm box-main bg-blue-grey-10 shadow-1"
             style="border-radius: 10px"
           >
-            <!-- :value="clickedToolbar == item.departmentId ? true : false" -->
-
             <q-expansion-item
               group="departmentGroup"
               class="text-white"
               expand-separator
               :label="item.name"
+              :value="clickedToolbar==item.departmentId ? true : false"
             >
               <q-card>
                 <q-card-section class="no-padding">
@@ -372,10 +371,8 @@ export default {
         }
       }
 
-      // console.log("555");
       this.loadingShow();
       if (this.editId == "") {
-        // console.log("บันทึกตอนเพิ่ม");
         db.collection("department")
           .add({
             hotelId: this.hotelSelectedId,
@@ -385,6 +382,7 @@ export default {
             this.loadingHide();
             this.addDepartmentDialog = false;
             this.addDialogSucess = true;
+            this.clickedToolbar = "";
           });
       } else {
         // console.log("บันทึกตอนแก้ไข");
@@ -396,6 +394,7 @@ export default {
             this.editId = "";
             this.addDepartmentDialog = false;
             this.addDialogSucess = true;
+            this.clickedToolbar = "";
           });
       }
     },
