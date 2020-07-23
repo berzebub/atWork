@@ -4,7 +4,7 @@
       <div align="center">
         <q-btn style="width:190px" color="blue-grey-10" label="เพิ่มผู้ดูแลระบบ" @click="addUser()"></q-btn>
       </div>
-      <div v-if="dataUser.length">
+      <div v-if="isLoadUser">
         <q-card class="rounded-borders q-pa-md q-mt-md br" v-for="item in nameArr" :key="item.id">
           <q-card-section class="no-padding">
             <q-btn dense color="blue-grey-10" round :label="item"></q-btn>
@@ -103,6 +103,7 @@ import { db, axios, auth } from "../router";
 export default {
   data() {
     return {
+      isLoadUser: false,
       deleteKey: "",
       dataUser: [],
       nameArr: "",
@@ -112,21 +113,21 @@ export default {
       convertPremision: [
         {
           name: "แบบฝึกหัด",
-          type: "practice"
+          type: "practice",
         },
         {
           name: "บทเรียน",
-          type: "level"
+          type: "level",
         },
         {
           name: "ผู้ใช้งาน",
-          type: "personel"
+          type: "personel",
         },
         {
           name: "ผู้ดูแลระบบ",
-          type: "admin"
-        }
-      ]
+          type: "admin",
+        },
+      ],
     };
   },
   methods: {
@@ -137,10 +138,16 @@ export default {
 
       let userData = await axios.get(apiURL);
 
-      this.dataUser = userData.data;
+      let getOnlyDataentryUser = userData.data.filter((x) =>
+        x.customClaims.accessProgram.includes("dataEntry")
+      );
 
-      let nameArr = userData.data.map(x => x.displayName.slice(0, 1));
+      this.dataUser = getOnlyDataentryUser;
+      this.isLoadUser = true;
+
+      let nameArr = getOnlyDataentryUser.map((x) => x.displayName.slice(0, 1));
       nameArr.sort((a, b) => (a > b ? 1 : -1));
+      nameArr = [...new Set(nameArr)];
       this.nameArr = nameArr;
       this.loadingHide();
     },
@@ -167,11 +174,11 @@ export default {
       await axios.get(apiURL);
       this.deleteDataDialog = false;
       this.loadDataUser();
-    }
+    },
   },
   mounted() {
     this.loadDataUser();
-  }
+  },
 };
 </script>
 

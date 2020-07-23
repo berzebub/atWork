@@ -72,7 +72,7 @@ export default {
       dialogWrongPassword: false,
       isKey: false,
       loginKey: "",
-      authLogin: ""
+      authLogin: "",
     };
   },
   methods: {
@@ -83,7 +83,7 @@ export default {
         .then(() => {
           return auth
             .signInWithEmailAndPassword(this.email, this.password)
-            .then(async result => {
+            .then(async (result) => {
               let apiURL =
                 "https://us-central1-atwork-dee11.cloudfunctions.net/atworkFunctions/getUserData?uid=" +
                 result.user.uid;
@@ -93,15 +93,17 @@ export default {
               if (customClaims.includes("dataEntry")) {
                 this.loadingHide();
                 this.$router.push("/practiceList");
+              } else {
+                throw "error";
               }
             })
-            .catch(error => {
+            .catch((error) => {
               console.log(error);
               this.showWrongPasswordDialog();
               this.loadingHide();
             });
         })
-        .catch(error => {});
+        .catch((error) => {});
     },
     forgetPassword() {
       this.$router.push("/forgetPassword");
@@ -112,7 +114,7 @@ export default {
     },
     checkUserLogin() {
       this.loadingShow();
-      this.authLogin = auth.onAuthStateChanged(async user => {
+      this.authLogin = auth.onAuthStateChanged(async (user) => {
         if (user) {
           this.$router.push("/welcomeBack");
           this.loadingHide();
@@ -123,7 +125,7 @@ export default {
           this.loadingHide();
         }
       });
-    }
+    },
   },
   async mounted() {
     // เปิดใช้งานตอนจะใช้ Emulators เท่านั้น
@@ -145,7 +147,7 @@ export default {
     if (typeof this.authLogin == "function") {
       this.authLogin();
     }
-  }
+  },
 };
 </script>
 

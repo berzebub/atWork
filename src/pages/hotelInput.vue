@@ -77,7 +77,7 @@ import { db, axios } from "../router";
 import dialogCenter from "../components/dialogSetting";
 export default {
   components: {
-    dialogCenter
+    dialogCenter,
   },
   data() {
     return {
@@ -86,13 +86,13 @@ export default {
         adminName: "",
         adminPhone: "",
         email: "",
-        password: ""
+        password: "",
       },
       isAddDialogSucess: false,
       hotelList: "",
       nameHotelOld: "",
       isErrorNameHotel: false,
-      errorNameDepartmentMessage: ""
+      errorNameDepartmentMessage: "",
     };
   },
   methods: {
@@ -100,10 +100,7 @@ export default {
       this.$router.push("/hotelMain");
     },
     async isCheckName(val) {
-      let doc = await db
-        .collection("hotel")
-        .where("name", "==", val)
-        .get();
+      let doc = await db.collection("hotel").where("name", "==", val).get();
       return doc.size ? true : false;
     },
     async saveHotel() {
@@ -146,19 +143,19 @@ export default {
           email: this.datahotel.email,
           password: this.datahotel.password,
           accessProgram: ["HR"],
-          isHrAdmin: true
+          isHrAdmin: true,
         };
         let sendData = await axios.post(apiURL, registerData);
         if (sendData.data.code) {
           if (sendData.data.code == "auth/email-already-exists") {
             this.$q.notify({
               message: "มีอีเมลนี้ในระบบแล้ว",
-              color: "red"
+              color: "red",
             });
           } else {
             this.$q.notify({
               message: "กรุณาตรวจสอบข้อมูลใหม่อีกครั้ง",
-              color: "red"
+              color: "red",
             });
           }
           this.loadingHide();
@@ -169,7 +166,8 @@ export default {
         dataUpdate.uid = sendData.data.uid;
         db.collection("hotel")
           .add(dataUpdate)
-          .then(() => {
+          .then((doc) => {
+            let hotelId = doc.id;
             this.isAddDialogSucess = true;
             this.loadingHide();
           });
@@ -178,7 +176,7 @@ export default {
           "https://us-central1-atwork-dee11.cloudfunctions.net/atworkFunctions/user/updateDisplayName";
         await axios.post(apiURL, {
           uid: this.datahotel.uid,
-          displayName: this.datahotel.adminName
+          displayName: this.datahotel.adminName,
         });
 
         let dataUpdate = { ...this.datahotel };
@@ -200,7 +198,7 @@ export default {
       db.collection("hotel")
         .doc(this.$route.params.hotelId)
         .get()
-        .then(doc => {
+        .then((doc) => {
           this.datahotel.name = doc.data().name;
           this.datahotel.adminName = doc.data().adminName;
           this.datahotel.adminPhone = doc.data().adminPhone;
@@ -209,13 +207,13 @@ export default {
           this.datahotel.uid = doc.data().uid;
           this.nameHotelOld = doc.data().name;
         });
-    }
+    },
   },
   mounted() {
     if (this.$route.name == "hotelEdit") {
       this.loadHotelEdit();
     }
-  }
+  },
 };
 </script>
 
