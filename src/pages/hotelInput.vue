@@ -139,7 +139,7 @@ export default {
         let apiURL =
           "https://us-central1-atwork-dee11.cloudfunctions.net/atworkFunctions/user/create";
         let registerData = {
-          displayName: this.datahotel.name,
+          displayName: this.datahotel.adminName,
           email: this.datahotel.email,
           password: this.datahotel.password,
           accessProgram: ["HR"],
@@ -164,9 +164,21 @@ export default {
         let dataUpdate = { ...this.datahotel };
         delete dataUpdate.password;
         dataUpdate.uid = sendData.data.uid;
+
         db.collection("hotel")
           .add(dataUpdate)
-          .then((doc) => {
+          .then(async (doc) => {
+            let updateRegisterData = {
+              uid: sendData.data.uid,
+              displayName: this.datahotel.adminName,
+              accessProgram: ["HR"],
+              hotelId: doc.id,
+              isHrAdmin: true,
+            };
+
+            let apiURL =
+              "https://us-central1-atwork-dee11.cloudfunctions.net/atworkFunctions/user/hrUpdate";
+            let sendDataUpdate = await axios.post(apiURL, updateRegisterData);
             let hotelId = doc.id;
             this.isAddDialogSucess = true;
             this.loadingHide();
