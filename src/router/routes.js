@@ -37,6 +37,11 @@ const routes = [
     component: () => import("pages/vdoPrint.vue"),
     name: "vdoPrint"
   },
+  {
+    path: "/multiplePrint",
+    component: () => import("pages/multiplePrint.vue"),
+    name: "multiplePrint"
+  },
 
   {
     path: "/",

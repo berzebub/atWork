@@ -37,7 +37,13 @@
             </div>
             <!-- ปุ่มพิมพ์ -->
             <div class="mobile-hide">
-              <q-btn v-if="mode == 'draft'" round color="blue-grey-10" icon="fas fa-print" />
+              <q-btn
+                v-if="mode == 'draft'"
+                round
+                color="blue-grey-10"
+                icon="fas fa-print"
+                @click="printMe()"
+              />
             </div>
           </div>
         </div>
@@ -315,7 +321,7 @@ import dialogSetting from "../components/dialogSetting";
 export default {
   components: {
     dialogSetting,
-    syncBtn
+    syncBtn,
   },
   data() {
     return {
@@ -324,11 +330,11 @@ export default {
       practiceData: {
         levelName: "",
         unitName: "",
-        unitOrder: ""
+        unitOrder: "",
       },
       instrunction: {
         eng: "",
-        th: ""
+        th: "",
       },
       practiceDataList: [],
       orderId: "",
@@ -348,7 +354,7 @@ export default {
       isDeleteDataDialogSuccess: false,
       isDeleteDialogSuccess: false,
       isDisable: false,
-      syncData: ""
+      syncData: "",
     };
   },
   methods: {
@@ -360,7 +366,7 @@ export default {
       db.collection("level")
         .doc(levelKey)
         .get()
-        .then(result => {
+        .then((result) => {
           if (result.exists) {
             this.practiceData.levelName = result.data().name;
 
@@ -375,7 +381,7 @@ export default {
       db.collection("unit")
         .doc(unitKey)
         .get()
-        .then(result => {
+        .then((result) => {
           if (result.exists) {
             this.practiceData.unitName = result.data().name;
             this.practiceData.unitOrder = result.data().order;
@@ -391,7 +397,7 @@ export default {
       db.collection("practice_list")
         .doc(practiceId)
         .get()
-        .then(result => {
+        .then((result) => {
           if (result.exists) {
             if (result.data().instrunctionEng) {
               this.instrunction.eng = result.data().instrunctionEng;
@@ -431,10 +437,10 @@ export default {
 
       this.syncData = dbData
         .where("practiceId", "==", practiceId)
-        .onSnapshot(doc => {
+        .onSnapshot((doc) => {
           let temp = [];
 
-          doc.forEach(element => {
+          doc.forEach((element) => {
             let getSound = "";
             let getImage = "";
             let getChoiceSound = element.data().choices;
@@ -463,12 +469,12 @@ export default {
               id: element.id,
               imageURL: getImage,
               audioURL: getSound,
-              choices: getChoiceSound
+              choices: getChoiceSound,
             };
 
             let final = {
               ...element.data(),
-              ...dataKey
+              ...dataKey,
             };
 
             temp.push(final);
@@ -509,18 +515,16 @@ export default {
       }
       this.instrunction = {
         th: this.instrunctionTh,
-        eng: this.instrunctionEng
+        eng: this.instrunctionEng,
       };
       this.isQuestionDialog = false;
 
       let practiceId = this.$route.params.practiceId;
 
-      db.collection("practice_list")
-        .doc(practiceId)
-        .update({
-          instrunctionTh: this.instrunction.th,
-          instrunctionEng: this.instrunction.eng
-        });
+      db.collection("practice_list").doc(practiceId).update({
+        instrunctionTh: this.instrunction.th,
+        instrunctionEng: this.instrunction.eng,
+      });
 
       this.isSaveDialogSuccess = true;
     },
@@ -544,7 +548,7 @@ export default {
       db.collection("practice_draft")
         .doc(this.deleteKey)
         .update({
-          status: "waitForDelete"
+          status: "waitForDelete",
         })
         .then(() => {
           this.isDeleteDialogSuccess = true;
@@ -556,21 +560,29 @@ export default {
         this.$route.params.practiceId,
         this.$route.params.unitId
       );
-      db.collection("practice_draft")
-        .doc(key)
-        .update({
-          status: "notSync"
-        });
+      db.collection("practice_draft").doc(key).update({
+        status: "notSync",
+      });
     },
     // กดปุ่ม ICON แก้ไข เพื่องเก็บ KEY ส่งไปหน้า แก้ไขข้อมูล
     editData(item) {
       this.$router.push({
         name: "multipleEdit",
         params: {
-          id: item.id
-        }
+          id: item.id,
+        },
       });
-    }
+    },
+    printMe() {
+      this.$router.push({
+        name: "multiplePrint",
+        params: {
+          title1: this.practiceData.levelName,
+          title2: this.practiceData.unitName,
+          data: this.practiceDataList,
+        },
+      });
+    },
   },
   mounted() {
     this.loadLevel();
@@ -579,7 +591,7 @@ export default {
     if (typeof this.syncData == "function") {
       this.syncData();
     }
-  }
+  },
 };
 </script>
 <style scoped>
