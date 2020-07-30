@@ -22,6 +22,21 @@ const routes = [
     component: () => import("pages/multiplePrint.vue"),
     name: "multiplePrint"
   },
+  {
+    path: "/flashcardPrint",
+    component: () => import("pages/flashcardPrint.vue"),
+    name: "flashcardPrint"
+  },
+  {
+    path: "/expressionPrint",
+    component: () => import("pages/expressionPrint.vue"),
+    name: "expressionPrint"
+  },
+  {
+    path: "/vdoPrint",
+    component: () => import("pages/vdoPrint.vue"),
+    name: "vdoPrint"
+  },
 
   {
     path: "/",
