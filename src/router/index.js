@@ -132,7 +132,6 @@ Vue.mixin({
                   })
                   .then(() => {
                     this.loadingHide();
-                    // console.log("FINISH");
                     a("finish");
                   });
               });
