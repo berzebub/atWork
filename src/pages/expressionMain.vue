@@ -190,7 +190,7 @@
                 size="sm"
                 icon="fas fa-volume-up"
                 color="blue-grey-10"
-                @click="playAudio('https://storage.cloud.google.com/atwork-dee11.appspot.com/practice/audio/' + item.id +'-' +(index2+1)+'.mp3')"
+                @click="playAudio('https://storage.googleapis.com/atwork-dee11.appspot.com/practice/audio/' + item.id +'-' +(index2+1)+'.mp3')"
               ></q-btn>
             </div>
             <div

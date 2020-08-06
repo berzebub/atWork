@@ -279,13 +279,13 @@ export default {
             let getSound = "";
             if (element.data().isImage == true) {
               getImage =
-                " https://storage.cloud.google.com/atwork-dee11.appspot.com/practice/image/" +
+                " https://storage.googleapis.com/atwork-dee11.appspot.com/practice/image/" +
                 element.id +
                 ".jpg";
             }
             if (element.data().isSound == true) {
               getSound =
-                "https://storage.cloud.google.com/atwork-dee11.appspot.com/practice/audio/" +
+                "https://storage.googleapis.com/atwork-dee11.appspot.com/practice/audio/" +
                 element.id +
                 ".mp3";
             }
@@ -310,13 +310,13 @@ export default {
                 let getSound = "";
                 if (element.data().isImage == true) {
                   getImage =
-                    " https://storage.cloud.google.com/atwork-dee11.appspot.com/practice/image/" +
+                    " https://storage.googleapis.com/atwork-dee11.appspot.com/practice/image/" +
                     element.id +
                     ".jpg";
                 }
                 if (element.data().isSound == true) {
                   getSound =
-                    "https://storage.cloud.google.com/atwork-dee11.appspot.com/practice/audio/" +
+                    "https://storage.googleapis.com/atwork-dee11.appspot.com/practice/audio/" +
                     element.id +
                     ".mp3";
                 }

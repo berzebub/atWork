@@ -346,7 +346,7 @@ export default {
       questionAdd: false,
       questionKey: "",
       pathFile:
-        "https://storage.cloud.google.com/atwork-dee11.appspot.com/practice/",
+        "https://storage.googleapis.com/atwork-dee11.appspot.com/practice/",
       playSoundURL: "",
       isSaveDialogSuccess: false,
       isQuestionDialog: false,

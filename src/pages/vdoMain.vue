@@ -349,7 +349,7 @@ export default {
       idVdo: "",
       playSoundURL: "",
       pathFile:
-        "https://storage.cloud.google.com/atwork-dee11.appspot.com/practice/",
+        "https://storage.googleapis.com/atwork-dee11.appspot.com/practice/",
       syncData: "",
       isDisable: false,
     };
