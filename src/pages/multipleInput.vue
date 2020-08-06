@@ -593,24 +593,24 @@ import { db, st } from "../router";
 import dialogSetting from "../components/dialogSetting";
 export default {
   components: {
-    dialogSetting
+    dialogSetting,
   },
   data() {
     return {
       uploadImg: {
         file: null,
-        status: false
+        status: false,
       },
       // ข้อมูล
       dataQuestion: {
         file: null,
-        status: false
+        status: false,
       },
 
       practiceData: {
         levelName: "",
         unitName: "",
-        unitOrder: ""
+        unitOrder: "",
       },
       data: {
         isImage: false,
@@ -626,31 +626,31 @@ export default {
           { choice: "", isSound: false },
           { choice: "", isSound: false },
           { choice: "", isSound: false },
-          { choice: "", isSound: false }
+          { choice: "", isSound: false },
         ],
         isAnswerSound: false,
         isQuestionSound: false,
         status: "notSync",
-        type: "multiplechoice"
+        type: "multiplechoice",
       },
 
       dataFiles: [
         {
           file: null,
-          status: false
+          status: false,
         },
         {
           file: null,
-          status: false
+          status: false,
         },
         {
           file: null,
-          status: false
+          status: false,
         },
         {
           file: null,
-          status: false
-        }
+          status: false,
+        },
       ],
       oldOrder: "",
       //   เช็คช่องคำถามข้อมูล & ตัวเลือก
@@ -665,7 +665,7 @@ export default {
       isSaveData: false,
       isSaveDialogSuccess: false,
 
-      isCorrectAnswer: false
+      isCorrectAnswer: false,
     };
   },
   methods: {
@@ -675,7 +675,7 @@ export default {
       db.collection("level")
         .doc(levelKey)
         .get()
-        .then(result => {
+        .then((result) => {
           if (result.exists) {
             this.practiceData.levelName = result.data().name;
             // โหลดข้อมูล Unit
@@ -688,7 +688,7 @@ export default {
       db.collection("unit")
         .doc(unitKey)
         .get()
-        .then(result => {
+        .then((result) => {
           if (result.exists) {
             this.practiceData.unitName = result.data().name;
             this.practiceData.unitOrder = result.data().order;
@@ -702,7 +702,7 @@ export default {
       db.collection("practice_draft")
         .doc(this.$route.params.id)
         .get()
-        .then(doc => {
+        .then((doc) => {
           this.data = doc.data();
           this.oldOrder = doc.data().order;
           this.dataQuestion.status = doc.data().isSound;
@@ -719,14 +719,14 @@ export default {
     // บันทึก
     async saveBtn() {
       // เช็คช่องกรอกข้อมูล ก่อนบันทึก ว่ากรอกข้อมูลรึยัง ข้อมูลที่จำเป็นต้องกรอก
-      let hasChoice = this.data.choices.filter(x => x.choice != "");
+      let hasChoice = this.data.choices.filter((x) => x.choice != "");
       this.$refs.orderid.validate();
       if (this.$refs.orderid.hasError) {
       }
 
       if (hasChoice.length < 2) {
         // การเช็คตัวเลือก 1&2 ถ้าข้อความน้อยก่ว่า 0 ให้ มีกรอบสีแดง
-        let index = this.data.choices.findIndex(x => x.choice == "");
+        let index = this.data.choices.findIndex((x) => x.choice == "");
         if (index == 0) {
           this.isErrorChoice1 = true;
         } else if (index == 1) {
@@ -788,7 +788,7 @@ export default {
         if (this.isAddMode) {
           db.collection("practice_draft")
             .add(this.data)
-            .then(async doc => {
+            .then(async (doc) => {
               // เช็คขูอมูลภาพและเสียง
               if (this.uploadImg.status) {
                 await st
@@ -829,6 +829,7 @@ export default {
 
         // หน้า แก้ไข
         else {
+          this.data.status = "notSync";
           db.collection("practice_draft")
             .doc(this.$route.params.id)
             .set(this.data)
@@ -993,7 +994,7 @@ export default {
           "/" +
           this.data.practiceId
       );
-    }
+    },
   },
   mounted() {
     this.loadLevel();
@@ -1005,7 +1006,7 @@ export default {
       this.isAddMode = false;
       this.loadDataEdit();
     }
-  }
+  },
 };
 </script>
 <style scoped>

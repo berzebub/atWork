@@ -4,12 +4,8 @@
       <q-btn label="a" @click.stop="testClick1()"></q-btn>
       <div v-show="indexClick==index" v-for="item1 in test1">{{item1}}</div>
     </div>-->
-    <q-expansion-item
-      expand-separator
-      icon="perm_identity"
-      label="Account settings"
-      caption="John Doe"
-    ></q-expansion-item>
+
+    <div style="width:500px;height:500px;" v-ripple class="brx relative-position"></div>
   </div>
 </template>
 

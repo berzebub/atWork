@@ -41,6 +41,7 @@
                 round
                 color="blue-grey-10"
                 icon="fas fa-print"
+                @click="printFile()"
               />
             </div>
           </div>
@@ -218,7 +219,7 @@ import dialogSetting from "../components/dialogSetting";
 export default {
   components: {
     syncBtn,
-    dialogSetting
+    dialogSetting,
   },
   data() {
     return {
@@ -241,7 +242,7 @@ export default {
 
       // Delete
       topicDelete: "คำศัพท์",
-      orderDelete: ""
+      orderDelete: "",
     };
   },
   methods: {
@@ -252,7 +253,7 @@ export default {
       db.collection("level")
         .doc(this.levelId)
         .get()
-        .then(data => {
+        .then((data) => {
           this.getLevelName = data.data().name;
         });
     },
@@ -260,7 +261,7 @@ export default {
       db.collection("unit")
         .doc(this.unitId)
         .get()
-        .then(data => {
+        .then((data) => {
           this.getUnitName = data.data().name;
           this.getOrder = data.data().order;
         });
@@ -271,20 +272,20 @@ export default {
         .where("unitId", "==", this.unitId)
         .where("practiceId", "==", this.practiceId)
 
-        .onSnapshot(dataDraft => {
+        .onSnapshot((dataDraft) => {
           let temp = [];
-          dataDraft.forEach(element => {
+          dataDraft.forEach((element) => {
             let getImage = "";
             let getSound = "";
             if (element.data().isImage == true) {
               getImage =
-                " https://storage.cloud.google.com/atwork-dee11.appspot.com/practice/image/" +
+                " https://storage.googleapis.com/atwork-dee11.appspot.com/practice/image/" +
                 element.id +
                 ".jpg";
             }
             if (element.data().isSound == true) {
               getSound =
-                "https://storage.cloud.google.com/atwork-dee11.appspot.com/practice/audio/" +
+                "https://storage.googleapis.com/atwork-dee11.appspot.com/practice/audio/" +
                 element.id +
                 ".mp3";
             }
@@ -293,7 +294,7 @@ export default {
               collection: "draft",
               id: element.id,
               img: getImage,
-              audio: getSound
+              audio: getSound,
             });
           });
 
@@ -303,19 +304,19 @@ export default {
             .where("practiceId", "==", this.practiceId)
 
             .get()
-            .then(dataServer => {
-              dataServer.forEach(element => {
+            .then((dataServer) => {
+              dataServer.forEach((element) => {
                 let getImage = "";
                 let getSound = "";
                 if (element.data().isImage == true) {
                   getImage =
-                    " https://storage.cloud.google.com/atwork-dee11.appspot.com/practice/image/" +
+                    " https://storage.googleapis.com/atwork-dee11.appspot.com/practice/image/" +
                     element.id +
                     ".jpg";
                 }
                 if (element.data().isSound == true) {
                   getSound =
-                    "https://storage.cloud.google.com/atwork-dee11.appspot.com/practice/audio/" +
+                    "https://storage.googleapis.com/atwork-dee11.appspot.com/practice/audio/" +
                     element.id +
                     ".mp3";
                 }
@@ -324,7 +325,7 @@ export default {
                   collection: "server",
                   id: element.id,
                   img: getImage,
-                  audio: getSound
+                  audio: getSound,
                 });
               });
 
@@ -379,12 +380,12 @@ export default {
 
             order: item.order,
             status: item.status,
-            practiceId: item.practiceId
+            practiceId: item.practiceId,
           },
           id: item.id,
           getLevelName: this.getLevelName,
-          getUnitName: this.getUnitName
-        }
+          getUnitName: this.getUnitName,
+        },
       });
     },
     addDataFlashcard() {
@@ -392,16 +393,26 @@ export default {
         name: "flashcardInput",
         params: {
           getLevelName: this.getLevelName,
-          getUnitName: this.getUnitName
-        }
+          getUnitName: this.getUnitName,
+        },
       });
-    }
+    },
+    printFile() {
+      this.$router.push({
+        name: "flashcardPrint",
+        params: {
+          title1: this.getLevelName,
+          title2: this.getUnitName,
+          data: this.showDataFlashcard,
+        },
+      });
+    },
   },
   mounted() {
     this.loadDataFlashcard();
     this.loadLevelData();
     this.loadUnitData();
-  }
+  },
 };
 </script>
 

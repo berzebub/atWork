@@ -72,7 +72,7 @@
             v-model="sentenceEng"
             dense
             type="text"
-            :rules="[ val => !!val, engError ]"
+            :rules="[ val => !!val]"
           />
         </div>
       </div>
@@ -87,7 +87,7 @@
             v-model.trim="sentenceTh"
             dense
             type="text"
-            :rules="[ val => !!val, thError ]"
+            :rules="[ val => !!val ]"
           />
         </div>
       </div>

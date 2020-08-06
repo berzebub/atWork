@@ -41,6 +41,7 @@
                 round
                 color="blue-grey-10"
                 icon="fas fa-print"
+                @click="printMe()"
               />
             </div>
           </div>
@@ -189,7 +190,7 @@
                 size="sm"
                 icon="fas fa-volume-up"
                 color="blue-grey-10"
-                @click="playAudio('https://storage.cloud.google.com/atwork-dee11.appspot.com/practice/audio/' + item.id +'-' +(index2+1)+'.mp3')"
+                @click="playAudio('https://storage.googleapis.com/atwork-dee11.appspot.com/practice/audio/' + item.id +'-' +(index2+1)+'.mp3')"
               ></q-btn>
             </div>
             <div
@@ -229,7 +230,7 @@ import syncBtn from "../components/syncBtn.vue";
 export default {
   components: {
     dialogSetting,
-    syncBtn
+    syncBtn,
   },
   data() {
     return {
@@ -248,7 +249,7 @@ export default {
       practiceId: this.$route.params.practiceId,
       isSnap: "",
       isDisable: false,
-      playSoundURL: ""
+      playSoundURL: "",
     };
   },
   methods: {
@@ -262,7 +263,7 @@ export default {
       db.collection("level")
         .doc(this.levelId)
         .get()
-        .then(data => {
+        .then((data) => {
           this.getLevelName = data.data().name;
         });
     },
@@ -270,7 +271,7 @@ export default {
       db.collection("unit")
         .doc(this.unitId)
         .get()
-        .then(data => {
+        .then((data) => {
           this.getUnitName = data.data().name;
         });
     },
@@ -279,13 +280,13 @@ export default {
         .where("levelId", "==", this.levelId)
         .where("unitId", "==", this.unitId)
         .where("practiceId", "==", this.practiceId)
-        .onSnapshot(dataDraft => {
+        .onSnapshot((dataDraft) => {
           let temp = [];
-          dataDraft.forEach(element => {
+          dataDraft.forEach((element) => {
             temp.push({
               ...element.data(),
               collection: "draft",
-              id: element.id
+              id: element.id,
             });
           });
           db.collection("practice_server")
@@ -293,12 +294,12 @@ export default {
             .where("unitId", "==", this.unitId)
             .where("practiceId", "==", this.practiceId)
             .get()
-            .then(dataServer => {
-              dataServer.forEach(element => {
+            .then((dataServer) => {
+              dataServer.forEach((element) => {
                 temp.push({
                   ...element.data(),
                   collection: "server",
-                  id: element.id
+                  id: element.id,
                 });
               });
               temp.sort((a, b) => {
@@ -347,8 +348,8 @@ export default {
           levelId: this.levelId,
           unitId: this.unitId,
           getLevelName: this.getLevelName,
-          getUnitName: this.getUnitName
-        }
+          getUnitName: this.getUnitName,
+        },
       });
     },
     addDataExpression() {
@@ -358,17 +359,27 @@ export default {
           getLevelName: this.getLevelName,
           getUnitName: this.getUnitName,
           levelId: this.levelId,
-          unitId: this.unitId
-        }
+          unitId: this.unitId,
+        },
       });
-    }
+    },
+    printMe() {
+      this.$router.push({
+        name: "expressionPrint",
+        params: {
+          title1: this.getLevelName,
+          title2: this.getUnitName,
+          data: this.showDataExpression,
+        },
+      });
+    },
   },
   mounted() {
     this.loadDataExpression();
     this.loadLevelData();
     this.loadUnitData();
     // var user = auth.currentUser;
-  }
+  },
 };
 </script>
 

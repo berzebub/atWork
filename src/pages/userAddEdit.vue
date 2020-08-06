@@ -3,7 +3,7 @@
     <div class="container">
       <div>
         <div class="text-subtitle1">ชื่อ นามสกุล</div>
-        <q-input ref="name" outlined dense v-model="dataUser.name" :rules="[val => !!val ]"></q-input>
+        <q-input ref="name" outlined dense v-model="dataUser.displayName" :rules="[val => !!val ]"></q-input>
       </div>
 
       <div>
@@ -15,9 +15,7 @@
           outlined
           dense
           v-model="dataUser.email"
-          lazy-rules
-          :rules="[val => !!val 
-          ,isCheckEmail,isValidEmail]"
+          :rules="[val => !!val]"
         ></q-input>
       </div>
 
@@ -33,6 +31,7 @@
           :type="isPwd ? 'password' : 'text'"
           lazy-rules
           :rules="[val => val.length>=6 ]"
+          :readonly="$route.name == 'userEdit' ? true : false"
         >
           <template v-slot:append>
             <q-icon
@@ -64,7 +63,7 @@
           :options="userOptions"
           label="Notifications"
           type="checkbox"
-          v-model="dataUser.userGroup"
+          v-model="dataUser.dataEntryPermissions"
         />
       </div>
       <div v-show="isEroorCheckbox" class="q-py-md" align="center">
@@ -102,7 +101,12 @@ import { db, axios } from "../router";
 export default {
   data() {
     return {
-      dataUser: { name: "", email: "", password: "", userGroup: [] },
+      dataUser: {
+        displayName: "",
+        email: "",
+        password: "",
+        dataEntryPermissions: []
+      },
 
       isPwd: true,
       saveDataDialog: false,
@@ -142,7 +146,7 @@ export default {
       }
       // check checkbox
 
-      if (this.dataUser.userGroup == "") {
+      if (this.dataUser.dataEntryPermissions == "") {
         // console.log("ไม่ได้เลือกเช็คบ็อค");
         this.isEroorCheckbox = true;
         return;
@@ -154,31 +158,20 @@ export default {
         let dataUser = {
           email: this.dataUser.email,
           password: this.dataUser.password,
-          emailVerified: false,
-          disabled: false,
-          displayName: this.dataUser.name
+          displayName: this.dataUser.displayName,
+          dataEntryPermissions: this.dataUser.dataEntryPermissions,
+          accessProgram: ["dataEntry"]
         };
-        let jsonString = JSON.stringify(dataUser);
-        const url = `https://api-winner-adventures.herokuapp.com/createUser?user=${jsonString}`;
+        let apiURL =
+          "https://us-central1-atwork-dee11.cloudfunctions.net/atworkFunctions/user/create";
 
-        let getCreateUser = await axios.get(url);
+        await axios.post(apiURL, dataUser);
 
-        let newDataUser = { ...this.dataUser };
-        delete newDataUser.password;
-        newDataUser.uid = getCreateUser.data.uid;
-        let genCode = Math.random()
-          .toString(36)
-          .substring(7);
-        newDataUser.loginKey = genCode;
-        db.collection("user_admin")
-          .add(newDataUser)
-          .then(() => {
-            this.loadingHide();
-            this.saveDataDialog = true;
-            setTimeout(() => {
-              this.$router.push("userMain");
-            }, 1000);
-          });
+        this.loadingHide();
+        this.saveDataDialog = true;
+        setTimeout(() => {
+          this.$router.push("userMain");
+        }, 1000);
       } else {
         this.editMode();
       }
@@ -202,45 +195,53 @@ export default {
         let test = this.userOptions.map(x => {
           return x.value;
         });
-        this.dataUser.userGroup = test;
+        this.dataUser.dataEntryPermissions = test;
       } else {
-        this.dataUser.userGroup = [];
+        this.dataUser.dataEntryPermissions = [];
       }
     },
     checkbox() {
       this.isEroorCheckbox = false;
-      if (this.dataUser.userGroup.length == this.userOptions.length) {
+      if (
+        this.dataUser.dataEntryPermissions.length == this.userOptions.length
+      ) {
         this.all = true;
       } else {
         this.all = false;
       }
     },
     loadDataEdit() {
-      if (this.$route.params.name == undefined) {
-        this.$router.push("userMain");
-      } else {
-        this.dataUser.name = this.$route.params.name;
+      let isEmpty = !Object.keys(this.$route.params).length;
+      if (!isEmpty) {
+        this.dataUser.password = "123456789";
+        this.dataUser.displayName = this.$route.params.displayName;
         this.dataUser.email = this.$route.params.email;
-        this.dataUser.password = this.$route.params.password;
-        this.dataUser.userGroup = this.$route.params.userGroup;
-        if (this.dataUser.userGroup.length == 4) {
-          this.all = true;
-        } else {
-          this.all = false;
+        this.dataUser.uid = this.$route.params.uid;
+        if (this.$route.params.customClaims) {
+          this.dataUser.dataEntryPermissions = this.$route.params.customClaims.dataEntryPermissions;
+          this.dataUser.accessProgram = ["dataEntry"];
+          if (
+            this.$route.params.customClaims.dataEntryPermissions.length == 4
+          ) {
+            this.all = true;
+          }
         }
+      } else {
+        this.$router.push("/userMain");
       }
     },
-    editMode() {
-      db.collection("user_admin")
-        .doc(this.$route.params.id)
-        .update(this.dataUser)
-        .then(() => {
-          this.saveDataDialog = true;
-          this.loadingHide();
-          setTimeout(() => {
-            this.$router.push("userMain");
-          }, 1000);
-        });
+    async editMode() {
+      const apiURL =
+        "https://us-central1-atwork-dee11.cloudfunctions.net/atworkFunctions/user/update";
+      let editUserData = await axios.post(apiURL, this.dataUser);
+      this.loadingHide();
+      this.saveDataDialog = true;
+      setTimeout(() => {
+        this.$router.push("userMain");
+      }, 1000);
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
     }
   },
   mounted() {

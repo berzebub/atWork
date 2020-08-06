@@ -136,7 +136,8 @@ export default {
       userInfo: "",
       isSuccessData: false,
       isToDialog: false,
-      dialogResetPassword: false
+      dialogResetPassword: false,
+      authData: ""
     };
   },
   methods: {
@@ -194,23 +195,35 @@ export default {
       }
     },
     markLogOut() {
-      if (this.$q.platform.is.desktop) {
-        this.mainPage = false;
-        this.infoSetting = true;
-        this.isNameClick = false;
-        this.isPasswordClick = false;
-        this.isLogOutClick = true;
-        this.type = "3";
-      } else {
-        this.$router.push({
-          name: "userSettingMobile",
-          params: { type: "3", userInfo: this.userInfo }
-        });
-      }
+      this.logOut();
+      // if (this.$q.platform.is.desktop) {
+      //   this.mainPage = false;
+      //   this.infoSetting = true;
+      //   this.isNameClick = false;
+      //   this.isPasswordClick = false;
+      //   this.isLogOutClick = true;
+      //   this.type = "3";
+      // } else {
+      //   this.$router.push({
+      //     name: "userSettingMobile",
+      //     params: { type: "3", userInfo: this.userInfo }
+      //   });
+      // }
+    },
+    loadUserData() {
+      this.authData = auth.onAuthStateChanged(user => {
+        if (user) {
+          this.userInfo = user;
+        }
+      });
     }
   },
   async mounted() {
-    this.userInfo = await this.getUserInfo(this.$q.localStorage.getItem("uid"));
+    this.loadUserData();
+    // this.userInfo = await this.getUserInfo(this.$q.localStorage.getItem("uid"));
+  },
+  beforeDestroy() {
+    this.authData = "";
   }
 };
 </script>

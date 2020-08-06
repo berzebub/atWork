@@ -36,7 +36,13 @@
             </div>
             <!-- ปุ่มพิมพ์-->
             <div class="mobile-hide">
-              <q-btn v-if="mode == 'draft'" round color="blue-grey-10" icon="fas fa-print" />
+              <q-btn
+                v-if="mode == 'draft'"
+                round
+                color="blue-grey-10"
+                icon="fas fa-print"
+                @click="printBtn()"
+              />
             </div>
           </div>
         </div>
@@ -310,7 +316,7 @@ export default {
   components: {
     howtouploadfile,
     dialogSetting,
-    syncBtn
+    syncBtn,
   },
   data() {
     return {
@@ -335,29 +341,39 @@ export default {
       practiceData: {
         levelName: "",
         unitName: "",
-        unitOrder: ""
+        unitOrder: "",
       },
       practiceDataList: [],
       dataVdo: {
         isVdo: false,
-        linkVdo: ""
+        linkVdo: "",
       },
       idVdo: "",
       playSoundURL: "",
       pathFile:
-        "https://storage.cloud.google.com/atwork-dee11.appspot.com/practice/",
+        "https://storage.googleapis.com/atwork-dee11.appspot.com/practice/",
       syncData: "",
-      isDisable: false
+      isDisable: false,
     };
   },
   methods: {
+    printBtn() {
+      this.$router.push({
+        name: "vdoPrint",
+        params: {
+          title1: this.practiceData.levelName,
+          title2: this.practiceData.unitName,
+          data: this.practiceDataList,
+        },
+      });
+    },
     loadLevel() {
       this.loadingShow();
       let levelKey = this.$route.params.levelId;
       db.collection("level")
         .doc(levelKey)
         .get()
-        .then(result => {
+        .then((result) => {
           if (result.exists) {
             this.practiceData.levelName = result.data().name;
             // โหลดข้อมูล Unit
@@ -370,7 +386,7 @@ export default {
       db.collection("unit")
         .doc(unitKey)
         .get()
-        .then(result => {
+        .then((result) => {
           if (result.exists) {
             this.practiceData.unitName = result.data().name;
             this.practiceData.unitOrder = result.data().order;
@@ -397,20 +413,20 @@ export default {
 
       this.syncData = dbData
         .where("practiceId", "==", practiceId)
-        .onSnapshot(doc => {
+        .onSnapshot((doc) => {
           let getSound = "";
           let temp = [];
-          doc.forEach(element => {
+          doc.forEach((element) => {
             if (element.data().isSound) {
               getSound = this.pathFile + "audio/" + element.id + ".mp3";
             }
             let dataKey = {
               key: element.id,
-              soundURL: getSound
+              soundURL: getSound,
             };
             let final = {
               ...dataKey,
-              ...element.data()
+              ...element.data(),
             };
             temp.push(final);
           });
@@ -426,7 +442,7 @@ export default {
       db.collection("practice_list")
         .doc(practiceId)
         .get()
-        .then(doc => {
+        .then((doc) => {
           if (doc.data().linkVdo) {
             this.idVdo = doc.id;
             this.dataVdo.isVdo = doc.data().isVdo;
@@ -462,8 +478,8 @@ export default {
         this.$router.push({
           name: "vdoEdit",
           params: {
-            id: key
-          }
+            id: key,
+          },
         });
       } else {
         this.dataVdo.linkVdo = "";
@@ -494,9 +510,7 @@ export default {
           .doc(this.$route.params.practiceId)
           .update(this.dataVdo);
       } else {
-        db.collection("practice_list")
-          .doc(this.idVdo)
-          .update(this.dataVdo);
+        db.collection("practice_list").doc(this.idVdo).update(this.dataVdo);
       }
       this.isSaveVdoDialogSuccess = true;
       this.editVdoDialog = false;
@@ -515,11 +529,9 @@ export default {
         this.$route.params.practiceId,
         this.$route.params.unitId
       );
-      db.collection("practice_draft")
-        .doc(this.isDeleteKey)
-        .update({
-          status: "waitForDelete"
-        });
+      db.collection("practice_draft").doc(this.isDeleteKey).update({
+        status: "waitForDelete",
+      });
       this.isDeleteDialogSuccess = true;
     },
     // ยกเลิกการลบข้อมูล
@@ -528,12 +540,10 @@ export default {
         this.$route.params.practiceId,
         this.$route.params.unitId
       );
-      db.collection("practice_draft")
-        .doc(key)
-        .update({
-          status: "notSync"
-        });
-    }
+      db.collection("practice_draft").doc(key).update({
+        status: "notSync",
+      });
+    },
   },
   mounted() {
     this.loadLevel();
@@ -542,7 +552,7 @@ export default {
     if (typeof this.syncData == "function") {
       this.syncData();
     }
-  }
+  },
 };
 </script>
 

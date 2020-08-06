@@ -61,7 +61,7 @@
 </template>
 
 <script>
-import { auth, db } from "../router";
+import { auth, db, axios } from "../router";
 import { uid } from "quasar";
 export default {
   data() {
@@ -72,7 +72,7 @@ export default {
       dialogWrongPassword: false,
       isKey: false,
       loginKey: "",
-      authLogin: ""
+      authLogin: "",
     };
   },
   methods: {
@@ -83,54 +83,49 @@ export default {
         .then(() => {
           return auth
             .signInWithEmailAndPassword(this.email, this.password)
-            .then(async result => {
-              this.$q.localStorage.set("uid", result.user.uid);
-              await this.getLoginKey(result.user.uid);
-              this.loadingHide();
-              this.$router.push("/practiceList");
+            .then(async (result) => {
+              let apiURL =
+                "https://us-central1-atwork-dee11.cloudfunctions.net/atworkFunctions/getUserData?uid=" +
+                result.user.uid;
+              let getData = await axios.get(apiURL);
+              const customClaims = getData.data.customClaims.accessProgram;
+
+              if (customClaims.includes("dataEntry")) {
+                this.loadingHide();
+                this.$router.push("/practiceList");
+              } else {
+                throw "error";
+              }
             })
-            .catch(error => {
+            .catch((error) => {
+              console.log(error);
               this.showWrongPasswordDialog();
               this.loadingHide();
             });
         })
-        .catch(error => {});
+        .catch((error) => {});
     },
     forgetPassword() {
       this.$router.push("/forgetPassword");
     },
-    async getLoginKey(uid) {
-      return new Promise((a, b) => {
-        db.collection("user_admin")
-          .where("uid", "==", uid)
-          .get()
-          .then(getUserId => {
-            this.$q.localStorage.set(
-              "loginKey",
-              getUserId.docs[0].data().loginKey
-            );
-            a("finish");
-          });
-      });
-    },
+
     showWrongPasswordDialog() {
       this.dialogWrongPassword = true;
     },
     checkUserLogin() {
       this.loadingShow();
-      this.authLogin = auth.onAuthStateChanged(async user => {
+      this.authLogin = auth.onAuthStateChanged(async (user) => {
         if (user) {
-          this.$q.localStorage.set("uid", user.uid);
-          await this.getLoginKey(user.uid);
           this.$router.push("/welcomeBack");
-
           this.loadingHide();
         } else {
-          this.$q.localStorage.clear();
+          if (typeof this.authLogin == "function") {
+            this.authLogin();
+          }
           this.loadingHide();
         }
       });
-    }
+    },
   },
   async mounted() {
     // เปิดใช้งานตอนจะใช้ Emulators เท่านั้น
@@ -145,15 +140,14 @@ export default {
     //       loginKey: "y482bw"
     //     });
     // }
-    if (this.$q.localStorage.has("uid")) {
-      this.checkUserLogin();
-    }
+
+    this.checkUserLogin();
   },
   beforeDestroy() {
     if (typeof this.authLogin == "function") {
       this.authLogin();
     }
-  }
+  },
 };
 </script>
 

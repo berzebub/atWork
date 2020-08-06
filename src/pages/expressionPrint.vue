@@ -3,7 +3,7 @@
     <div id="printBtn">
       <q-toolbar class="bg-black text-white">
         <q-toolbar-title>
-          <span>VDO</span>
+          <span>Expression</span>
         </q-toolbar-title>
         <q-btn
           class="q-mr-md"
@@ -33,7 +33,7 @@
         <table style="width:90%; margin:auto;">
           <thead>
             <tr style="height: 15px;" align="center">
-              <td>
+              <td colspan="2">
                 <span class="text-h4">{{title1}}</span>
                 <br />
                 <span class="text-h5">{{title2}}</span>
@@ -41,19 +41,24 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(item,index) in data" :key="index">
-              <td>
-                {{index+1}}.
-                <span v-html="item.question"></span>
-                <br />
-                <div class="q-pl-md" v-for="(item2 , index2) in item.choices" :key="index2">
-                  <span
-                    :class="{'bg-green text-white':item.correctAnswer==index2+1}"
-                  >{{index2+1}}) {{item2.choice}}</span>
-                </div>
-                <div class="q-pl-md">{{item.description}}</div>
-                <hr />
-              </td>
+            <tr v-for="(item,index) in data[0].expression" :key="index">
+              <table style="width:100%">
+                <tr>
+                  <td style="width:200px">
+                    <span class="text-h6">{{item.speaker}}</span>
+                  </td>
+                  <td class="text-h6">
+                    <span>{{item.sentenceEng}}</span>
+                    <br />
+                    <span>{{item.sentenceTh}}</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="2">
+                    <hr />
+                  </td>
+                </tr>
+              </table>
             </tr>
           </tbody>
         </table>
@@ -83,6 +88,7 @@ export default {
     if (this.$route.params.data == undefined) {
       window.history.back();
     }
+    this.data = this.data.filter((x) => x.collection == "draft");
   },
 };
 </script>

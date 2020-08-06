@@ -60,7 +60,7 @@ Vue.mixin({
           this.$router.push("/");
           this.$q.localStorage.clear();
         })
-        .catch(function(error) {});
+        .catch(function (error) { });
     },
     async updateSyncStatus(practiceId, unitId) {
       return new Promise((a, b) => {
@@ -132,7 +132,6 @@ Vue.mixin({
                   })
                   .then(() => {
                     this.loadingHide();
-                    // console.log("FINISH");
                     a("finish");
                   });
               });
@@ -186,7 +185,7 @@ Vue.mixin({
   }
 });
 
-export default function(/* { store, ssrContext } */) {
+export default function (/* { store, ssrContext } */) {
   const Router = new VueRouter({
     scrollBehavior: () => ({
       x: 0,

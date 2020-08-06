@@ -90,6 +90,7 @@
               class="text-white"
               expand-separator
               :label="item.name"
+              :value="clickedToolbar==item.departmentId ? true : false"
             >
               <q-card>
                 <q-card-section class="no-padding">
@@ -247,7 +248,7 @@
         :practice="'พนักงาน'"
         :name="dataEmployee.name"
         v-if="isShowDeleteDialogEmployee"
-        @emitCancelDelete="isShowDeleteDialog = false"
+        @emitCancelDelete="isShowDeleteDialogEmployee = false"
         @emitConfirmDelete="confirmDeleteEmployee"
       ></dialog-center>
       <span></span>
@@ -256,7 +257,7 @@
 </template>
 
 <script>
-import { db } from "../router";
+import { db, axios } from "../router";
 import dialogCenter from "../components/dialogSetting";
 export default {
   components: {
@@ -370,10 +371,8 @@ export default {
         }
       }
 
-      // console.log("555");
       this.loadingShow();
       if (this.editId == "") {
-        // console.log("บันทึกตอนเพิ่ม");
         db.collection("department")
           .add({
             hotelId: this.hotelSelectedId,
@@ -383,6 +382,7 @@ export default {
             this.loadingHide();
             this.addDepartmentDialog = false;
             this.addDialogSucess = true;
+            this.clickedToolbar = "";
           });
       } else {
         // console.log("บันทึกตอนแก้ไข");
@@ -394,6 +394,7 @@ export default {
             this.editId = "";
             this.addDepartmentDialog = false;
             this.addDialogSucess = true;
+            this.clickedToolbar = "";
           });
       }
     },
@@ -442,10 +443,7 @@ export default {
     },
     deleteDepartment(data) {
       this.dataDepartment = data;
-      // console.log(data);
-
       db.collection("employee")
-
         .where("departmentId", "==", data.departmentId)
         .get()
         .then(doc => {
@@ -464,7 +462,6 @@ export default {
       this.departmentName = data.name;
     },
     async isCheckName(val) {
-      // console.log(val);
       let doc = await db
         .collection("department")
         .where("name", "==", val)
@@ -484,32 +481,44 @@ export default {
       );
     },
     confirmDelete() {
-      // console.log(this.dataDepartment.departmentId);
       this.loadingShow();
       this.isShowDeleteDialog = false;
       db.collection("department")
         .doc(this.dataDepartment.departmentId)
         .delete()
         .then(() => {
-          // console.log("6666");
           this.loadingHide();
           this.isDeleteDialogSucess = true;
         });
     },
     deleteEmployee(data) {
       this.dataEmployee = data;
-      // console.log(this.dataEmployee);
       this.isShowDeleteDialogEmployee = true;
     },
-    confirmDeleteEmployee() {
+    async confirmDeleteEmployee() {
       this.loadingShow();
       this.isShowDeleteDialogEmployee = false;
+      let apiURL =
+        "https://us-central1-atwork-dee11.cloudfunctions.net/atworkFunctions/user/delete?uid=" +
+        this.dataEmployee.uid;
+      let deleteEmp = await axios.get(apiURL);
+      let departmentCurrent = this.departmentAll.filter(
+        x => x.departmentId == this.clickedToolbar
+      )[0];
+
       db.collection("employee")
         .doc(this.dataEmployee.employeeId)
         .delete()
         .then(() => {
-          this.loadingHide();
+          this.employeeList = this.employeeAll.filter(
+            x => x.departmentId == departmentCurrent.departmentId
+          );
+          this.clickedToolbar = departmentCurrent.departmentId;
+          if (departmentCurrent.length == 0) {
+            this.clickedToolbar = "";
+          }
 
+          this.loadingHide();
           this.isDeleteDialogSucess = true;
         });
     }
