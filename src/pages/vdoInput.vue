@@ -32,13 +32,32 @@
             label="ลูกค้า"
           />
         </div>
+
         <div class="col-xs-6 col-md-3 col-sm-3 q-pb-md">
           <q-radio
             style="margin:-10px"
             color="blue-grey-10"
             v-model="vdoObject.speaker"
             :val="'employee'"
-            label="พนักงาน"
+            label="พนักงาน#1"
+          />
+        </div>
+        <div class="col-xs-6 col-md-3 col-sm-3 q-pb-md">
+          <q-radio
+            style="margin:-10px"
+            color="blue-grey-10"
+            v-model="vdoObject.speaker"
+            :val="'employee2'"
+            label="พนักงาน#2"
+          />
+        </div>
+        <div class="col-xs-6 col-md-3 col-sm-3 q-pb-md">
+          <q-radio
+            style="margin:-10px"
+            color="blue-grey-10"
+            v-model="vdoObject.speaker"
+            :val="'people'"
+            label="คนทั่วไป"
           />
         </div>
       </div>

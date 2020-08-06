@@ -190,7 +190,9 @@
             </div>
             <div class="q-px-md q-py-sm">
               <div class="self-center" v-if="item.speaker == 'customer' ">ลูกค้า:</div>
-              <div class="self-center" v-if="item.speaker == 'employee' ">พนักงาน:</div>
+              <div class="self-center" v-if="item.speaker == 'employee' ">พนักงาน#1:</div>
+              <div class="self-center" v-if="item.speaker == 'employee2' ">พนักงาน#2:</div>
+              <div class="self-center" v-if="item.speaker == 'people' ">คนทั่วไป:</div>
               <div class="row">
                 <div>
                   <q-btn

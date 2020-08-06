@@ -357,27 +357,34 @@ export default {
         .where("order", "==", this.data.order)
         .get()
         .then(doc => {
-          if (this.orderOld == this.data.order) {
-            // กรณีเป็นเลขรหัสเดิม ไม่ต้องเช็คว่าซ้ำหรือไม่
+          if (doc.size == 1 && this.orderOld != this.data.order) {
+            this.dialogDuplicateOrder = true;
+            setTimeout(() => {
+              this.dialogDuplicateOrder = false;
+            }, 1500);
+          } else {
             db.collection("practice_list")
               .doc(this.practiceId)
-              .set(this.data)
-              .then(doc => {
+              .update({
+                order: this.data.order
+              })
+              .then(() => {
                 this.dialogSuccess = true;
-                this.data.order = "";
-                this.data.practiceType = "flashcard";
                 this.isShowPractice = true;
               });
-          } else {
-            // กรณีเป็นเลขลำดับใหม่
-            if (doc.size) {
-              // แจ้งเตือนรหัสลำดับซ้ำ
-              this.dialogDuplicateOrder = true;
-              setTimeout(() => {
-                this.dialogDuplicateOrder = false;
-              }, 1500);
-            }
           }
+          // if (this.orderOld = this.data.order) {
+
+          // } else {
+          //   // กรณีเป็นเลขลำดับใหม่
+          //   if (doc.size) {
+          //     // แจ้งเตือนรหัสลำดับซ้ำ
+          //     this.dialogDuplicateOrder = true;
+          //     setTimeout(() => {
+          //       this.dialogDuplicateOrder = false;
+          //     }, 1500);
+          //   }
+          // }
         });
       return;
     },
