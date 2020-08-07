@@ -28,37 +28,47 @@
     </div>
 
     <div align="center">
-      <div class="bg7 printMe shadow-1 paper-a4 q-my-lg cl2">
+      <div class="bg7 paper-a4 q-my-lg cl2 q-px-md q-pb-sm">
         <!-- หัวกระดาษ -->
         <table style="width:90%; margin:auto;">
           <thead>
+            <tr>
+              <td>
+                <div class="q-py-md"></div>
+              </td>
+            </tr>
             <tr style="height: 15px;" align="center">
-              <td colspan="2">
-                <span class="text-h4">{{title1}}</span>
-                <br />
-                <span class="text-h5">{{title2}}</span>
+              <td>
+                <div class="q-mb-md">
+                  <span class="text-h4">{{title1}}</span>
+                  <br />
+                  <span class="text-h5">{{title2}}</span>
+                </div>
               </td>
             </tr>
           </thead>
           <tbody>
             <tr v-for="(item,index) in data" :key="index">
-              <table style="width:100%">
-                <tr>
-                  <td style="width:200px">
-                    <span class="text-h6">{{item.speaker}}</span>
-                  </td>
-                  <td class="text-h6">
-                    <span>{{item.sentenceEng}}</span>
-                    <br />
-                    <span>{{item.sentenceTh}}</span>
-                  </td>
-                </tr>
-                <tr>
-                  <td colspan="2">
-                    <hr />
-                  </td>
-                </tr>
-              </table>
+              <td>
+                <q-separator class="q-my-md" />
+                <div class="row">
+                  <div class="col-1" style="width:30px;">{{index+1}}.</div>
+                  <div class="col row">
+                    <div class="col">
+                      <div>
+                        <span v-html="item.speaker == 'employee' ? 'พนักงาน' : 'ลูกค้า'"></span>
+                      </div>
+                      <div class="q-mt-sm">
+                        <q-icon v-if="item.isSound" name="fas fa-volume-up" class="q-mr-sm"></q-icon>
+                        <span v-html="item.sentenceEng"></span>
+                      </div>
+                      <div class="q-pb-xs">
+                        <span v-html="item.sentenceTh"></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -108,6 +118,7 @@ export default {
   width: 210mm;
   min-height: 297mm;
   max-height: fit-content;
+  box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 0.5);
 }
 @media print {
   body {
@@ -117,7 +128,7 @@ export default {
     padding: 0px 0px;
   }
   body,
-  .printMe {
+  .paper-a4 {
     background: #ffffff;
     margin: 0px 0px;
     margin-bottom: 0px;

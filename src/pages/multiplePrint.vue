@@ -3,7 +3,7 @@
     <div id="printBtn">
       <q-toolbar class="bg-black text-white">
         <q-toolbar-title>
-          <span>VDO</span>
+          <span>Multiple Choices</span>
         </q-toolbar-title>
         <q-btn
           class="q-mr-md"
@@ -28,31 +28,48 @@
     </div>
 
     <div align="center">
-      <div class="bg7 printMe shadow-1 paper-a4 q-my-lg cl2">
+      <div class="bg7 paper-a4 q-my-lg cl2 q-px-md q-pb-sm">
         <!-- หัวกระดาษ -->
-        <table style="width:90%; margin:auto;">
+        <table style="width:95%; margin:auto;">
           <thead>
+            <tr>
+              <td>
+                <div class="q-py-md"></div>
+              </td>
+            </tr>
             <tr style="height: 15px;" align="center">
               <td>
-                <span class="text-h4">{{title1}}</span>
-                <br />
-                <span class="text-h5">{{title2}}</span>
+                <div class="q-mb-md">
+                  <span class="text-h4">{{title1}}</span>
+                  <br />
+                  <span class="text-h5">{{title2}}</span>
+                </div>
               </td>
             </tr>
           </thead>
           <tbody>
             <tr v-for="(item,index) in data" :key="index">
               <td>
-                {{index+1}}.
-                <span v-html="item.question"></span>
-                <br />
-                <div class="q-pl-md" v-for="(item2 , index2) in item.choices" :key="index2">
-                  <span
-                    :class="{'bg-green text-white':item.correctAnswer==index2+1}"
-                  >{{index2+1}}) {{item2.choice}}</span>
+                <q-separator class="q-my-sm" />
+                <div class="row">
+                  <div class="col-1 self-start" style="width:fit-content;">
+                    {{index+1}}.
+                    <q-icon v-if="item.isSound" class="q-mr-sm" name="fas fa-volume-up"></q-icon>
+                    <span v-html="item.question"></span>
+                  </div>
+                  <div v-if="item.isImage" class="col q-px-md q-pb-sm">
+                    <q-img :src="item.imageURL" style="width:150px;"></q-img>
+                  </div>
                 </div>
-                <div class="q-pl-md">{{item.description}}</div>
-                <hr />
+                <div>
+                  <div class="q-pl-md" v-for="(item2 , index2) in item.choices" :key="index2">
+                    <q-icon v-if="item2.isSound" class="q-mx-sm" name="fas fa-volume-up"></q-icon>
+                    <span
+                      :class="{'bg-green text-white':item.correctAnswer==index2+1}"
+                    >{{index2+1}}) {{item2.choice}}</span>
+                  </div>
+                  <div class="q-pl-md">{{item.description}}</div>
+                </div>
               </td>
             </tr>
           </tbody>
@@ -103,6 +120,8 @@ export default {
   width: 210mm;
   min-height: 297mm;
   max-height: fit-content;
+  font-size: 14px;
+  box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 0.5);
 }
 @media print {
   body {
@@ -112,7 +131,7 @@ export default {
     padding: 0px 0px;
   }
   body,
-  .printMe {
+  .paper-a4 {
     background: #ffffff;
     margin: 0px 0px;
     margin-bottom: 0px;
