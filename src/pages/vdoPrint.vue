@@ -49,26 +49,23 @@
           </thead>
           <tbody>
             <tr v-for="(item,index) in data" :key="index">
-              <td>
-                <q-separator class="q-my-md" />
-                <div class="row">
-                  <div class="col-1" style="width:30px;">{{index+1}}.</div>
-                  <div class="col row">
-                    <div class="col">
-                      <div>
-                        <span v-html="item.speaker == 'employee' ? 'พนักงาน' : 'ลูกค้า'"></span>
-                      </div>
-                      <div class="q-mt-sm">
-                        <q-icon v-if="item.isSound" name="fas fa-volume-up" class="q-mr-sm"></q-icon>
-                        <span v-html="item.sentenceEng"></span>
-                      </div>
-                      <div class="q-pb-xs">
-                        <span v-html="item.sentenceTh"></span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </td>
+              <table style="width:100%">
+                <tr>
+                  <td style="width:200px">
+                    <span class="text-h6">{{showSpeakerName(item.speaker)}}</span>
+                  </td>
+                  <td class="text-h6">
+                    <span>{{item.sentenceEng}}</span>
+                    <br />
+                    <span>{{item.sentenceTh}}</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="2">
+                    <hr />
+                  </td>
+                </tr>
+              </table>
             </tr>
           </tbody>
         </table>
@@ -87,6 +84,18 @@ export default {
     };
   },
   methods: {
+    //โชว์ชื่อผู้พูด
+    showSpeakerName(speaker) {
+      let res = "ลูกค้า";
+      if (speaker == "employee") {
+        res = "พนักงาน#1";
+      } else if (speaker == "employee2") {
+        res = "พนักงาน#2";
+      } else if (speaker == "people") {
+        res = "คนทั่วไป";
+      }
+      return res;
+    },
     printBtn() {
       window.print();
     },

@@ -195,10 +195,7 @@
               </q-btn>
             </div>
             <div class="q-px-md q-py-sm">
-              <div class="self-center" v-if="item.speaker == 'customer' ">ลูกค้า:</div>
-              <div class="self-center" v-if="item.speaker == 'employee' ">พนักงาน#1:</div>
-              <div class="self-center" v-if="item.speaker == 'employee2' ">พนักงาน#2:</div>
-              <div class="self-center" v-if="item.speaker == 'people' ">คนทั่วไป:</div>
+              <div class="self-center">{{showSpeakerName(item.speaker)}}</div>
               <div class="row">
                 <div>
                   <q-btn
@@ -357,6 +354,17 @@ export default {
     };
   },
   methods: {
+    showSpeakerName(speaker) {
+      let res = "ลูกค้า";
+      if (speaker == "employee") {
+        res = "พนักงาน#1";
+      } else if (speaker == "employee2") {
+        res = "พนักงาน#2";
+      } else if (speaker == "people") {
+        res = "คนทั่วไป";
+      }
+      return res;
+    },
     printBtn() {
       this.$router.push({
         name: "vdoPrint",
