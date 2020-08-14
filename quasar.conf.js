@@ -3,12 +3,14 @@
  * the ES6 features that are supported by your Node version. https://node.green/
  */
 
-const { Loading } = require("quasar");
+const {
+  Loading
+} = require("quasar");
 
 // Configuration for your app
 // https://quasar.dev/quasar-cli/quasar-conf-js
 
-module.exports = function(/* ctx */) {
+module.exports = function ( /* ctx */ ) {
   return {
     // https://quasar.dev/quasar-cli/cli-documentation/supporting-ie
     supportIE: false,
@@ -102,7 +104,7 @@ module.exports = function(/* ctx */) {
       directives: [],
 
       // Quasar plugins
-      plugins: ["Loading", "Notify", "Dialog", "LocalStorage"]
+      plugins: ["Loading", "Notify", "Dialog", "LocalStorage", "SessionStorage"]
     },
 
     animations: "all", // --- includes all animations
@@ -128,8 +130,7 @@ module.exports = function(/* ctx */) {
         orientation: "portrait",
         background_color: "#ffffff",
         theme_color: "#027be3",
-        icons: [
-          {
+        icons: [{
             src: "statics/icons/icon-128x128.png",
             sizes: "128x128",
             type: "image/png"
@@ -193,7 +194,7 @@ module.exports = function(/* ctx */) {
       // More info: https://quasar.dev/quasar-cli/developing-electron-apps/node-integration
       nodeIntegration: true,
 
-      extendWebpack(/* cfg */) {
+      extendWebpack( /* cfg */ ) {
         // do something with Electron main process Webpack cfg
         // chainWebpack also available besides this extendWebpack
       }

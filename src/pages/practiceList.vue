@@ -20,7 +20,6 @@
                 <q-item-section>
                   {{ itemLv.name }}
                   <br v-if="!itemLv.status" />
-
                   <q-badge
                     v-if="!itemLv.status"
                     label="ปิดการใช้งาน"
@@ -39,7 +38,7 @@
               <q-card v-for="(itemUnit,index2) in unitListShow" :key="index2">
                 <div
                   class="row q-px-md q-py-sm relative-position cursor-pointer"
-                  :class="activeKey==itemUnit.unitId?'bg-blue-grey-4':''"
+                  :class="activeKey==itemUnit.unitId || unitId == itemUnit.unitId ?'bg-blue-grey-4':''"
                   v-ripple
                   @click="gotoEdit(itemUnit, index2,itemLv.name)"
                 >
@@ -83,7 +82,7 @@ import { db } from "../router";
 import practiceMain from "../components/practiceMain.vue";
 export default {
   components: {
-    practiceMain
+    practiceMain,
   },
   data() {
     return {
@@ -102,7 +101,7 @@ export default {
       currentLevelClick: "",
 
       snapLevel: "",
-      snapUnit: ""
+      snapUnit: "",
     };
   },
   methods: {
@@ -114,77 +113,92 @@ export default {
       this.isShowPracticeMain = true;
     },
     gotoEdit(itemUnit, num, levelName) {
-      // console.log(num);
-      this.isShowPracticeMain = false;
-      this.activeKey = itemUnit.unitId;
-      this.levelId = itemUnit.levelId;
-      this.unitId = itemUnit.unitId;
-      this.num = num + 1;
-      this.unitName = itemUnit.label;
-      this.levelName = levelName;
-      this.practiceListOrder = itemUnit.order;
-
-      if (this.$q.platform.is.desktop) {
-        this.isShowPracticeMain = true;
+      if (itemUnit == null) {
+        if (this.$q.platform.is.desktop) {
+          this.isShowPracticeMain = true;
+        } else {
+          this.$router.push(
+            "/practiceMain/" + itemUnit.levelId + "/" + itemUnit.unitId + "/"
+          );
+        }
+        this.isShowPracticeMain = false;
       } else {
-        this.$router.push(
-          "/practiceMain/" + itemUnit.levelId + "/" + itemUnit.unitId + "/"
-        );
+        this.isShowPracticeMain = true;
+        this.activeKey = itemUnit.unitId;
+        this.levelId = itemUnit.levelId;
+        this.unitId = itemUnit.unitId;
+        this.num = num + 1;
+        this.unitName = itemUnit.label;
+        this.levelName = levelName;
+        this.practiceListOrder = itemUnit.order;
+        this.$q.sessionStorage.set("setItem", itemUnit);
+        this.$q.sessionStorage.set("setNum", num);
+        this.$q.sessionStorage.set("setLevelName", levelName);
       }
     },
 
     loadLevel() {
-      this.snapLevel = db.collection("level").onSnapshot(doc => {
-        // console.log("level");
+      this.snapLevel = db.collection("level").onSnapshot((doc) => {
         let temp = [];
-        doc.forEach(element => {
+        doc.forEach((element) => {
           let showData = {
             levelId: element.id,
             name: element.data().name,
-            status: element.data().status
+            status: element.data().status,
           };
-
           temp.push(showData);
         });
-
         temp.sort((a, b) => {
           return a.name > b.name ? 1 : -1;
         });
-
         this.levelList = temp;
-
         this.loadUnit();
       });
     },
     loadUnit() {
-      this.snapUnit = db.collection("unit").onSnapshot(doc => {
+      this.snapUnit = db.collection("unit").onSnapshot((doc) => {
         let temp = [];
-        doc.forEach(element => {
+        doc.forEach((element) => {
           let showData = {
             unitId: element.id,
             levelId: element.data().levelId,
             label: element.data().name,
             order: element.data().order,
-            isShowSyncBtn: element.data().isShowSyncBtn
+            isShowSyncBtn: element.data().isShowSyncBtn,
           };
           temp.push(showData);
         });
-
         temp.sort((a, b) => {
           return a.order - b.order;
         });
-
         this.unitList = temp;
-
-        this.showUnit(this.currentLevelClick);
+        this.showUnit(
+          this.currentLevelClick,
+          this.$q.sessionStorage.getItem("setLevel")
+        );
+        this.gotoEdit(
+          this.$q.sessionStorage.getItem("setItem"),
+          this.$q.sessionStorage.getItem("setNum"),
+          this.$q.sessionStorage.getItem("setLevelName")
+        );
       });
     },
-    showUnit(value) {
-      this.currentLevelClick = value;
-      this.isShowPracticeMain = false;
+    showUnit(value, val) {
+      if (value) {
+        this.$q.sessionStorage.set("setLevel", value);
+      } else {
+        if (val == null) {
+          this.isShowPracticeMain = false;
+        } else {
+          value = val;
+        }
+      }
       this.activeKey = "";
-      this.unitListShow = this.unitList.filter(x => x.levelId == value.levelId);
-    }
+      this.currentLevelClick = value;
+      this.unitListShow = this.unitList.filter(
+        (x) => x.levelId == value.levelId
+      );
+    },
   },
   mounted() {
     this.loadLevel();
@@ -197,7 +211,7 @@ export default {
     if (typeof this.snapUnit == "function") {
       this.snapUnit();
     }
-  }
+  },
 };
 </script>
 
