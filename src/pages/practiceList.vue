@@ -40,7 +40,7 @@
                   class="row q-px-md q-py-sm relative-position cursor-pointer"
                   :class="activeKey==itemUnit.unitId || unitId == itemUnit.unitId ?'bg-blue-grey-4':''"
                   v-ripple
-                  @click="gotoEdit(itemUnit, index2,itemLv.name)"
+                  @click="gotoEdit(itemUnit, index2,itemLv.name),gotoEditMode(itemUnit)"
                 >
                   <div class="col">
                     {{itemUnit.order}} -
@@ -99,7 +99,6 @@ export default {
       levelName: "",
       practiceListOrder: null,
       currentLevelClick: "",
-
       snapLevel: "",
       snapUnit: "",
     };
@@ -112,15 +111,17 @@ export default {
       this.showUnit(val.levelId);
       this.isShowPracticeMain = true;
     },
+    gotoEditMode(itemUnit) {
+      if (this.$q.platform.is.desktop) {
+        this.isShowPracticeMain = true;
+      } else {
+        this.$router.push(
+          "/practiceMain/" + itemUnit.levelId + "/" + itemUnit.unitId + "/"
+        );
+      }
+    },
     gotoEdit(itemUnit, num, levelName) {
       if (itemUnit == null) {
-        if (this.$q.platform.is.desktop) {
-          this.isShowPracticeMain = true;
-        } else {
-          this.$router.push(
-            "/practiceMain/" + itemUnit.levelId + "/" + itemUnit.unitId + "/"
-          );
-        }
         this.isShowPracticeMain = false;
       } else {
         this.isShowPracticeMain = true;
@@ -155,6 +156,7 @@ export default {
         this.loadUnit();
       });
     },
+
     loadUnit() {
       this.snapUnit = db.collection("unit").onSnapshot((doc) => {
         let temp = [];
