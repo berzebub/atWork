@@ -121,20 +121,22 @@ export default {
       }
     },
     gotoEdit(itemUnit, num, levelName) {
-      if (itemUnit == null) {
-        this.isShowPracticeMain = false;
-      } else {
-        this.isShowPracticeMain = true;
-        this.activeKey = itemUnit.unitId;
-        this.levelId = itemUnit.levelId;
-        this.unitId = itemUnit.unitId;
-        this.num = num + 1;
-        this.unitName = itemUnit.label;
-        this.levelName = levelName;
-        this.practiceListOrder = itemUnit.order;
-        this.$q.sessionStorage.set("setItem", itemUnit);
-        this.$q.sessionStorage.set("setNum", num);
-        this.$q.sessionStorage.set("setLevelName", levelName);
+      if (this.$q.platform.is.desktop) {
+        if (itemUnit == null) {
+          this.isShowPracticeMain = false;
+        } else {
+          this.isShowPracticeMain = true;
+          this.activeKey = itemUnit.unitId;
+          this.levelId = itemUnit.levelId;
+          this.unitId = itemUnit.unitId;
+          this.num = num + 1;
+          this.unitName = itemUnit.label;
+          this.levelName = levelName;
+          this.practiceListOrder = itemUnit.order;
+          this.$q.sessionStorage.set("setItem", itemUnit);
+          this.$q.sessionStorage.set("setNum", num);
+          this.$q.sessionStorage.set("setLevelName", levelName);
+        }
       }
     },
 
