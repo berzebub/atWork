@@ -59,8 +59,9 @@ Vue.mixin({
         .then(() => {
           this.$router.push("/");
           this.$q.localStorage.clear();
+          this.$q.SessionStorage.clear();
         })
-        .catch(function (error) { });
+        .catch(function (error) {});
     },
     async updateSyncStatus(practiceId, unitId) {
       return new Promise((a, b) => {
@@ -185,7 +186,7 @@ Vue.mixin({
   }
 });
 
-export default function (/* { store, ssrContext } */) {
+export default function ( /* { store, ssrContext } */ ) {
   const Router = new VueRouter({
     scrollBehavior: () => ({
       x: 0,

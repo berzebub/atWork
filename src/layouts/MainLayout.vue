@@ -243,32 +243,32 @@ export default {
       headerBarList: [
         {
           name: "บทเรียน",
-          type: "lessonMainList"
+          type: "lessonMainList",
         },
         {
           name: "แบบฝึกหัด",
-          type: "practiceList"
+          type: "practiceList",
         },
         {
           name: "ผู้ใช้งาน",
-          type: "accountMain"
+          type: "accountMain",
         },
         {
           name: "ผู้ดูแลระบบ",
-          type: "userMain"
+          type: "userMain",
         },
         {
           name: "ตั้งค่า",
-          type: "userInfo"
-        }
+          type: "userInfo",
+        },
       ],
-      snapUser: ""
+      snapUser: "",
     };
   },
   methods: {
     async loadUserInfo() {
       this.loadingShow();
-      auth.onAuthStateChanged(async user => {
+      auth.onAuthStateChanged(async (user) => {
         if (user) {
           // กรณี Login อยู่ในระบบ
           let apiURL =
@@ -283,9 +283,10 @@ export default {
           this.loadingHide();
           this.$router.push("/");
           this.$q.localStorage.clear();
+          this.$q.SessionStorage.clear();
         }
       });
-    }
+    },
   },
   computed: {
     checkActiveRouteName() {},
@@ -308,7 +309,7 @@ export default {
           backPath: "/practiceList",
           back2: "",
           backPath2: "",
-          type: "practiceMain"
+          type: "practiceMain",
         },
         // NOTE : Router Flashcard
         {
@@ -317,7 +318,7 @@ export default {
           backPath: "/practiceList",
           back2: "",
           backPath2: "",
-          type: "flashcardMain"
+          type: "flashcardMain",
         },
         // NOTE : Router Flashcard Add
         {
@@ -326,7 +327,7 @@ export default {
           backPath: "/practiceList",
           back2: "การ์ดคำศัพท์",
           backPath2: "/flashcardMain/" + practicePath,
-          type: "flashcardInput"
+          type: "flashcardInput",
         },
         // NOTE : Router Flashcard Edit
         {
@@ -335,7 +336,7 @@ export default {
           backPath: "/practiceList",
           back2: "การ์ดคำศัพท์",
           backPath2: "/flashcardMain/" + practicePath,
-          type: "flashcardEdit"
+          type: "flashcardEdit",
         },
         // NOTE : Router Multiple
         {
@@ -344,7 +345,7 @@ export default {
           backPath: "/practiceList",
           back2: "",
           backPath2: "",
-          type: "multipleMain"
+          type: "multipleMain",
         },
         // NOTE : Router Multiple Add
         {
@@ -353,7 +354,7 @@ export default {
           backPath: "/practiceList",
           back2: "เลือกคำตอบ",
           backPath2: "/multipleMain/" + practicePath,
-          type: "multipleAdd"
+          type: "multipleAdd",
         },
         // NOTE : Router Multiple Edit
         {
@@ -362,7 +363,7 @@ export default {
           backPath: "/practiceList",
           back2: "เลือกคำตอบ",
           backPath2: "/multipleMain/" + practicePath,
-          type: "multipleEdit"
+          type: "multipleEdit",
         },
         // NOTE : Router Expression
         {
@@ -371,7 +372,7 @@ export default {
           backPath: "/practiceList",
           back2: "",
           backPath2: "",
-          type: "expressionMain"
+          type: "expressionMain",
         },
         // NOTE : Router Expression Add
         {
@@ -380,7 +381,7 @@ export default {
           backPath: "/practiceList",
           back2: "ประโยคสนทนา",
           backPath2: "/expressionMain/" + practicePath,
-          type: "expressionInput"
+          type: "expressionInput",
         },
         {
           name: "แก้ไขประโยคสนทนา",
@@ -388,7 +389,7 @@ export default {
           backPath: "/practiceList",
           back2: "ประโยคสนทนา",
           backPath2: "/expressionMain/" + practicePath,
-          type: "expressionEdit"
+          type: "expressionEdit",
         },
         // NOTE : Router Video
         {
@@ -397,7 +398,7 @@ export default {
           backPath: "/practiceList",
           back2: "",
           backPath2: "",
-          type: "vdoMain"
+          type: "vdoMain",
         },
         {
           name: "เพิ่มบทสนทนา",
@@ -405,7 +406,7 @@ export default {
           backPath: "/practiceList",
           back2: "บทสนทนา",
           backPath2: "/vdoMain/" + practicePath,
-          type: "vdoAdd"
+          type: "vdoAdd",
         },
         {
           name: "แก้ไขบทสนทนา",
@@ -413,7 +414,7 @@ export default {
           backPath: "/practiceList",
           back2: "บทสนทนา",
           backPath2: "/vdoMain/" + practicePath,
-          type: "vdoEdit"
+          type: "vdoEdit",
         },
         {
           name: "การตั้งค่าการอัปโหลดวีดีโอ",
@@ -421,7 +422,7 @@ export default {
           backPath: "/vdoMain/" + practicePath,
           back2: "",
           backPath2: "",
-          type: "vdohowtoupload"
+          type: "vdohowtoupload",
         },
         // NOTE : Router Lesson
         {
@@ -430,7 +431,7 @@ export default {
           backPath: "",
           back2: "",
           backPath2: "",
-          type: "lessonMainList"
+          type: "lessonMainList",
         },
         {
           name: "เพิ่มตำแหน่ง",
@@ -438,7 +439,7 @@ export default {
           backPath: "/lessonMainList",
           back2: "",
           backPath2: "",
-          type: "lessonInput"
+          type: "lessonInput",
         },
         {
           name: "แก้ไขตำแหน่ง",
@@ -446,7 +447,7 @@ export default {
           backPath: "/lessonMainList",
           back2: "",
           backPath2: "",
-          type: "lessonEdit"
+          type: "lessonEdit",
         },
         {
           name: "บทเรียน",
@@ -454,7 +455,7 @@ export default {
           backPath: "/lessonMainList",
           back2: "",
           backPath2: "",
-          type: "lessonUnitlist"
+          type: "lessonUnitlist",
         },
         // NOTE : Router Account
         {
@@ -463,7 +464,7 @@ export default {
           backPath: "",
           back2: "",
           backPath2: "",
-          type: "accountMain"
+          type: "accountMain",
         },
         {
           name: "กิจการ",
@@ -471,7 +472,7 @@ export default {
           backPath: "/accountMain",
           back2: "",
           backPath2: "",
-          type: "hotelMain"
+          type: "hotelMain",
         },
         {
           name: "เพิ่มกิจการ",
@@ -479,7 +480,7 @@ export default {
           backPath: "/accountMain",
           back2: "กิจการ",
           backPath2: "/hotelMain",
-          type: "hotelAdd"
+          type: "hotelAdd",
         },
         {
           name: "แก้ไขกิจการ",
@@ -487,7 +488,7 @@ export default {
           backPath: "/accountMain",
           back2: "กิจการ",
           backPath2: "/hotelMain",
-          type: "hotelEdit"
+          type: "hotelEdit",
         },
         {
           name: "เพิ่มพนักงาน",
@@ -495,7 +496,7 @@ export default {
           backPath: "/accountMain",
           back2: "",
           backPath2: "",
-          type: "accountAdd"
+          type: "accountAdd",
         },
         {
           name: "แก้ไขพนักงาน",
@@ -503,7 +504,7 @@ export default {
           backPath: "/accountMain",
           back2: "",
           backPath2: "",
-          type: "accountEdit"
+          type: "accountEdit",
         },
 
         // NOTE : Router User
@@ -513,7 +514,7 @@ export default {
           backPath: "",
           back2: "",
           backPath2: "",
-          type: "userMain"
+          type: "userMain",
         },
         {
           name: "เพิ่มผู้ดูแลระบบ",
@@ -521,7 +522,7 @@ export default {
           backPath: "/userMain",
           back2: "",
           backPath2: "",
-          type: "userAdd"
+          type: "userAdd",
         },
         {
           name: "แก้ไขผู้ดูแลระบบ",
@@ -529,7 +530,7 @@ export default {
           backPath: "/userMain",
           back2: "",
           backPath2: "",
-          type: "userEdit"
+          type: "userEdit",
         },
         // NOTE : Router User Setting
         {
@@ -538,7 +539,7 @@ export default {
           backPath: "",
           back2: "",
           backPath2: "",
-          type: "userInfo"
+          type: "userInfo",
         },
         {
           name: "แก้ไข ชื่อ นามสกุล",
@@ -546,7 +547,7 @@ export default {
           backPath: "/userInfo",
           back2: "",
           backPath2: "",
-          type: "userSettingMobile"
+          type: "userSettingMobile",
         },
         {
           name: "แก้ไขผู้ดูแลระบบ",
@@ -554,19 +555,19 @@ export default {
           backPath: "/userMain",
           back2: "",
           backPath2: "",
-          type: "userEdit"
-        }
+          type: "userEdit",
+        },
       ];
 
-      result = routeList.filter(x => x.type == this.$route.name)[0];
+      result = routeList.filter((x) => x.type == this.$route.name)[0];
 
       return result;
-    }
+    },
   },
 
   mounted() {
     this.loadUserInfo();
-  }
+  },
 };
 </script>
 <style lang="scss" scoped>
