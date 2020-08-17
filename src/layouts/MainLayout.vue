@@ -283,7 +283,7 @@ export default {
           this.loadingHide();
           this.$router.push("/");
           this.$q.localStorage.clear();
-          this.$q.SessionStorage.clear();
+          this.$q.sessionStorage.clear();
         }
       });
     },
