@@ -176,10 +176,7 @@ export default {
           return a.order - b.order;
         });
         this.unitList = temp;
-        this.showUnit(
-          this.currentLevelClick,
-          this.$q.sessionStorage.getItem("setLevel")
-        );
+        this.showUnit(this.currentLevelClick);
         this.gotoEdit(
           this.$q.sessionStorage.getItem("setItem"),
           this.$q.sessionStorage.getItem("setNum"),
@@ -187,16 +184,7 @@ export default {
         );
       });
     },
-    showUnit(value, val) {
-      if (value) {
-        this.$q.sessionStorage.set("setLevel", value);
-      } else {
-        if (val == null) {
-          this.isShowPracticeMain = false;
-        } else {
-          value = val;
-        }
-      }
+    showUnit(value) {
       this.activeKey = "";
       this.currentLevelClick = value;
       this.unitListShow = this.unitList.filter(
