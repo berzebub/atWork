@@ -1,11 +1,16 @@
 <template>
   <div>
-    <!-- <div class="brx q-pa-md" @click="testClick(index)" v-for="(item,index)  in test">
-      <q-btn label="a" @click.stop="testClick1()"></q-btn>
-      <div v-show="indexClick==index" v-for="item1 in test1">{{item1}}</div>
-    </div>-->
+    <div>
+      <q-btn label="set session" @click="setSession()"></q-btn>
+    </div>
 
-    <div style="width:500px;height:500px;" v-ripple class="brx relative-position"></div>
+    <div>
+      <q-btn label="set LocalStorage" @click="setLocalStorage()"></q-btn>
+    </div>
+
+    <p>SessionStorage= {{ $q.sessionStorage.getItem("testSession") }}</p>
+
+    <p>LocalStorage = {{ $q.localStorage.getItem("testLocalStorage") }}</p>
   </div>
 </template>
 
@@ -15,17 +20,18 @@ export default {
     return {
       test: [1, 2, 3],
       test1: [5, 6, 7],
-      indexClick: 0
+      indexClick: 0,
     };
   },
   methods: {
-    testClick(index) {
+    setSession(index) {
       this.indexClick = index;
+      this.$q.sessionStorage.set("testSession", "12345 Session");
     },
-    testClick1() {
-      // console.log("123");
-    }
-  }
+    setLocalStorage() {
+      this.$q.localStorage.set("testLocalStorage", "12345 LocalStorage");
+    },
+  },
 };
 </script>
 

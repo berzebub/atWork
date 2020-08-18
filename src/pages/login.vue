@@ -94,6 +94,7 @@ export default {
                 this.loadingHide();
                 this.$router.push("/practiceList");
               } else {
+                auth.signOut();
                 throw "error";
               }
             })

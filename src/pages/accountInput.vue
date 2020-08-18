@@ -27,7 +27,7 @@
         <q-input v-model.trim="dataEmployee.tel" ref="tel" outlined dense :rules="[val => !!val ]"></q-input>
       </div>
       <div>
-        <div>อีเมล</div>
+        <div>รหัสพนักงาน</div>
         <q-input
           v-model.trim="dataEmployee.email"
           ref="email"
@@ -87,7 +87,7 @@ import { db, axios } from "../router";
 import dialogCenter from "../components/dialogSetting";
 export default {
   components: {
-    dialogCenter
+    dialogCenter,
   },
   data() {
     return {
@@ -100,10 +100,10 @@ export default {
         email: "",
         password: "",
         startLevelId: "",
-        star: 0
+        star: 0,
       },
       departmentAll: "",
-      isAddDialogSucess: false
+      isAddDialogSucess: false,
     };
   },
   methods: {
@@ -121,6 +121,7 @@ export default {
       ) {
         return;
       }
+
       let apiURL =
         "https://us-central1-atwork-dee11.cloudfunctions.net/atworkFunctions/user/create";
       this.loadingShow();
@@ -130,19 +131,19 @@ export default {
           password: this.dataEmployee.password,
           displayName: this.dataEmployee.name,
           accessProgram: ["FrontEnd"],
-          dataEntryPermissions: []
+          dataEntryPermissions: [],
         };
         let userRecord = await axios.post(apiURL, postData);
         if (userRecord.data.code) {
           if (userRecord.data.code == "auth/email-already-exists") {
             this.$q.notify({
               message: "มีอีเมลนี้ในระบบแล้ว",
-              color: "red"
+              color: "red",
             });
           } else {
             this.$q.notify({
               message: "กรุณาตรวจสอบข้อมูลใหม่อีกครั้ง",
-              color: "red"
+              color: "red",
             });
           }
           this.loadingHide();
@@ -159,7 +160,7 @@ export default {
             email: this.dataEmployee.email,
             startLevelId: this.dataEmployee.startLevelId,
             tel: this.dataEmployee.tel,
-            star: 0
+            star: 0,
           })
           .then(() => {
             this.loadingHide();
@@ -172,7 +173,7 @@ export default {
           displayName: this.dataEmployee.name,
           password: this.dataEmployee.password,
           uid: this.dataEmployee.uid,
-          accessProgram: ["FrontEnd"]
+          accessProgram: ["FrontEnd"],
         };
         let axiosData = await axios.post(apiURL, postData);
         let updateData = { ...this.dataEmployee };
@@ -192,13 +193,13 @@ export default {
     loadDepartment() {
       db.collection("department")
         .get()
-        .then(doc => {
+        .then((doc) => {
           let temp = [];
-          doc.forEach(element => {
+          doc.forEach((element) => {
             let newData = {
               value: element.id,
               label: element.data().name,
-              hotelId: element.data().hotelId
+              hotelId: element.data().hotelId,
             };
             temp.push(newData);
           });
@@ -212,23 +213,23 @@ export default {
     },
     filleDepartment() {
       this.departmentOptions = this.departmentAll.filter(
-        x => x.hotelId == this.$route.params.hotelId
+        (x) => x.hotelId == this.$route.params.hotelId
       );
 
       this.dataEmployee.departmentId = this.departmentOptions.filter(
-        x => x.value == this.$route.params.departmentId
+        (x) => x.value == this.$route.params.departmentId
       )[0].value;
     },
     loadLevel() {
       this.loadingShow();
       db.collection("level")
         .get()
-        .then(doc => {
+        .then((doc) => {
           let temp = [];
-          doc.forEach(element => {
+          doc.forEach((element) => {
             temp.push({
               value: element.id,
-              label: element.data().name
+              label: element.data().name,
             });
           });
           temp.sort((a, b) => {
@@ -244,13 +245,13 @@ export default {
       db.collection("employee")
         .doc(this.$route.params.employeeId)
         .get()
-        .then(doc => {
+        .then((doc) => {
           this.dataEmployee = doc.data();
         });
     },
     addDialogSucess() {
       this.$router.push("/accountMain");
-    }
+    },
   },
   mounted() {
     this.loadDepartment();
@@ -260,7 +261,7 @@ export default {
       this.loadEdit();
       return;
     }
-  }
+  },
 };
 </script>
 
