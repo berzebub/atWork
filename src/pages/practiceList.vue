@@ -184,7 +184,7 @@ export default {
         this.showUnit(this.currentLevelClick);
         this.gotoEdit(
           // ดึงข้อมูลกลับมาใช้
-          // ถ้าไม่มีข้อมูล มันจะมอง เป็น na
+          // ถ้าไม่มีข้อมูล มันจะมอง เป็น null เสมอ
           this.$q.sessionStorage.getItem("setItem"),
           this.$q.sessionStorage.getItem("setNum"),
           this.$q.sessionStorage.getItem("setLevelName")
