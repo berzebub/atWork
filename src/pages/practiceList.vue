@@ -121,10 +121,14 @@ export default {
       }
     },
     gotoEdit(itemUnit, num, levelName) {
+      // โหลดครั้งแรก && คลิกดูข้อมูล 
+      // เช็คค่า ก่อน ว่ามีข้อมูลเก็บอยูไหม
       if (this.$q.platform.is.desktop) {
         if (itemUnit == null) {
+          // ไม่มีข้อมูล
           this.isShowPracticeMain = false;
         } else {
+          // มีข้อมูล
           this.isShowPracticeMain = true;
           this.activeKey = itemUnit.unitId;
           this.levelId = itemUnit.levelId;
@@ -133,6 +137,7 @@ export default {
           this.unitName = itemUnit.label;
           this.levelName = levelName;
           this.practiceListOrder = itemUnit.order;
+          // เก็บข้อมูลไว้ 
           this.$q.sessionStorage.set("setItem", itemUnit);
           this.$q.sessionStorage.set("setNum", num);
           this.$q.sessionStorage.set("setLevelName", levelName);
@@ -178,6 +183,8 @@ export default {
         this.unitList = temp;
         this.showUnit(this.currentLevelClick);
         this.gotoEdit(
+          // ดึงข้อมูลกลับมาใช้
+          // ถ้าไม่มีข้อมูล มันจะมอง เป็น na
           this.$q.sessionStorage.getItem("setItem"),
           this.$q.sessionStorage.getItem("setNum"),
           this.$q.sessionStorage.getItem("setLevelName")
